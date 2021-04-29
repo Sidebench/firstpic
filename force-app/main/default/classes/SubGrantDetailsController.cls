@@ -10,6 +10,7 @@ public with sharing class SubGrantDetailsController {
   private BudgetItemClass bic = new BudgetItemClass();
   private getIdFromString gifs = new getIdFromString();
   private ContactClass cc = new ContactClass();
+  private AccountClass ac = new AccountClass();
 
   public Account acct { get; set; }
   public Grant__c grant { get; set; }
@@ -111,11 +112,7 @@ public with sharing class SubGrantDetailsController {
       for (Attachment a : grant.Attachments) {
         att_list.add(a);
       }
-      acct = [
-        SELECT ID, Name, RecordType.Name
-        FROM Account
-        WHERE ID = :grant.Account__r.Id
-      ];
+      acct = ac.getAccount(grant.Account__r.Id); //[SELECT ID, Name, RecordType.Name FROM Account WHERE ID = :grant.Account__r.Id];
       for (Contact c : cc.getContactPopupList(acct.Id)) {
         //                if(c.Role__c != null && c.Role__c.contains('Board'))
         if (c.RecordType.Name == 'Contact')

@@ -71,7 +71,7 @@ public with sharing class RequestPersonnelFormController {
     selectedLabor = 0;
     displayLaborNotesPopup = false;
     displayAttPopup = false;
-
+    System.debug('RPFC Line 71');
     if (RequestID != null) {
       request = requestClass.getRequest(RequestId);
       FTE = request.FTE__c;
@@ -114,6 +114,7 @@ public with sharing class RequestPersonnelFormController {
 
   // BEGIN getAttList
   public void getAttList() {
+    System.debug('Enter getAttList');
     att_list.clear();
     Reimbursement_Request__c r = [
       SELECT
@@ -126,6 +127,7 @@ public with sharing class RequestPersonnelFormController {
       FROM Reimbursement_Request__c
       WHERE Id = :request.Id
     ];
+    System.debug('Number of atts: ' + att_list.size());
     Set<String> names = new Set<String>();
     for (Attachment a : r.Attachments) {
       if (
@@ -313,6 +315,12 @@ public with sharing class RequestPersonnelFormController {
 
   // BEGIN saveAndContinue
   public PageReference saveAndContinue() {
+    errorMessage = '';
+
+    if (portalName == 'MDGO') {
+      getAttList();
+    }
+
     saveLabor();
 
     if (totalRequestedAmount > 0 && portalName != 'DMV') {

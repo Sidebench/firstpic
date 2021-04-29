@@ -785,6 +785,14 @@ public class TestReimbursementControllers {
       ctrl1.hideSendBackPopup();
       ctrl1.showApprovePopup();
       ctrl1.hideApprovePopup();
+      ctrl1.showAttPopup();
+      ctrl1.hideAttPopup();
+      ctrl1.showDenyPopup();
+      ctrl1.hideDenyPopup();
+      ctrl1.showDeletePopup();
+      ctrl1.hideDeletePopup();
+      ctrl1.showReviewPopup();
+      ctrl1.hideReviewPopup();
 
       ctrl1.approverLevel = 'Level One';
       ctrl1.approve();
@@ -812,6 +820,9 @@ public class TestReimbursementControllers {
       ctrl1.getRequest();
       ctrl1.getReviewMode();
       system.assertEquals(true, ctrl1.isReviewMode);
+
+      ctrl1.deny();
+      ctrl1.deleteReimbursement();
       // END Test ReimbursementCtrl
 
       // BEGIN Test ReimbursementsCtrl

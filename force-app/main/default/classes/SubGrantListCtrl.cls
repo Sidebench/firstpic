@@ -75,7 +75,7 @@ public with sharing class SubGrantListCtrl {
     grant_list.clear();
 
     String qry = 'SELECT Id, RecordType.Name, Name, Account__r.Id, Account__r.Name, Account__r.National_Organization__c, National_Grant__r.Account__c';
-    qry += ', LastModifiedDate, Amount__c, Total_Budgeted__c, Total_Item_Budget__c, Total_Item_Balance__c, Reimbursement_Requested_Amount__c, Reimbursement_Approved_Amount__c, Balance__c, Grant_Status__c';
+    qry += ', Start_Date__c, End_Date__c, LastModifiedDate, Amount__c, Total_Budgeted__c, Total_Item_Budget__c, Total_Item_Balance__c, Reimbursement_Requested_Amount__c, Reimbursement_Approved_Amount__c, Balance__c, Grant_Status__c';
     qry += ' FROM Grant__c WHERE RecordType.Name = \'Sub-Grant\'';
     if (listType == 'pending') {
       qry += ' AND (Grant_Status__c = \'Pending Review\' OR Grant_Status__c = \'Budget Submitted\')';

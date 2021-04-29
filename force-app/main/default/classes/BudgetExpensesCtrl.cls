@@ -8,6 +8,7 @@ public with sharing class BudgetExpensesCtrl {
   private GrantClass gc = new GrantClass();
   private BudgetItemClass bic = new BudgetItemClass();
   private AttachmentClass ac = new AttachmentClass();
+  private AccountClass acc = new AccountClass();
 
   public Account acct { get; set; }
   public ID GrantId { get; set; }
@@ -82,11 +83,7 @@ public with sharing class BudgetExpensesCtrl {
         grant.Youth_Served_Percent__c =
           grant.Youth_Served_with_Grant_Funding__c / grant.Youth_Served__c;
       }
-      acct = [
-        SELECT ID, Name, RecordType.Name
-        FROM Account
-        WHERE ID = :grant.Account__r.Id
-      ];
+      acct = acc.getAccount(grant.Account__r.Id); // [SELECT ID, Name, RecordType.Name FROM Account WHERE ID = :grant.Account__r.Id];
 
       Reimbursement_Request__c[] requests = [
         SELECT Id
@@ -102,7 +99,13 @@ public with sharing class BudgetExpensesCtrl {
     Schema.DescribeFieldResult fieldResult1 = Budget_Item__c.Category__c.getDescribe();
     List<Schema.PicklistEntry> ple1 = fieldResult1.getPicklistValues();
     for (Schema.PicklistEntry f1 : ple1) {
-      categories.add(new SelectOption(f1.getLabel(), f1.getValue()));
+      if (
+        portalName != 'MDGO' ||
+        portalName == 'MDGO' && f1.getLabel() != 'Procurement Contracts' &&
+        f1.getLabel() != 'Indirect Costs'
+      ) {
+        categories.add(new SelectOption(f1.getLabel(), f1.getValue()));
+      }
     }
 
     factorTypes = new List<SelectOption>();
@@ -196,12 +199,15 @@ public with sharing class BudgetExpensesCtrl {
           }
         } else {
           if (
-            (portalName == 'NPAL' || portalName == 'DMV') &&
-            bi.New_Wages__c != null
+            (portalName == 'NPAL' ||
+            portalName == 'DMV' ||
+            portalName == 'MDGO') && bi.New_Wages__c != null
           ) {
             laborRequestedAmount += bi.New_Wages__c;
           } else if (
-            (portalName == 'NPAL' || portalName == 'DMV') && bi.Wages__c != null
+            (portalName == 'NPAL' ||
+            portalName == 'DMV' ||
+            portalName == 'MDGO') && bi.Wages__c != null
           ) {
             laborRequestedAmount += bi.Wages__c;
           } else if (bi.New_Item_Budget__c != null) {
@@ -279,7 +285,11 @@ public with sharing class BudgetExpensesCtrl {
       if (bi.New_Rate__c != null && bi.New_Rate__c != 0) {
         if (grant.Use_Indirect_Rate__c == 'Yes')
           bi.New_Item_Budget__c = bi.New_Rate__c;
-        else if (portalName != 'NPAL' && portalName != 'DMV') {
+        else if (
+          portalName != 'NPAL' &&
+          portalName != 'DMV' &&
+          portalName != 'MDGO'
+        ) {
           if (bi.Factor_Type__c == 'FTE') {
             bi.New_Item_Budget__c = (bi.New_Rate__c *
               grant.Estimated_FTE__c /
@@ -328,7 +338,11 @@ public with sharing class BudgetExpensesCtrl {
           else {
             if (grant.Use_Indirect_Rate__c == 'Yes')
               bi.New_Item_Budget__c = bi.New_Rate__c; //(bi.New_Rate__c * grant.Indirect_Rate__c / 100).setScale(2);
-            else if (portalName != 'NPAL' && portalName != 'DMV') {
+            else if (
+              portalName != 'NPAL' &&
+              portalName != 'DMV' &&
+              portalName != 'MDGO'
+            ) {
               if (
                 bi.Factor_Type__c == 'FTE' &&
                 grant.Estimated_FTE__c != null
@@ -475,7 +489,7 @@ public with sharing class BudgetExpensesCtrl {
     List<List<Budget_Item__c>> expense_list = expense_map.values();
     for (Integer i = 0; i < expense_list.size(); i++) {
       for (Budget_Item__c bi : expense_list.get(i)) {
-        if (portalName == 'DMV')
+        if (portalName == 'DMV' || portalName == 'MDGO')
           bi.Item_Budget__c = bi.New_Item_Budget__c;
         expense_upsert_list.add(bi);
       }
@@ -484,7 +498,7 @@ public with sharing class BudgetExpensesCtrl {
     // Add items in list for insert
     for (Budget_Item__c bi : newExpense_list) {
       if (bi.Id == null && bi.Name != null && bi.New_Item_Budget__c != null) {
-        if (portalName == 'DMV')
+        if (portalName == 'DMV' || portalName == 'MDGO')
           bi.Item_Budget__c = bi.New_Item_Budget__c;
         expense_upsert_list.add(bi);
       }
