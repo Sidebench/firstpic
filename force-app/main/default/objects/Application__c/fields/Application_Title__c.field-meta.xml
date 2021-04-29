@@ -7,8 +7,7 @@
 IF(CONTAINS(RecordType.Name, &apos;Baseball&apos;), &apos;Ripken Badges for Baseball&apos;, 
 IF(CONTAINS(RecordType.Name, &apos;Special Initiative&apos;), &apos;Ripken Special Initiative&apos;, 
 IF(CONTAINS(RecordType.Name, &apos;Under Armour&apos;), &apos;Under Armour&apos;, 
-IF(CONTAINS(RecordType.Name, &apos;Healthy Lifestyles&apos;), &apos;Ripken Healthy Lifestyles&apos;,
-&apos;&apos;)))))</formula>
+&apos;&apos;))))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Application Title</label>
     <required>false</required>

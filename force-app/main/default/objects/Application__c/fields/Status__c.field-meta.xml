@@ -32,6 +32,11 @@
                 <label>Reviewed</label>
             </value>
             <value>
+                <fullName>Approved</fullName>
+                <default>false</default>
+                <label>Approved</label>
+            </value>
+            <value>
                 <fullName>Awarded</fullName>
                 <default>false</default>
                 <label>Awarded</label>
@@ -45,11 +50,6 @@
                 <fullName>Sent Back</fullName>
                 <default>false</default>
                 <label>Sent Back</label>
-            </value>
-            <value>
-                <fullName>Approved</fullName>
-                <default>false</default>
-                <label>Approved</label>
             </value>
         </valueSetDefinition>
     </valueSet>

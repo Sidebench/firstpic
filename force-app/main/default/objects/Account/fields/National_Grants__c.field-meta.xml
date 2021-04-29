@@ -10,14 +10,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>OVC</fullName>
-                <default>false</default>
-                <label>OVC</label>
-            </value>
-            <value>
                 <fullName>TRAIL</fullName>
                 <default>false</default>
                 <label>TRAIL</label>
+            </value>
+            <value>
+                <fullName>OVC</fullName>
+                <default>false</default>
+                <label>OVC</label>
             </value>
         </valueSetDefinition>
     </valueSet>

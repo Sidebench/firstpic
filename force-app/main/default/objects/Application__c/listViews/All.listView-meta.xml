@@ -3,11 +3,9 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Organization_Name__c</columns>
+    <columns>National_Organization_Name__c</columns>
     <columns>CREATED_DATE</columns>
     <columns>Status__c</columns>
-    <columns>Application_Type__c</columns>
-    <columns>Organization__c</columns>
-    <columns>RECORDTYPE</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

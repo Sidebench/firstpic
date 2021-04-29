@@ -2,8 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DOD_Email_text__c</fullName>
     <externalId>false</externalId>
-    <formula
-  >IF(Local_Organization__r.DOD__c != null, Local_Organization__r.DOD__r.Email, DOD__r.Email)</formula>
+    <formula>DOD__r.Email</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>DOD Email text</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

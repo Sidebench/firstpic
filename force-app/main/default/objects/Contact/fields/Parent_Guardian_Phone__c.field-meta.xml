@@ -4,6 +4,5 @@
     <externalId>false</externalId>
     <label>Parent/Guardian Phone</label>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <type>Phone</type>
 </CustomField>

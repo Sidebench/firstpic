@@ -4,6 +4,6 @@
     <externalId>false</externalId>
     <label>Hold Date</label>
     <required>false</required>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <type>Date</type>
 </CustomField>

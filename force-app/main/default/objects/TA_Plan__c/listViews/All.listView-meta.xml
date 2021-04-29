@@ -6,7 +6,6 @@
     <columns>Compliance_Score__c</columns>
     <columns>Finance_Score__c</columns>
     <columns>Program_Score__c</columns>
-    <columns>UPDATEDBY_USER</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

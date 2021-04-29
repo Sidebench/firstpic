@@ -38,20 +38,20 @@
         <picklist>Class_QuickBooks__c</picklist>
         <values>
             <fullName
-      >Federal Grant - OJJDP%3A 2020-2021 Mentoring Grant</fullName>
+      >Federal Grant - OJJDP%3A 2019-2020 Mentoring Grant</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Federal Grant COPS%3A 2020-2021 COPS</fullName>
+            <fullName>Federal Grant COPS%3A 2019-2020 COPS</fullName>
             <default>false</default>
         </values>
         <values>
             <fullName
-      >Federal Grant HIDTA%3A 2021 Washington%2FBaltimore HIDTA</fullName>
+      >Federal Grant HIDTA%3A 2020 Washington%2FBaltimore HIDTA</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Private Grants%3A BGE 2021</fullName>
+            <fullName>Private Grants%3A BGE 2020</fullName>
             <default>false</default>
         </values>
         <values>
@@ -60,23 +60,27 @@
         </values>
         <values>
             <fullName
-      >Private Grants%3A Charles T%2E Bauer Charitable Fdn 2021</fullName>
+      >Private Grants%3A Charles T%2E Bauer Charitable Fdn 2020</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Private Grants%3A Niagara Cares 2021</fullName>
+            <fullName>Private Grants%3A Niagara Cares 2020</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Private Grants%3A PNC 2021</fullName>
+            <fullName>Private Grants%3A PNC 2020</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Private Grants%3A Sherman Fairchild Fdn 2021</fullName>
+            <fullName>Private Grants%3A Sherman Fairchild Fdn 2020</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Private Grants%3A Toledo Community Fdn 2021</fullName>
+            <fullName>Private Grants%3A Toledo Community Fdn 2020</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Private Grants%3A Under Armour Grant 2020</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -173,6 +177,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>STEM</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Special Initiative</fullName>
             <default>false</default>
         </values>
@@ -185,6 +193,10 @@
         </values>
         <values>
             <fullName>Bauer Foundation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Blue Cross Blue Shield</fullName>
             <default>false</default>
         </values>
         <values>
@@ -204,10 +216,6 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Charles T%2E Bauer Charitable Fdn</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Fund II</fullName>
             <default>false</default>
         </values>
@@ -224,10 +232,6 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>JeepChrysler</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Marriott Foundation</fullName>
             <default>false</default>
         </values>
@@ -240,11 +244,11 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Niagara Cares Hurricane Relief Foundation</fullName>
+            <fullName>Niagara Cares</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>Niagara Cares%09Niagara Cares</fullName>
+            <fullName>Niagara Cares Hurricane Relief Foundation</fullName>
             <default>false</default>
         </values>
         <values>
@@ -258,10 +262,6 @@
         </values>
         <values>
             <fullName>Ohio Office of the Attorney General</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>PNC Fdn</fullName>
             <default>false</default>
         </values>
         <values>
@@ -285,15 +285,7 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Sherman Fairchild Fdn</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Sun Trust Bank</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Toledo Community Fdn</fullName>
             <default>false</default>
         </values>
         <values>
@@ -485,10 +477,6 @@
         </values>
         <values>
             <fullName>Pennsylvania</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Puerto Rico</fullName>
             <default>false</default>
         </values>
         <values>

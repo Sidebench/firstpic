@@ -1,0 +1,42 @@
+<apex:page controller="BBFCtrl" showHeader="false" sidebar="false">
+  <c:BBFnav />
+
+  <head>
+    <title>Dashboard</title>
+  </head>
+
+  <apex:form id="form">
+    <h2>Hello, User</h2>
+
+    <div class="main-panel">
+      <div class="content">
+        <div class="row" style="margin-bottom: 10px">
+          <table width="100%">
+            <tr>
+              <th>Topic</th>
+              <th>Status</th>
+              <th>Recommendations</th>
+              <th>Action Required</th>
+              <th>Action Taken</th>
+            </tr>
+            <tr>
+              <td>Background Check Policy</td>
+              <td>
+                1. Needs Improvement <br /> 2. Standard Practice <br /> 3. Best
+                Practice
+              </td>
+              <td><apex:inputTextarea /></td>
+              <td>Y/N</td>
+              <td><span class="glyphicon glyphicon-eye-open"></span></td>
+            </tr>
+          </table>
+          <!-- 
+						Recomendations
+						Action Required
+						Action Taken
+					-->
+        </div>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

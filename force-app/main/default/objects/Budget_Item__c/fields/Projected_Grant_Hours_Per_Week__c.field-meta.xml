@@ -3,7 +3,7 @@
     <fullName>Projected_Grant_Hours_Per_Week__c</fullName>
     <externalId>false</externalId>
     <label>Projected Grant Hours Per Week</label>
-    <precision>18</precision>
+    <precision>5</precision>
     <required>false</required>
     <scale>2</scale>
     <trackHistory>false</trackHistory>

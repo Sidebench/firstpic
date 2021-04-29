@@ -3,9 +3,7 @@
     <fullName>Percent_Evidence_Based_Program__c</fullName>
     <externalId>false</externalId>
     <formula
-  >IF(OR(Total_Youth_Served__c == null, Total_Youth_Served__c == 0), 0,
-Youth_Served_via_Evidence_Based_Program__c / Total_Youth_Served__c
-)</formula>
+  >Youth_Served_via_Evidence_Based_Program__c /  Total_Youth_Served__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Percent Evidence-Based Program</label>
     <precision>18</precision>

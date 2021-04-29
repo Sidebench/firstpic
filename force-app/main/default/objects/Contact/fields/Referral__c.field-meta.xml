@@ -4,6 +4,5 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <label>Referral</label>
-    <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>

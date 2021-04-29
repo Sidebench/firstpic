@@ -5,13 +5,19 @@
     <columns>Field_API__c</columns>
     <columns>Field_Name__c</columns>
     <columns>Order__c</columns>
-    <columns>Year__c</columns>
+    <columns>Organization_Type__c</columns>
     <columns>Label__c</columns>
+    <columns>LAST_UPDATE</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Object__c</field>
         <operation>equals</operation>
         <value>Assessment__c</value>
     </filters>
-    <label>Assessment Fields</label>
+    <filters>
+        <field>Year__c</field>
+        <operation>notEqual</operation>
+        <value>2016,2017,2018</value>
+    </filters>
+    <label>2019 Assessment Fields</label>
 </ListView>

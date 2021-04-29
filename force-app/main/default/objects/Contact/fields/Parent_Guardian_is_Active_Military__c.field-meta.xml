@@ -4,6 +4,5 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <label>Parent/Guardian is Active Military</label>
-    <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>

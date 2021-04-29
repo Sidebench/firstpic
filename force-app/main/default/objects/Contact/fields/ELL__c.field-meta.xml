@@ -4,6 +4,5 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <label>ELL</label>
-    <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>

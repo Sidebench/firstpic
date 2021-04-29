@@ -27,14 +27,14 @@
                 <label>Education</label>
             </value>
             <value>
-                <fullName>Youth</fullName>
-                <default>false</default>
-                <label>Youth</label>
-            </value>
-            <value>
                 <fullName>Service</fullName>
                 <default>false</default>
                 <label>Service</label>
+            </value>
+            <value>
+                <fullName>Youth</fullName>
+                <default>false</default>
+                <label>Youth</label>
             </value>
         </valueSetDefinition>
     </valueSet>

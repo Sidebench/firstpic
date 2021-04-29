@@ -100,20 +100,31 @@
                     />
                   </th>
                   <th>Organization Name</th>
-                  <th>
-                    <apex:outputText
-                      value="{!IF(portalName == 'BBBS', 'Grant Status', 'Renewal Status')}"
-                    />
-                  </th>
+                  <apex:outputPanel
+                    rendered="{!NOT(CONTAINS(portalName, 'OVC'))}"
+                  >
+                    <th>
+                      <apex:outputText
+                        value="{!IF(portalName == 'BBBS', 'Grant Status', 'Renewal Status')}"
+                      />
+                    </th>
+                  </apex:outputPanel>
                   <th>
                     <apex:outputText
                       value="Sam.Gov Status"
                       rendered="{!CONTAINS(portalName, 'NCAI')}"
                     />
                   </th>
-                  <th>Hold Status</th>
-                  <th>Hold Reason</th>
-                  <th>Hold Last Updated Date</th>
+                  <apex:outputPanel
+                    rendered="{!NOT(CONTAINS(portalName, 'OVC'))}"
+                  >
+                    <th>Hold Status</th>
+                    <th>Hold Reason</th>
+                    <th>Hold Last Updated Date</th>
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!CONTAINS(portalName, 'NCAI')}">
+                    <th>Sam.Gov Expiration Date</th>
+                  </apex:outputPanel>
                 </tr>
                 <apex:repeat value="{!orgs}" var="i">
                   <tr>
@@ -130,16 +141,33 @@
                         {!i.Name}
                       </a>
                     </td>
-                    <td>{!i.Active_Grant_Status__c}</td>
+                    <apex:outputPanel
+                      rendered="{!NOT(CONTAINS(portalName, 'OVC'))}"
+                    >
+                      <td>{!i.Active_Grant_Status__c}</td>
+                    </apex:outputPanel>
                     <td>
                       <apex:outputText
                         value="{!i.DUNS_Current_Status__c}"
                         rendered="{!CONTAINS(portalName, 'NCAI') && i.RecordType.Name != 'Site'}"
                       />
                     </td>
-                    <td>{!i.Hold_Status__c}</td>
-                    <td>{!i.Hold_Reason__c}</td>
-                    <td><apex:outputField value="{!i.Hold_Date__c}" /></td>
+                    <apex:outputPanel
+                      rendered="{!NOT(CONTAINS(portalName, 'OVC'))}"
+                    >
+                      <td>{!i.Hold_Status__c}</td>
+                      <td>{!i.Hold_Reason__c}</td>
+                      <td><apex:outputField value="{!i.Hold_Date__c}" /></td>
+                    </apex:outputPanel>
+                    <apex:outputPanel
+                      rendered="{!CONTAINS(portalName, 'NCAI')}"
+                    >
+                      <td>
+                        <apex:outputText value="{0,date,MM/dd/yyyy}">
+                          <apex:param value="{!i.DUNS_Exp_Date__c}" />
+                        </apex:outputText>
+                      </td>
+                    </apex:outputPanel>
                   </tr>
                 </apex:repeat>
               </table>
@@ -342,6 +370,7 @@
             header="{!allDocsHeader}"
             enableDeleteAtt="{!enableDeleteAtt}"
             showStatus="true"
+            statusReadOnly="{!statusReadOnly}"
             showDueDate="true"
             showAccessMode="{!showAccessMode}"
             year="{!year}"
@@ -410,6 +439,7 @@
           <c:Documents
             header="Grant Specific Documents"
             showStatus="true"
+            statusReadOnly="{!statusReadOnly}"
             showAccessMode="{!grant.National_Grant_Type__c != 'OVC'}"
             showDueDate="true"
             showNotesForNational="{!grant.National_Grant_Type__c != 'OVC'}"

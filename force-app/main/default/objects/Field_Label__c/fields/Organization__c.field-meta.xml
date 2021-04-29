@@ -50,6 +50,16 @@
                 <default>false</default>
                 <label>UA</label>
             </value>
+            <value>
+                <fullName>BJAG</fullName>
+                <default>false</default>
+                <label>BJAG</label>
+            </value>
+            <value>
+                <fullName>MDGO</fullName>
+                <default>false</default>
+                <label>MDGO</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
     <visibleLines>4</visibleLines>

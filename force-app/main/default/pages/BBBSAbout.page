@@ -260,6 +260,7 @@
           </div>
         </apex:outputPanel>
         <!-- END User List -->
+
         <apex:outputPanel rendered="{!userAcctType == 'Local Organization'}">
           <!-- BEGIN Assessment List -->
           <apex:outputPanel id="assessments">

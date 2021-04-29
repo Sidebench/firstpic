@@ -61,6 +61,11 @@
                 <default>false</default>
                 <label>San Francisco, CA</label>
             </value>
+            <value>
+                <fullName>None of the Above</fullName>
+                <default>false</default>
+                <label>None of the Above</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
     <visibleLines>4</visibleLines>

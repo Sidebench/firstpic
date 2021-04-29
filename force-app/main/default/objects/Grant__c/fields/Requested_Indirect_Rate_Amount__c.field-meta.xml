@@ -6,7 +6,7 @@
   >Roll-Up Summary of Reimbursement Requests: Requested Indirect Costs</inlineHelpText>
     <label>Requested Indirect Rate Amount</label>
     <summarizedField
-  >Reimbursement_Request__c.Indirect_Rate_Amount__c</summarizedField>
+  >Reimbursement_Request__c.Requested_Indirect_Costs__c</summarizedField>
     <summaryFilterItems>
         <field>Reimbursement_Request__c.Status__c</field>
         <operation>notEqual</operation>

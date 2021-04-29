@@ -3,7 +3,7 @@
     <fullName>Indirect_Rate__c</fullName>
     <externalId>false</externalId>
     <label>Indirect Rate</label>
-    <precision>13</precision>
+    <precision>17</precision>
     <required>false</required>
     <scale>3</scale>
     <trackHistory>false</trackHistory>

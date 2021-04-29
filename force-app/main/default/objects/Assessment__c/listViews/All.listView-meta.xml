@@ -3,8 +3,8 @@
     <fullName>All</fullName>
     <columns>Organization__c</columns>
     <columns>NAME</columns>
-    <columns>Reviewed__c</columns>
     <columns>Year__c</columns>
+    <columns>Reviewed__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

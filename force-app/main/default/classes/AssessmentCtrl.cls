@@ -286,14 +286,10 @@ public with sharing class AssessmentCtrl {
     assess.Compliance_Status__c = 'In Compliance';
 
     system.debug('>>> fieldNames: ' + fieldNames);
-    Map<String, Schema.SObjectField> schemaFieldMap = Schema.SObjectType.Assessment__c.fields.getMap();
-    system.debug('>>> schemaFieldMap = ' + schemaFieldMap);
     if (assess.Hide_Standards__c == false) {
-      for (String fieldName : schemaFieldMap.keySet()) {
-        if (assess.get(fieldName) == 'Out') {
+      for (String fieldName : fieldNames.keySet()) {
+        if (fieldName.contains('__c') && assess.get(fieldName) == 'Out') {
           String field = fieldNames.get(fieldName);
-          if (assess.Year__c < 2019)
-            field = schemaFieldMap.get(fieldName).getDescribe().getLabel();
           String textField = fieldName.replace('__c', '_text__c');
           String text = string.valueOf(assess.get(textField));
           if (text == null) {
@@ -304,6 +300,25 @@ public with sharing class AssessmentCtrl {
         }
       }
     }
+    /*
+        Map<String, Schema.SObjectField> schemaFieldMap = Schema.SObjectType.Assessment__c.fields.getMap();
+        system.debug('>>> schemaFieldMap = ' + schemaFieldMap);
+        if(assess.Hide_Standards__c == false) {
+            for(String fieldName: schemaFieldMap.keySet()) {
+                if(assess.get(fieldName) == 'Out') {
+                    String field = fieldNames.get(fieldName);
+                    if(assess.Year__c < 2019) field = schemaFieldMap.get(fieldName).getDescribe().getLabel();
+                    String textField = fieldName.replace('__c', '_text__c');
+                    String text = string.valueOf(assess.get(textField));
+                    if (text == null) {
+                        errorMessage += field + ', ';
+                        text = '';
+                    }
+                    out_map.put(field, text);
+                }
+            }
+        }
+        */
     if (errorMessage != '') {
       errorMessage =
         'The following fields are missing descriptions: ' +
@@ -326,10 +341,12 @@ public with sharing class AssessmentCtrl {
   }
 
   public void save() {
-    getSummary();
-    if (assess.Assessment_Status__c == 'Not Started') {
-      assess.Assessment_Status__c = 'In Progress';
-      acct.Current_Assessment_Status__c = 'In Progress';
+    if (userAcctType != 'National Organization') {
+      getSummary();
+      if (assess.Assessment_Status__c == 'Not Started') {
+        assess.Assessment_Status__c = 'In Progress';
+        acct.Current_Assessment_Status__c = 'In Progress';
+      }
     }
     assessClass.upsertAssessment(assess);
 

@@ -11,49 +11,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>2017-2018 Q1</fullName>
-                <default>false</default>
-                <label>2017-2018 Q1</label>
-            </value>
-            <value>
-                <fullName>2017-2018 Q2</fullName>
-                <default>false</default>
-                <label>2017-2018 Q2</label>
-            </value>
-            <value>
-                <fullName>2017-2018 Q3</fullName>
-                <default>false</default>
-                <label>2017-2018 Q3</label>
-            </value>
-            <value>
-                <fullName>2017-2018 Q4</fullName>
-                <default>false</default>
-                <label>2017-2018 Q4</label>
-            </value>
-            <value>
                 <fullName>2017 Q4</fullName>
                 <default>false</default>
                 <label>2017 Q4</label>
-            </value>
-            <value>
-                <fullName>2018-2019 Q1</fullName>
-                <default>false</default>
-                <label>2018-2019 Q1</label>
-            </value>
-            <value>
-                <fullName>2018-2019 Q2</fullName>
-                <default>false</default>
-                <label>2018-2019 Q2</label>
-            </value>
-            <value>
-                <fullName>2018-2019 Q3</fullName>
-                <default>false</default>
-                <label>2018-2019 Q3</label>
-            </value>
-            <value>
-                <fullName>2018-2019 Q4</fullName>
-                <default>false</default>
-                <label>2018-2019 Q4</label>
             </value>
             <value>
                 <fullName>2018 Q1</fullName>
@@ -76,49 +36,24 @@
                 <label>2018 Q4</label>
             </value>
             <value>
-                <fullName>2019-2020 Q1</fullName>
-                <default>false</default>
-                <label>2019-2020 Q1</label>
-            </value>
-            <value>
-                <fullName>2019-2020 Q2</fullName>
-                <default>false</default>
-                <label>2019-2020 Q2</label>
-            </value>
-            <value>
-                <fullName>2019-2020 Q3</fullName>
-                <default>false</default>
-                <label>2019-2020 Q3</label>
-            </value>
-            <value>
-                <fullName>2019-2020 Q4</fullName>
-                <default>false</default>
-                <label>2019-2020 Q4</label>
-            </value>
-            <value>
                 <fullName>2019 Q1</fullName>
                 <default>false</default>
                 <label>2019 Q1</label>
             </value>
             <value>
-                <fullName>Q1</fullName>
+                <fullName>2019 Q2</fullName>
                 <default>false</default>
-                <label>Q1</label>
+                <label>2019 Q2</label>
             </value>
             <value>
-                <fullName>Q2</fullName>
+                <fullName>2019 Q3</fullName>
                 <default>false</default>
-                <label>Q2</label>
+                <label>2019 Q3</label>
             </value>
             <value>
-                <fullName>Q3</fullName>
+                <fullName>2019 Q4</fullName>
                 <default>false</default>
-                <label>Q3</label>
-            </value>
-            <value>
-                <fullName>Q4</fullName>
-                <default>false</default>
-                <label>Q4</label>
+                <label>2019 Q4</label>
             </value>
         </valueSetDefinition>
     </valueSet>

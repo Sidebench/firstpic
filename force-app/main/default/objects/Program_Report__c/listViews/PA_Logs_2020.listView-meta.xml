@@ -7,9 +7,6 @@
     <columns>Month__c</columns>
     <columns>Year__c</columns>
     <columns>Status__c</columns>
-    <columns>CEO_Email__c</columns>
-    <columns>Program_Coordinator_Email__c</columns>
-    <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>RECORDTYPE</field>
@@ -20,11 +17,6 @@
         <field>Year__c</field>
         <operation>equals</operation>
         <value>2020</value>
-    </filters>
-    <filters>
-        <field>Status__c</field>
-        <operation>notEqual</operation>
-        <value>Approved</value>
     </filters>
     <label>PA Logs 2020</label>
     <sharedTo>

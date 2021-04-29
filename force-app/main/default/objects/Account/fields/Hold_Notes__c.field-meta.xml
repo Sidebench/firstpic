@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Hold Notes</label>
     <length>1000</length>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <type>LongTextArea</type>
     <visibleLines>3</visibleLines>
 </CustomField>

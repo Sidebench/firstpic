@@ -1,0 +1,59 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="header"
+    description="header"
+    default="Incomplete Program Reports"
+  />
+  <apex:attribute
+    type="Victims_Served_Report__c[]"
+    name="vsr_incomplete"
+    description="Report List"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isDashboard"
+    description="isDashboard"
+    default="false"
+  />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!vsr_incomplete.size > 0}">
+        <table style="width: 100%">
+          <tr>
+            <th>Report ID</th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">Year</th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">Month</th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">Status</th>
+          </tr>
+          <apex:repeat value="{!vsr_incomplete}" var="i">
+            <tr>
+              <td>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/OVCProgramReport?reportId=' + i.id)}"
+                >
+                  {!i.Name}
+                </a>
+              </td>
+              <td>
+                <apex:outputText value="{!i.Year__c}" />
+              </td>
+              <td>
+                <apex:outputField value="{!i.Month__c}" />
+              </td>
+              <td>
+                <apex:outputfield value="{!i.Status__c}" />
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!vsr_incomplete.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

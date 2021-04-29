@@ -3,12 +3,11 @@
     <fullName>FirstPic_National_Org_Code__c</fullName>
     <externalId>false</externalId>
     <formula
-  >IF(Organization__r.FirstPic_National_Org_Code__c != null, Organization__r.FirstPic_National_Org_Code__c,
-IF(Grant__r.FirstPic_National_Org_Code__c != null, Grant__r.FirstPic_National_Org_Code__c, 
-IF(Reimbursement__r.FirstPic_National_Org_Code__c != null, Reimbursement__r.FirstPic_National_Org_Code__c, 
-IF(Session_Report__r.FirstPic_National_Org_Code__c != null, Session_Report__r.FirstPic_National_Org_Code__c, 
+  >IF(Organization__c != null, Organization__r.FirstPic_National_Org_Code__c,  
+IF(Grant__c != null, Grant__r.FirstPic_National_Org_Code__c, 
+IF(Reimbursement__c != null, Reimbursement__r.FirstPic_National_Org_Code__c,
+IF(Session_Report__c != null, Session_Report__r.FirstPic_National_Org_Code__c,
 &apos;&apos;))))</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>FirstPic National Org Code</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

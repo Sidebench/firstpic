@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TRAILAccounts</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>ACCOUNT.ADDRESS1_STATE</columns>
+    <columns>ACCOUNT.PHONE1</columns>
+    <columns>ACCOUNT.TYPE</columns>
+    <columns>CORE.USERS.FIRST_NAME</columns>
+    <columns>CORE.USERS.LAST_NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>FirstPic_National_Org_Code__c</field>
+        <operation>equals</operation>
+        <value>NCAI</value>
+    </filters>
+    <filters>
+        <field>National_Grants__c</field>
+        <operation>includes</operation>
+        <value>TRAIL</value>
+    </filters>
+    <label>TRAIL Accounts</label>
+</ListView>

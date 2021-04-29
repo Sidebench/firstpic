@@ -83,7 +83,7 @@ public with sharing class ReimbursementsCtrl {
       '',
       soqlAND
     );
-    if (grantId == null)
+    if (grantId == null && portalName != 'BBBS')
       grantId = gc.selectedGrantId;
 
     grantStatus = ApexPages.currentPage().getParameters().get('grantStatus');
@@ -166,6 +166,7 @@ public with sharing class ReimbursementsCtrl {
       )
         r.Status__c = 'Pending Approval';
     }
+    system.debug(allItems);
 
     canEdit = false;
     if (

@@ -31,12 +31,12 @@
         </h2>
 
         <div class="alert alert-danger">
-          FINAL Check-in reports are currently open and were due March 30, 2021.
-          These are being collected via Google form and will not appear on the
-          Reports tab. If you have not already done so, please complete this
+          Semi-Annual progress reports are currently open and are due July 5,
+          2020. These are being collected via Google form and will not appear on
+          the Reports tab. If you have not already done so, please complete this
           report for all sub-awards by clicking
           <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSerM_zUvQt65u1mtL0G1LrRtupzcOdonlHr1KmTnBi2FV7ZSA/viewform?vc=0&c=0&w=1&flr=0"
+            href="https://docs.google.com/forms/d/1TGIJj9e9FAxlXezOtYmRAqGompBXinZHECTCrerDD1M/edit"
             target="_blank"
             >here</a
           >.
@@ -130,19 +130,6 @@
               <div class="panel-heading">What's New/System Updates</div>
               <div class="panel-body">
                 <ul>
-                  <li>
-                    New training resource added on 12/13/2020.
-                    <apex:outputLink
-                      value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
-                      target="_blank"
-                      >Click here</apex:outputLink
-                    >
-                    to view the webinar recording.
-                  </li>
-                  <li>
-                    CEOs now have the ability to add new contacts through the
-                    About tab and assign a role and user profile.
-                  </li>
                   <li>
                     The default sort order for all Reimbursement List pages will
                     now be Request Date (was previously request ID).

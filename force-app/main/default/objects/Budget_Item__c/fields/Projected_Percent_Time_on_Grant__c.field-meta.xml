@@ -3,9 +3,9 @@
     <fullName>Projected_Percent_Time_on_Grant__c</fullName>
     <externalId>false</externalId>
     <label>Projected Percent Time on Grant</label>
-    <precision>11</precision>
+    <precision>12</precision>
     <required>false</required>
-    <scale>1</scale>
+    <scale>2</scale>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Percent</type>

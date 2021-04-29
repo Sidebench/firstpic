@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lessons</fullName>
+    <columns>NAME</columns>
+    <columns>Site__c</columns>
+    <columns>Season__c</columns>
+    <columns>Session__c</columns>
+    <columns>Cohort__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Session__c.Lesson</value>
+    </filters>
+    <label>Lessons</label>
+    <sharedTo>
+        <allInternalUsers />
+    </sharedTo>
+</ListView>

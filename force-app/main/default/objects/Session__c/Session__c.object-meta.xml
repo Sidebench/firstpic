@@ -161,7 +161,16 @@
     </nameField>
     <pluralLabel>Sessions</pluralLabel>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
-    <searchLayouts />
+    <searchLayouts>
+        <customTabListAdditionalFields>Site__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields
+    >RECORDTYPE</customTabListAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Site__c</searchFilterFields>
+        <searchResultsAdditionalFields>Site__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields
+    >RECORDTYPE</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

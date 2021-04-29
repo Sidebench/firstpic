@@ -4,6 +4,7 @@
     <externalId>false</externalId>
     <formula
   >Grant__r.Account_Address__c + &apos;, &apos; + Grant__r.Account_City_State_Zip__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Address</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

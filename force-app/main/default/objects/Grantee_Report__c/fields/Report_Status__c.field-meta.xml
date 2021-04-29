@@ -40,6 +40,11 @@
                 <default>false</default>
                 <label>Declined</label>
             </value>
+            <value>
+                <fullName>Sent Back</fullName>
+                <default>false</default>
+                <label>Sent Back</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

@@ -9,7 +9,6 @@
     <columns>CONTACT.EMAIL</columns>
     <columns>Approver__c</columns>
     <columns>Is_Community_User__c</columns>
-    <columns>CONTACT.CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <label>All Contacts</label>
 </ListView>

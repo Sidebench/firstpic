@@ -4,7 +4,6 @@
     <externalId>false</externalId>
     <label>Role</label>
     <required>false</required>
-    <trackHistory>true</trackHistory>
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
@@ -65,14 +64,19 @@
                 <label>Finance Lead</label>
             </value>
             <value>
+                <fullName>Grant Admin</fullName>
+                <default>false</default>
+                <label>Grant Admin</label>
+            </value>
+            <value>
                 <fullName>Secondary Signer</fullName>
                 <default>false</default>
                 <label>Secondary Signer</label>
             </value>
             <value>
-                <fullName>Grant Administrator</fullName>
+                <fullName>DOD</fullName>
                 <default>false</default>
-                <label>Grant Administrator</label>
+                <label>DOD</label>
             </value>
         </valueSetDefinition>
     </valueSet>

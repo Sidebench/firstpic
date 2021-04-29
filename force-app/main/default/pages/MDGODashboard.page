@@ -1,0 +1,118 @@
+<apex:page
+  controller="DMVDashboardCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <c:MDGOHeader
+    ActivePage="dashboard"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          Hello&nbsp;<apex:outputText
+            value="{!currentUser.Contact.FirstName + ' ' + currentUser.Contact.LastName}"
+          ></apex:outputText
+          >.
+        </h2>
+
+        <!--
+                <div class="alert alert-danger">
+                    We are currently making updates to the system. If you encounter any errors, please refresh your browser or log-out and log back in.
+                </div>
+                -->
+
+        <div class="row">
+          <!--
+                    <div class="col-sm-12">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                What's New/System Updates
+                            </div>
+                            <div class="panel-body">
+                                <ul>
+                                    <li>
+                                        The default sort order for all Reimbursement List pages will now be Request Date (was previously request ID).
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+        </div>
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <c:DashboardList
+                header="Sub-Grants"
+                listSize="{!grants_list.size}"
+                shouldShowMore="{!more_grants}"
+                showMoreLink="{!URLFOR($Site.Prefix+'/SubGrants?status=approved')}"
+              >
+                <table style="width: 100%">
+                  <tr>
+                    <th>Sub-Grant Name</th>
+                    <th>Budget</th>
+                    <th>Balance</th>
+                  </tr>
+                  <apex:repeat value="{!grants_list}" var="i">
+                    <tr>
+                      <td>{!i.Name}</td>
+                      <td>
+                        <apex:outputField value="{!i.Total_Item_Budget__c}" />
+                      </td>
+                      <td>
+                        <apex:outputfield value="{!i.Total_Item_Balance__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </c:DashboardList>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Requests Pending Approval"
+                requestList="{!pending_approval_list}"
+                portalName="MDGO"
+                showMore="{!more_pending_approval}"
+                listType="Pending Approval"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!userAcctType == 'Local Organization'}">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Incomplete Reimbursement Requests"
+                requestList="{!incomplete_request_list}"
+                portalName="MDGO"
+                showMore="{!more_incomplete_request}"
+                listType="Incomplete"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Reimbursement Requests Sent Back"
+                requestList="{!sentBack_request_list}"
+                portalName="MDGO"
+                showMore="{!more_sentBack_request}"
+                listType="All Revisions"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

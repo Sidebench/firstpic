@@ -137,8 +137,12 @@
         <type>CustomApplication</type>
     </appMenuItems>
     <appMenuItems>
-        <name>standard__LightningInstrumentation</name>
+        <name>standard__AllTabSet</name>
         <type>CustomApplication</type>
+    </appMenuItems>
+    <appMenuItems>
+        <name>CPQIntegrationUserApp</name>
+        <type>ConnectedApp</type>
     </appMenuItems>
     <appMenuItems>
         <name>DMV</name>
@@ -157,7 +161,7 @@
         <type>CustomApplication</type>
     </appMenuItems>
     <appMenuItems>
-        <name>standard__AllTabSet</name>
-        <type>CustomApplication</type>
+        <name>MDGO</name>
+        <type>Network</type>
     </appMenuItems>
 </AppMenu>

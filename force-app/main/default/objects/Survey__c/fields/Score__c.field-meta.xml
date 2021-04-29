@@ -2,42 +2,42 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Score__c</fullName>
     <externalId>false</externalId>
-    <formula>(
-IF(ISPICKVAL(Example_of_Being_Physically_Healthy__c, &apos;b. Playing basketball with friends&apos;), +1, +0)
-+
-IF(ISPICKVAL(Example_of_Being_Emotionally_Healthy__c, &apos;c. Sharing feelings of being happy or sad&apos;), +1, +0)
-+
-IF(ISPICKVAL(Type_2_Diabetes__c, &apos;b. That happens when the body has too much sugar and it can’t be processed correctly.&apos;), +1, +0)
-+
-IF(ISPICKVAL(Most_Important_Drink__c, &apos;c. Water&apos;), +1, +0)
-+
-IF(ISPICKVAL(Ways_to_Prevent_Type_2_Diabetes__c, &apos;d. All of the above&apos;), +1, +0)
-+
-IF(ISPICKVAL(Fruits_and_Vegetables_per_Day__c , &apos;b. 5&apos;), +1, +0)
-+
-IF(ISPICKVAL(Minimum_Minutes_of_Physical_Activity__c, &apos;d. 60 minutes&apos;), +1, +0)
-+
-IF(ISPICKVAL(Number_of_Food_Groups__c, &apos;b. 5&apos;), +1, +0)
-+
-IF(ISPICKVAL(Processed_Foods_Found_in_Boxes__c, &apos;True&apos;), +1, +0)
-+
-IF(ISPICKVAL(French_Fries_Come_From_an_Animal__c, &apos;False&apos;), +1, +0)
-+
-IF(ISPICKVAL(An_Ad_Tells_People_About_a_Product__c, &apos;True&apos;), +1, +0)
-+
-IF(AND(
-  INCLUDES(Names_of_Food_Groups__c, &apos;a. Dairy&apos;),
-  INCLUDES(Names_of_Food_Groups__c, &apos;b. Protein&apos;),
-  INCLUDES(Names_of_Food_Groups__c, &apos;c. Vegetables&apos;),
-  INCLUDES(Names_of_Food_Groups__c, &apos;d. Fruits&apos;),
-  INCLUDES(Names_of_Food_Groups__c, &apos;f. Grains&apos;)
-), +1, +0)
-+
-IF(AND(
-  INCLUDES(Healthy_Ways_to_Handle_Stress__c, &apos;a. Go for a walk outside&apos;),
-  INCLUDES(Healthy_Ways_to_Handle_Stress__c, &apos;b. Talk to a trusted friend or adult&apos;),
-  INCLUDES(Healthy_Ways_to_Handle_Stress__c, &apos;d. Write in a journal&apos;)
-), +1, +0)
+    <formula>( 
+IF(ISPICKVAL(Example_of_Being_Physically_Healthy__c, &apos;b. Playing basketball with friends&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Example_of_Being_Emotionally_Healthy__c, &apos;c. Sharing feelings of being happy or sad&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Type_2_Diabetes__c, &apos;b. That happens when the body has too much sugar and it can’t be processed correctly.&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Most_Important_Drink__c, &apos;c. Water&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Ways_to_Prevent_Type_2_Diabetes__c, &apos;d. All of the above&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Fruits_and_Vegetables_per_Day__c , &apos;b. 5&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Minimum_Minutes_of_Physical_Activity__c, &apos;d. 60 minutes&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Number_of_Food_Groups__c, &apos;b. 5&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(Processed_Foods_Found_in_Boxes__c, &apos;True&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(French_Fries_Come_From_an_Animal__c, &apos;False&apos;), +1, +0) 
++ 
+IF(ISPICKVAL(An_Ad_Tells_People_About_a_Product__c, &apos;True&apos;), +1, +0) 
++ 
+IF(AND( 
+INCLUDES(Names_of_Food_Groups__c, &apos;a. Dairy&apos;), 
+INCLUDES(Names_of_Food_Groups__c, &apos;b. Protein&apos;), 
+INCLUDES(Names_of_Food_Groups__c, &apos;c. Vegetables&apos;), 
+INCLUDES(Names_of_Food_Groups__c, &apos;d. Fruits&apos;), 
+INCLUDES(Names_of_Food_Groups__c, &apos;f. Grains&apos;) 
+), +1, +0) 
++ 
+IF(AND( 
+INCLUDES(Healthy_Ways_to_Handle_Stress__c, &apos;a. Go for a walk outside&apos;), 
+INCLUDES(Healthy_Ways_to_Handle_Stress__c, &apos;b. Talk to a trusted friend or adult&apos;), 
+INCLUDES(Healthy_Ways_to_Handle_Stress__c, &apos;d. Write in a journal&apos;) 
+), +1, +0) 
 ) / 13</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Score</label>

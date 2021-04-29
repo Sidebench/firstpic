@@ -333,30 +333,6 @@
       <div class="panel panel-info">
         <div class="panel-heading">
           <apex:outputLink
-            value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
-            target="_blank"
-          >
-            Beau Biden Foundation – Shield of Protection Informational Webinar
-          </apex:outputLink>
-        </div>
-        <div class="panel-body">
-          This webinar provides information on National PAL’s partnership with
-          the Beau Biden Foundation’s Shield of Protection Initiative (SOPI).
-          This training opportunity is available to all organizations
-          participating in the 2020 NPAL Mentoring program.
-          <br /><br />
-          <apex:outputLink
-            value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
-            target="_blank"
-          >
-            View Webinar &raquo;
-          </apex:outputLink>
-        </div>
-      </div>
-
-      <div class="panel panel-info">
-        <div class="panel-heading">
-          <apex:outputLink
             value="https://www.anymeeting.com/171-179-092/E958D788894631"
             target="_blank"
           >
@@ -441,7 +417,7 @@
           pass with a score of 100%.
           <br /><br />
           <apex:outputLink
-            value="https://screencast-o-matic.com/watch/cYfvbNBZqo"
+            value="https://screencast-o-matic.com/watch/cqhiYLZsjf"
           >
             View Webinar &raquo;
           </apex:outputLink>
@@ -460,7 +436,7 @@
           note that each mentor must complete their own individual survey and
           pass with a score of 100%.
           <br /><br />
-          <apex:outputLink value="{!$Resource.NPAL_Mentor_Training}">
+          <apex:outputLink value="{!$Resource.NPAL_Mentor_Training_2018}">
             View PDF &raquo;
           </apex:outputLink>
         </div>
@@ -476,7 +452,7 @@
           process.
           <br /><br />
           <apex:outputLink
-            value="https://screencast-o-matic.com/watch/cY63rA7W49"
+            value="https://screencast-o-matic.com/watch/cqj1qlO7dP"
           >
             View Webinar &raquo;
           </apex:outputLink>
@@ -572,22 +548,6 @@
         you use the system and any changes that you will need to make to the how
         you are using the system.
       </h6>
-
-      <div class="panel panel-info" id="helpa">
-        <div class="panel-heading">
-          New Webinar
-          <span class="pull-right"> 04/08/2018 </span>
-        </div>
-        <div class="panel-body">
-          New training resource added on 12/13/2020.
-          <apex:outputLink
-            value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
-            target="_blank"
-            >Click here</apex:outputLink
-          >
-          to view the webinar recording.
-        </div>
-      </div>
 
       <div class="panel panel-info" id="helpa">
         <div class="panel-heading">

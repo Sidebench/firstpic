@@ -4,6 +4,7 @@
     <columns>NAME</columns>
     <columns>Account__c</columns>
     <columns>Grant_Status__c</columns>
+    <columns>Year__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>RECORDTYPE</field>

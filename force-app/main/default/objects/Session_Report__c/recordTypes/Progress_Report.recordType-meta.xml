@@ -107,51 +107,39 @@
     <picklistValues>
         <picklist>Reporting_Period__c</picklist>
         <values>
-            <fullName>2017-2018 Q1</fullName>
+            <fullName>2017 Q4</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2017-2018 Q2</fullName>
+            <fullName>2018 Q1</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2017-2018 Q3</fullName>
+            <fullName>2018 Q2</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2017-2018 Q4</fullName>
+            <fullName>2018 Q3</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2018-2019 Q1</fullName>
+            <fullName>2018 Q4</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2018-2019 Q2</fullName>
+            <fullName>2019 Q1</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2018-2019 Q3</fullName>
+            <fullName>2019 Q2</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2018-2019 Q4</fullName>
+            <fullName>2019 Q3</fullName>
             <default>false</default>
         </values>
         <values>
-            <fullName>2019-2020 Q1</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>2019-2020 Q2</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>2019-2020 Q3</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>2019-2020 Q4</fullName>
+            <fullName>2019 Q4</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -234,7 +222,7 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>2020-2021</fullName>
+            <fullName>2019-2020</fullName>
             <default>false</default>
         </values>
     </picklistValues>

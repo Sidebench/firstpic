@@ -8,7 +8,6 @@
     <columns>CONTACT.PHONE1</columns>
     <columns>CONTACT.EMAIL</columns>
     <columns>CONTACT.RECORDTYPE</columns>
-    <columns>FirstPic_National_Org_Code__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Organization_Type__c</field>

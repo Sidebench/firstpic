@@ -21,14 +21,14 @@
                 <label>Badges for Baseball</label>
             </value>
             <value>
-                <fullName>GREAT</fullName>
-                <default>false</default>
-                <label>GREAT</label>
-            </value>
-            <value>
                 <fullName>Healthy Lifestyles</fullName>
                 <default>false</default>
                 <label>Healthy Lifestyles</label>
+            </value>
+            <value>
+                <fullName>GREAT</fullName>
+                <default>false</default>
+                <label>GREAT</label>
             </value>
             <value>
                 <fullName>OVC</fullName>
@@ -49,6 +49,11 @@
                 <fullName>TRAIL</fullName>
                 <default>false</default>
                 <label>TRAIL</label>
+            </value>
+            <value>
+                <fullName>BJAG</fullName>
+                <default>false</default>
+                <label>BJAG</label>
             </value>
             <value>
                 <fullName>MDGO</fullName>

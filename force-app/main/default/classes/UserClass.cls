@@ -20,7 +20,7 @@ global with sharing class UserClass {
         IsActive,
         Profile.Name
       FROM User
-      WHERE Id = :UserInfo.getUserId()
+      WHERE Id = :UserInfo.getUserId() //Partner: 0051h0000044KXg Customer: 0051h000003lDjG
     ];
 
     if (currentUser.AccountId != null) {
@@ -68,6 +68,8 @@ global with sharing class UserClass {
       userProfile = 'Ripken';
     } else if (profile.contains('UA')) {
       userProfile = 'UA';
+    } else if (profile.contains('MDGO')) {
+      userProfile = 'MDGO';
     }
 
     approverLevel = '';

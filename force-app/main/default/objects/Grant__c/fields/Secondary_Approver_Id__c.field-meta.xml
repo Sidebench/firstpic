@@ -3,6 +3,7 @@
     <fullName>Secondary_Approver_Id__c</fullName>
     <externalId>false</externalId>
     <formula>CASESAFEID(Account__r.Secondary_Approver__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Secondary Approver Id</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

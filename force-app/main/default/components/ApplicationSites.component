@@ -125,7 +125,9 @@
             rendered="{!ctrl.readOnly}"
           />
         </div>
-        <apex:outputPanel rendered="{!ctrl.app.Type__c == 'Existing'}">
+        <apex:outputPanel
+          rendered="{!ctrl.app.Type__c == 'Existing' && i.Site_Id__c != null}"
+        >
           <div class="col-xs-4">
             <div class="semibold">
               {!ctrl.siteFields['Change_in_Attendance__c']}

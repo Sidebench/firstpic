@@ -167,7 +167,7 @@
                           action="{!URLFOR($Site.Prefix+'/BudgetDetails?grantId='+ i.id)}"
                           target="_blank"
                           value="{!i.Name}"
-                          rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != 'DMV'}"
+                          rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != 'DMV' && portalName != 'MDGO'}"
                         />
                         <apex:commandLink
                           action="{!URLFOR($Site.Prefix+'/SubGrantDetails?grantId='+ i.id)}"
@@ -184,6 +184,11 @@
                           action="{!URLFOR($Site.Prefix+'/DMVSubGrantDetails?grantId='+ i.id)}"
                           value="{!i.Name}"
                           rendered="{!portalName == 'DMV'}"
+                        />
+                        <apex:commandLink
+                          action="{!URLFOR($Site.Prefix+'/MDGOSubGrantDetails?grantId='+ i.id)}"
+                          value="{!i.Name}"
+                          rendered="{!portalName == 'MDGO'}"
                         />
                       </td>
                       <td>

@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Active Status</label>
     <required>false</required>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
@@ -13,7 +13,7 @@
             <value>
                 <fullName
         >Currently Implementing Site Proposing To Continue</fullName>
-                <default>false</default>
+                <default>true</default>
                 <label>Currently Implementing Site Proposing To Continue</label>
             </value>
             <value>

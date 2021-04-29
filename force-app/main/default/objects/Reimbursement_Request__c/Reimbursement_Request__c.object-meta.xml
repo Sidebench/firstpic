@@ -166,8 +166,6 @@
         <customTabListAdditionalFields
     >Organization__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
-        <lookupDialogsAdditionalFields>Grant__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
         <searchResultsAdditionalFields>Grant__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
     >Organization__c</searchResultsAdditionalFields>

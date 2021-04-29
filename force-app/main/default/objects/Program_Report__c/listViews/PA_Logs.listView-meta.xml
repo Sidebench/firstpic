@@ -13,11 +13,6 @@
         <operation>equals</operation>
         <value>Program_Report__c.Monthly_PA_Logs</value>
     </filters>
-    <filters>
-        <field>CREATED_DATE</field>
-        <operation>equals</operation>
-        <value>7/8/2020 12:00 AM</value>
-    </filters>
     <label>PA Logs</label>
     <sharedTo>
         <allInternalUsers />

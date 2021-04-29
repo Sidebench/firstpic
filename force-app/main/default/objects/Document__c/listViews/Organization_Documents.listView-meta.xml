@@ -3,19 +3,14 @@
     <fullName>Organization_Documents</fullName>
     <columns>NAME</columns>
     <columns>Organization_Name__c</columns>
-    <columns>Grant__c</columns>
+    <columns>FirstPic_National_Org_Code__c</columns>
     <columns>Status__c</columns>
-    <columns>Due_Date__c</columns>
+    <columns>Group_Id__c</columns>
     <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>Group_Id__c</field>
+        <field>Object_Type__c</field>
         <operation>equals</operation>
-        <value>Organization Documents</value>
-    </filters>
-    <filters>
-        <field>Due_Date__c</field>
-        <operation>notEqual</operation>
     </filters>
     <label>Organization Documents</label>
     <sharedTo>

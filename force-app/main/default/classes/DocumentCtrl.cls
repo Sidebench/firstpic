@@ -144,10 +144,10 @@ public without sharing class DocumentCtrl {
     if (reportType == 'required')
       soqlAND += ' AND Required__c = true';
     if (objectType != null && objectType != '')
-      soqlAND = ' AND Object_Type__c = \'' + objectType + '\'';
+      soqlAND += ' AND Object_Type__c = \'' + objectType + '\'';
     //        if(year != null && year != '') soqlAND = ' AND Year__c = \'' + year + '\'';
     if (year != null && year != '')
-      soqlAND =
+      soqlAND +=
         ' AND (Year__c = \'' +
         year +
         '\' OR Name LIKE \'%' +
@@ -161,16 +161,14 @@ public without sharing class DocumentCtrl {
 
   public void getLists() {
     String soqlAND = getSOQL();
-    Boolean hasId = false;
     if (
-      orgId != null ||
-      grantId != null ||
-      assessmentId != null ||
-      reportId != null ||
-      requestId != null
+      orgId == null &&
+      grantId == null &&
+      assessmentId == null &&
+      reportId == null &&
+      requestId == null &&
+      userAcctType != 'National Organization'
     ) {
-      hasId = true;
-    } else {
       orgId = userAcct.Id;
     }
 

@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>Primary Approver</label>
     <referenceTo>Contact</referenceTo>
-    <relationshipLabel>Organizations (Primary Approver)</relationshipLabel>
+    <relationshipLabel>Accounts (Primary Approver)</relationshipLabel>
     <relationshipName>Accounts_Primary</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>

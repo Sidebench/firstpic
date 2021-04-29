@@ -250,6 +250,15 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Appropriate information provided and high need</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName
+      >Appropriate information provided and moderate need</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>More information needed</fullName>
             <default>false</default>
         </values>
@@ -516,6 +525,15 @@
         </values>
         <values>
             <fullName>Appropriate information provided</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Appropriate information provided and high need</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName
+      >Appropriate information provided and moderate need</fullName>
             <default>false</default>
         </values>
         <values>
@@ -919,6 +937,15 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Appropriate information provided and high need</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName
+      >Appropriate information provided and moderate need</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>More information needed</fullName>
             <default>false</default>
         </values>
@@ -1301,15 +1328,7 @@
     <picklistValues>
         <picklist>Viability_Score__c</picklist>
         <values>
-            <fullName>Likely</fullName>
-            <default>false</default>
-        </values>
-        <values>
             <fullName>Not Likely</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Possibly</fullName>
             <default>false</default>
         </values>
         <values>

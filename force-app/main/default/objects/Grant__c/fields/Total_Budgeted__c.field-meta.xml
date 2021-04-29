@@ -8,8 +8,8 @@ IF(ISPICKVAL(Use_Indirect_Rate__c, &apos;Yes&apos;), Indirect_Rate_Amount__c, 0)
 Total_Indirect_Rate_Budgeted__c + IF(AND(NOT(ISPICKVAL(Grant_Status__c, &apos;Approved&apos;)), NOT(ISPICKVAL(Grant_Status__c, &apos;Closed&apos;))), Total_New_Item_Budget__c,Total_Item_Budget__c))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText
-  >if Org = BBBSA: Total_Item_Budget__c + Total_Fringe_Benefits__c + Indirect_Rate_Amount__c.
-else: Total_Item_Budget__c + Total_Indirect_Rate_Budgeted__c)</inlineHelpText>
+  >if Org = BBBSA: Total_Item_Budget__c + Total_Fringe_Benefits__c +  Indirect_Rate_Amount__c.
+else: Total_Item_Budget__c +  Total_Indirect_Rate_Budgeted__c)</inlineHelpText>
     <label>Total Budgeted</label>
     <precision>18</precision>
     <required>false</required>

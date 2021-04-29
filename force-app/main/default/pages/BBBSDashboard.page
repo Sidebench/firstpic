@@ -26,17 +26,6 @@
         {!currentUser.Contact.LastName}.
       </h2>
 
-      <div class="alert alert-danger">
-        As of March 3, 2021, the identified bug within the FirstPic portal from
-        last week has been resolved. Click
-        <u
-          ><a href="{!$Resource.BBBS_SelfAssessment_Extension}" target="_blank"
-            >here</a
-          ></u
-        >
-        for further details.
-      </div>
-
       <apex:outputPanel rendered="{!showDUNSAlert}">
         <div class="alert alert-danger">
           {!DUNSAlert}
@@ -88,7 +77,22 @@
             </div>
           </div>
         </apex:outputPanel>
-
+        <!--
+                <div class="col-sm-12 col-md-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            What's New/System Updates
+                        </div>
+                        <div class="panel-body">
+                            <ul>
+                                <li>
+                                    The default sort order for all Reimbursement List pages will now be Request Date (was previously request ID).
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                -->
         <apex:outputPanel
           rendered="{!userProfile != 'BBBS Accounts Payable' && NOT(CONTAINS(userProfile, 'BBBS Program'))}"
         >
@@ -257,6 +261,16 @@
                 listType="Incomplete"
               />
             </div>
+            <!--
+                        <div class="col-sm-12 col-md-6">
+                            <c:ReportList header="Incomplete Grantee Reports"
+                                          reportList="{!incomplete_report_list}"
+                                          isDashboard="true"
+                                          showMore="{!more_incomplete_report}"
+                                          showEdit="false"
+                                          listType="incomplete" />
+                        </div>
+                        -->
           </div>
         </apex:outputPanel>
 

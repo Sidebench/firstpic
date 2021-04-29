@@ -4,10 +4,10 @@
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>NCAI</label>
-    <logo>Communities_Shared_Document_Folder/NCAI_png.png</logo>
-    <tabs>Application__c</tabs>
+    <logo>Communities_Shared_Document_Folder/NCAI_red.png</logo>
     <tabs>standard-Account</tabs>
     <tabs>standard-Contact</tabs>
+    <tabs>Application__c</tabs>
     <tabs>Grant__c</tabs>
     <tabs>Reimbursement_Request__c</tabs>
     <tabs>Session_Report__c</tabs>
@@ -15,7 +15,7 @@
     <tabs>Youth_in_Program_Report__c</tabs>
     <tabs>Document__c</tabs>
     <tabs>standard-report</tabs>
-    <tabs>Victims_Served_Report__c</tabs>
+    <tabs>TA_Log__c</tabs>
     <tabs>TA_Plan__c</tabs>
     <tabs>Program_Plan__c</tabs>
 </CustomApplication>

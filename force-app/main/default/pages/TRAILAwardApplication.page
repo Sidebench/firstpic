@@ -7,7 +7,7 @@
   <head>
     <title>Grant Application</title>
   </head>
-  <c:TRAILHeader
+  <c:NCAIHeader
     ActivePage="applications"
     acct="{!userAcct}"
     profile="{!currentUser.Profile.Name}"

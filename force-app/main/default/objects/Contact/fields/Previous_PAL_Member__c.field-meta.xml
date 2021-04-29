@@ -4,6 +4,5 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <label>Previous PAL Member</label>
-    <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>

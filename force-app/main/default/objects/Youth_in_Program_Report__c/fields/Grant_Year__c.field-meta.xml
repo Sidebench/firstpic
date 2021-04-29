@@ -2,9 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Grant_Year__c</fullName>
     <externalId>false</externalId>
-    <formula>IF(TEXT(Program_Report__r.Grant_Year__c) != null,
-TEXT(Program_Report__r.Grant_Year__c), 
-IF(Grant__r.Year__c != null, Grant__r.Year__c, &apos;&apos;))</formula>
+    <formula
+  >IF(OR(ISBLANK(Program_Report__c), ISNULL(Program_Report__c)), Grant__r.Year__c, TEXT(Program_Report__r.Grant_Year__c))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Grant Year</label>
     <required>false</required>

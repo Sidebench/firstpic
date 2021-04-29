@@ -2,12 +2,10 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DUNS_Number__c</fullName>
     <description
-  >Formula to add leading zero to DUNS number if necessary</description>
+  >Formula to add leading zero to D-U-N-S number if necessary</description>
     <externalId>false</externalId>
     <formula>LPAD(TEXT(DUNS__c), 9, &apos;0&apos; )</formula>
-    <inlineHelpText
-  >Add leading zero to D-U-N-S Number if necessary</inlineHelpText>
-    <label>D-U-N-S Number (formatted)</label>
+    <label>D-U-N-S</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <type>Text</type>

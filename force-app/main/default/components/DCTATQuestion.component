@@ -47,10 +47,3 @@
     </div>
   </apex:outputPanel>
 </apex:component>
-
-<!--
-<c:DCTATQuestion label="{!labels['New_Youth_Served__c']}" 
-field="{!report.New_Youth_Served__c}" 
-readOnly="{!readOnly}" 
-rendered="{!i.Field_API__c == 'New_Youth_Served__c'}" />
--->

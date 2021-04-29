@@ -14,6 +14,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Consultant Travel</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Contract Specialists</fullName>
             <default>false</default>
         </values>
@@ -26,7 +30,19 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Indirect Costs</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Other Costs</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Procurement Contracts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sub Awards</fullName>
             <default>false</default>
         </values>
         <values>

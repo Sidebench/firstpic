@@ -169,15 +169,12 @@
     >Reimbursement_Request__c</customTabListAdditionalFields>
         <customTabListAdditionalFields
     >Reimbursement_Status__c</customTabListAdditionalFields>
-        <searchFilterFields>Budget_Item__c</searchFilterFields>
-        <searchFilterFields>Reimbursement_Request__c</searchFilterFields>
-        <searchFilterFields>Grant_Name__c</searchFilterFields>
         <searchResultsAdditionalFields
     >Budget_Item__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
     >Reimbursement_Request__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
-    >Grant_Name__c</searchResultsAdditionalFields>
+    >Reimbursement_Status__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>

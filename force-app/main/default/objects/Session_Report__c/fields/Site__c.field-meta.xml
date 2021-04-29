@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Site</label>
     <referenceTo>Account</referenceTo>
-    <relationshipLabel>Session Reports</relationshipLabel>
+    <relationshipLabel>Reports</relationshipLabel>
     <relationshipName>Session_Reports</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

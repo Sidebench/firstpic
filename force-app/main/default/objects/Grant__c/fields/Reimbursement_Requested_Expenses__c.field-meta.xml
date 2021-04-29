@@ -2,6 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Reimbursement_Requested_Expenses__c</fullName>
     <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Reimbursement Requests: Requested Expenses where Status = Incomplete or Denied</inlineHelpText>
     <label>Reimbursement Requested Expenses</label>
     <summarizedField
   >Reimbursement_Request__c.Requested_Expenses__c</summarizedField>

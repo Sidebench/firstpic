@@ -53,27 +53,14 @@
             >.
           </div>
         </apex:outputPanel>
-
-        <apex:outputPanel
-          rendered="{!(CONTAINS(portalName, 'OVC') || CONTAINS(userAcct.National_Grants__c, 'OVC')) && OVCPRId != null}"
-        >
-          <div class="alert alert-danger">
-            Quarter 1 program reports are available through the Program tab.
-            Quarter 1 reports are due January 8, 2021. Please refer to the help
-            document located&nbsp;
-            <apex:outputLink
-              target="_blank"
-              value="{!$Resource.NCAIProgramReportOVC}"
-              ><u>here</u></apex:outputLink
-            >
-            and short video
-            <a target="_blank" href="https://youtu.be/1I-WSxkrcr8"
-              ><u>here</u></a
-            >
-            for information on how to complete the report.
-          </div>
-        </apex:outputPanel>
-
+        <!--                
+                <apex:outputPanel rendered="{!(CONTAINS(portalName, 'OVC') || CONTAINS(userAcct.National_Grants__c, 'OVC')) && OVCPRId != null}">
+                    <div class="alert alert-danger">
+                       Quarter 1 program reports are available through the Program tab. Quarter 1 reports are due January 8, 2021. Please refer to the help
+                       document located here and short video here for information on how to complete the report. 
+                    </div>
+                </apex:outputPanel>
+-->
         <apex:outputPanel rendered="{!userAcct.National_Grants__c == 'OVC'}">
           <div class="row">
             <div class="col-sm-12">
@@ -81,13 +68,6 @@
                 <div class="panel-heading">What's New/System Updates</div>
                 <div class="panel-body">
                   <ul>
-                    <li>
-                      Introducing Technical Assistance (TA) Plans! Developed in
-                      conjunction with each grantee, TA Plans will identify and
-                      track grantee TA needs throughout the project period. To
-                      access your TA Plans, click on the “Program” Tab, and then
-                      select “Technical Assistance Plan".
-                    </li>
                     <li>
                       A Financial Management Capacity and Required
                       Certifications form is available for download, completion
@@ -110,8 +90,7 @@
                       request can be found
                       <apex:outputLink
                         value="{!$Resource.OVCReimbursementStepByStep}"
-                      >
-                        here</apex:outputLink
+                        >here</apex:outputLink
                       >.
                     </li>
                   </ul>
@@ -125,7 +104,7 @@
           rendered="{!CONTAINS(portalName, 'NCAI') && missingDocs.size > 0}"
         >
           <div class="row">
-            <div class="col-sm-12 col-md-6">
+            <div class="col-sm-12 col-md-12">
               <div class="panel panel-danger">
                 <div class="panel-heading">Missing Required Documents</div>
                 <div class="panel-body" style="color: #000">
@@ -321,6 +300,17 @@
           </apex:outputPanel>
 
           <apex:outputPanel rendered="{!userAcctType == 'Local Organization'}">
+            <apex:outputPanel
+              rendered="{!userAcct.National_Grants__c == 'OVC'}"
+            >
+              <div class="col-sm-12 col-md-6">
+                <c:OVCProgramReportsList
+                  vsr_incomplete="{!vsr_incomplete}"
+                  isDashboard="true"
+                />
+              </div>
+            </apex:outputPanel>
+
             <div class="col-sm-12 col-md-6">
               <c:GrantList
                 header="Incomplete Sub-Grants"

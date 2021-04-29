@@ -3,8 +3,7 @@
     <fullName>STEM_Reports</fullName>
     <columns>NAME</columns>
     <columns>Grant__c</columns>
-    <columns>Organization__c</columns>
-    <columns>Report_Status__c</columns>
+    <columns>Organization_Name__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>FirstPic_National_Org_Code__c</field>

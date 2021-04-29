@@ -5,13 +5,13 @@
     <externalId>false</externalId>
     <label>DOD</label>
     <lookupFilter>
-        <active>false</active>
+        <active>true</active>
         <filterItems>
             <field>Contact.Account.Name</field>
             <operation>equals</operation>
             <value>Boys &amp; Girls Clubs in Indian Country</value>
         </filterItems>
-        <isOptional>false</isOptional>
+        <isOptional>true</isOptional>
     </lookupFilter>
     <referenceTo>Contact</referenceTo>
     <relationshipLabel>Organizations (DOD)</relationshipLabel>

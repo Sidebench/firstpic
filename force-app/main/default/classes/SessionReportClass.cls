@@ -122,7 +122,7 @@ public without sharing class SessionReportClass {
 
   public void createProgressReports(String natOrg, String reportingPeriod) {
     if (natOrg == null)
-      natOrg = 'TRAIL';
+      natOrg = 'NCAI';
     List<Session_Report__c> reports = new List<Session_Report__c>();
     for (Account a : [
       SELECT Id, Name, Local_Organization_Id__c

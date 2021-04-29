@@ -22,6 +22,7 @@
         <c:ReimbursementDetails
           userAcctType="{!userAcctType}"
           request="{!request}"
+          budgeted="{!request.Grant_Budgeted_Amount__c}"
           awarded="{!awarded}"
           balance="{!balance}"
         />

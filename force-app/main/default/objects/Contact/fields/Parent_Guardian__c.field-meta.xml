@@ -8,6 +8,5 @@
     <relationshipLabel>Youth</relationshipLabel>
     <relationshipName>Parents_Guardians</relationshipName>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <type>Lookup</type>
 </CustomField>

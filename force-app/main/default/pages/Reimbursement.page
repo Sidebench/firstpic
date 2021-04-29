@@ -516,19 +516,9 @@
             rendered="{!request.Indirect_Rate_Amount__c != null && request.Indirect_Rate_Amount__c > 0}"
           >
             <h4 style="text-align: right">
-              Indirect Costs: &nbsp;
-              <apex:outputText value="${0,number,###,###,###,##0.00}">
-                <apex:param value="{!request.Indirect_Rate_Amount__c}" />
-              </apex:outputText>
-            </h4>
-          </apex:outputPanel>
-          <apex:outputPanel
-            rendered="{!request.Requested_Indirect_Costs__c != null && request.Requested_Indirect_Costs__c > 0}"
-          >
-            <h4>
               Total Indirect Costs Requested: &nbsp;
               <apex:outputText value="${0,number,###,###,###,##0.00}">
-                <apex:param value="{!request.Requested_Indirect_Costs__c}" />
+                <apex:param value="{!request.Indirect_Rate_Amount__c}" />
               </apex:outputText>
             </h4>
           </apex:outputPanel>

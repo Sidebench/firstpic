@@ -4,10 +4,10 @@
     <columns>NAME</columns>
     <columns>Account__c</columns>
     <columns>National_Grant__c</columns>
-    <columns>Grant_Type__c</columns>
     <columns>Grant_Status__c</columns>
     <columns>Amount__c</columns>
     <columns>Balance__c</columns>
+    <columns>Grant_Type__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>RECORDTYPE</field>

@@ -754,8 +754,11 @@
                         />
                       </div>
                       <div class="col-xs-6">
-                        Award Amount
-                        <apex:inputField value="{!app.Awarded_Amount__c}" />
+                        Grant Year
+                        <apex:inputField
+                          value="{!app.Grant_Year__c}"
+                          style="display: block"
+                        />
                       </div>
                     </div>
                     <div class="row">

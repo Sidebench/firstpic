@@ -12,7 +12,7 @@
       }
     </style>
   </head>
-  <c:TRAILHeader
+  <c:NCAIHeader
     ActivePage="progress"
     acct="{!userAcct}"
     profile="{!currentUser.Profile.Name}"

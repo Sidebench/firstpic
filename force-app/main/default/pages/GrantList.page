@@ -67,9 +67,7 @@
           </div>
         </div>
 
-        <apex:outputPanel
-          rendered="{!approverLevel == 'Level Two Admin' || approverLevel == 'Level Three'}"
-        >
+        <apex:outputPanel rendered="{!CONTAINS(approverLevel,'Admin')}">
           <div class="panel panel-default">
             <div class="panel-heading">Active Sub-Grants</div>
             <div class="panel-body">

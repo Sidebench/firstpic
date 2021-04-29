@@ -339,6 +339,10 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>DOD</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Finance Coordinator</fullName>
             <default>false</default>
         </values>
@@ -351,7 +355,7 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>Grant Administrator</fullName>
+            <fullName>Grant Admin</fullName>
             <default>false</default>
         </values>
         <values>
@@ -386,11 +390,35 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Level One</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level Three</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Level Two</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Program Admin</fullName>
             <default>false</default>
         </values>
         <values>
+            <fullName>Read Only</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Report Builder</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Self Assessment Only</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Treasurer</fullName>
             <default>false</default>
         </values>
     </picklistValues>

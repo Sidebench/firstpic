@@ -3,6 +3,5 @@
     <fullName>Youth_ID_Number__c</fullName>
     <externalId>false</externalId>
     <label>Youth ID  Number</label>
-    <trackHistory>false</trackHistory>
     <type>AutoNumber</type>
 </CustomField>

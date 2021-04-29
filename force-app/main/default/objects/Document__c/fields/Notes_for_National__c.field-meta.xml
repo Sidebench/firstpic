@@ -3,7 +3,7 @@
     <fullName>Notes_for_National__c</fullName>
     <externalId>false</externalId>
     <label>Notes for National</label>
-    <length>10000</length>
+    <length>1000</length>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>

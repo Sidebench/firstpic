@@ -8,6 +8,7 @@
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
+        <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
@@ -21,6 +22,11 @@
                 <label>Bauer Foundation</label>
             </value>
             <value>
+                <fullName>Blue Cross Blue Shield</fullName>
+                <default>false</default>
+                <label>Blue Cross Blue Shield</label>
+            </value>
+            <value>
                 <fullName>CareFirst</fullName>
                 <default>false</default>
                 <label>CareFirst</label>
@@ -29,11 +35,6 @@
                 <fullName>Charles Crane Foundation</fullName>
                 <default>false</default>
                 <label>Charles Crane Foundation</label>
-            </value>
-            <value>
-                <fullName>Charles T. Bauer Charitable Fdn</fullName>
-                <default>false</default>
-                <label>Charles T. Bauer Charitable Fdn</label>
             </value>
             <value>
                 <fullName>COPS</fullName>
@@ -66,11 +67,6 @@
                 <label>Herb Block Foundation</label>
             </value>
             <value>
-                <fullName>JeepChrysler</fullName>
-                <default>false</default>
-                <label>JeepChrysler</label>
-            </value>
-            <value>
                 <fullName>Marriott Foundation</fullName>
                 <default>false</default>
                 <label>Marriott Foundation</label>
@@ -86,14 +82,14 @@
                 <label>Naples Children &amp; Education Foundation</label>
             </value>
             <value>
+                <fullName>Niagara Cares</fullName>
+                <default>false</default>
+                <label>Niagara Cares</label>
+            </value>
+            <value>
                 <fullName>Niagara Cares Hurricane Relief Foundation</fullName>
                 <default>false</default>
                 <label>Niagara Cares Hurricane Relief Foundation</label>
-            </value>
-            <value>
-                <fullName>Niagara Cares	Niagara Cares</fullName>
-                <default>false</default>
-                <label>Niagara Cares	Niagara Cares</label>
             </value>
             <value>
                 <fullName>North Carolina Department of Justice</fullName>
@@ -118,11 +114,6 @@
                 <label>Perdue &amp; Henson Foundation</label>
             </value>
             <value>
-                <fullName>PNC Fdn</fullName>
-                <default>false</default>
-                <label>PNC Fdn</label>
-            </value>
-            <value>
                 <fullName>Prince William HIDTA</fullName>
                 <default>false</default>
                 <label>Prince William HIDTA</label>
@@ -138,11 +129,6 @@
                 <label>Roanoke HIDTA</label>
             </value>
             <value>
-                <fullName>Sherman Fairchild Fdn</fullName>
-                <default>false</default>
-                <label>Sherman Fairchild Fdn</label>
-            </value>
-            <value>
                 <fullName>SUEZ</fullName>
                 <default>false</default>
                 <label>SUEZ</label>
@@ -151,11 +137,6 @@
                 <fullName>Sun Trust Bank</fullName>
                 <default>false</default>
                 <label>Sun Trust Bank</label>
-            </value>
-            <value>
-                <fullName>Toledo Community Fdn</fullName>
-                <default>false</default>
-                <label>Toledo Community Fdn</label>
             </value>
             <value>
                 <fullName>TransAmerica</fullName>

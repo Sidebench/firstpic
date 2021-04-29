@@ -3,7 +3,7 @@
     <fullName>Approved_Amount__c</fullName>
     <externalId>false</externalId>
     <formula
-  >IF(Total_Approved_Amount__c == 0, Total_Approved_Salary__c + Total_Approved_Benefits__c, Total_Approved_Amount__c)</formula>
+  >IF(Total_Approved_Amount__c == 0, Total_Approved_Salary__c +  Total_Approved_Benefits__c, Total_Approved_Amount__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Approved Amount</label>
     <precision>18</precision>

@@ -21,14 +21,14 @@
                 <label>2018 - 2019</label>
             </value>
             <value>
-                <fullName>2019 - 2020</fullName>
-                <default>true</default>
-                <label>2019 - 2020</label>
+                <fullName>2018</fullName>
+                <default>false</default>
+                <label>2018</label>
             </value>
             <value>
-                <fullName>2020 - 2021</fullName>
+                <fullName>2019 - 2020</fullName>
                 <default>false</default>
-                <label>2020 - 2021</label>
+                <label>2019 - 2020</label>
             </value>
         </valueSetDefinition>
     </valueSet>

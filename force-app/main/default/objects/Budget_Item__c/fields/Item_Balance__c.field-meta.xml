@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>Total_Item_Budget__c - Approved_Amount__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <inlineHelpText>DEPRECATED: Total Item Budget - Approved Amount 
+    <inlineHelpText>Total Item Budget - Approved Amount 
 (IF(Total_Approved_Amount__c == 0, Total_Approved_Salary__c + Total_Approved_Benefits__c, Total_Approved_Amount__c))</inlineHelpText>
     <label>Item Balance</label>
     <precision>18</precision>

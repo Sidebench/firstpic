@@ -8,6 +8,7 @@
     <columns>Role__c</columns>
     <columns>CONTACT.PHONE1</columns>
     <columns>CONTACT.EMAIL</columns>
+    <columns>Is_Community_User__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Organization_Type__c</field>

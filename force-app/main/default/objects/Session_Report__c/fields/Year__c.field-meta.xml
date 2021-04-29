@@ -22,13 +22,8 @@
             </value>
             <value>
                 <fullName>2019-2020</fullName>
-                <default>false</default>
+                <default>true</default>
                 <label>2019-2020</label>
-            </value>
-            <value>
-                <fullName>2020-2021</fullName>
-                <default>false</default>
-                <label>2020-2021</label>
             </value>
         </valueSetDefinition>
     </valueSet>

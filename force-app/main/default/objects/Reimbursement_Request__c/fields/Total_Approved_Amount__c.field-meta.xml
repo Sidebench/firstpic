@@ -2,15 +2,8 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Total_Approved_Amount__c</fullName>
     <externalId>false</externalId>
-    <formula>Approved_Salary__c + Approved_Benefits__c + Approved_Expenses__c + 
-IF(AND( 
-NOT(ISPICKVAL(Status__c, &apos;Incomplete&apos;)), 
-NOT(ISPICKVAL(Status__c, &apos;Revisions Needed&apos;)), 
-NOT(ISPICKVAL(Status__c, &apos;Revisions in Progress&apos;)), 
-NOT(ISPICKVAL(Status__c, &apos;Denied&apos;)),
-NOT(ISPICKVAL(Status__c, &apos;Pending First Approval&apos;))
-), 
-Indirect_Rate_Amount__c, 0)</formula>
+    <formula
+  >Approved_Salary__c + Approved_Benefits__c + Approved_Expenses__c + Indirect_Rate_Amount__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <inlineHelpText
   >Approved_Salary__c + Approved_Benefits__c + Approved_Expenses__c + 

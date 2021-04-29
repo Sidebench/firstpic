@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Amount_Allocated_Indirect_Rate_Cap</fullName>
+    <active>false</active>
+    <errorConditionFormula
+  >Amount_Allocated_for_Indirect_Cost__c &lt;  Grant__r.Indirect_Rate_Cap__c</errorConditionFormula>
+    <errorDisplayField>Amount_Allocated_for_Indirect_Cost__c</errorDisplayField>
+    <errorMessage
+  >Amount allocated for indirect cost must be less than the indirect rate cap.</errorMessage>
+</ValidationRule>

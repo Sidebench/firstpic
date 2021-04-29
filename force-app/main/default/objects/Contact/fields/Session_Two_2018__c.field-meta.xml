@@ -8,6 +8,5 @@
     <relationshipLabel>Youth (Session Two - 2018)</relationshipLabel>
     <relationshipName>Youth2018</relationshipName>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <type>Lookup</type>
 </CustomField>

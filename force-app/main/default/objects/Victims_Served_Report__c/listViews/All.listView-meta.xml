@@ -3,10 +3,10 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Organization__c</columns>
-    <columns>Month__c</columns>
-    <columns>Year__c</columns>
+    <columns>CREATEDBY_USER</columns>
     <columns>CREATED_DATE</columns>
-    <columns>Status__c</columns>
+    <columns>Year__c</columns>
+    <columns>Month__c</columns>
     <filterScope>Everything</filterScope>
-    <label>All</label>
+    <label>All Records</label>
 </ListView>

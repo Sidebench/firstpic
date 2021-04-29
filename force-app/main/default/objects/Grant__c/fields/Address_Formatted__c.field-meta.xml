@@ -3,7 +3,7 @@
     <fullName>Address_Formatted__c</fullName>
     <externalId>false</externalId>
     <formula
-  >Account__r.BillingCity &amp; &apos;, &apos; &amp; Account__r.BillingState &amp; &apos; &apos; &amp; Account__r.BillingPostalCode</formula>
+  >Account__r.BillingCity &amp;  &apos;, &apos;  &amp; Account__r.BillingState &amp; &apos; &apos; &amp; Account__r.BillingPostalCode</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Address Formatted</label>
     <required>false</required>

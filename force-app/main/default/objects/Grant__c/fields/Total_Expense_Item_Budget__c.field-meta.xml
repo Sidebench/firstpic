@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <inlineHelpText
   >Roll-Up Summary of Budget Item: New Item Budget where Record Type = Expense (not used by BBBSA or NPAL)</inlineHelpText>
-    <label>Total Expense Item Budget</label>
+    <label>Total Expense New Item Budget</label>
     <summarizedField>Budget_Item__c.New_Item_Budget__c</summarizedField>
     <summaryFilterItems>
         <field>Budget_Item__c.RecordTypeId</field>

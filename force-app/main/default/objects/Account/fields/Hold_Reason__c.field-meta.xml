@@ -10,16 +10,6 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Other</fullName>
-                <default>false</default>
-                <label>Other</label>
-            </value>
-            <value>
-                <fullName>SAM.gov Expired</fullName>
-                <default>false</default>
-                <label>SAM.gov Expired</label>
-            </value>
-            <value>
                 <fullName>Current FYE Audit Past Due</fullName>
                 <default>false</default>
                 <label>Current FYE Audit Past Due</label>
@@ -28,6 +18,46 @@
                 <fullName>DOJ Certification Past Due</fullName>
                 <default>false</default>
                 <label>DOJ Certification Past Due</label>
+            </value>
+            <value>
+                <fullName>Expired SAM Registration / Federal Debt</fullName>
+                <default>false</default>
+                <label>Expired SAM Registration / Federal Debt</label>
+            </value>
+            <value>
+                <fullName>Federal Debt Reported</fullName>
+                <default>false</default>
+                <label>Federal Debt Reported</label>
+            </value>
+            <value>
+                <fullName>FFATA Questionnaire not on file</fullName>
+                <default>false</default>
+                <label>FFATA Questionnaire not on file</label>
+            </value>
+            <value>
+                <fullName>Letter of Award not on file</fullName>
+                <default>false</default>
+                <label>Letter of Award not on file</label>
+            </value>
+            <value>
+                <fullName>Missing Reports / Youth Data/PA Logs</fullName>
+                <default>false</default>
+                <label>Missing Reports / Youth Data/PA Logs</label>
+            </value>
+            <value>
+                <fullName>Missing Required Implementation Documents</fullName>
+                <default>false</default>
+                <label>Missing Required Implementation Documents</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>SAM.gov Expired</fullName>
+                <default>false</default>
+                <label>SAM.gov Expired</label>
             </value>
         </valueSetDefinition>
     </valueSet>

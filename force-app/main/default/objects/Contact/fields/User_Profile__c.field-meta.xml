@@ -4,7 +4,6 @@
     <externalId>false</externalId>
     <label>User Profile</label>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
@@ -28,6 +27,36 @@
                 <fullName>Inactive User</fullName>
                 <default>false</default>
                 <label>Inactive User</label>
+            </value>
+            <value>
+                <fullName>Level One</fullName>
+                <default>false</default>
+                <label>Level One</label>
+            </value>
+            <value>
+                <fullName>Level Two</fullName>
+                <default>false</default>
+                <label>Level Two</label>
+            </value>
+            <value>
+                <fullName>Level Three</fullName>
+                <default>false</default>
+                <label>Level Three</label>
+            </value>
+            <value>
+                <fullName>Treasurer</fullName>
+                <default>false</default>
+                <label>Treasurer</label>
+            </value>
+            <value>
+                <fullName>Report Builder</fullName>
+                <default>false</default>
+                <label>Report Builder</label>
+            </value>
+            <value>
+                <fullName>Read Only</fullName>
+                <default>false</default>
+                <label>Read Only</label>
             </value>
         </valueSetDefinition>
     </valueSet>

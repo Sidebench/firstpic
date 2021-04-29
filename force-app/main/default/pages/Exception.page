@@ -33,17 +33,17 @@
                     styleClass="title"
                     value="{!$Label.site.error}"
                   >
-                    <apex:param value="{!$Site.ErrorDescription}" />
+                    <apex:param value="{!$Site.ErrorMessage}" />
+                    <!-- this parameter needs to be italic in the site.error label -->
                   </apex:outputText>
-
+                  <br />
                   <apex:outputText
                     styleClass="title"
                     value="{!$Label.site.error}"
                   >
-                    <apex:param value="{!$Site.ErrorMessage}" />
+                    <apex:param value="{!$Site.ErrorDescription}" />
                     <!-- this parameter needs to be italic in the site.error label -->
                   </apex:outputText>
-
                   <br />
                   <br />
                   <apex:outputText

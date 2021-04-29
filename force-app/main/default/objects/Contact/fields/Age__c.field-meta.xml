@@ -6,13 +6,12 @@
 IF( DATE( 2000 , MONTH( Birthdate ) , DAY( Birthdate ) ) &lt;= DATE( 2000 , MONTH( TODAY() ) , DAY( TODAY() ) ), 
 YEAR (Today()) - YEAR ( Birthdate ), 
 YEAR (Today()) - YEAR ( Birthdate ) -1 ), 
-YEAR (Today()) - VALUE(Birth_Year__c) )</formula>
+null)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Age</label>
     <precision>18</precision>
     <required>false</required>
     <scale>0</scale>
-    <trackHistory>false</trackHistory>
     <type>Number</type>
     <unique>false</unique>
 </CustomField>

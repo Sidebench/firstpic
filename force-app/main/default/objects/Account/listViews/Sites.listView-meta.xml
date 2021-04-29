@@ -5,7 +5,6 @@
     <columns>Local_Organization__c</columns>
     <columns>National_Organization__c</columns>
     <columns>CORE.USERS.ALIAS</columns>
-    <columns>Is_Active__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>ACCOUNT.RECORDTYPE</field>

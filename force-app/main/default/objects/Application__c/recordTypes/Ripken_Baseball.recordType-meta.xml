@@ -4,6 +4,49 @@
     <active>true</active>
     <label>Ripken Baseball</label>
     <picklistValues>
+        <picklist>Able_to_Continue_Supporting_Youth_Score__c</picklist>
+        <values>
+            <fullName>0%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>1%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Access_to_Computers__c</picklist>
         <values>
             <fullName>No</fullName>
@@ -136,6 +179,49 @@
         </values>
         <values>
             <fullName>Victim advocacy%2Faccompaniment</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Biggest_Issue_Org_is_Facing_Score__c</picklist>
+        <values>
+            <fullName>0%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>1%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>4%2E5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -275,6 +361,21 @@
         </values>
     </picklistValues>
     <picklistValues>
+        <picklist>Demographic__c</picklist>
+        <values>
+            <fullName>Active Military</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>First Responders</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Veterans</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
         <picklist>Entity_Type__c</picklist>
         <values>
             <fullName>Agency</fullName>
@@ -401,10 +502,6 @@
         </values>
         <values>
             <fullName>2020</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>2020 - 2021</fullName>
             <default>false</default>
         </values>
     </picklistValues>
@@ -1075,10 +1172,6 @@
             <fullName>Mentorship</fullName>
             <default>false</default>
         </values>
-        <values>
-            <fullName>Youth</fullName>
-            <default>false</default>
-        </values>
     </picklistValues>
     <picklistValues>
         <picklist>Previous_Challenges_Recruitment_Score_2__c</picklist>
@@ -1233,7 +1326,7 @@
             <default>false</default>
         </values>
         <values>
-            <fullName>UA Reviewer Two</fullName>
+            <fullName>UA Reviewer Three</fullName>
             <default>false</default>
         </values>
     </picklistValues>

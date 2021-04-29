@@ -4,6 +4,5 @@
     <externalId>false</externalId>
     <label>Exited Reason Details</label>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <type>TextArea</type>
 </CustomField>

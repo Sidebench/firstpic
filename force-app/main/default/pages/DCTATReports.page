@@ -23,7 +23,22 @@
             <apex:outputPanel
               rendered="{!userAcctType == 'National Organization'}"
             >
-              Organization: &nbsp;
+              <!--                            Grant Closed: &nbsp;
+							<apex:selectList value="{!grantStatus}" size="1" id="grantStatus" >
+								<apex:selectOption itemValue="Not Closed" itemLabel="Not Closed" />
+                                <apex:selectOption itemValue="Closed" itemLabel="Closed" />
+                            </apex:selectList>
+                            &nbsp; &nbsp; Status: &nbsp;
+                            <apex:selectList value="{!reportStatus}" size="1" id="reportStatus">
+                                <apex:selectOption itemValue="View All" itemLabel="View All"/>
+                                <apex:selectOption itemValue="Requested" itemLabel="Requested" />
+                                <apex:selectOption itemValue="Submitted" itemLabel="Submitted" />
+                                <apex:selectOption itemValue="Not Started" itemLabel="Not Started" />
+                                <apex:selectOption itemValue="Approved" itemLabel="Approved" />
+								<apex:selectOption itemValue="Revisions Needed" itemLabel="Revisions Needed" />
+                                <apex:selectOption itemValue="Sent Back" itemLabel="Sent Back" />
+                            </apex:selectList>-->
+              &nbsp; &nbsp; Organization: &nbsp;
               <apex:inputText value="{!orgName}" styleClass="input-md" />
               &nbsp;&nbsp; Year: &nbsp;
               <apex:selectList value="{!year}" size="1" id="years">

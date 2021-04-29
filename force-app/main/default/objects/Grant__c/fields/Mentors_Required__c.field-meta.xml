@@ -3,7 +3,7 @@
     <fullName>Mentors_Required__c</fullName>
     <externalId>false</externalId>
     <label>Mentors Required</label>
-    <precision>5</precision>
+    <precision>10</precision>
     <required>false</required>
     <scale>0</scale>
     <trackHistory>false</trackHistory>

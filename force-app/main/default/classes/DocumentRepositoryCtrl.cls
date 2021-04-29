@@ -38,6 +38,7 @@ public with sharing class DocumentRepositoryCtrl {
   public Boolean showYearOptions { get; set; }
   public String allDocsHeader { get; set; }
   public Boolean hasAdmin { get; set; }
+  public Boolean statusReadOnly { get; set; }
   public Boolean showRequired { get; set; }
   public Boolean showAccessMode { get; set; }
   public Boolean enableDeleteAtt { get; set; }
@@ -143,6 +144,7 @@ public with sharing class DocumentRepositoryCtrl {
 
     page2title = 'Grant Details';
     allDocsHeader = 'All Federal Grant Compliance Documents';
+    statusReadOnly = false;
     hasAdmin = true;
     enableDeleteAtt = false;
     showRequired = true;
@@ -175,6 +177,14 @@ public with sharing class DocumentRepositoryCtrl {
         displayGrantSpecificDocuments = true;
       }
     }
+    if (
+      (portalName == 'NCAI' && approverLevel == 'Level Four') ||
+      portalName.contains('OVC') &&
+      (approverLevel == 'Level Two' ||
+      approverLevel == 'Level Three')
+    ) {
+      statusReadOnly = true;
+    }
   }
 
   // BEGIN getLists
@@ -201,7 +211,7 @@ public with sharing class DocumentRepositoryCtrl {
         orgId,
         null,
         null,
-        null,
+        'Name',
         null,
         null,
         null

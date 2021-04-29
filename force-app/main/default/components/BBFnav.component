@@ -1,0 +1,76 @@
+<apex:component controller="BBFHeaderCtrl" allowDML="true">
+  <apex:attribute
+    type="String"
+    name="activePage"
+    description="Name of active nav item"
+  />
+  <apex:attribute type="Account" name="acct" description="Account" />
+  <apex:attribute
+    type="String"
+    name="profile"
+    description="Current User profile name"
+  />
+  <apex:attribute type="String" name="grantId" description="grantId" />
+
+  <apex:stylesheet
+    value="{!URLFOR($Resource.styles, 'css/bootstrap.min.css')}"
+  />
+  <apex:stylesheet value="{!URLFOR($Resource.styles, 'css/style.css')}" />
+  <style>
+    a,
+    .primary {
+      color: #ad2820;
+    }
+    a:hover,
+    a:focus {
+      color: #7d2302 !important;
+    }
+    input[type="submit"].btn.primary,
+    .btn.primary {
+      background: #7d2302;
+      background-image: -webkit-linear-gradient(top, #ad2820, #7d2302);
+      background-image: -moz-linear-gradient(top, #ad2820, #7d2302);
+      background-image: -ms-linear-gradient(top, #ad2820, #7d2302);
+      background-image: -o-linear-gradient(top, #ad2820, #7d2302);
+      background-image: linear-gradient(to bottom, #ad2820, #7d2302);
+      color: #fff;
+    }
+    input[type="submit"].primary:hover,
+    .btn.primary:hover {
+      background: #7d2302 !important;
+      text-decoration: none;
+    }
+  </style>
+
+  <c:AdditionalStyles />
+  <c:Spinner />
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle"
+          data-toggle="collapse"
+          data-target=".navbar-collapse"
+        >
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="navbar-brand">
+          <!--                            <apex:image url="{!$Resource.NCAI_logo}" height="44"/> -->
+          <span class="title"> BBF </span>
+        </span>
+      </div>
+    </div>
+
+    <apex:outputPanel>
+      <div class="collapse navbar-collapse" id="navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active">Dashboard</li>
+        </ul>
+      </div>
+    </apex:outputPanel>
+  </nav>
+</apex:component>

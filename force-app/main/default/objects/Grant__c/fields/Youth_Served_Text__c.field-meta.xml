@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Youth_Served_Text__c</fullName>
+    <description
+  >Converts Youth Served field to text for LOA pull-in.</description>
     <externalId>false</externalId>
-    <formula>TEXT(Youth_Served__c)</formula>
+    <formula>TEXT( Youth_Served__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Youth Served Text</label>
     <required>false</required>

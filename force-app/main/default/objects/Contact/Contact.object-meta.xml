@@ -325,9 +325,8 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>true</enableHistory>
+    <enableHistory>false</enableHistory>
     <externalSharingModel>ControlledByParent</externalSharingModel>
-    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <searchLayouts>
         <customTabListAdditionalFields>FULL_NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields
@@ -342,8 +341,6 @@
         <excludedStandardButtons>MassAddToCampaign</excludedStandardButtons>
         <excludedStandardButtons>AddToCampaign</excludedStandardButtons>
         <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields
-    >CONTACT.EMAIL</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields
     >ACCOUNT.NAME</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields
@@ -364,12 +361,14 @@
         <searchResultsAdditionalFields
     >ACCOUNT.NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
-    >FirstPic_National_Org_Code__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields
     >CONTACT.EMAIL</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields
+    >CONTACT.TITLE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Role__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields
     >CONTACT.RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields
+    >FirstPic_National_Org_Code__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

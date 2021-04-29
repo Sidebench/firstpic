@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Name__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(Object_Type__c, 
+&apos;Grant&apos;, Grant__r.Name,
+&apos;Assessment&apos;, Assessment__r.Name,
+&apos;Reimbursement&apos;, Reimbursement__r.Name,
+&apos;Session Report&apos;, Session_Report__r.Name,
+&apos;&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Parent Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

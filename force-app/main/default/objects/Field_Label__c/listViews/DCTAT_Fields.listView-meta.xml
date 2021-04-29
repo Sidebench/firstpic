@@ -7,6 +7,8 @@
     <columns>Field_API__c</columns>
     <columns>Label__c</columns>
     <columns>Grant_Type__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Object__c</field>

@@ -3,7 +3,7 @@
     <fullName>Responsible_Reporting__c</fullName>
     <externalId>false</externalId>
     <label>Responsible_Reporting</label>
-    <length>10000</length>
+    <length>32768</length>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>

@@ -4,13 +4,12 @@
     <externalId>false</externalId>
     <formula
   >IF(National_Grant_Type__c = &apos;OVC&apos;, &apos;OVC_LOA.pdf&apos;,
-IF(FirstPic_National_Org_Code__c = &apos;NCAI&apos;, &apos;TRAIL_LOA.pdf&apos;, 
-IF(ST_Mississippi_Dept_of_Human_Services__c &gt; 0, &apos;Ripken_Mississippi_Funder_LOA.pdf&apos;, 
-IF(ISPICKVAL(Grant_Type__c, &apos;Special Initiative&apos;), &apos;Ripken_Special_Initiative_LOA.pdf&apos;, 
-IF(ISPICKVAL(Grant_Type__c, &apos;Badges for Baseball&apos;), &apos;Ripken_Badges_for_Baseball_LOA.pdf&apos;, 
-IF(ISPICKVAL(Grant_Type__c, &apos;Healthy Lifestyles&apos;), &apos;Ripken_Healthy_Lifestyles_LOA.pdf&apos;, 
+IF(FirstPic_National_Org_Code__c = &apos;NCAI&apos;, &apos;TRAIL_LOA.pdf&apos;,
+IF(ST_Mississippi_Dept_of_Human_Services__c &gt; 0, &apos;Ripken_Mississippi_Funder_LOA.pdf&apos;,
+IF(ISPICKVAL(Grant_Type__c, &apos;Special Initiative&apos;), &apos;Ripken_Special_Initiative_LOA.pdf&apos;,
+IF(ISPICKVAL(Grant_Type__c, &apos;Badges for Baseball&apos;), &apos;Ripken_Badges_for_Baseball_LOA.pdf&apos;,
+IF(ISPICKVAL(Grant_Type__c, &apos;Healthy Lifestyles&apos;), &apos;Ripken_Healthy_Lifestyles_LOA.pdf&apos;,
 &apos;Ripken_Im_GREAT_LOA.pdf&apos;))))))</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>LOA</label>
     <required>false</required>
     <trackHistory>false</trackHistory>

@@ -126,7 +126,7 @@
           note that each mentor must complete their own individual survey and
           pass with a score of 100%.
           <br /><br />
-          <apex:outputLink value="{!$Resource.NPAL_Mentor_Training}">
+          <apex:outputLink value="{!$Resource.NPAL_Mentor_Training_2018}">
             View PDF &raquo;
           </apex:outputLink>
         </div>

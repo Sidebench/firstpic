@@ -16,6 +16,7 @@ public with sharing class HeaderCtrl {
   public HeaderCtrl() {
     currentUser = uc.currentUser;
     userAcct = uc.userAcct;
+    System.debug('userAcctType: ' + uc.userAcctType);
     userAcctType = uc.userAcctType;
 
     Account a = ac.getAccount(userAcct.Id);

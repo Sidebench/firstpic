@@ -46,7 +46,6 @@ public without sharing class PublicApplicationCtrl {
 
   Date dt = date.today();
   public Boolean showSuccess { get; set; }
-  public Boolean showSaveSuccess { get; set; }
   public String errorMessage { get; set; }
 
   public PublicApplicationCtrl() {

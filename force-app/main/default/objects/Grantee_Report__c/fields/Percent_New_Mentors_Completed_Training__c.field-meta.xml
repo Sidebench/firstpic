@@ -3,10 +3,7 @@
     <fullName>Percent_New_Mentors_Completed_Training__c</fullName>
     <externalId>false</externalId>
     <formula
-  >IF(OR(VALUE(New_Mentors_Began_Training__c) == null, VALUE(New_Mentors_Began_Training__c) == 0), 
-0,
-VALUE(New_Mentors_Completed_Training__c) /  VALUE(New_Mentors_Began_Training__c)
-)</formula>
+  >VALUE(New_Mentors_Completed_Training__c) /  VALUE(New_Mentors_Began_Training__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Percent New Mentors Completed Training</label>
     <precision>18</precision>

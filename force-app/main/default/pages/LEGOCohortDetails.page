@@ -22,11 +22,6 @@
               <apex:outputPanel
                 rendered="{!userAcctType == 'National Organization'}"
               >
-                <!--
-                                <a href="{!URLFOR($Site.Prefix+'/LEGOAbout?SessionId='+SessionId)}">
-                                    {!sessionName}
-                                </a>
-                                -->
                 {!sessionName}
                 <br />
               </apex:outputPanel>
@@ -234,11 +229,6 @@
                     >
                       <apex:selectOptions value="{!lessons}" />
                     </apex:selectList>
-                    <!--
-<apex:outputPanel rendered="{!meetingId != null}">
-<br /> {!lessonName} 
-</apex:outputPanel>
--->
                   </div>
                 </div>
                 <div class="row">
@@ -317,17 +307,5 @@
         <!-- END Delete Meeting Popup -->
       </div>
     </div>
-    <apex:actionFunction
-      name="getLists"
-      action="{!getLists}"
-      status="pageStatus"
-      rerender="form"
-    />
   </apex:form>
-
-  <script>
-    window.onload = function () {
-      getLists();
-    };
-  </script>
 </apex:page>

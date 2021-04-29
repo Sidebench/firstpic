@@ -2,8 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>FirstPic_National_Org_Code__c</fullName>
     <externalId>false</externalId>
-    <formula
-  >IF(Account__r.FirstPic_National_Org_Code__c != null, Account__r.FirstPic_National_Org_Code__c, Account__r.FirstPic_Org_Code__c)</formula>
+    <formula>Account__r.FirstPic_National_Org_Code__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>FirstPic National Org Code</label>
     <required>false</required>

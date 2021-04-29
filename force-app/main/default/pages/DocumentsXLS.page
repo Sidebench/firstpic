@@ -4,7 +4,7 @@
   showHeader="false"
   sidebar="false"
   readOnly="true"
-  contentType="application/vnd.ms-excel#ComplianceReport.xls"
+  contentType="application/vnd.ms-excel#DocumentReport.xls"
 >
   <h4>{!objectType} Documents</h4>
   <table>

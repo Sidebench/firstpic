@@ -66,14 +66,10 @@
         <values>
             <fullName
       >Currently Implementing Site Proposing To Continue</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
         <values>
             <fullName>New Site</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Not Currently Implementing Site</fullName>
             <default>false</default>
         </values>
         <values>
@@ -207,6 +203,10 @@
             <fullName>2020</fullName>
             <default>false</default>
         </values>
+        <values>
+            <fullName>2020 - 2021</fullName>
+            <default>true</default>
+        </values>
     </picklistValues>
     <picklistValues>
         <picklist>Hold_Reason__c</picklist>
@@ -216,6 +216,30 @@
         </values>
         <values>
             <fullName>DOJ Certification Past Due</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Expired SAM Registration %2F Federal Debt</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FFATA Questionnaire not on file</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Federal Debt Reported</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Letter of Award not on file</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Missing Reports %2F Youth Data%2FPA Logs</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Missing Required Implementation Documents</fullName>
             <default>false</default>
         </values>
         <values>

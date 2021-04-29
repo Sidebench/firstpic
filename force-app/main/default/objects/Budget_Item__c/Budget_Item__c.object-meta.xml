@@ -162,7 +162,6 @@
     <pluralLabel>Budget Items</pluralLabel>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <searchLayouts>
-        <lookupDialogsAdditionalFields>Grant__c</lookupDialogsAdditionalFields>
         <searchResultsAdditionalFields>Grant__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>

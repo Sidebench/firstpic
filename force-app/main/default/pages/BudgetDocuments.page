@@ -55,16 +55,12 @@
           >
             <apex:outputLink
               value="{!$Resource.FinancialManagementCapacityandRequiredCertificationsDocument}"
-              target="_blank"
             >
               Financial Management Capacity and Required Certifications (Sign
               and Upload)
             </apex:outputLink>
             <br />
-            <apex:outputLink
-              value="{!$Resource.SpecialConditions}"
-              target="_blank"
-            >
+            <apex:outputLink value="{!$Resource.SpecialConditions}">
               Special Conditions Attachment (Read Only)
             </apex:outputLink>
           </apex:outputPanel>

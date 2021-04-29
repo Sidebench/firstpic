@@ -5,7 +5,6 @@
     <columns>Site__c</columns>
     <columns>Status__c</columns>
     <columns>Reporting_Period__c</columns>
-    <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>RECORDTYPE</field>

@@ -2,6 +2,7 @@ public class PaginationClass {
   public List<sObject> records = new List<sObject>();
 
   public List<sObject> first(List<sObject> allRecords, Integer limitSize) {
+    system.debug('PC first allRecords = ' + allRecords);
     records.clear();
     if (limitSize <= allRecords.size()) {
       for (Integer i = 0; i < limitSize; i++)

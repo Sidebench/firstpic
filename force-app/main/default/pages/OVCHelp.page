@@ -865,24 +865,25 @@
             </apex:outputLink>
           </div>
         </div>
-        <div class="col-xs-12 col-sm-6">
-          <div class="panel panel-default">
-            <a href="https://youtu.be/pMxZ41OxT-w" target="_blank">
-              <div class="panel-body text-center">
-                Contract Services Procurement Zoom Training (Video)
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-          <div class="panel panel-default">
-            <a href="https://youtu.be/DSJnvsbJZ38" target="_blank">
-              <div class="panel-body text-center">
-                Vehicle Procurement Zoom Training (Video)
-              </div>
-            </a>
-          </div>
-        </div>
+        <!--
+                <div class="col-xs-12 col-sm-6">
+                    <div class="panel panel-default">
+                        <a href="about:blank" target="_blank">
+                            <div class="panel-body text-center">
+                                Contract Services Procurement Zoom Training (Video) 
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="panel panel-default">
+                        <a href="about:blank" target="_blank">
+                            <div class="panel-body text-center">
+                                Vehicle Procurement Zoom Training (Video) 
+                            </div>
+                        </a>
+                    </div>
+                </div>-->
       </div>
 
       <br /><br />

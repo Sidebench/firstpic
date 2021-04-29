@@ -95,7 +95,7 @@ public with sharing class SubGrantsCtrl {
       gt,
       soqlAND
     );
-    if (grantId == null)
+    if (grantId == null && portalName != 'BBBS')
       grantId = gc.selectedGrantId;
 
     sourceType = '';

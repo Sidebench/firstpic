@@ -3,7 +3,7 @@
     <fullName>Link_to_Report__c</fullName>
     <externalId>false</externalId>
     <formula
-  >IF( FirstPic_National_Org_Code__c = &quot;MDGO&quot; ,&quot;https://firstpicinc.secure.force.com/BJAGProgramReport?report=&quot; +  Id, &quot;&quot;)</formula>
+  >IF( FirstPic_National_Org_Code__c = &quot;MDGO&quot; ,&quot;https://stage2-firstpicinc.cs79.force.com/BJAGProgramReport?report=&quot; +  Id, &quot;&quot;)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Link to Report</label>
     <required>false</required>

@@ -155,7 +155,7 @@
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <label>DCTAT Report</label>
     <nameField>
-        <displayFormat>GR-{0000}</displayFormat>
+        <displayFormat>PR-{0000}</displayFormat>
         <label>Grantee Report Number</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>

@@ -255,6 +255,42 @@
             </apex:outputLink>
           </div>
         </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://www.anymeeting.com/xcragnoxgx/E957DB87884C3B"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring 2018 Q2 Conference Call
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://www.anymeeting.com/xcragnoxgx/E957D78388483E"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring 2018 Q3 Conference Call
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://www.anymeeting.com/WebConference/RecordingDefault.aspx?c_psrid=E958DE8588463A"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring 2018 Q4 Conference Call
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
       </div>
     </div>
   </div>

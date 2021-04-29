@@ -66,14 +66,10 @@
         <values>
             <fullName
       >Currently Implementing Site Proposing To Continue</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
         <values>
             <fullName>New Site</fullName>
-            <default>false</default>
-        </values>
-        <values>
-            <fullName>Not Currently Implementing Site</fullName>
             <default>false</default>
         </values>
         <values>
@@ -150,10 +146,6 @@
             <fullName>2020</fullName>
             <default>false</default>
         </values>
-        <values>
-            <fullName>2020 - 2021</fullName>
-            <default>true</default>
-        </values>
     </picklistValues>
     <picklistValues>
         <picklist>DUNS_Review_Status__c</picklist>
@@ -198,7 +190,7 @@
         </values>
         <values>
             <fullName>2020 - 2021</fullName>
-            <default>false</default>
+            <default>true</default>
         </values>
         <values>
             <fullName>2021 - 2022</fullName>
@@ -207,6 +199,10 @@
     </picklistValues>
     <picklistValues>
         <picklist>Hold_Reason__c</picklist>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
         <values>
             <fullName>SAM%2Egov Expired</fullName>
             <default>false</default>

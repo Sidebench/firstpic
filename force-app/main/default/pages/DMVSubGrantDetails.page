@@ -348,7 +348,11 @@
               >
                 Update Budget
               </a>
-              <!--<apex:commandButton value="Close Grant" action="{!showCloseGrantPopup}" rendered="{!canCloseGrant}" />-->
+              <apex:commandButton
+                value="Close Grant"
+                action="{!showCloseGrantPopup}"
+                rendered="{!canCloseGrant}"
+              />
             </apex:outputPanel>
           </div>
         </div>

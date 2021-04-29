@@ -6,8 +6,7 @@
 IF(NOT(ISNULL(Progress_Report_1_Date__c)), +1, +0) + 
 IF(NOT(ISNULL(Progress_Report_2_Date__c)), +1, +0) + 
 IF(NOT(ISNULL(Progress_Report_3_Date__c)), +1, +0) + 
-IF(NOT(ISNULL(Progress_Report_4_Date__c)), +1, +0)
-)</formula>
+IF(NOT(ISNULL(Progress_Report_4_Date__c)), +1, +0))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Number of Progress Reports</label>
     <required>false</required>

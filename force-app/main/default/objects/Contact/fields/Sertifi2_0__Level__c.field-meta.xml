@@ -5,7 +5,6 @@
     <externalId>false</externalId>
     <label>Level</label>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>

@@ -1,0 +1,77 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="field"
+    description="field"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="label"
+    description="label"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="readOnly"
+    description="readOnly"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="fullWidth"
+    description="fullWidth"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="semibold"
+    description="semibold"
+    default="true"
+  />
+  <apex:attribute
+    type="String"
+    name="hoverText"
+    description="hoverText"
+    required="false"
+  />
+
+  <apex:outputPanel rendered="{!NOT(fullWidth)}">
+    <div class="row">
+      <div
+        class="{!IF(semibold, 'col-sm-9 col-xs-12 semibold', 'col-sm-9 col-xs-12')}"
+      >
+        <apex:outputText value="{!label}" escape="false" />
+      </div>
+      <div class="col-sm-3 col-xs-12 pull-right">
+        <apex:componentBody rendered="{!NOT(readOnly)}" />
+        <apex:outputText value="{!field}" rendered="{!readOnly}" />
+      </div>
+    </div>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!fullWidth}">
+    <div class="row">
+      <div class="{!IF(semibold, 'col-xs-12 semibold', 'col-xs-12')}">
+        <apex:outputText value="{!label}" escape="false" />
+        <apex:outputPanel rendered="{!hoverText != ''}">
+          <span
+            class="badge"
+            title="Count all individuals served by your organization with the use of VOCA plus match funds during the reporting period. This number should be an unduplicated count of people served during a single reporting period, regardless of the number of services they received or victimization types with which they presented"
+            >?</span
+          >
+        </apex:outputPanel>
+      </div>
+      <div class="col-xs-12">
+        <apex:componentBody rendered="{!NOT(readOnly)}" />
+        <apex:outputText value="{!field}" rendered="{!readOnly}" />
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>
+
+<!--
+<c:DCTATQuestion label="{!labels['New_Youth_Served__c']}" 
+field="{!report.New_Youth_Served__c}" 
+readOnly="{!readOnly}" 
+rendered="{!i.Field_API__c == 'New_Youth_Served__c'}" />
+-->

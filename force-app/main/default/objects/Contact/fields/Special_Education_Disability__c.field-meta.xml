@@ -4,6 +4,5 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <label>Special Education/Disability</label>
-    <trackHistory>false</trackHistory>
     <type>Checkbox</type>
 </CustomField>
