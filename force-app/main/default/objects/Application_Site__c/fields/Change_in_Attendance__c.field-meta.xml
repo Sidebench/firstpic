@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Change_in_Attendance__c</fullName>
+    <externalId>false</externalId>
+    <label>Change in Attendance</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Higher</fullName>
+                <default>false</default>
+                <label>Higher</label>
+            </value>
+            <value>
+                <fullName>Lower</fullName>
+                <default>false</default>
+                <label>Lower</label>
+            </value>
+            <value>
+                <fullName>Mostly the Same</fullName>
+                <default>false</default>
+                <label>Mostly the Same</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

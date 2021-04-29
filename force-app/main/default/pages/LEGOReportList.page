@@ -1,0 +1,183 @@
+<apex:page
+  controller="LEGOReportsCtrl"
+  action="{!getSessionReports}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Report List</title>
+  </head>
+  <c:LEGOHeader
+    ActivePage="reports"
+    acct="{!userAcct}"
+    SessionId="{!SessionId}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div style="text-align: right; margin-bottom: 10px">
+          <apex:selectList value="{!SessionId}" size="1">
+            <apex:actionSupport
+              event="onchange"
+              action="{!getSessionReports}"
+            />
+            <apex:selectOptions value="{!options}" />
+          </apex:selectList>
+        </div>
+
+        <apex:outputPanel rendered="{!SessionId != null}">
+          <apex:outputPanel
+            style="display: block; text-align: right; margin-bottom: 10px"
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            Site: &nbsp;<apex:inputText
+              value="{!keyword}"
+              styleClass="input-md"
+            />&nbsp;&nbsp; Session: &nbsp;<apex:selectList
+              value="{!sessionName}"
+              size="1"
+            >
+              <apex:selectOptions
+                value="{!sessionNameOptions}"
+              /> </apex:selectList
+            >&nbsp;
+            <apex:commandButton
+              action="{!getSessionReports}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+          </apex:outputPanel>
+          <div class="panel panel-default">
+            <div class="panel-heading">Reports</div>
+            <div class="panel-body">
+              <apex:outputPanel id="list" rendered="{!userAcctType == 'Site'}">
+                <table style="width: 100%">
+                  <tr>
+                    <th>Report Type</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <td>Expo Report</td>
+                    <td>{!session.Expo_Report_Status__c}</td>
+                    <td>
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/LEGOExpoReport?SessionId=' + session.Id)}"
+                      >
+                        <apex:outputText
+                          value="Edit"
+                          rendered="{!session.Expo_Report_Status__c != 'Submitted'}"
+                        />
+                        <apex:outputText
+                          value="View Details"
+                          rendered="{!session.Expo_Report_Status__c == 'Submitted'}"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Program Report</td>
+                    <td>{!programReport.Status__c}</td>
+                    <td>
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/LEGOProgramReport?ReportId=' + programReport.Id)}"
+                      >
+                        <apex:outputText
+                          value="Edit"
+                          rendered="{!programReport.Status__c != 'Submitted'}"
+                        />
+                        <apex:outputText
+                          value="View Details"
+                          rendered="{!programReport.Status__c == 'Submitted'}"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Finance Report</td>
+                    <td>{!site.Finance_Report_Status__c}</td>
+                    <td>
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/LEGOFinanceReport?SiteId=' + site.Id)}"
+                      >
+                        <apex:outputText
+                          value="Edit"
+                          rendered="{!site.Finance_Report_Status__c != 'Submitted'}"
+                        />
+                        <apex:outputText
+                          value="View Details"
+                          rendered="{!site.Finance_Report_Status__c == 'Submitted'}"
+                        />
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </apex:outputPanel>
+
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization'}"
+              >
+                <table style="width: 100%">
+                  <tr>
+                    <th>Site</th>
+                    <th>Session</th>
+                    <th>Expo Report</th>
+                    <th>Program Report</th>
+                    <th>Finance Report</th>
+                  </tr>
+                  <apex:repeat value="{!siteReport_list}" var="i">
+                    <tr>
+                      <td>
+                        {!i.siteName}
+                        <!--
+<a href="{!URLFOR($Site.Prefix+'/LEGOAbout?SiteId=' + i.siteId)}">
+{!i.siteName}
+</a>
+-->
+                      </td>
+                      <td>{!i.sessionName}</td>
+                      <td>
+                        {!i.expoStatus} &nbsp;&nbsp;
+                        <apex:outputLink
+                          value="{!$Site.Prefix+'/LEGOExpoReport?SessionId='+i.sessionId}"
+                          title="View Details"
+                          rendered="{!i.expoStatus == 'Submitted'}"
+                        >
+                          <span class="glyphicon glyphicon-eye-open"></span>
+                        </apex:outputLink>
+                      </td>
+                      <td>
+                        {!i.programStatus} &nbsp;&nbsp;
+                        <apex:outputLink
+                          value="{!$Site.Prefix+'/LEGOProgramReport?ReportId='+i.programId}"
+                          title="View Details"
+                          rendered="{!i.programStatus == 'Submitted'}"
+                        >
+                          <span class="glyphicon glyphicon-eye-open"></span>
+                        </apex:outputLink>
+                      </td>
+                      <td>
+                        {!i.financeStatus} &nbsp;&nbsp;
+                        <apex:outputLink
+                          value="{!$Site.Prefix+'/LEGOFinanceReport?SiteId='+i.siteId}"
+                          title="View Details"
+                          rendered="{!i.financeStatus == 'Submitted'}"
+                        >
+                          <span class="glyphicon glyphicon-eye-open"></span>
+                        </apex:outputLink>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

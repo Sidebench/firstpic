@@ -1,0 +1,65 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="radioField"
+    description="radioField"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="textField"
+    description="textField"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="label"
+    description="label"
+    required="true"
+  />
+  <apex:attribute
+    type="SelectOption[]"
+    name="options"
+    description="options"
+    required="true"
+  />
+
+  <tr>
+    <td class="radioBtnTbl" style="width: 100px">
+      <apex:selectRadio value="{!radioField}">
+        <apex:selectOptions value="{!options}" />
+      </apex:selectRadio>
+    </td>
+    <td>
+      <apex:outputText value="{!label}" escape="false" />
+    </td>
+    <td class="pull-right" style="min-width: 100px; font-weight: bold">
+      <apex:inputTextarea
+        value="{!textField}"
+        rendered="{!userAcctType == 'Local Organization'}"
+        styleClass="input-sm"
+      />
+      <apex:outputText
+        value="{!textField}"
+        escape="false"
+        rendered="{!userAcctType == 'National Organization'}"
+      />
+    </td>
+  </tr>
+</apex:component>
+
+<!--
+
+<apex:outputPanel rendered="{!i.Field_Name__c == ''}">
+    <c:AssessmentQuestion radioField="{!assess.}" 
+                          label="{!labels['']}" 
+                          textField="{!assess.}" 
+                          options="{!options}" userAcctType="{!userAcctType}" />
+</apex:outputPanel>
+-->

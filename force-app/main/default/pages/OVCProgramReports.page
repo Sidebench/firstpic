@@ -1,0 +1,148 @@
+<apex:page
+  controller="VictimsServedReportsCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>OVC Program Reports</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Program Reports</h2>
+          </div>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="col-auto pull-right">
+              Organization &nbsp;<apex:inputText
+                value="{!orgName}"
+                style="width: 240px"
+              />
+              &nbsp;&nbsp; Status: &nbsp;
+              <apex:selectList value="{!status}" size="1" id="statusOptions">
+                <apex:selectOptions value="{!statusOptions}" />
+              </apex:selectList>
+              <div style="margin: 5px"></div>
+              &nbsp;&nbsp; Reporting Period: &nbsp;
+              <apex:selectList value="{!month}" size="1">
+                <apex:selectOption itemLabel="All" itemValue="All" />
+                <apex:selectOption
+                  itemLabel="Jan - Mar"
+                  itemValue="Jan - Mar"
+                />
+                <apex:selectOption
+                  itemLabel="Apr - Jun"
+                  itemValue="Apr - Jun"
+                />
+                <apex:selectOption
+                  itemLabel="Jul - Sep"
+                  itemValue="Jul - Sep"
+                />
+                <apex:selectOption
+                  itemLabel="Oct - Dec"
+                  itemValue="Oct - Dec"
+                />
+              </apex:selectList>
+              &nbsp;&nbsp; Year: &nbsp;
+              <apex:selectList value="{!year}" size="1">
+                <apex:selectOption itemLabel="All" itemValue="All" />
+                <apex:selectOption itemLabel="2020" itemValue="2020" />
+                <apex:selectOption itemLabel="2021" itemValue="2021" />
+              </apex:selectList>
+              &nbsp;
+              <apex:commandButton
+                action="{!getLists}"
+                value="Update"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                reRender="form"
+              />
+            </div>
+          </apex:outputPanel>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">{!status}</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!reports.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>Id</th>
+                    <th>
+                      <apex:outputText
+                        value="Organization"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>Year</th>
+                    <th>Month</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                  </tr>
+                  <apex:repeat value="{!reports}" var="i">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.Name}"
+                          action="{!URLFOR($Site.Prefix+'/OVCProgramReport?reportId='+i.Id)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.Organization_Name__c}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>{!i.Year__c}</td>
+                      <td>{!i.Month__c}</td>
+                      <td>
+                        {!i.Status__c}
+                        <apex:outputPanel
+                          rendered="{!userAcctType == 'National Organization' && i.Status__c == 'Approved'}"
+                        >
+                          <a
+                            href="{!URLFOR($Site.Prefix+'/OVCProgramReportXLS?reportID='+ i.Id)}"
+                            target="_blank"
+                          >
+                            (Export)
+                          </a>
+                        </apex:outputPanel>
+                      </td>
+                      <td>
+                        <apex:outputField value="{!i.Submitted_Date__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!reports.size == 0}">
+                No Reports Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

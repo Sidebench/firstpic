@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hold_Reason__c</fullName>
+    <externalId>false</externalId>
+    <label>Hold Reason</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>SAM.gov Expired</fullName>
+                <default>false</default>
+                <label>SAM.gov Expired</label>
+            </value>
+            <value>
+                <fullName>Current FYE Audit Past Due</fullName>
+                <default>false</default>
+                <label>Current FYE Audit Past Due</label>
+            </value>
+            <value>
+                <fullName>DOJ Certification Past Due</fullName>
+                <default>false</default>
+                <label>DOJ Certification Past Due</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

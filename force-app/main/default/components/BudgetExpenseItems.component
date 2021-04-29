@@ -1,0 +1,492 @@
+<apex:component allowDML="true">
+  <apex:attribute
+    type="BudgetCtrl"
+    name="ctrl"
+    description="BudgetCtrl"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isEditMode"
+    description="isEditMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isReviewMode"
+    description="isReviewMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showAddItems"
+    description="showAddItems"
+    default="false"
+  />
+
+  <style>
+    .checkImg {
+      margin-left: -5px;
+    }
+  </style>
+
+  <apex:outputPanel id="items">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Expenses
+        <div class="pull-right">
+          <apex:commandButton
+            value="Mark Inactive"
+            action="{!ctrl.markExpensesInactive}"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!isEditMode}"
+          />
+          <apex:commandButton
+            value="Delete"
+            action="{!ctrl.deleteExpenseItems}"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!isEditMode && NOT(ctrl.hasReimbursements)}"
+          />
+        </div>
+      </div>
+      <apex:repeat value="{!ctrl.categories}" var="cat">
+        <div class="panel-heading sub-panel-heading">
+          <apex:outputText value="{!cat}" />
+        </div>
+        <div class="panel-body">
+          <table class="tblWithBorders" width="100%">
+            <tr>
+              <th style="{!IF((isEditMode),'width: 20px;','width: 0;')}"></th>
+              <th style="min-width: 300px">Item</th>
+              <th
+                class="text-center"
+                style="{!IF((isReviewMode),'width: 100px;','width: 0;')}"
+              >
+                <apex:outputText value="Active?" rendered="{!isReviewMode}" />
+              </th>
+              <th style="width: 200px">Rate</th>
+              <th style="width: 200px">Quantity</th>
+              <th
+                style="{!IF(NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending'),'','width: 0;')}"
+              >
+                <apex:outputText
+                  value="New Item Budget"
+                  rendered="{!NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')}"
+                />
+              </th>
+              <th style="width: 220px">Amount Allocated to Grant</th>
+              <th
+                style="{!IF(ctrl.grant.National_Grant_Type__c == 'OVC' && ctrl.grant.Apply_Indirect_Rate_to_Expenses__c, 'width: 220px;', 'width: 0')}"
+              >
+                <apex:outputText
+                  value="Amount Allocated for Indirect Cost"
+                  rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC' && ctrl.grant.Apply_Indirect_Rate_to_Expenses__c}"
+                />
+              </th>
+              <th style="{!IF(isEditMode,'width: 0;','')}">
+                <apex:outputText
+                  value="Total Requested Amount"
+                  rendered="{!NOT(isEditMode)}"
+                />
+              </th>
+              <th style="{!IF(isEditMode,'width: 0;','')}">
+                <apex:outputText
+                  value="Total Approved Amount"
+                  rendered="{!NOT(isEditMode)}"
+                />
+              </th>
+              <th style="{!IF(isEditMode,'width: 0;','')}">
+                <apex:outputText
+                  value="Item Balance"
+                  rendered="{!NOT(isEditMode)}"
+                />
+              </th>
+              <th class="text-center" style="width: 60px">Notes</th>
+            </tr>
+            <apex:repeat value="{!ctrl.expenseItem_list}" var="i">
+              <apex:outputPanel rendered="{!i.Category__c == cat}">
+                <tr>
+                  <td>
+                    <apex:inputCheckbox
+                      value="{!i.Selected__c}"
+                      style="margin-left: -2px"
+                      rendered="{!i.Is_Active__c && isEditMode}"
+                    />&nbsp;
+                  </td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.Name}"
+                      rendered="{!NOT(i.Is_Active__c) || NOT(isEditMode) || i.Type__c == 'Mileage'}"
+                    />
+                    <apex:inputField
+                      value="{!i.Name}"
+                      rendered="{!i.Is_Active__c && isEditMode && i.Type__c != 'Mileage'}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:outputField
+                      value="{!i.Is_Active__c}"
+                      rendered="{!isReviewMode}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.New_Rate__c}"
+                      rendered="{!(NOT(i.Is_Active__c) || NOT(isEditMode)) && i.Type__c != 'Mileage'}"
+                    />
+                    <apex:inputField
+                      value="{!i.New_Rate__c}"
+                      styleClass="input-md"
+                      rendered="{!i.Is_Active__c && i.Type__c != 'Mileage' && isEditMode}"
+                    />
+                    <apex:outputField
+                      value="{!i.Mileage_Rate__c}"
+                      rendered="{!(NOT(i.Is_Active__c) || NOT(isEditMode)) && i.Type__c == 'Mileage'}"
+                    />
+                    <apex:inputField
+                      value="{!i.Mileage_Rate__c}"
+                      styleClass="input-md"
+                      rendered="{!i.Is_Active__c && i.Type__c == 'Mileage' && isEditMode}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.Quantity__c}"
+                      rendered="{!NOT(i.Is_Active__c) || NOT(isEditMode)}"
+                    />
+                    <apex:inputField
+                      value="{!i.Quantity__c}"
+                      styleClass="input-md"
+                      rendered="{!i.Is_Active__c && isEditMode}"
+                    />
+                  </td>
+                  <td
+                    style="{!IF(i.New_Item_Budget__c != i.Item_Budget__c,'font-weight: bold;','')}"
+                  >
+                    <apex:outputfield
+                      value="{!i.New_Item_Budget__c}"
+                      rendered="{!NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputfield
+                      value="{!i.Item_Budget__c}"
+                      rendered="{!NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')}"
+                    />
+                    <apex:outputfield
+                      value="{!i.New_Item_Budget__c}"
+                      rendered="{!isEditMode || NOT(CONTAINS(ctrl.grant.Grant_Status__c, 'Pending'))}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputPanel
+                      rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC' && ctrl.grant.Apply_Indirect_Rate_to_Expenses__c}"
+                    >
+                      <apex:inputField
+                        value="{!i.Amount_Allocated_for_Indirect_Cost__c}"
+                        styleClass="input-md"
+                        rendered="{!isEditMode && i.Apply_Indirect_Rate_Cap__c && i.Is_Active__c}"
+                      />
+                      <apex:outputfield
+                        value="{!i.Amount_Allocated_for_Indirect_Cost__c}"
+                        rendered="{!i.Apply_Indirect_Rate_Cap__c && (NOT(isEditMode) || NOT(i.Is_Active__c))}"
+                      />
+                      <apex:outputfield value="{!i.Item_Budget__c}"
+                      rendered="{!NOT(isEditMode) && ctrl.grant.Grant_Status__c
+                      != 'Incomplete' && NOT(i.Apply_Indirect_Rate_Cap__c) &&
+                      NOT(CONTAINS(ctrl.grant.Grant_Status__c, "Pending")) &&
+                      ctrl.grant.Grant_Status__c != 'Revisions Needed'}" />
+                      <apex:outputfield value="{!i.New_Item_Budget__c}"
+                      rendered="{!(isEditMode || ctrl.grant.Grant_Status__c ==
+                      'Incomplete' || CONTAINS(ctrl.grant.Grant_Status__c,
+                      "Pending") || ctrl.grant.Grant_Status__c == 'Revisions
+                      Needed') && NOT(i.Apply_Indirect_Rate_Cap__c)}" />
+                    </apex:outputPanel>
+                  </td>
+                  <td>
+                    <apex:outputfield
+                      value="{!i.Total_Requested_Amount__c}"
+                      rendered="{!NOT(isEditMode)}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputfield
+                      value="{!i.Total_Approved_Amount__c}"
+                      rendered="{!NOT(isEditMode)}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputfield
+                      value="{!i.Balance__c}"
+                      rendered="{!NOT(isEditMode)}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:commandLink
+                      action="{!ctrl.showNotesPopup}"
+                      status="pageStatus"
+                      reRender="notesPopup"
+                    >
+                      <apex:param
+                        assignTo="{!ctrl.selectedItemId}"
+                        name="selectedItemId"
+                        value="{!i.Id}"
+                      />
+                      <apex:param
+                        assignTo="{!ctrl.selectedItemType}"
+                        name="selectedItemType"
+                        value="expense"
+                      />
+                      <apex:outputText rendered="{!i.Has_Notes__c == true}">
+                        <span class="glyphicon glyphicon-comment"></span>
+                      </apex:outputText>
+                      <apex:outputText
+                        value="+"
+                        rendered="{!i.Has_Notes__c == false}"
+                      />
+                    </apex:commandLink>
+                  </td>
+                </tr>
+              </apex:outputPanel>
+            </apex:repeat>
+          </table>
+        </div>
+      </apex:repeat>
+      <div class="panel-footer" style="{!IF((isEditMode),'','padding: 0;')}">
+        <apex:commandButton
+          value="Update Amounts"
+          action="{!ctrl.updateExistingExpenseAmounts}"
+          status="pageStatus"
+          rendered="{!isEditMode}"
+        />
+      </div>
+    </div>
+  </apex:outputPanel>
+
+  <apex:outputPanel id="newItems" rendered="{!showAddItems}">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Add Expenses
+        <div class="pull-right">
+          <apex:commandButton
+            value="Delete"
+            action="{!ctrl.deleteNewExpenseItems}"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!isEditMode}"
+          />
+        </div>
+      </div>
+      <div class="panel-body">
+        <table style="width: 100%">
+          <tr>
+            <th style="{!IF((isEditMode),'width: 20px;','width: 0;')}"></th>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Rate</th>
+            <th>Quantity</th>
+            <th>Amount Allocated to Grant</th>
+            <th
+              style="{!IF(ctrl.grant.National_Grant_Type__c == 'OVC', '', 'width: 0')}"
+            >
+              <apex:outputText
+                value="Amount Allocated for Indirect Cost"
+                rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC'}"
+              />
+            </th>
+            <th class="text-center">Notes</th>
+          </tr>
+          <apex:repeat value="{!ctrl.newExpenseItem_list}" var="i">
+            <tr>
+              <td><apex:inputCheckbox value="{!i.Selected__c}" />&nbsp;</td>
+              <td>
+                <apex:inputField
+                  value="{!i.Name}"
+                  rendered="{!i.Type__c != 'Mileage'}"
+                />
+                <apex:outputField
+                  value="{!i.Name}"
+                  rendered="{!i.Type__c == 'Mileage'}"
+                />
+              </td>
+              <td>
+                <apex:selectList
+                  value="{!i.Category__c}"
+                  size="1"
+                  rendered="{!i.Type__c != 'Mileage'}"
+                >
+                  <apex:actionSupport event="onchange" reRender="newItems" />
+                  <apex:selectOption
+                    itemValue="Equipment"
+                    itemLabel="Equipment"
+                    rendered="{!ctrl.portalName != 'Ripken'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Supplies, Equipment, & Administrative"
+                    itemLabel="Supplies, Equipment, & Administrative"
+                    rendered="{!ctrl.portalName == 'Ripken'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Supplies"
+                    itemLabel="Supplies"
+                    rendered="{!ctrl.portalName != 'Ripken'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Contract Specialist"
+                    itemLabel="Contract Specialist"
+                    rendered="{!ctrl.portalName != 'Ripken'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Travel"
+                    itemLabel="Travel"
+                    rendered="{!ctrl.portalName != 'Ripken'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Program Related Travel"
+                    itemLabel="Program Related Travel"
+                    rendered="{!ctrl.portalName == 'Ripken'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Sub Awards"
+                    itemLabel="Sub Awards"
+                    rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Procurement Contracts"
+                    itemLabel="Procurement Contracts"
+                    rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Consultant Travel"
+                    itemLabel="Consultant Travel"
+                    rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC'}"
+                  />
+                  <apex:selectOption
+                    itemValue="Other Costs"
+                    itemLabel="Other Costs"
+                  />
+                </apex:selectList>
+                <apex:outputText
+                  value="{!i.Category__c}"
+                  rendered="{!i.Type__c == 'Mileage'}"
+                />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.New_Rate__c}"
+                  rendered="{!i.Type__c != 'Mileage'}"
+                />
+                <apex:inputField
+                  value="{!i.Mileage_Rate__c}"
+                  rendered="{!i.Type__c == 'Mileage'}"
+                />
+              </td>
+              <td>
+                <apex:inputField value="{!i.Quantity__c}" />
+              </td>
+              <td>
+                <apex:outputfield value="{!i.New_Item_Budget__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Amount_Allocated_for_Indirect_Cost__c}"
+                  rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC' && (i.Category__c == 'Sub Awards' || i.Category__c == 'Procurement Contracts')}"
+                />
+              </td>
+              <td class="text-center">
+                <apex:commandLink
+                  action="{!ctrl.showNewExpenseNotesPopup}"
+                  status="pageStatus"
+                  reRender="newExpenseNotesPopup"
+                >
+                  <apex:param
+                    assignTo="{!ctrl.selectedItemId}"
+                    name="selectedItemId"
+                    value="{!i.Id}"
+                  />
+                  <apex:param
+                    assignTo="{!ctrl.selectedItemType}"
+                    name="selectedItemType"
+                    value="newExpense"
+                  />
+                  <apex:outputText rendered="{!i.Has_Notes__c == true}">
+                    <span class="glyphicon glyphicon-comment"></span>
+                  </apex:outputText>
+                  <apex:outputText
+                    value="+"
+                    rendered="{!i.Has_Notes__c == false}"
+                  />
+                </apex:commandLink>
+                <apex:outputPanel id="newExpenseNotesPopup">
+                  <apex:outputPanel
+                    styleClass="popupBackground"
+                    layout="block"
+                    rendered="{!ctrl.displayNewExpenseNotesPopup}"
+                  />
+                  <apex:outputPanel
+                    styleClass="custPopup"
+                    layout="block"
+                    rendered="{!ctrl.displayNewExpenseNotesPopup}"
+                  >
+                    <div class="modal-dialog" style="text-align: left">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">
+                            Notes for&nbsp;<apex:outputText value="{!i.Name}" />
+                          </h4>
+                        </div>
+                        <div class="modal-body">
+                          <apex:inputTextarea value="{!i.Item_Note__c}" />
+                          <br />
+                          <hr />
+                          <apex:outputText
+                            value="{!i.Response__c}"
+                            rendered="{!i.Response__c != null}"
+                          />
+                          <apex:outputText
+                            value="No Notes from National"
+                            rendered="{!i.Response__c == null}"
+                          />
+                        </div>
+                        <div class="modal-footer">
+                          <apex:commandButton
+                            action="{!ctrl.hideNewExpenseNotesPopup}"
+                            value="Save and Close"
+                            status="pageStatus"
+                            styleClass="primary"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </apex:outputPanel>
+                </apex:outputPanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </div>
+      <div class="panel-footer">
+        <apex:commandButton
+          value="Add Expense"
+          action="{!ctrl.addExpenseItem}"
+          status="pageStatus"
+          rerender="newItems"
+        />
+        <apex:commandButton
+          value="Add Mileage"
+          action="{!ctrl.addMileageItem}"
+          status="pageStatus"
+          rerender="newItems"
+        />
+        <apex:commandButton
+          value="Update Amounts"
+          action="{!ctrl.updateNewExpenseAmounts}"
+          status="pageStatus"
+          rerender="newItems"
+        />
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>

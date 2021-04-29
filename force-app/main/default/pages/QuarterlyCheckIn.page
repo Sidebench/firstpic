@@ -1,0 +1,383 @@
+<apex:page
+  controller="ProgressReportCtrl"
+  action="{!getReport}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Quarterly Check-In Report</title>
+  </head>
+  <c:STEMHeader
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>Quarterly Check-In Report</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h5>
+              <apex:outputPanel rendered="{!userAcctType == 'Site'}">
+                Grant: {!report.Grant_Name__c}
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+                Site: {!report.Organization_Name__c}
+              </apex:outputPanel>
+            </h5>
+            <h5>
+              Date:&nbsp;<apex:outputField
+                value="{!report.Quarter__c}"
+              />,&nbsp;<apex:outputField value="{!report.Year__c}" />
+            </h5>
+          </div>
+        </div>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+
+        <h5 class="text-danger">
+          <apex:outputText
+            value="* All fields are required."
+            rendered="{!NOT(readOnly)}"
+          />
+        </h5>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <apex:outputText value="{!report.Name}" />
+            <div class="pull-right">Status: {!report.Status__c}</div>
+          </div>
+          <div class="panel-body grid-pd-sm">
+            <div class="row">
+              <div class="col-auto semibold">
+                1. What is the name of the module you are currently
+                implementing?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Current_Module_Name__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Current_Module_Name__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">
+                2. Of that module, which session have you most recently
+                completed?
+              </div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Recently_Completed_Session__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Recently_Completed_Session__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">
+                3. What day(s) and time(s) are you running the STEM Mentoring
+                Program at your site?
+              </div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Days_and_Times_Running_Program__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Days_and_Times_Running_Program__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                4. Number of mentees currently participating in the STEM
+                Mentoring Program at your site:
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_Mentees_Currently_Participating__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Number_Mentees_Currently_Participating__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                5. Number of adult mentors currently participating in the STEM
+                Mentoring Program at your site:
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_of_Adult_Mentors__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Number_of_Adult_Mentors__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                6. Number of teen mentors currently participating in the STEM
+                Mentoring Program at your site:
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_of_Teen_Mentors__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Number_of_Teen_Mentors__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">
+                7. Have you started planning your required enrichment activity?
+              </div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Planning_Required_Enrichment_Activity__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Planning_Required_Enrichment_Activity__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">
+                8. If yes, please provide a brief description of your planned
+                enrichment activity. If no, please enter N/A.
+              </div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Planned_Enrichment_Activity_Description__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Planned_Enrichment_Activity_Description__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">
+                9. What has been your greatest accomplishment during this
+                reporting period?
+              </div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Accomplishments_this_Reporting_Period__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Accomplishments_this_Reporting_Period__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">
+                10. What has been your greatest challenge during this reporting
+                period?
+              </div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Greatest_Challenge_this_Reporting_Period__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Greatest_Challenge_this_Reporting_Period__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">
+                11. Please indicate any assistance you could use from FirstPic
+                or Sea Research Foundation.
+              </div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Assistance_Needed_Details__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Assistance_Needed_Details__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                12. Please attach the most recent copy of your mentoring match
+                tracking sheet.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:repeat value="{!atts}" var="a">
+                  <apex:outputLink
+                    value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                    style="margin-right: 10px"
+                    target="_blank"
+                  >
+                    {!a.Name}
+                  </apex:outputLink>
+                </apex:repeat>
+                <apex:commandButton
+                  action="{!showAttPopup}"
+                  value="Upload"
+                  status="pageStatus"
+                  styleClass="btn-small"
+                  reRender="uploadAttPopup"
+                  rendered="{!NOT(readOnly)}"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BEGIN Notes -->
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Notes"
+          displayLocalNote="false"
+          displayNationalNotePrivate="true"
+          richText="true"
+          nationalNote="{!report.Reviewer_Notes__c}"
+          nationalNotePrivate="{!report.Notes_for_National__c}"
+        />
+
+        <c:CollapsiblePanel
+          header="Modification History"
+          rendered="{!userAcctType == 'National Organization'}"
+        >
+          <apex:outputField value="{!report.Modification_History__c}" />
+        </c:CollapsiblePanel>
+        <!-- END Notes -->
+
+        <!-- BEGIN Popups -->
+        <apex:outputPanel id="uploadAttPopup">
+          <c:AttachmentUploadPopup
+            displayAttPopup="{!displayAttPopup}"
+            parentId="{!report.Id}"
+            filename="Tracking Sheet"
+          >
+            <apex:commandButton
+              action="{!hideAttPopup}"
+              value="Close"
+              status="pageStatus"
+            />
+          </c:AttachmentUploadPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="sendBackPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displaySendBackPopup}"
+            userAcctType="{!userAcctType}"
+            header="Send Back"
+            richText="true"
+            nationalNote="{!report.Reviewer_Notes__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+          >
+            <apex:commandButton action="{!hideSendBackPopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send Back"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="approvePopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayApprovePopup}"
+            userAcctType="{!userAcctType}"
+            header="Approve"
+            richText="true"
+            nationalNote="{!report.Reviewer_Notes__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+          >
+            <apex:commandButton action="{!hideApprovePopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!approve}"
+              value="Approve"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+        <!-- END Popups -->
+
+        <!-- BEGIN Page Actions -->
+        <apex:commandButton
+          action="{!URLFOR($Site.Prefix+'/QuarterlyProgressReports?siteId='+siteId+'&year=View All')}"
+          value="Back"
+          status="pageStatus"
+          rendered="{!siteId != null}"
+        />
+        <apex:commandButton
+          action="{!URLFOR($Site.Prefix+'/QuarterlyProgressReports')}"
+          value="Back"
+          status="pageStatus"
+          rendered="{!siteId == null}"
+        />
+        <apex:outputPanel
+          rendered="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+        >
+          <apex:commandButton
+            action="{!save}"
+            value="Save"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!quarterlyFieldValidation}"
+            value="Submit"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && report.Status__c == 'Submitted'}"
+        >
+          <apex:commandButton
+            action="{!showSendBackPopup}"
+            value="Send Back"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!showApprovePopup}"
+            value="Approve"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+        <!-- END Page Actions -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+        <apex:pageMessages />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

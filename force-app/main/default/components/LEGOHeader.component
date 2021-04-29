@@ -1,0 +1,209 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="ActivePage"
+    description="Name of active nav item"
+  />
+  <apex:attribute type="Account" name="acct" description="Account" />
+  <apex:attribute type="Id" name="SessionId" description="Session Id" />
+
+  <apex:stylesheet
+    value="{!URLFOR($Resource.styles, 'css/bootstrap.min.css')}"
+  />
+  <apex:stylesheet value="{!URLFOR($Resource.styles, 'css/style.css')}" />
+  <style>
+    body {
+      background: #fefefe;
+    }
+    a,
+    .primary {
+      color: #32608f;
+    }
+    a:hover {
+      color: #003974;
+    }
+    .navbar,
+    .navbar-nav .dropdown-menu {
+      padding: 0;
+      background: #555;
+    }
+    .navbar-brand .title,
+    .navbar-default .navbar-nav > li > a,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a,
+    .navbar-default .navbar-nav > li > span > a {
+      color: #fff;
+    }
+    .navbar-default .navbar-nav > li > a:hover,
+    .navbar-default .navbar-nav > li > a:focus,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav > li > span > a:hover {
+      color: #aaa !important;
+    }
+    .nav > li.active > a,
+    .nav > li.active > span > a {
+      color: #777 !important;
+    }
+    .nav > li.active > a .caret,
+    .nav > li.active > span > a .caret {
+      border-top-color: #777;
+      border-bottom-color: #777;
+    }
+    .nav .caret,
+    .navbar-default .navbar-nav > .dropdown > a .caret {
+      border-top-color: #fff;
+      border-bottom-color: #fff;
+    }
+    .nav .caret:hover,
+    .navbar-default .navbar-nav > .dropdown > a:hover .caret,
+    .nav .open > a,
+    .nav .open > a:hover,
+    .nav .open > a:focus {
+      border-color: #aaa !important;
+    }
+    .navbar-default .navbar-nav > .dropdown > a:focus .caret,
+    .navbar-default .navbar-nav > .dropdown.active > a .caret {
+      border-color: #333 !important;
+    }
+    input[type="submit"].btn.primary,
+    .btn.primary {
+      background: #32608f;
+      background-image: -webkit-linear-gradient(top, #32608f, #003974);
+      background-image: -moz-linear-gradient(top, #32608f, #003974);
+      background-image: -ms-linear-gradient(top, #32608f, #003974);
+      background-image: -o-linear-gradient(top, #32608f, #003974);
+      background-image: linear-gradient(to bottom, #32608f, #003974);
+      color: #fff;
+    }
+    input[type="submit"].primary:hover,
+    .btn.primary:hover {
+      background: #003974;
+      text-decoration: none;
+    }
+  </style>
+
+  <apex:includeScript
+    value="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+  />
+  <apex:includeScript
+    value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+  />
+  <script type="text/javascript">
+    window.onload = function () {
+      var d = document.getElementById("{!ActivePage}");
+      d.className = "active";
+    };
+  </script>
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle collapsed"
+          data-toggle="collapse"
+          data-target="#navbar-collapse-1"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="navbar-brand">
+          <apex:image url="{!$Resource.LEGO_logo}" height="44" />
+          <apex:outputPanel
+            rendered="{!acct.RecordType.Name == 'Site'}"
+            styleClass="title"
+          >
+            {!acct.Name}
+          </apex:outputPanel>
+        </span>
+      </div>
+      <apex:outputPanel rendered="{!acct == null}">
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="login">
+              <a href="{!URLFOR($Site.Prefix+'/login')}"> Login </a>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+
+      <apex:outputPanel rendered="{!acct != null}">
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="dashboard">
+              <a
+                href="{!URLFOR($Site.Prefix+'/LEGODashboard?SessionId='+SessionId)}"
+              >
+                Dashboard
+              </a>
+            </li>
+            <li id="about">
+              <apex:outputPanel rendered="{!acct.RecordType.Name == 'Site'}">
+                <a
+                  href="{!URLFOR($Site.Prefix+'/LEGOAbout?SessionId='+SessionId)}"
+                >
+                  Organization Info
+                </a>
+              </apex:outputPanel>
+            </li>
+            <li id="reports" class="dropdown">
+              <apex:outputPanel rendered="{!acct.RecordType.Name == 'Site'}">
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  >Reports <span class="caret"></span
+                ></a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <apex:outputLink
+                      value="{!$Site.Prefix+'/LEGOExpoReport?SessionId='+SessionId}"
+                    >
+                      Expo Report
+                    </apex:outputLink>
+                  </li>
+                  <li>
+                    <apex:outputLink
+                      value="{!$Site.Prefix+'/LEGOProgramReport'}"
+                    >
+                      Program Report
+                    </apex:outputLink>
+                  </li>
+                  <li>
+                    <apex:outputLink
+                      value="{!$Site.Prefix+'/LEGOFinanceReport'}"
+                    >
+                      Finance Report
+                    </apex:outputLink>
+                  </li>
+                </ul>
+              </apex:outputPanel>
+            </li>
+            <li id="reports">
+              <apex:outputLink
+                value="{!$Site.Prefix+'/LEGOReportList'}"
+                rendered="{!acct.RecordType.Name == 'National Organization'}"
+              >
+                Reports
+              </apex:outputLink>
+            </li>
+            <li id="help">
+              <a href="{!URLFOR($Site.Prefix+'/LEGOHelp')}"> Help </a>
+            </li>
+            <li id="logout">
+              <apex:outputLink
+                value="{!$Site.Prefix}/secur/logout.jsp"
+                rendered="{!NOT(ISPICKVAL($User.UserType,'Guest'))}"
+              >
+                {!$Label.site.logout}
+              </apex:outputLink>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+    </div>
+  </nav>
+</apex:component>

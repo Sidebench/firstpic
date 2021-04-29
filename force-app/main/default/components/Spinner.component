@@ -1,0 +1,11 @@
+<apex:component>
+  <apex:actionStatus id="pageStatus">
+    <apex:facet name="start">
+      <apex:outputPanel styleClass="spinner">
+        <img src="/img/loading32.gif" width="25" height="25" />
+        &nbsp;
+        <apex:outputLabel value="Loading..." />
+      </apex:outputPanel>
+    </apex:facet>
+  </apex:actionStatus>
+</apex:component>

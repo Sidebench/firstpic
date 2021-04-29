@@ -1,0 +1,1021 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>BOARD/GOVERNANCE STANDARDS 1-7</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="3"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 6: Board Development Plan (Upload Board Development Plan
+            Below)
+          </div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+              <h5>
+                Each agency must have a Board approved, multi-year written Board
+                Development Plan that is reviewed annually by the board that
+                addresses, at minimum:
+              </h5>
+              <table class="grid-pd-sm">
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Clarity_of_Roles__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Clarity of roles and responsibilities. Relative to
+                    implementation of the Board Development Plan
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Clarity_of_Roles_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Recruitment_of_Board_Member__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                      Practices for identification and recruitment of potential
+                      new Board members that includes using sources and
+                      strategies that yield qualified, diverse Board candidates
+                      in the selection pool;
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                      Practices for identification and recruitment of potential
+                      new Council members that includes using sources and
+                      strategies that yield qualified, diverse Council
+                      candidates in the selection pool;
+                    </apex:outputPanel>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Recruitment_of_Board_Member_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Replacing_Outgoing_Members__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Procedures for filling vacancies and/or replacing outgoing
+                    Board members
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Replacing_Outgoing_Members_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Orientation_Process__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Orientation process for new Board members</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Orientation_Process_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Succession_Plan__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Succession Plan for rotation of or resignation of officers
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Succession_Plan_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Annual_Written_Evaluation__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Annual written evaluation of individual and collective Board
+                    performance with summary results presented to the Board in
+                    these areas, at a minimum:
+                    <ol type="a">
+                      <li>
+                        Fund Development (Board give and get; total agency
+                        revenues from individuals, corporations and events);
+                      </li>
+                      <li>Board Development; and</li>
+                      <li>
+                        Diversity/Inclusion of the Board and engagement with the
+                        communities the agency is striving to serve, as defined
+                        by the Agency.
+                      </li>
+                    </ol>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Annual_Written_Evaluation_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+              <h5>
+                The Council shall have a Board-approved, multi-year, written
+                Advisory Council Development Plan that is reviewed annually by
+                the Council; implemented by the Council and designated BBBS
+                Program Staff; and addresses, at a minimum:
+              </h5>
+              <table class="grid-pd-sm">
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Clarity_of_Roles__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Clarity of roles and responsibilities relative to
+                    implementation of the Advisory Council Development Plan;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Clarity_of_Roles_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Recruitment_of_Board_Member__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Practices for identification and recruitment of potential
+                    new Council members that includes using sources and
+                    strategies that yield qualified, diverse Council candidates
+                    in the selection pool;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Recruitment_of_Board_Member_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Replacing_Outgoing_Members__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Procedures for filling vacancies and/or replacing outgoing
+                    Council members;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Replacing_Outgoing_Members_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Orientation_Process__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Orientation process for new Council members;</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Orientation_Process_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Succession_Plan__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Succession Plan for rotation of or resignation of officers;
+                    and
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Succession_Plan_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S6_Annual_Written_Evaluation__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Annual written evaluation of individual and collective
+                    Council performance with summary results presented to the
+                    Council in these areas, at a minimum:
+                    <ol type="a">
+                      <li>
+                        Fund Development (Council give and get; total BBBS
+                        Program revenues from individuals, corporations and
+                        events);
+                      </li>
+                      <li>Council Development; and</li>
+                      <li>
+                        Diversity / Inclusion of the Council and engagement with
+                        the communities the Sponsoring Organization is
+                        attempting to serve, as defined by the Affiliate.
+                      </li>
+                    </ol>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S6_Annual_Written_Evaluation_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>
+          </div>
+          <div class="panel-footer">
+            <apex:commandButton
+              action="{!attPopup}"
+              value="Upload Board Development Plan"
+              status="pageStatus"
+              rendered="{!userAcctType == 'Local Organization'}"
+              reRender="assessment"
+            >
+              <apex:param
+                assignTo="{!fileName}"
+                name="fileName"
+                value="Board Development Plan"
+              />
+              <apex:param
+                assignTo="{!parentId}"
+                name="parentId"
+                value="{!board_parentId}"
+              />
+            </apex:commandButton>
+            &nbsp;&nbsp;
+            <apex:repeat value="{!att_list}" var="a">
+              <apex:outputPanel
+                rendered="{!a.Name == 'Board Development Plan'}"
+              >
+                <apex:outputLink
+                  value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                  target="_blank"
+                >
+                  {!a.Name}
+                </apex:outputLink>
+                ({!a.Description})
+              </apex:outputPanel>
+            </apex:repeat>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 7a: Board Support, CEO/ED Oversight (Upload Written
+            Succession Plan Below)
+          </div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+              <h5>
+                The Board shall have the responsibility for CEO/ED oversight and
+                executive leadership succession, as specified in the Agency
+                bylaws. In the execution of those responsibilities, the
+                following policies and practices must be Board-approved,
+                reviewed annually by the Board, and enforced by the Board. Board
+                support and oversight of the agency CEO/ED includes, at a
+                minimum:
+              </h5>
+              <table class="grid-pd-sm">
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Job_Description__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Written job description for CEO/ED that clearly defines the
+                    authority of CEO/ED, and identifies roles and
+                    responsibilities of CEO/ED
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Job_Description_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Review_and_Evaluation__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    The CEO/ED is evaluated through a regularly scheduled,
+                    annual written performance review process against agreed
+                    upon performance goals Goals should include, at minimum:
+                    <ol>
+                      <li>Financial results</li>
+                      <li>Number of children served</li>
+                      <li>Program quality results</li>
+                      <li>Diversity and Inclusion</li>
+                    </ol>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Review_and_Evaluation_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Education_Requirements__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    CEO/ED must have, at least, a Bachelor's degree from an
+                    accredited college/university
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Education_Requirements_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Full_Time_Employee__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    CEO/ED must be a full-time employee of the Agency, based on
+                    the number of hours identified by the Agency as constituting
+                    full-time status; may not be a contract employee
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Full_Time_Employee_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Succession_Plan__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Written Succession Plan in the event of CEO/ED resignation,
+                    termination or leave of absence
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Succession_Plan_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Travel_and_Expenses__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Budgeted travel and associated expenses which ensure CEO/ED
+                    annual attendance at the BBBS national conference/meeting
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Travel_and_Expenses_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+              <h5>
+                The Sponsoring Organization’s CEO/Executive Director shall have
+                responsibility for ensuring assignment of a Sponsoring
+                Organization Senior Staff member who supports and oversees the
+                BBBS Program Director and ensures, at a minimum:
+              </h5>
+              <table class="grid-pd-sm">
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_BBBS_Program_Director__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    That there is a BBBS Program Director who is responsible to
+                    the Sponsoring Organization for the overall administration
+                    of BBBS Program operations;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_BBBS_Program_Director_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Job_Description__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    A written job description for the BBBS Program Director that
+                    clearly defines the authority of BBBS Program Director, and
+                    identifies roles and responsibilities of BBBS Program
+                    Director;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Job_Description_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Program_Director_Supervised__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    The BBBS Program Director is supervised and evaluated in
+                    accordance with the Sponsoring Organization&#39;s personnel
+                    policies and the BBBS Program Director’s job description;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Program_Director_Supervised_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Program_Director_Involvement__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    That the BBBS Program Director has involvement in employing,
+                    supervising, evaluating, and terminating all paid and
+                    volunteer BBBS Program Staff in accordance with the
+                    Affiliate’s personnel policies;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Program_Director_Involvement_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Review_and_Evaluation__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    The BBBS Program Director is evaluated through a regularly
+                    scheduled, annual written performance review process against
+                    agreed upon performance goals for the BBBS Program that
+                    include, at a minimum:
+                    <ol>
+                      <li>
+                        Financial results (if part of the job duties of the BBBS
+                        Program Director)
+                      </li>
+                      <li>Number of children served</li>
+                      <li>BBBS Program quality results</li>
+                      <li>Diversity and Inclusion</li>
+                    </ol>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Review_and_Evaluation_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Education_Requirements__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    The BBBS Program Director must have, at least, a Bachelor’s
+                    degree from an accredited college/university;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Education_Requirements_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Full_Time_Employee__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    The BBBS Program Director must be a full-time employee of
+                    the Sponsoring Organization, based on the number of hours
+                    identified by the Sponsoring Organization as constituting
+                    full-time status; may not be a contract employee;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Full_Time_Employee_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Succession_Plan__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    A written Succession Plan in the event of BBBS Program
+                    Director resignation, termination or leave of absence; and
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Succession_Plan_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      disabled="{!userAcctType == 'National Organization'}"
+                      value="{!assess.S7a_Travel_and_Expenses__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Budgeted travel and associated expenses which insure BBBS
+                    Program Director annual attendance at the BBBS national
+                    conference/meeting.
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S7a_Travel_and_Expenses_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>
+          </div>
+          <div class="panel-footer">
+            <apex:commandButton
+              action="{!attPopup}"
+              value="Upload Succession Plan"
+              status="pageStatus"
+              reRender="assessment"
+            >
+              <apex:param
+                assignTo="{!fileName}"
+                name="fileName"
+                value="Written Succession Plan"
+              />
+              <apex:param
+                assignTo="{!parentId}"
+                name="parentId"
+                value="{!succession_parentId}"
+              />
+            </apex:commandButton>
+            &nbsp;&nbsp;
+            <apex:repeat value="{!att_list}" var="a">
+              <apex:outputPanel
+                rendered="{!a.Name == 'Written Succession Plan'}"
+              >
+                <apex:outputLink
+                  value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                  target="_blank"
+                >
+                  {!a.Name}
+                </apex:outputLink>
+                ({!a.Description})
+              </apex:outputPanel>
+            </apex:repeat>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 7b: Change in Executive Leadership
+          </div>
+          <div class="panel-body">
+            <h5>
+              <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                In the event of a change in executive leadership, the Board is
+                responsible for the following:
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                In the event of a change in BBBS Program Director, the
+                Sponsoring Organization’s Executive Director is responsible for
+                the following:
+              </apex:outputPanel>
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S7b_Notification_of_Change__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    Process whereby Board notifies BBBSA representative in
+                    writing within ten (10) business days of any of the
+                    following events: vacancy in executive leadership; the
+                    naming of an interim CEO/ED; and the hiring of a new CEO/ED;
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    A process whereby the Sponsoring Organization notifies BBBSA
+                    representative in writing within ten (10) business days of
+                    any of the following events: vacancy in the BBBS Program
+                    Director position; the naming of an interim BBBS Program
+                    Director; and the hiring of a new BBBS Program Director;
+                  </apex:outputPanel>
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!assess.S7b_Notification_of_Change_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S7b_Qualified_Diverse_Candidates__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Ensuring there are qualified, diverse candidates in the
+                  selection pool
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S7b_Qualified_Diverse_Candidates_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S7b_CEO_Orientation_Confirmation__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    Confirmation that new CEO/ED completes BBBSA's New CEO
+                    orientation within the first year of employment
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    Confirmation that new BBBS Program Director completes
+                    BBBSA’s New CEO orientation within first year of employment;
+                    and,
+                  </apex:outputPanel>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S7b_CEO_Orientation_Confirmation_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S7b_CEO_Vacancy_Approval__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    Ensuring that there is no vacancy in the CEO/ED position for
+                    longer than 90-days without BBBSA approval
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    Ensuring that there is no vacancy in the BBBS Program
+                    Director position for longer than 90-days without BBBSA
+                    approval.
+                  </apex:outputPanel>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S7b_CEO_Vacancy_Approval_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="3"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          parentId="{!parentId}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(4);
+    };
+  </script>
+</apex:page>

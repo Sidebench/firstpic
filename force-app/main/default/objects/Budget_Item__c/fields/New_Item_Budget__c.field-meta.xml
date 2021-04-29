@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>New_Item_Budget__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >BBBSA Personnel: New Rate (hourly) * Projected Grant Hours * Number of Weeks;
+All Other Personnel: New Wages + New Fringe Benefits
+Expenses: New Rate * Quantity</inlineHelpText>
+    <label>New Item Budget</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

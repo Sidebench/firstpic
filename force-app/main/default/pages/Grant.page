@@ -1,0 +1,119 @@
+<apex:page
+  controller="GrantCtrl"
+  action="{!getGrantDetails}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Grant Details</title>
+  </head>
+  <c:HeaderSwitch
+    activePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total Awarded: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!totalAwarded}" />
+              </apex:outputText>
+            </h2>
+          </div>
+        </div>
+
+        <table class="table" width="100%">
+          <tr>
+            <td>
+              <div class="row">
+                <div class="col-auto" style="font-weight: bold">
+                  Date Range:
+                </div>
+                <div class="col-auto">
+                  <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                    <apex:param value="{!grant.Start_Date__c}" />
+                  </apex:outputText>
+                  -
+                  <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                    <apex:param value="{!grant.End_Date__c}" />
+                  </apex:outputText>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Total Budgeted: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!totalBudgeted}" />
+              </apex:outputText>
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Total Requested: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!totalRequested}" />
+              </apex:outputText>
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Total Approved: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!totalApproved}" />
+              </apex:outputText>
+            </td>
+            <td>
+              <span style="font-weight: bold"> Status: &nbsp;&nbsp; </span>
+              {!grant.Grant_Status__c}
+            </td>
+          </tr>
+        </table>
+
+        <a
+          class="btn"
+          href="{!URLFOR($Site.Prefix+'/SubGrants?grantId='+ grant.Id)}"
+        >
+          Sub-Grants
+        </a>
+        <apex:outputPanel rendered="{!portalName != 'DMV'}">
+          <a
+            class="btn"
+            href="{!URLFOR($Site.Prefix+'/Drawdowns?grantId='+ grant.Id)}"
+          >
+            Drawdown Reports
+          </a>
+        </apex:outputPanel>
+        <apex:commandButton
+          value="Close All Grants"
+          action="{!showCloseGrantPopup}"
+          reRender="form"
+          rendered="{!canCloseGrant}"
+        />
+      </div>
+    </div>
+
+    <c:ConfirmationPopup
+      header="Close All Grants"
+      body="This will close all Associated sub-grants."
+      displayConfirmPopup="{!displayCloseGrantPopup}"
+    >
+      <apex:commandButton value="Cancel" action="{!hideCloseGrantPopup}" />
+      <apex:commandButton
+        value="Close All Grants"
+        styleClass="primary"
+        action="{!closeGrant}"
+      />
+    </c:ConfirmationPopup>
+  </apex:form>
+</apex:page>

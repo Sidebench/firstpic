@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type_2_Diabetes__c</fullName>
+    <externalId>false</externalId>
+    <label>Type 2 Diabetes</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>a. People get only when they get older.</fullName>
+                <default>false</default>
+                <label>a. People get only when they get older.</label>
+            </value>
+            <value>
+                <fullName
+        >b. That happens when the body has too much sugar and it can’t be processed correctly.</fullName>
+                <default>false</default>
+                <label
+        >b. That happens when the body has too much sugar and it can’t be processed correctly.</label>
+            </value>
+            <value>
+                <fullName
+        >c. That can be passed from one person to another person.</fullName>
+                <default>false</default>
+                <label
+        >c. That can be passed from one person to another person.</label>
+            </value>
+            <value>
+                <fullName>d. That you usually cannot prevent.</fullName>
+                <default>false</default>
+                <label>d. That you usually cannot prevent.</label>
+            </value>
+            <value>
+                <fullName>No Response</fullName>
+                <default>false</default>
+                <label>No Response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

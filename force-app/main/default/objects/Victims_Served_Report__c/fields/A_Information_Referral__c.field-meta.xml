@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>A_Information_Referral__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >A1_Provide_Criminal_Justice_System_Info__c + A2_Information_About_Victim_Rights__c +  A3_Referral_to_Other_Victim_Programs__c +  A4_Referral_to_Other_Services__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>A. Information &amp; Referral</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

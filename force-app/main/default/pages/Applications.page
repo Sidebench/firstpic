@@ -1,0 +1,238 @@
+<apex:page
+  controller="ApplicationsCtrl"
+  action="{!getApps}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Applications</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="applications"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2 style="display: inline">Applications</h2>
+          </div>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="col-auto pull-right">
+              <apex:outputPanel
+                rendered="{!portalName == 'Ripken' || CONTAINS(portalName, 'NCAI')}"
+              >
+                <apex:outputText
+                  value="{!IF(portalName == 'Ripken', 'Site Name:', 'Organization:')}"
+                />
+                &nbsp;
+                <apex:inputText value="{!siteName}" styleClass="input-md" />
+                <apex:outputPanel rendered="{!portalName == 'NCAI'}">
+                  &nbsp;&nbsp; Grant Type: &nbsp;
+                  <apex:selectList value="{!grantType}" size="1">
+                    <apex:selectOptions value="{!grantTypeOptions}" />
+                  </apex:selectList>
+                </apex:outputPanel>
+                &nbsp;&nbsp; Type: &nbsp;
+                <apex:selectList value="{!appType}" size="1">
+                  <apex:selectOptions value="{!appTypeOptions}" />
+                </apex:selectList>
+              </apex:outputPanel>
+              <div style="margin: 5px"></div>
+              <apex:outputPanel rendered="{!CONTAINS(portalName, 'NCAI')}">
+                &nbsp;&nbsp; Application Grant Year: &nbsp;
+                <apex:selectList value="{!year}" size="1">
+                  <apex:selectOptions value="{!yearOptions}" />
+                </apex:selectList>
+              </apex:outputPanel>
+              &nbsp;&nbsp; Status: &nbsp;
+              <apex:selectList value="{!status}" size="1" id="statusOptions">
+                <apex:selectOptions value="{!statusOptions}" />
+              </apex:selectList>
+              &nbsp;&nbsp; Sort By: &nbsp;
+              <apex:selectList value="{!sortBy}" size="1">
+                <apex:selectOptions value="{!sortByOptions}" />
+              </apex:selectList>
+              <div style="margin: 5px"></div>
+              <apex:commandButton
+                action="{!getApps}"
+                value="Update"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                reRender="form"
+              />
+            </div>
+          </apex:outputPanel>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {!status}
+              <apex:outputText
+                value="Applications"
+                rendered="{!status == null || status == ''}"
+              />
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization' && NOT(CONTAINS(portalName, 'NCAI'))}"
+              >
+                <apex:commandButton
+                  action="{!getApps}"
+                  value="View All"
+                  status="pageStatus"
+                  styleClass="btn-small pull-right"
+                  rendered="{!NOT(viewAll) && approverLevel != 'Finance Admin'}"
+                  reRender="form"
+                >
+                  <apex:param
+                    assignTo="{!viewAll}"
+                    name="viewAll"
+                    value="true"
+                  />
+                </apex:commandButton>
+                <apex:commandButton
+                  action="{!getApps}"
+                  value="View My Assignments"
+                  status="pageStatus"
+                  styleClass="btn-small pull-right"
+                  rendered="{!viewAll && approverLevel != 'Finance Admin'}"
+                  reRender="form"
+                >
+                  <apex:param
+                    assignTo="{!viewAll}"
+                    name="viewAll"
+                    value="false"
+                  />
+                </apex:commandButton>
+              </apex:outputPanel>
+            </div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!apps != null && apps.size > 0}">
+                <table style="width: 100%" class="tblWithBorders">
+                  <tr>
+                    <th>Application Id</th>
+                    <th>Application Grant Year</th>
+                    <th
+                      style="{!IF(userAcctType == 'National Organization','','width: 0;')}"
+                    >
+                      <apex:outputText
+                        value="{!IF(portalName == 'Ripken', 'Site Name', 'Organization')}"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>
+                      <apex:outputText
+                        value="{!IF(portalName == 'Ripken', 'Grant Type', 'Type')}"
+                      />
+                    </th>
+
+                    <th>Status</th>
+                    <th>Submitted Date</th>
+                    <th
+                      style="{!IF(userAcctType == 'National Organization' && NOT(CONTAINS(portalName, 'NCAI')),'','width: 0;')}"
+                    >
+                      <apex:outputText
+                        value="Program Coordinator"
+                        rendered="{!userAcctType == 'National Organization' && NOT(CONTAINS(portalName, 'NCAI'))}"
+                      />
+                    </th>
+                  </tr>
+                  <apex:repeat value="{!apps}" var="i">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.Name}"
+                          rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}"
+                          action="{!URLFOR($Site.Prefix+'/'+portalName+'Application?appId='+ i.id)}"
+                        />
+                        <apex:commandLink
+                          value="{!i.Name}"
+                          rendered="{!CONTAINS(portalName, 'NCAI') && i.Grant_Type__c != 'SOI'}"
+                          action="{!URLFOR($Site.Prefix+'/'+i.Grant_Type__c+'Application?appId='+ i.id)}"
+                        />
+                        <apex:commandLink
+                          value="{!i.Name}"
+                          rendered="{!CONTAINS(portalName, 'NCAI') && i.Grant_Type__c == 'SOI'}"
+                          action="{!URLFOR($Site.Prefix+'/NCAIStatementOfInterestPDF?appId='+ i.id)}"
+                          target="_blank"
+                        />
+                      </td>
+                      <td>{!i.Grant_Year__c}</td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.Organization__r.Name}"
+                          rendered="{!i.Organization__r.Name != null && userAcctType == 'National Organization'}"
+                          action="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+ i.Organization__r.id)}"
+                        />
+                        <apex:outputText
+                          value="{!i.Organization_Name__c}"
+                          rendered="{!i.Organization__r.Name == null && userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!IF(portalName == 'Ripken', i.Grant_Type__c, i.Type__c)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="Requested"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c == 'Sent to Applicant'}"
+                        />
+                        <apex:outputText
+                          value="Submitted"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c == 'Reviewed'}"
+                        />
+                        <apex:outputText
+                          value="Revision Needed"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c == 'Sent Back'}"
+                        />
+                        <apex:outputText
+                          value="{!i.Status__c}"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c != 'Sent to Applicant' && i.Status__c != 'Reviewed' && i.Status__c != 'Sent Back'}"
+                        />
+                        <apex:outputText
+                          value="{!i.Status__c}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!i.Submitted_Date__c}" />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!IF(i.Primary_Approver_Name__c != null, i.Primary_Approver_Name__c, i.Organization__r.Primary_Approver_Name__c)}"
+                          rendered="{!userAcctType == 'National Organization' && NOT(CONTAINS(portalName, 'NCAI'))}"
+                        />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!apps == null || apps.size == 0}">
+                No Applications Found
+              </apex:outputPanel>
+            </div>
+
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

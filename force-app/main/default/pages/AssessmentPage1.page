@@ -1,0 +1,751 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div id="anchor"></div>
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>BOARD/GOVERNANCE STANDARDS 1-7</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="1"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 1: Vision, Mission and Accountability
+          </div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    value="{!assess.S1_Board_Governance_Standards__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    Each Agency must have the same vision, mission and
+                    accountability statement as that written in the NLC and BBBS
+                    Board-approved Nationwide Strategic Direction.
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    Each BBBS Program must have the same vision, mission and
+                    accountability statement as that written in the NLC and BBBS
+                    Board-approved Nationwide Strategic Direction.
+                  </apex:outputPanel>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S1_Board_Governance_Standards_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 2: Strategic Planning (Upload Strategic Plan Below)
+          </div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio value="{!assess.S2_Strategic_Planning__c}">
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    Each Agency must have a Board-approved, multi-year, written
+                    Strategic Business Plan that is reviewed annually by the
+                    Board; and an annual, written Operating Plan; both of which
+                    are implemented by the Board and designated Agency Staff;
+                    and address, at a minimum:
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    The BBBS Council must have a multi-year, written Strategic
+                    Business Plan for the BBBS Program that is reviewed annually
+                    by the Council; and an annual written Operating Plan for the
+                    BBBS Program; both of which are implemented by the Council
+                    and designated BBBS Program Staff, and address, at a
+                    minimum:
+                  </apex:outputPanel>
+                  <ol type="a">
+                    <li>
+                      Clarity of roles and responsibilities relative to
+                      execution and accountability of Strategic Business Plan
+                      implementation;
+                    </li>
+                    <li>
+                      Alignment with the strategic initiatives for the current
+                      BBBS Nationwide Strategic Direction; (not required until
+                      BBBS of America completes its new strategic plan)
+                    </li>
+                    <li>
+                      Statement of commitment and associated performance goals
+                      related to serving children who reflect the diversity of
+                      community;
+                    </li>
+                    <li>
+                      Multi-year and annual measurable agency goals in the areas
+                      of;
+                      <ol type="i">
+                        <li>Program, including quality metrics; and</li>
+                        <li>
+                          Finance, pertaining to, at a minimum, revenue by
+                          source and sustainable unrestricted net assets.
+                        </li>
+                      </ol>
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S2_Strategic_Planning_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="panel-footer">
+            <apex:commandButton
+              action="{!attPopup}"
+              value="Upload Strategic Plan"
+              status="pageStatus"
+              reRender="assessment"
+            >
+              <apex:param
+                assignTo="{!fileName}"
+                name="fileName"
+                value="Strategic Plan"
+              />
+              <apex:param
+                assignTo="{!parentId}"
+                name="parentId"
+                value="{!strategic_parentId}"
+              />
+            </apex:commandButton>
+            &nbsp;&nbsp;
+            <apex:repeat value="{!att_list}" var="a">
+              <apex:outputPanel rendered="{!a.Name == 'Strategic Plan'}">
+                <apex:outputLink
+                  value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                  target="_blank"
+                >
+                  {!a.Name}
+                </apex:outputLink>
+                ({!a.Description})
+              </apex:outputPanel>
+            </apex:repeat>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 3: Fund Development (Upload Fund Development Plan Below)
+          </div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+              <h5>
+                The Council works with the BBBS Program Director and Sponsoring
+                Organization fund development staff to develop and implement a
+                fundraising plan that supports/addresses current operation
+                needs, contingencies and planned growth.
+              </h5>
+            </apex:outputPanel>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio value="{!assess.S3_Fund_Development__c}">
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    Each Agency shall have a Board-approved, multi-year, written
+                    Fund Development Plan that is reviewed annually by the
+                    Board; implemented by the Board and designated Agency Staff;
+                    and addresses, at a minimum:
+                    <ol type="a">
+                      <li>
+                        Clarity of Board and Agency Staff roles and
+                        responsibilities relative to implementation of the Fund
+                        Development Plan;
+                      </li>
+                      <li>
+                        Identification of Board members’ and designated Agency
+                        Staff's measurable goals in fundraising / fund
+                        development; and
+                      </li>
+                      <li>
+                        Measurable goals applied to multiple revenue sources in
+                        order to sustain a diversified funding base.
+                      </li>
+                    </ol>
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    Each Council shall have a Board-approved, multi-year,
+                    written Fund Development Plan that is reviewed annually by
+                    the Council; implemented by the Council and designated BBBS
+                    Program Staff; and addresses, at a minimum:
+                    <ol type="a">
+                      <li>
+                        Clarity of Council and BBBS Program Staff roles and
+                        responsibilities relative to implementation of the Fund
+                        Development Plan;
+                      </li>
+                      <li>
+                        Identification of Council members’ and designated BBBS
+                        Program Staff&#39;s measurable goals in fundraising /
+                        fund development; and
+                      </li>
+                      <li>
+                        Measurable goals applied to multiple revenue sources in
+                        order to sustain a diversified funding base.
+                      </li>
+                    </ol>
+                  </apex:outputPanel>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S3_Fund_Development_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="panel-footer">
+            <apex:commandButton
+              action="{!attPopup}"
+              value="Upload Fund Development Plan"
+              status="pageStatus"
+              reRender="assessment"
+            >
+              <apex:param
+                assignTo="{!fileName}"
+                name="fileName"
+                value="Fund Development Plan"
+              />
+              <apex:param
+                assignTo="{!parentId}"
+                name="parentId"
+                value="{!fund_parentId}"
+              />
+            </apex:commandButton>
+            &nbsp;&nbsp;
+            <apex:repeat value="{!att_list}" var="a">
+              <apex:outputPanel rendered="{!a.Name == 'Fund Development Plan'}">
+                <apex:outputLink
+                  value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                  target="_blank"
+                >
+                  {!a.Name}
+                </apex:outputLink>
+                ({!a.Description})
+              </apex:outputPanel>
+            </apex:repeat>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 4a: Legal Compliance</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio value="{!assess.S4a_Legal_Compliance__c}">
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    Each Big Brothers Big Sisters ("BBBS") independent Agency
+                    must have a Board which is charged with governance of the
+                    Agency and, as such, fulfilling the legal responsibilities
+                    of the Agency. Each Board must certify, in writing (via the
+                    Verification Letter), to BBBSA on an annual basis that the
+                    Agency is:
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    Each independent tax–exempt Affiliate Sponsoring
+                    Organization must have a Board which is charged with
+                    oversight of the BBBS Program and, as such, fulfilling the
+                    legal responsibilities of the BBBS Program. Each Board must
+                    certify, in writing, to BBBSA on an annual basis that the
+                    Sponsoring Organization is:
+                  </apex:outputPanel>
+                  <ol type="a">
+                    <li>
+                      Incorporated and in good standing as a not-for-profit
+                      entity in the State in which its corporate office is
+                      located and (if applicable) qualified to do business as a
+                      foreign corporation in any other state(s) within its
+                      Service Community Area (“SCA”);
+                    </li>
+                    <li>
+                      Operating in compliance with applicable federal, state and
+                      local laws, including those of the
+                      municipalities/counties/states in which the Agency’s BBBS
+                      operations exist; Retaining its not-for-profit tax exempt
+                      status with the IRS, as a 501(c) (3) entity; and
+                    </li>
+                    <li>
+                      Developing, reviewing annually, and updating, as
+                      necessary, all written plans, policies and procedures that
+                      require Board approval, including, but not limited to,
+                      those described below.
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S4a_Legal_Compliance_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 4b: Bylaws</div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+              <h5>
+                Each Board must operate in accordance with written,
+                Board-approved bylaws, in accordance with State Law, including,
+                at a minimum:
+              </h5>
+              <table class="grid-pd-sm">
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_BBBSA_Approved_Name_of_Agency__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Approved name of Agency</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_BBBSA_Approved_Name_of_Agency_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_BBSA_Approved_Service__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Approved Service Community Area</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_BBSA_Approved_Service_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_Procedure_for_Dissolving__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Procedure for dissolving Agency and disposition of physical
+                    and financial assets upon dissolution;
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Procedure_for_Dissolving_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Board_Membership__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Board Membership</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Board_Membership_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Officers__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Officers</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Officers_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_Committee_Structure__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Committee Structure</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Committee_Structure_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Board_Meetings__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Board Meetings</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Board_Meetings_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Fiduciary__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Fiduciary, including:
+                    <ol type="a">
+                      <li>Identification of corporate fiscal year;</li>
+                      <li>Authorization to enter into contracts; and</li>
+                      <li>Indemnification of Board members and officers;</li>
+                    </ol>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Fiduciary_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_Executive_Officer_Director__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Chief Executive Officer/Executive Director, including:
+                    <ol type="a">
+                      <li>
+                        Vesting in the Board the responsibility for hiring,
+                        training, supervising, evaluating and terminating
+                        CEO/ED; and
+                      </li>
+                      <li>
+                        Role and voting rights, if any, of CEO/ED on the Board.
+                      </li>
+                    </ol>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Executive_Officer_Director_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+              <h5>
+                The Sponsoring Organization shall have Board-approved, written
+                Bylaws that shall include:
+              </h5>
+              <table class="grid-pd-sm">
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_Program_Council_Creation__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Creation of a BBBS Program Council and a system for ensuring
+                    that at least one member of the Council shall have a vote on
+                    the Board.
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Program_Council_Creation_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Fiduciary__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Fiscal Provisions as they apply to the Board:
+                    <ol type="a">
+                      <li>Identification of corporate fiscal year;</li>
+                      <li>Authorization to enter into contracts; and</li>
+                      <li>
+                        Indemnification of directors/trustees and officers.
+                      </li>
+                    </ol>
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Fiduciary_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+              </table>
+              <hr />
+              <h5>
+                The BBBS Program shall have Council approved, written Bylaws
+                that shall include:
+              </h5>
+              <table class="grid-pd-sm">
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Board_Membership__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Council Membership</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Board_Membership_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Officers__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Officers</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Officers_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_Committee_Structure__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Committee Structure</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Committee_Structure_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio value="{!assess.S4b_Board_Meetings__c}">
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>Council Meetings</td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Board_Meetings_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="radioBtnTbl" style="width: 80px">
+                    <apex:selectRadio
+                      value="{!assess.S4b_Executive_Officer_Director__c}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectRadio>
+                  </td>
+                  <td>
+                    Provision regarding role and voting rights, if any, of the
+                    BBBS Program Director on the Council.
+                  </td>
+                  <td
+                    class="pull-right"
+                    style="min-width: 100px; font-weight: bold"
+                  >
+                    <apex:inputField
+                      value="{!assess.S4b_Executive_Officer_Director_Text__c}"
+                      styleClass="input-sm"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="1"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          parentId="{!parentId}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(2);
+    };
+  </script>
+</apex:page>

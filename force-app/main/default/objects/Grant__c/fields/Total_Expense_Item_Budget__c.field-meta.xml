@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Expense_Item_Budget__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Budget Item: New Item Budget where Record Type = Expense (not used by BBBSA or NPAL)</inlineHelpText>
+    <label>Total Expense Item Budget</label>
+    <summarizedField>Budget_Item__c.New_Item_Budget__c</summarizedField>
+    <summaryFilterItems>
+        <field>Budget_Item__c.RecordTypeId</field>
+        <operation>equals</operation>
+        <value>Expense</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Budget_Item__c.Grant__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

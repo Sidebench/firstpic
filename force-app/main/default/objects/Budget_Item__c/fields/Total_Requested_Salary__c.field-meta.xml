@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Requested_Salary__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Reimbursement Items: Requested Salary where Reimbursement Status != Incomplete or Denied</inlineHelpText>
+    <label>Total Requested Salary</label>
+    <summarizedField>Reimbursement_Item__c.Requested_Salary__c</summarizedField>
+    <summaryFilterItems>
+        <field
+    >Reimbursement_Item__c.Reimbursement_Status_for_Formula_Fields__c</field>
+        <operation>notEqual</operation>
+        <value>Incomplete, Denied</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Reimbursement_Item__c.Budget_Item__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

@@ -13,7 +13,18 @@
     "test:unit:debug": "sfdx-lwc-jest --debug",
     "test:unit:coverage": "sfdx-lwc-jest --coverage",
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-    "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\""
+    "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "source:retrieve": "sfdx force:source:retrieve -x ./manifest/package.xml && yarn pretty-quick",
+    "source:deploy": "sfdx force:source:deploy -x ./manifest/package.xml -g",
+    "source:check": "sfdx force:source:deploy -x ./manifest/package.xml -u ${ENV:-firstpic_production} -l RunLocalTests -c",
+    "source:convert": "sfdx force:source:convert -r force-app/main/default -d ${PKG:-temp}",
+    "mdapi:retrieve": "sfdx force:mdapi:retrieve -r ./ -k ./manifest/package.xml",
+    "mdapi:convert": "sfdx force:mdapi:convert -r force-app/main/default",
+    "mdapi:check": "sfdx force:mdapi:deploy -c -f ${PKG:-temp.zip} -u ${ENV:-firstpic_production} -l RunLocalTests",
+    "mdapi:deploy": "sfdx force:mdapi:deploy -f ${PKG:-temp.zip} -u ${ENV:-firstpic_production} -l RunLocalTests",
+    "mdapi:deployId": "sfdx force:mdapi:deploy -u ${ENV:-firstpic_production} --validateddeployrequestid $JOBID",
+    "report": "sfdx -u ${ENV:-firstpic_production} force:mdapi:deploy:report",
+    "zip": "zip -r temp.zip temp -x '*.DS_Store' -x '__MACOSX'"
   },
   "devDependencies": {
     "@prettier/plugin-xml": "^0.12.0",
@@ -27,11 +38,6 @@
     "prettier": "^2.0.5",
     "prettier-plugin-apex": "^1.6.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
       "prettier --write"
@@ -39,5 +45,8 @@
     "**/{aura|lwc}/**": [
       "eslint"
     ]
+  },
+  "dependencies": {
+    "pretty-quick": "^3.1.0"
   }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Access_Mode__c</fullName>
+    <externalId>false</externalId>
+    <label>Access Mode</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Local Read Only</fullName>
+                <default>false</default>
+                <label>Local Read Only</label>
+            </value>
+            <value>
+                <fullName>National Access Only</fullName>
+                <default>false</default>
+                <label>National Access Only</label>
+            </value>
+            <value>
+                <fullName>National L2a/L3a Access Only</fullName>
+                <default>false</default>
+                <label>National L2a/L3a Access Only</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

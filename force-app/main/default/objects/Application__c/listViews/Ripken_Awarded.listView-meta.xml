@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ripken_Awarded</fullName>
+    <columns>NAME</columns>
+    <columns>National_Organization__c</columns>
+    <columns>Organization__c</columns>
+    <columns>Organization_Name__c</columns>
+    <columns>Application_Title__c</columns>
+    <columns>Status__c</columns>
+    <columns>Submitted_Date__c</columns>
+    <columns>LAST_UPDATE</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>National_Organization_Name__c</field>
+        <operation>equals</operation>
+        <value>Cal Ripken Sr. Foundation</value>
+    </filters>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Awarded</value>
+    </filters>
+    <label>Ripken Awarded</label>
+</ListView>

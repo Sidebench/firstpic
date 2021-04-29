@@ -1,0 +1,166 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute
+    type="Application_Site__c[]"
+    name="sites"
+    description="sites"
+  />
+  <apex:attribute
+    type="ApplicationCtrl"
+    name="ctrl"
+    description="ApplicationCtrl"
+  />
+
+  <h4 style="padding: 10px 20px; border-top: 1px solid #ccc">{!header}</h4>
+  <apex:repeat value="{!sites}" var="i">
+    <div class="rows-alt">
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="semibold">{!ctrl.siteFields['Name']}</div>
+          <apex:inputField
+            value="{!i.Name}"
+            rendered="{!NOT(ctrl.readOnly) && i.Site_Id__c == null}"
+          />
+          <apex:outputField
+            value="{!i.Name}"
+            rendered="{!ctrl.readOnly || i.Site_Id__c != null}"
+          />
+        </div>
+        <apex:outputPanel rendered="{!ctrl.app.Type__c == 'Existing'}">
+          <div class="col-xs-6">
+            <div class="semibold">Status of Implementation of this Site</div>
+            <apex:inputField
+              value="{!i.Active_Status__c}"
+              rendered="{!NOT(ctrl.readOnly)}"
+            />
+            <apex:outputField
+              value="{!i.Active_Status__c}"
+              rendered="{!ctrl.readOnly}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 semibold">
+          {!ctrl.siteFields['Tribes_Served__c']}
+        </div>
+        <div class="col-xs-12">
+          <apex:inputField
+            value="{!i.Tribes_served__c}"
+            rendered="{!NOT(ctrl.readOnly)}"
+          />
+          <apex:outputField
+            value="{!i.Tribes_served__c}"
+            rendered="{!ctrl.readOnly}"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="semibold">
+            {!ctrl.siteFields['Number_of_Club_Members__c']}
+          </div>
+          <apex:inputField
+            value="{!i.Number_of_Club_Members__c}"
+            rendered="{!NOT(ctrl.readOnly)}"
+          />
+          <apex:outputField
+            value="{!i.Number_of_Club_Members__c}"
+            rendered="{!ctrl.readOnly}"
+          />
+        </div>
+        <div class="col-xs-6">
+          <div class="semibold">
+            {!ctrl.siteFields['Number_of_Applicable_Youth__c']}
+          </div>
+          <apex:inputField
+            value="{!i.Number_of_Applicable_Youth__c}"
+            rendered="{!NOT(ctrl.readOnly)}"
+          />
+          <apex:outputField
+            value="{!i.Number_of_Applicable_Youth__c}"
+            rendered="{!ctrl.readOnly}"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="semibold">
+            {!ctrl.siteFields['Average_Daily_Attendance_During_School__c']}
+          </div>
+          <apex:inputField
+            value="{!i.Average_Daily_Attendance_During_School__c}"
+            rendered="{!NOT(ctrl.readOnly)}"
+          />
+          <apex:outputField
+            value="{!i.Average_Daily_Attendance_During_School__c}"
+            rendered="{!ctrl.readOnly}"
+          />
+        </div>
+        <div class="col-xs-6">
+          <div class="semibold">
+            {!ctrl.siteFields['Average_Daily_Attendance_During_Summer__c']}
+          </div>
+          <apex:inputField
+            value="{!i.Average_Daily_Attendance_During_Summer__c}"
+            rendered="{!NOT(ctrl.readOnly)}"
+          />
+          <apex:outputField
+            value="{!i.Average_Daily_Attendance_During_Summer__c}"
+            rendered="{!ctrl.readOnly}"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="semibold">
+            {!ctrl.siteFields['School_Implementation_Site__c']}
+          </div>
+          <apex:inputField
+            value="{!i.School_Implementation_Site__c}"
+            rendered="{!NOT(ctrl.readOnly)}"
+          />
+          <apex:outputField
+            value="{!i.School_Implementation_Site__c}"
+            rendered="{!ctrl.readOnly}"
+          />
+        </div>
+        <apex:outputPanel rendered="{!ctrl.app.Type__c == 'Existing'}">
+          <div class="col-xs-4">
+            <div class="semibold">
+              {!ctrl.siteFields['Change_in_Attendance__c']}
+              <span
+                class="badge"
+                title="If your attendance has changed from the previous program year please report how it has changed here."
+                >?</span
+              >
+            </div>
+            <apex:inputField
+              value="{!i.Change_in_Attendance__c}"
+              rendered="{!NOT(ctrl.readOnly)}"
+            />
+            <apex:outputField
+              value="{!i.Change_in_Attendance__c}"
+              rendered="{!ctrl.readOnly}"
+            />
+          </div>
+        </apex:outputPanel>
+        <apex:outputPanel
+          rendered="{!i.Site_Id__c == null && NOT(ctrl.readOnly)}"
+        >
+          <div class="col-xs-2">
+            <div class="semibold">
+              Delete Site
+              <span
+                class="badge"
+                title="Delete this site by checking the box and clicking the Delete Sites button. This cannot be undone."
+                >?</span
+              >
+            </div>
+            <apex:inputField value="{!i.Delete__c}" />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:repeat>
+</apex:component>

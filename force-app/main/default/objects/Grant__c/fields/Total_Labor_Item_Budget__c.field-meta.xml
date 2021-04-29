@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Labor_Item_Budget__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Budget Item: Item Budget where Record Type = Labor (not used by BBBSA or NPAL)</inlineHelpText>
+    <label>Total Labor Item Budget</label>
+    <summarizedField>Budget_Item__c.Item_Budget__c</summarizedField>
+    <summaryFilterItems>
+        <field>Budget_Item__c.RecordTypeId</field>
+        <operation>equals</operation>
+        <value>Labor</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Budget_Item__c.Grant__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

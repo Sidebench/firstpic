@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Labor_Balance__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Wages__c &gt; 0,
+Wages__c - Total_Approved_Salary__c,
+Item_Budget__c - Fringe_Benefits__c - Total_Approved_Salary__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>if Wages &gt; 0: Wages - Total Approved Salary;
+else: Item Budget - Fringe Benefits - Total Approved Salary</inlineHelpText>
+    <label>Labor Balance</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

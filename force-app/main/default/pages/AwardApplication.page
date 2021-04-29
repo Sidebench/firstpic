@@ -1,0 +1,547 @@
+<apex:page
+  controller="ApplicationCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Grant Application</title>
+  </head>
+  <c:RipkenHeader
+    ActivePage="applications"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!userAcctType == 'National Organization'}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!app.Organization_Name__c}</h2>
+          </div>
+          <div class="col-auto pull-right">
+            Application Id: {!app.Name} <br />
+            Status: {!app.Status__c}
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Award Application</div>
+          <div class="panel-body grid-pd-md">
+            <div class="row">
+              <div class="col-xs-4">
+                National Grant <br />
+                <apex:selectList
+                  value="{!grant}"
+                  size="1"
+                  style="display: block"
+                  rendered="{!sg.Id == null}"
+                >
+                  <apex:selectOptions value="{!grantOptions}" />
+                </apex:selectList>
+                <apex:outputText
+                  value="{!sg.National_Grant_Name__c}"
+                  rendered="{!sg.Id != null}"
+                />
+              </div>
+              <div class="col-xs-4">
+                Grant Date Range <br />
+                <apex:inputField
+                  value="{!sg.Start_Date__c}"
+                  styleClass="input-md"
+                />
+                -&nbsp;
+                <apex:inputField
+                  value="{!sg.End_Date__c}"
+                  styleClass="input-md"
+                />
+              </div>
+              <div class="col-xs-4">
+                Awarded Amount <br /> $&nbsp;<apex:inputField
+                  value="{!sg.Amount__c}"
+                  style="width: 80%"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                Sub-Grant Name <br />
+                <apex:inputField value="{!sg.Name}" />
+              </div>
+              <div class="col-xs-4">
+                Grant Type <br />
+                <apex:inputField value="{!sg.Grant_Type__c}" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                Year <br />
+                <apex:inputField value="{!sg.Year__c}" styleClass="input-md" />
+              </div>
+              <div class="col-xs-4">
+                State <br />
+                <apex:inputField value="{!sg.State__c}" />
+              </div>
+              <div class="col-xs-4">
+                <apex:inputField value="{!sg.Youth_Development_Park__c}" />
+                Youth Development Park
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                Account QuickBooks <br />
+                <apex:inputField value="{!sg.Account_QuickBooks__c}" />
+              </div>
+              <div class="col-xs-4">
+                Class QuickBooks <br />
+                <apex:inputField value="{!sg.Class_QuickBooks__c}" />
+              </div>
+              <div class="col-xs-4">
+                <apex:inputField value="{!sg.Is_STEM_Program__c}" /> STEM
+                Program
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Funder Type</div>
+          <div class="panel-body grid-pd-md">
+            <div class="row">
+              <div class="col-xs-4">
+                Federal Grants:&nbsp;<apex:inputField
+                  value="{!sg.FT_Federal_Grants__c}"
+                  styleClass="input-md"
+                />%
+              </div>
+              <div class="col-xs-4">
+                State Initiatives:&nbsp;<apex:inputField
+                  value="{!sg.FT_State_Initiatives__c}"
+                  styleClass="input-md"
+                />%
+              </div>
+              <div class="col-xs-4">
+                Private (any):&nbsp;<apex:inputField
+                  value="{!sg.FT_Private__c}"
+                  styleClass="input-md"
+                />%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Source Type</div>
+          <div class="panel-body grid-pd-md">
+            <table width="100%" class="tbl-pd-sm">
+              <tr>
+                <td>
+                  Office of Juvenile Justice &amp; Delinquency Prevention:
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Office_of_Juvenile_Justice__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>US Department of State:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_US_Department_of_State__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Washington/Baltimore HIDTA:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Washington_Baltimore_HIDTA__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Mississippi Department of Human Services:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Mississippi_Dept_of_Human_Services__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>North Carolina Department of Justice:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_North_Carolina_Department_of_Justice__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Ohio Office of the Attorney General:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Ohio_Office_of_the_Attorney_General__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Wisconsin Department of Justice:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Wisconsin_Department_of_Justice__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Fund II:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Fund_II__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Private Grants:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Private_Grants__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>YDP Growth Fund:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_YDP_Growth_Fund__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>CRSF:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_CRSF__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Baltimore Gas &amp; Electric:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Baltimore_Gas_Electric__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>CareFirst:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_CareFirst__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Charles Crane Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Charles_Crane_Foundation__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>GEICO:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_GEICO__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Herb Block Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Herb_Block_Foundation__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Marriott Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Marriott_Foundation__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Naples Children &amp; Education Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Naples_Children_Education__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Perdue &amp; Henson Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Perdue_Henson_Foundation__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>TransAmerica:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_TransAmerica__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>United Health Care:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_United_Health_Care__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>SUEZ:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_SUEZ__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Roanoke HIDTA:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Roanoke_HIDTA__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Prince William HIDTA:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Prince_William_HIDTA__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Bauer Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Bauer_Foundation__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Niagara Cares:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Niagara_Cares__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Niagara Cares Hurricane Relief Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Niagara_Cares_Hurricane_Relief__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Viragh Family Foundation:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Viragh_Family_Foundation__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>COPS:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_COPS__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Healthy Lifestyles (HL):</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Healthy_Lifestyles_HL__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Under Armour:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Under_Armour__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Sun Trust Bank:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Sun_Trust_Bank__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>JeepChrysler:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_JeepChrysler__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>Charles T. Bauer Charitable Fdn:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Charles_T_Bauer_Charitable_Fdn__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Sherman Fairchild Fdn:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Sherman_Fairchild_Fdn__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Toledo Community Fdn:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Toledo_Community_Fdn__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+              </tr>
+              <tr>
+                <td>PNC:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_PNC__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td>Blue Cross Blue Shield:</td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.ST_Blue_Cross_Blue_Shield__c}"
+                    styleClass="input-sm"
+                  />% &nbsp;&nbsp;
+                </td>
+                <td colspan="4"></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">LOA Details</div>
+          <div class="panel-body">
+            <table width="100%">
+              <tr>
+                <td>Youth Served:</td>
+                <td>Mentors Required:</td>
+                <td>Catalog of Federal Domestic Assistance:</td>
+                <td>Equipment and Materials Value:</td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:inputField
+                    value="{!sg.Youth_Served__c}"
+                    styleClass="input-md"
+                  />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.Mentors_Required__c}"
+                    styleClass="input-md"
+                  />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.Catalog_of_Federal_Domestic_Assistance__c}"
+                    style="width: 80%"
+                  />
+                </td>
+                <td>
+                  $&nbsp;<apex:inputField
+                    value="{!sg.Equipment_and_Materials_Value__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Progress Report 1 Date:</td>
+                <td>Progress Report 2 Date:</td>
+                <td>Progress Report 3 Date:</td>
+                <td>Progress Report 4 Date:</td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:inputField
+                    value="{!sg.Progress_Report_1_Date__c}"
+                    styleClass="input-md"
+                  />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.Progress_Report_2_Date__c}"
+                    styleClass="input-md"
+                  />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.Progress_Report_3_Date__c}"
+                    styleClass="input-md"
+                  />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!sg.Progress_Report_4_Date__c}"
+                    styleClass="input-md"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="4">
+                  <h6 style="margin-bottom: 0">
+                    Please fill out all required Progress Report dates. Note:
+                    Not all Grants will require four reports, these fields can
+                    be left blank.
+                  </h6>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!--<apex:commandButton value="Update Grant Name" action="{!updateName}" reRender="form" />-->
+        <apex:commandButton
+          value="Return to Application"
+          action="{!URLFOR($Site.Prefix+'/RipkenApplication?appId='+app.Id)}"
+          rendered="{!sg.Id == null}"
+        />
+        <apex:commandButton
+          value="Award"
+          action="{!award}"
+          styleClass="btn primary"
+          rendered="{!sg.Id == null}"
+        />
+        <apex:commandButton
+          value="Cancel"
+          action="{!URLFOR($Site.Prefix+'/BudgetDetails?grantId='+sg.Id)}"
+          rendered="{!sg.Id != null}"
+        />
+        <apex:commandButton
+          value="Save"
+          action="{!upsertGrant}"
+          styleClass="btn primary"
+          rendered="{!sg.Id != null}"
+        />
+        <apex:pageMessages></apex:pageMessages>
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

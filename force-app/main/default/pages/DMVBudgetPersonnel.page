@@ -1,0 +1,570 @@
+<apex:page
+  controller="BudgetPersonnelCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Budget Personnel Form</title>
+  </head>
+  <c:DMVHeader
+    ActivePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="budgetForm">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!grant.Amount__c}" />
+              </apex:outputText>
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid-pd-sm">
+          <div class="row">
+            <div class="col-xs-6">
+              Projected # of children served during the Grant performance
+              period: &nbsp;
+              <apex:inputText
+                value="{!grant.Youth_Served__c}"
+                styleClass="input-sm"
+              />
+            </div>
+            <div class="col-xs-6 pull-right">
+              Sub-Grant Date Range: &nbsp;
+              <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                <apex:param value="{!grant.Grant_Start_Date__c}" />
+              </apex:outputText>
+              -
+              <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                <apex:param value="{!grant.Grant_End_Date__c}" />
+              </apex:outputText>
+            </div>
+          </div>
+        </div>
+
+        <apex:outputPanel id="lists">
+          <apex:outputPanel rendered="{!labor_list.size > 0}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Update Personnel Items
+                <div class="pull-right">
+                  <apex:commandButton
+                    action="{!updateSelected}"
+                    value="Mark Inactive"
+                    status="pageStatus"
+                    styleClass="btn-small btn-white"
+                    rerender="lists"
+                  >
+                    <apex:param
+                      assignTo="{!bulkAction}"
+                      id="bulkAction"
+                      name="bulkAction"
+                      value="disable"
+                    />
+                  </apex:commandButton>
+                </div>
+              </div>
+              <div class="panel-body">
+                <apex:outputPanel id="laborItems">
+                  <table style="width: 100%">
+                    <tr>
+                      <th style="width: 20px"></th>
+                      <th>Name</th>
+                      <th>Title</th>
+                      <th class="text-center">
+                        Hourly
+                        <span class="badge" title="Hourly Employee">?</span>
+                      </th>
+                      <th class="text-center">
+                        Rate
+                        <span class="badge" title="Annual Salary / Hourly Rate"
+                          >?</span
+                        >
+                      </th>
+                      <th class="text-center">
+                        Total Hrs/Wk
+                        <span
+                          class="badge"
+                          title="Projected Hours per Week Total"
+                          >?</span
+                        >
+                      </th>
+                      <th class="text-center">
+                        Grant Hrs/Wk
+                        <span
+                          class="badge"
+                          title="Projected Hours per Week Towards Grant"
+                          >?</span
+                        >
+                      </th>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                      <th class="text-center">% Time on Grant</th>
+                      <th>Total Salary</th>
+                    </tr>
+                    <apex:repeat value="{!labor_list}" var="i">
+                      <tr>
+                        <td>
+                          <apex:inputCheckbox
+                            value="{!i.Selected__c}"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                        </td>
+                        <td>
+                          <apex:inputText
+                            value="{!i.Name}"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Name}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td>
+                          <apex:inputText
+                            value="{!i.Title__c}"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Title__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputCheckbox
+                            value="{!i.Is_Hourly__c}"
+                            disabled="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.New_Rate__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputField
+                            value="{!i.Hourly_Rate__c}"
+                            rendered="{!NOT(i.Is_Active__c) && i.Is_Hourly__c}"
+                          />
+                          <apex:outputField
+                            value="{!i.Salary__c}"
+                            rendered="{!NOT(i.Is_Active__c) && NOT(i.Is_Hourly__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Projected_Hours_Per_Week__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Projected_Hours_Per_Week__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputField
+                            value="{!i.Start_Date__c}"
+                            rendered="{!i.Is_Active__c}"
+                            styleClass="input-md"
+                          />
+                          <apex:outputText
+                            value="{0, date, MM'/'dd'/'yyyy}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          >
+                            <apex:param value="{!i.Start_Date__c}" />
+                          </apex:outputText>
+                        </td>
+                        <td class="text-center">
+                          <apex:inputField
+                            value="{!i.End_Date__c}"
+                            rendered="{!i.Is_Active__c}"
+                            styleClass="input-md"
+                          />
+                          <apex:outputText
+                            value="{0, date, MM'/'dd'/'yyyy}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          >
+                            <apex:param value="{!i.End_Date__c}" />
+                          </apex:outputText>
+                        </td>
+                        <td class="text-center">
+                          <apex:outputField
+                            value="{!i.Projected_Percent_Time_on_Grant__c}"
+                          />
+                        </td>
+                        <td>
+                          <apex:outputField value="{!i.New_Wages__c}" />
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">Fringe Benefits</div>
+              <div class="panel-body">
+                <h6>Please enter annual benefit rates per employee.</h6>
+                <apex:outputPanel id="fringeItems">
+                  <table style="width: 100%">
+                    <tr>
+                      <th>Name</th>
+                      <th class="text-center">FICA</th>
+                      <th class="text-center">Medical</th>
+                      <th class="text-center">Dental</th>
+                      <th class="text-center">Short Term Disability</th>
+                      <th class="text-center">Long Term Disability</th>
+                      <th class="text-center">Life</th>
+                      <th class="text-center">Other</th>
+                      <th>Total Fringe Benefits</th>
+                    </tr>
+                    <apex:repeat value="{!labor_list}" var="i">
+                      <tr>
+                        <td>{!i.Name}</td>
+                        <td>
+                          <apex:inputText
+                            value="{!i.FICA__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.FICA__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Medical__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Medical__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Dental__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Dental__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Short_Term_Disability__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Short_Term_Disability__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Long_Term_Disability__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Long_Term_Disability__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Life__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Life__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Other_Benefits__c}"
+                            styleClass="input-sm"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Other_Benefits__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td>
+                          <apex:outputText
+                            value="${0, number, ###,###,###,##0.00}"
+                          >
+                            <apex:param value="{!i.New_Fringe_Benefits__c}" />
+                          </apex:outputText>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Add Personnel Items
+              <div class="pull-right">
+                <apex:commandButton
+                  action="{!deleteItems}"
+                  value="Delete Items"
+                  status="pageStatus"
+                  styleClass="btn-small btn-white"
+                />
+              </div>
+            </div>
+            <div class="panel-body grid-pd-sm">
+              <apex:outputPanel id="newLaborItems">
+                <table style="width: 100%">
+                  <tr>
+                    <th style="width: 20px"></th>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th class="text-center">
+                      Hourly
+                      <span class="badge" title="Hourly Employee">?</span>
+                    </th>
+                    <th class="text-center">
+                      Rate
+                      <span class="badge" title="Annual Salary / Hourly Rate"
+                        >?</span
+                      >
+                    </th>
+                    <th class="text-center">
+                      Total Hrs/Wk
+                      <span class="badge" title="Projected Hours per Week Total"
+                        >?</span
+                      >
+                    </th>
+                    <th class="text-center">
+                      Grant Hrs/Wk
+                      <span
+                        class="badge"
+                        title="Projected Hours per Week Towards Grant"
+                        >?</span
+                      >
+                    </th>
+                    <th class="text-center">% Time on Grant</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th class="text-center">Total Salary</th>
+                  </tr>
+                  <apex:repeat value="{!newLabor_list}" var="i">
+                    <tr>
+                      <td>
+                        <apex:inputCheckbox value="{!i.Selected__c}" />
+                      </td>
+                      <td>
+                        <apex:inputField value="{!i.Name}" />
+                      </td>
+                      <td>
+                        <apex:inputField value="{!i.Title__c}" />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputField value="{!i.Is_Hourly__c}" />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputField
+                          value="{!i.New_Rate__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Projected_Hours_Per_Week__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputField
+                          value="{!i.Projected_Percent_Time_on_Grant__c}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputField
+                          value="{!i.Start_Date__c}"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputField
+                          value="{!i.End_Date__c}"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputField value="{!i.New_Wages__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+                <hr />
+                <table style="width: 100%">
+                  <tr>
+                    <th style="width: 20px"></th>
+                    <th>Name</th>
+                    <th class="text-center">FICA</th>
+                    <th class="text-center">Medical</th>
+                    <th class="text-center">Dental</th>
+                    <th class="text-center">S.T. Disability</th>
+                    <th class="text-center">L.T. Disability</th>
+                    <th class="text-center">Life</th>
+                    <th class="text-center">Other</th>
+                    <th class="text-center">Total Fringe Benefits</th>
+                  </tr>
+                  <apex:repeat value="{!newLabor_list}" var="i">
+                    <tr>
+                      <td style="width: 30px"></td>
+                      <td>{!i.Name}</td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.FICA__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Medical__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Dental__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Short_Term_Disability__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Long_Term_Disability__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Life__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Other_Benefits__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="${0, number, ###,###,###,##0.00}"
+                        >
+                          <apex:param value="{!i.New_Fringe_Benefits__c}" />
+                        </apex:outputText>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+            </div>
+            <div class="panel-footer">
+              <apex:commandButton
+                value="Add"
+                action="{!addItem}"
+                status="pageStatus"
+              >
+                <apex:param assignTo="{!recordType}" value="labor" />
+              </apex:commandButton>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Notes</div>
+          <div class="panel-body">
+            <apex:inputField value="{!grant.Notes_for_National__c}" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-6">
+            <apex:commandButton
+              action="{!updateAmounts}"
+              value="Update Amounts"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!saveAndExit}"
+              value="Save and Exit"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              value="Next"
+              action="{!saveAndContinue}"
+              status="pageStatus"
+              styleClass="btn primary"
+            />
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h4 style="padding-right: 10px">
+              <apex:outputPanel id="totals">
+                Total Requested Amount: &nbsp;
+                <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                  <apex:param value="{!totalRequestedAmount}" />
+                </apex:outputText>
+              </apex:outputPanel>
+            </h4>
+          </div>
+        </div>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

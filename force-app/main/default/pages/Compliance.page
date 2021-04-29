@@ -1,0 +1,246 @@
+<apex:page
+  controller="ComplianceCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Compliance</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2 style="display: inline-block; padding: 4px 0 10px">Compliance</h2>
+        <span class="col-auto pull-right">
+          <div style="padding-bottom: 10px; margin-top: -5px">
+            Export to Excel: &nbsp;
+            <select onChange="window.open(this.value,'_blank')">
+              <option value="{!URLFOR($Site.Prefix+'/Compliance')}">
+                -- Select a Report --
+              </option>
+              <option
+                value="{!URLFOR($Site.Prefix+'/ComplianceReportXLS?type=all&year='+year)}"
+              >
+                Contacts Report
+              </option>
+              <option
+                value="{!URLFOR($Site.Prefix+'/ComplianceReportXLS?type=audit&year='+year)}"
+              >
+                Audit Report
+              </option>
+              <option
+                value="{!URLFOR($Site.Prefix+'/ComplianceReportXLS?type=ins&year='+year)}"
+              >
+                Insurance Report
+              </option>
+              <!-- This report is being removed per request from BBBSA as it doesn't apply to 2019 SAs.
+                            <option value="{!URLFOR($Site.Prefix+'/ComplianceReportXLS?type=incomplete&year='+year)}">
+                                Incomplete Assessments
+                            </option>-->
+              <option
+                value="{!URLFOR($Site.Prefix+'/DocumentsXLS?org=BBBSA&objectType=assessment&reportType=required&year='+year)}"
+              >
+                Assessment Documents Report
+              </option>
+            </select>
+          </div>
+          <div style="padding-bottom: 10px">
+            Name or BBBS Id: &nbsp;<apex:inputText
+              value="{!keyword}"
+              styleClass="input-md"
+            />&nbsp; Year: &nbsp;
+            <apex:selectList value="{!year}" size="1">
+              <apex:selectOptions value="{!years}" /> </apex:selectList
+            >&nbsp;
+            <apex:commandButton
+              action="{!getLists}"
+              value="Search"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            >
+              <apex:param
+                assignTo="{!runGetLists}"
+                name="runGetLists"
+                value="true"
+              />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!getLists}"
+              value="Clear"
+              status="pageStatus"
+              styleClass="btn-small"
+              reRender="form"
+            >
+              <apex:param assignTo="{!keyword}" name="keyword" value="" />
+              <apex:param
+                assignTo="{!runGetLists}"
+                name="runGetLists"
+                value="true"
+              />
+            </apex:commandButton>
+          </div>
+        </span>
+        <br />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!year} Assessments</div>
+          <div class="panel-body">
+            <table style="width: 100%" class="table">
+              <tr>
+                <th>BBBS Id</th>
+                <th>Organization</th>
+                <th>Assessment Status</th>
+                <th style="{!IF(year != '2018', 'width: 0;', '')}">
+                  <apex:outputText
+                    value="Compliance Status"
+                    rendered="{!year != '2018'}"
+                  />
+                </th>
+                <th>Reviewed</th>
+                <th>Submitted Date</th>
+                <th>Attachment Status</th>
+                <th class="text-center">Attachments</th>
+                <th class="text-center">Details</th>
+                <th class="text-center">Contacts</th>
+              </tr>
+              <apex:repeat value="{!sa_list}" var="i">
+                <tr>
+                  <td>{!i.Organization__r.BBBS_ID__c}</td>
+                  <td>{!i.Organization__r.Name}</td>
+                  <td>{!i.Assessment_Status__c}</td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.Compliance_Status__c}"
+                      rendered="{!year != '2018'}"
+                    />
+                  </td>
+                  <td>{!i.Reviewed__c}</td>
+                  <td><apex:outputField value="{!i.Submitted_Date__c}" /></td>
+                  <td>{!i.Attachment_Status__c}</td>
+                  <td class="text-center">
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/AssessmentDocuments?AssessmentID=' + i.Id)}"
+                    >
+                      <span class="glyphicon glyphicon-folder-open"></span>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <apex:commandLink
+                      action="{!URLFOR($Site.Prefix+'/AssessmentPage9?AssessmentID=' + i.Id)}"
+                      rendered="{!i.Hide_Standards__c == true}"
+                    >
+                      <span class="glyphicon glyphicon-eye-open"></span>
+                    </apex:commandLink>
+                    <apex:commandLink
+                      action="{!URLFOR($Site.Prefix+'/AssessmentPage10?AssessmentID=' + i.Id)}"
+                      rendered="{!i.Year__c < 2019 && i.Hide_Standards__c == false}"
+                    >
+                      <span class="glyphicon glyphicon-eye-open"></span>
+                    </apex:commandLink>
+                    <apex:commandLink
+                      action="{!URLFOR($Site.Prefix+'/AssessmentP09?AssessmentID=' + i.Id)}"
+                      rendered="{!i.Year__c >= 2019}"
+                    >
+                      <span class="glyphicon glyphicon-eye-open"></span>
+                    </apex:commandLink>
+                  </td>
+                  <td class="text-center">
+                    <apex:commandLink
+                      action="{!contactPopup}"
+                      status="pageStatus"
+                      reRender="form"
+                    >
+                      <span class="glyphicon glyphicon-user"></span>
+                      <apex:param
+                        assignTo="{!OrgId}"
+                        name="OrgId"
+                        value="{!i.Organization__c}"
+                      />
+                      <apex:param
+                        assignTo="{!orgName}"
+                        name="orgName"
+                        value="{!i.Organization__r.Name}"
+                      />
+                    </apex:commandLink>
+                  </td>
+                </tr>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+        <apex:pageMessages />
+
+        <!-- END Contact Popup -->
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayContactPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopupLg"
+          layout="block"
+          rendered="{!displayContactPopup}"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Contact for {!orgName}</h4>
+              </div>
+              <div class="modal-body">
+                <apex:outputPanel rendered="{!contact_list.size > 0}">
+                  <table class="table pad-sm borders-none">
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                    </tr>
+                    <apex:repeat value="{!contact_list}" var="i">
+                      <tr>
+                        <td>{!i.Name}</td>
+                        <td>{!i.Role__c}</td>
+                        <td>{!i.Email}</td>
+                        <td>{!i.Phone}</td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!contact_list.size == 0}">
+                  This Affiliate does not have any contacts.
+                </apex:outputPanel>
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!closeContactPopup}"
+                  value="Close"
+                  status="pageStatus"
+                  reRender="form"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

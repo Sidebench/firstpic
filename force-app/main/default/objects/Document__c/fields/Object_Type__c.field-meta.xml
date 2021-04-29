@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Object_Type__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Assessment__c != null, &apos;Assessment&apos;,
+IF(Grant__c  != null, &apos;Grant&apos;,
+IF(Reimbursement__c  != null, &apos;Reimbursement&apos;,
+IF(Session_Report__c  != null, &apos;Session Report&apos;, 
+&apos;&apos;))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Object Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

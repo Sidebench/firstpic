@@ -1,0 +1,30 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="id"
+    description="id"
+    default="collapse1"
+  />
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute
+    type="Boolean"
+    name="startCollapsed"
+    description="startCollapsed"
+    default="false"
+  />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      {!header}
+      <a data-toggle="collapse" href="#{!id}" class="toggle pull-right"></a>
+    </div>
+    <div
+      id="{!id}"
+      class="{!IF(startCollapsed, 'panel-collapse collapse', 'panel-collapse collapse in')}"
+    >
+      <div class="panel-body grid-pd-sm">
+        <apex:componentBody />
+      </div>
+    </div>
+  </div>
+</apex:component>

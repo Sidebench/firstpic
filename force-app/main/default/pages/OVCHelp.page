@@ -1,0 +1,912 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Help</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <h3>Help Videos and Documents</h3>
+      <br />
+
+      <h4>Confidentiaity and Data Collection - 10/20</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/m8iOkZXCIaQ" target="_blank">
+              <div class="panel-body text-center">
+                Confidentiality and Data Collection (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCConfidentialityDataCollection}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Confidentiality and Data Collection Webinar
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVictimAssistanceSubgranteeDataTemplate1}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Assistance Subgrantee Data Template
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Community Needs Assessment and Privacy Part 1 - 11/17</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/u6GsFwJkciM" target="_blank">
+              <div class="panel-body text-center">
+                Community Needs Assessment and Privacy - Part I (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCCommunityNeedsAssessmentPrivacy1}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Community Needs Assessment and Privacy - Part I
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Community Needs Assessment and Privacy Part 2 - 12/3</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/VloyoDvoj3o" target="_blank">
+              <div class="panel-body text-center">
+                Community Needs Assessment and Privacy - Part II (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCCommunityNeedsAssessmentPrivacy2}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Community Needs Assessment and Privacy - Part II
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCNCAIFundNewVictimServiceCommunityNeedsAssessmentSAMPLE}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NCAI Fund Service Provider Community Needs Assessment SAMPLE
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCNCAIFundServiceProviderCommunityNeedsAssessmentSAMPLE}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NCAI Fund Victim Service Community Needs Assessment SAMPLE
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Tribal Codes and Victim Services - 12/1</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/Xlk8ptwVR7A" target="_blank">
+              <div class="panel-body text-center">
+                Tribal Codes and Victim Services (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCTribalCodesVictimServicesWebinar}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Tribal Codes and Victim Services
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCCrimesAgainstChildrenTribalLawsResourceGuide}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Crimes Against Children Tribal Laws Resource Guide
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCDomesticViolenceCodeResource}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Domestic Violence Code Resource
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCTribalLegalCodeResourceSexualAssaultStalkingLaws}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Tribal Legal Code Resource – Sexual Assault and Stalking Laws
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCTribalLegalCodeResourceTribalLawsImplementingTLOAEnhance}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Tribal Legal Code Resource – Tribal Laws Implementing TLOA
+                Enhanced Sentencing and VAWA Enhanced Jurisdiction
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Financial Online Reporting - 12/8</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.youtube.com/watch?v=pxiqgSyR64w&amp;feature=youtu.be"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NCAI Financial Online Reporting (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCNCAIFinancialOnlineReporting12082020}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NCAI Financial Online Reporting
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVehicleCostbasedProcurementPacket1}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Vehicle Costbased Procurement Packet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCContractServicesProcurementPacket}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Contract Services Procurement Packet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Performance Measurement Reporting – 11/5</h4>
+      This webinar includes:
+      <ul>
+        <li>
+          Explanation of the Department of Justice, Office for Victims of Crime
+          (OVC) Performance Measurement Reporting requirements
+        </li>
+        <li>Guidance on how to maintain victim safety</li>
+      </ul>
+
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/d5X2_1g_NIk" target="_blank">
+              <div class="panel-body text-center">
+                Performance Measurement Reporting (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCPerformanceMeasurementReportingWebinar}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Performance Measurement Reporting Webinar
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCExampleVictimAssistanceSubgranteeDataTemplate}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Example Victim Assistance Subgrantee Data Template
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVictimAssistanceSubgranteeDataTemplate}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Victim Assistance Subgrantee Data Template
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Reimbursement Request Submission Webinar - 10/7</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.youtube.com/watch?v=F9pzLRY0D5g&feature=emb_logo"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Reimbursement Request Submission Webinar (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCReimbursementRequest}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Reimbursement Request Submission for NCAI Fund Victim Services
+                Micro-grant Program
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCContractServicesProcurementPacket}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Contract Services Procurement Packet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVehicleCostbasedProcurementPacket}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Vehicle Costbased Procurement Packet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Contract Services Procurement – 10/1</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.youtube.com/watch?v=pMxZ41OxT-w&t=18s"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Contract Services Procurement Technical Assistance Training
+                (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCContractServicesProcurementPacket}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Contract Services Procurement Packet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCContractServicesSamplePaperwork}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Contract Services Sample Paperwork
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCContractServicesSolicitationFormForSmallPurchases}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Contract Services Solicitation Form for Small Purchases
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCFillableQuoteAcceptanceForm}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Fillable Quote Acceptance Form
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCProcurementChecklist}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">Procurement Checklist</div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Vehicle Procurement Technical Assistance Training - 9/29</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.youtube.com/watch?v=DSJnvsbJZ38&t=6s"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Vehicle Procurement Technical Assistance Training (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVehicleCostbasedProcurementPacket}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Vehicle Cost-Based Procurement Packet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVehiclePurchaseSampleCompletedPaperwork}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Vehicle Purchase Sample Completed Paperwork
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCTelephoneSolicitationFromforSmallPurchases}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Telephone Solicitation From for Small Purchases
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCFillableQuoteAcceptanceForm}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Fillable Quote Acceptance Form
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCProcurementChecklist}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">Procurement Checklist</div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Budget Development Webinar - 9/3</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.youtube.com/watch?v=9mPmnIrqdpk&feature=youtu.be"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Budget Development Webinar (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCBudgetDevelopmentWebinar}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Budget Development Webinar (PDF)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCBudgetDevelopmentWebinar}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Example Narrative Language for Budget Line Item Notes
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCHelpfulTipsApplicationSubmission}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Helpful Tips: Application Submission Tracking
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCHelpfulTipsOtherExpenses }"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Helpful Tips: Other Expenses Handout
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Implementation Webinar - 8/4</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/icImyGjLiX8" target="_blank">
+              <div class="panel-body text-center">
+                Victim Service Implementation Webinar (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVictimServiceImplementation}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Victim Service Implementation Webinar (PDF)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Program Development Webinar - 7/21</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/ypPLKML_1As" target="_blank">
+              <div class="panel-body text-center">
+                Victim Service Program Development Webinar (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVictimServiceProgramDevelopmentWebinar}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Victim Service Program Development Webinar (PDF)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCStep2_Template1}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Step 2: Full Application Template #1
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCStep2_Template2}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Step 2: Full Application Template #2
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCStep2_Template3}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Step 2: Full Application Template #3
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Program Planning Webinar - 6/16</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/EiW9xTL_RiQ" target="_blank">
+              <div class="panel-body text-center">
+                Victim Service Program Planning Webinar (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCVictimServiceProgramPlanningWebinar}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Victim Service Program Planning Webinar (PDF)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.OVCFAQ_June16}" target="_blank">
+              <div class="panel-body text-center">
+                Frequently Asked Questions
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Introduction Webinar - 6/11</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/s4zSOPCvoxw" target="_blank">
+              <div class="panel-body text-center">
+                Introduction to the NCAI Fund Victim Services Micro-grant
+                Program (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCIntroductionToOVC_June11}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Introduction to the NCAI Fund Victim Services Micro-grant
+                Program (PDF)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.OVCFAQ_June11}" target="_blank">
+              <div class="panel-body text-center">
+                Frequently Asked Questions
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Introduction Webinar - 6/9</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/s4zSOPCvoxw" target="_blank">
+              <div class="panel-body text-center">
+                Introduction to the NCAI Fund Victim Services Micro-grant
+                Program (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCIntroductionToOVC_June9}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Introduction to the NCAI Fund Victim Services Micro-grant
+                Program (PDF)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.OVCFAQ_June9}" target="_blank">
+              <div class="panel-body text-center">
+                Frequenty Asked Questions
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Other Documents</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.OVCRFP}" target="_blank">
+              <div class="panel-body text-center">Request for Proposal</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.OVCFAQ}" target="_blank">
+              <div class="panel-body text-center">
+                Frequently Asked Questions
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCFullChartAllowableCosts}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Full Chart of Allowable and Unallowable Costs
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCAllowableCostsOverview}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Overview of Allowable and Unallowable Costs
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCSampleProcurementPolicy}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Sample Procurement Policy
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCMileageLogTemplate}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">Mileage Log Template</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.OVCContractServicesSampleContract}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Contract Services Sample Contract
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/pMxZ41OxT-w" target="_blank">
+              <div class="panel-body text-center">
+                Contract Services Procurement Zoom Training (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a href="https://youtu.be/DSJnvsbJZ38" target="_blank">
+              <div class="panel-body text-center">
+                Vehicle Procurement Zoom Training (Video)
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <br /><br />
+      <h3>What's New/System Updates</h3>
+      <hr />
+      <h6>
+        This area will show you any updates that have been made to the system
+        recently, along with detail as to whether this change will affect how
+        you use the system and any changes that you will need to make to the how
+        you are using the system.
+      </h6>
+      <div class="panel panel-info" id="help0">
+        <div class="panel-heading">
+          Required Compliance Documents
+          <span class="pull-right"> 10/11/2020 </span>
+        </div>
+        <div class="panel-body">
+          “Required Compliance Documents” button has been added to the Sub-Grant
+          Details page. This will allow users to upload all documentation
+          necessary for participation in the OVC Microgrants program. Further
+          details will be provided soon regarding upload instructions and
+          applicable due dates.
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

@@ -1,0 +1,391 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <c:AssessmentHeader
+          assess="{!assess}"
+          header="BOARD/GOVERNANCE STANDARDS"
+        />
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="3"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 6']}</div>
+          <div class="panel-body">
+            <h5>
+              <apex:outputText
+                value="{!labels['Standard 6 Subheader']}"
+                escape="false"
+              />
+            </h5>
+            <h5 style="margin-top: 10px">
+              <apex:outputText
+                value="Standard 6A: Board-Approved Employee Handbook"
+                escape="false"
+              />
+            </h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S8_Employee_Handbook__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S8_Employee_Handbook__c}"
+                    label="{!labels['S8_Employee_Handbook__c']}"
+                    textField="{!assess.S8_Employee_Handbook_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Commitment_to_Diversity__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    subheader="The Employee Handbook must include, at a minimum, each of the following policies and procedures, as customized for the Agency:"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Commitment_to_Diversity__c}"
+                    label="{!labels['S5a_Commitment_to_Diversity__c']}"
+                    textField="{!assess.S5a_Commitment_to_Diversity_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_American_Disabilities_Act__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_American_Disabilities_Act__c}"
+                    label="{!labels['S5a_American_Disabilities_Act__c']}"
+                    textField="{!assess.S5a_American_Disabilities_Act_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Nondiscrimination__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Nondiscrimination__c}"
+                    label="{!labels['S5a_Nondiscrimination__c']}"
+                    textField="{!assess.S5a_Nondiscrimination_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Sexual_Harassment__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Sexual_Harassment__c}"
+                    label="{!labels['S5a_Sexual_Harassment__c']}"
+                    textField="{!assess.S5a_Sexual_Harassment_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Disposition_of_Complaints__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Disposition_of_Complaints__c}"
+                    label="{!labels['S5a_Disposition_of_Complaints__c']}"
+                    textField="{!assess.S5a_Disposition_of_Complaints_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Environmentally_Safe_Workplace__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Environmentally_Safe_Workplace__c}"
+                    label="{!labels['S5a_Environmentally_Safe_Workplace__c']}"
+                    textField="{!assess.S5a_Environmentally_Safe_Workplace_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Nepotism__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Nepotism__c}"
+                    label="{!labels['S5a_Nepotism__c']}"
+                    textField="{!assess.S5a_Nepotism_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Crisis_Communication_Plan__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Crisis_Communication_Plan__c}"
+                    label="{!labels['S5c_Crisis_Communication_Plan__c']}"
+                    textField="{!assess.S5c_Crisis_Communication_Plan_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Security_of_Sensitive_Data__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Security_of_Sensitive_Data__c}"
+                    label="{!labels['S5c_Security_of_Sensitive_Data__c']}"
+                    textField="{!assess.S5c_Security_of_Sensitive_Data_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Background_Screenings__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Background_Screenings__c}"
+                    label="{!labels['S5a_Background_Screenings__c']}"
+                    textField="{!assess.S5a_Background_Screenings_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Document_Retention_Disposal__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Document_Retention_Disposal__c}"
+                    label="{!labels['S5b_Document_Retention_Disposal__c']}"
+                    textField="{!assess.S5b_Document_Retention_Disposal_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Personnel_Records__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 6B: Recruitment and Hiring Standards"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Personnel_Records__c}"
+                    label="{!labels['Personnel_Records__c']}"
+                    textField="{!assess.Personnel_Records_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Inclusion_Recruitment_Plan__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Inclusion_Recruitment_Plan__c}"
+                    label="{!labels['Inclusion_Recruitment_Plan__c']}"
+                    textField="{!assess.Inclusion_Recruitment_Plan_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S8_Job_Descriptions__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S8_Job_Descriptions__c}"
+                    label="{!labels['S8_Job_Descriptions__c']}"
+                    textField="{!assess.S8_Job_Descriptions_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Background_Checks__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Background_Checks__c}"
+                    label="{!labels['Background_Checks__c']}"
+                    textField="{!assess.Background_Checks_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S8_Intentionality_Plan__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S8_Intentionality_Plan__c}"
+                    label="{!labels['S8_Intentionality_Plan__c']}"
+                    textField="{!assess.S8_Intentionality_Plan_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S8_Written_Compensation_Philosophy__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 6C: Compensation and Benefits Standards"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S8_Written_Compensation_Philosophy__c}"
+                    label="{!labels['S8_Written_Compensation_Philosophy__c']}"
+                    textField="{!assess.S8_Written_Compensation_Philosophy_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Competitive_Salary_Ranges__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Competitive_Salary_Ranges__c}"
+                    label="{!labels['Competitive_Salary_Ranges__c']}"
+                    textField="{!assess.Competitive_Salary_Ranges_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Annual_Completion_of_IRS_Form__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Annual_Completion_of_IRS_Form__c}"
+                    label="{!labels['S5b_Annual_Completion_of_IRS_Form__c']}"
+                    textField="{!assess.S5b_Annual_Completion_of_IRS_Form_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S8_Written_Annual_Evaluations__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 6D: Performance Management and Training"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S8_Written_Annual_Evaluations__c}"
+                    label="{!labels['S8_Written_Annual_Evaluations__c']}"
+                    textField="{!assess.S8_Written_Annual_Evaluations_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9e_Training_Documentation__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9e_Training_Documentation__c}"
+                    label="{!labels['S9e_Training_Documentation__c']}"
+                    textField="{!assess.S9e_Training_Documentation_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 7']}</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S7_Innovation__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S7_Innovation__c}"
+                    label="{!labels['S7_Innovation__c']}"
+                    textField="{!assess.S7_Innovation_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 8']}</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Quality_Assurance__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Quality_Assurance__c}"
+                    label="{!labels['Quality_Assurance__c']}"
+                    textField="{!assess.Quality_Assurance_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="3"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          year="{!assess.Year__c}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          parentId="{!parentId}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(4);
+    };
+  </script>
+</apex:page>

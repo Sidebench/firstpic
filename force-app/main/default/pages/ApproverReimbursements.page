@@ -1,0 +1,188 @@
+<apex:page
+  controller="ApproverDashboardsCtrl"
+  action="{!getReimbursementLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Approver Assignments - Reimbursement Dashboard</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="approverAssignments"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="pull-right">
+          &nbsp;&nbsp; Grant: &nbsp;
+          <apex:selectList value="{!grantId}" size="1">
+            <apex:selectOptions value="{!grantOptions}" />
+          </apex:selectList>
+          <apex:outputPanel rendered="{!approverId != null}">
+            <div style="margin: 5px"></div>
+            &nbsp;&nbsp; Status: &nbsp;
+            <apex:selectList value="{!status}" size="1">
+              <apex:selectOptions value="{!statusOptions}" />
+            </apex:selectList>
+          </apex:outputPanel>
+          &nbsp;&nbsp;
+          <apex:commandButton
+            action="{!getReimbursementLists}"
+            value="Update"
+            status="pageStatus"
+            styleClass="btn-small primary"
+            reRender="form"
+          />
+          <div style="margin: 5px"></div>
+        </div>
+        <h2>
+          Reimbursement Dashboard
+          <apex:outputText
+            value=" - {!approver.Name}"
+            rendered="{!approver.Name != null}"
+          />
+        </h2>
+
+        <c:DataBlocks
+          block1count="{!totalActiveCount}"
+          block1text="Current # active requests"
+          block2count="{!totalAverageTime}"
+          block2text="Overall average days since last submitted"
+          block3count="{!totalAverageSendBacks}"
+          block3text="Overall average send backs per reimbursement"
+          numberOfBlocks="3"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <strong>Current # Active Requests: &nbsp;</strong>
+            The total number of requests in Incomplete, Revisions Needed, any
+            Pending Approval status
+            <br />
+            <strong>Avg. Days since last Submitted: &nbsp;</strong>
+            The average number of days between the last time a Reimbursement was
+            submitted and today's date
+            <br />
+            <strong>Avg. Days with Affiliate: &nbsp;</strong>
+            The average number of days between the last time a Reimbursement was
+            sent back to the Affiliate and today's date or until it was
+            resubmitted
+            <!--
+                        The average number of days a Reimbursement has been in it's current status. 
+                        For example, if a Reimbursement is now in Pending Second Approval, the Avg. Days with Affiliate would
+                        be the difference between when it was Approved by Level One and today's date.
+                        -->
+            <br />
+            <apex:outputPanel rendered="{!ApproverId == null}">
+              <strong>Avg. Send Backs from L2: &nbsp;</strong>
+              The average number of times all currently active Reimbursements
+              have been sent back from a Level Two Approver
+              <br />
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!ApproverId == null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Approver Details</div>
+            <div class="panel-body">
+              <table style="width: 100%" class="tblWithBorders">
+                <tr>
+                  <th>Name</th>
+                  <th>Current # Active Requests</th>
+                  <th>Avg. Days since last Submitted</th>
+                  <th>Avg. Days with Affiliate</th>
+                  <th>Avg. Send Backs from L2</th>
+                </tr>
+                <apex:repeat value="{!approver_map}" var="key">
+                  <apex:repeat value="{!approver_map[key]}" var="i">
+                    <tr>
+                      <td>
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/ApproverReimbursements?ApproverId='+key+'&grantId='+grantId)}"
+                        >
+                          {!i.name}
+                        </a>
+                      </td>
+                      <td>{!i.activeCount}</td>
+                      <td>{!i.averageTime}</td>
+                      <td>{!i.averageDaysWithAffiliate}</td>
+                      <td>{!i.averageL2SendBacks}</td>
+                    </tr>
+                  </apex:repeat>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!ApproverId != null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Reimbursement Details</div>
+            <div class="panel-body">
+              <table style="width: 100%">
+                <tr>
+                  <th>Reimbursement</th>
+                  <th>Sub-Grant</th>
+                  <th>Status</th>
+                  <th>Days since last Submitted</th>
+                  <th>Days with L1</th>
+                  <th>Days with L2</th>
+                  <th>Days with L3</th>
+                  <th>
+                    <apex:outputText
+                      value="Days with L4"
+                      rendered="{!numberOfApprovals == 4}"
+                    />
+                  </th>
+                  <th>Days with Affiliate</th>
+                </tr>
+                <apex:repeat value="{!request_list}" var="i">
+                  <tr>
+                    <td>
+                      <apex:commandLink
+                        action="{!URLFOR($Site.Prefix+'/NPALReimbursementDetails?requestId='+i.rId)}"
+                        value="{!i.name}"
+                        rendered="{!portalName == 'NPAL'}"
+                      />
+                      <apex:commandLink
+                        action="{!URLFOR($Site.Prefix+'/Reimbursement?requestId='+i.rId)}"
+                        value="{!i.name}"
+                        rendered="{!portalName != 'NPAL'}"
+                      />
+                    </td>
+                    <td>{!i.grantName}</td>
+                    <td>{!i.status}</td>
+                    <td>{!i.daysInProcess}</td>
+                    <td>{!i.daysWithL1}</td>
+                    <td>{!i.daysWithL2}</td>
+                    <td>{!i.daysWithL3}</td>
+                    <td>
+                      <apex:outputText
+                        value="{!i.daysWithL4}"
+                        rendered="{!numberOfApprovals == 4}"
+                      />
+                    </td>
+                    <td>{!i.daysWithAffiliate}</td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+
+          <a
+            href="{!URLFOR($Site.Prefix+'/ApproverReimbursements?grantId='+grantId)}"
+            class="btn"
+          >
+            Back
+          </a>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NPAL_Low_Mentor_Red_Flag_List_Value__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >IF( (Number_of_Mentors__c - Grant__r.NPAL_Target_Number_of_Mentors__c)&gt;=0, 0, IF((Number_of_Mentors__c -Grant__r.NPAL_Target_Number_of_Mentors__c)&lt;-1,2,1))</formula>
+    <inlineHelpText
+  >Red Flag List Value for Low Mentor Numbers. For NPAL Only. If # Mentors - Target # is positive or 0 equals 0; if greater than -1 equals 2; if other equals 1. Blanks treated as blank (not as 0).</inlineHelpText>
+    <label>NPAL Low Mentor Red Flag List Value</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

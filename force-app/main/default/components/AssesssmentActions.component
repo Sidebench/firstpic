@@ -1,0 +1,208 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+    required="true"
+  />
+  <apex:attribute
+    type="Id"
+    name="AssessmentId"
+    description="Assessment Id"
+    required="true"
+  />
+  <apex:attribute
+    type="Integer"
+    name="activeTabId"
+    description="Active Tab Id"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="hideStandards"
+    description="hideStandards"
+    required="true"
+  />
+  <apex:attribute type="Integer" name="year" description="year" default="0" />
+  <apex:attribute type="Id" name="parentId" description="File Parent Id" />
+  <apex:attribute type="String" name="fileName" description="File Name" />
+  <apex:attribute
+    type="String"
+    name="errorMessage"
+    description="Error Message"
+  />
+  <apex:attribute
+    type="String"
+    name="fileErrorMessage"
+    description="File Error Message"
+  />
+  <apex:attribute
+    type="String"
+    name="additionalReqsErrorMessage"
+    description="Additional Reqs Error Message"
+  />
+  <apex:attribute
+    type="String"
+    name="displayAttPopup"
+    description="Display Att Popup"
+  />
+  <apex:attribute
+    type="String"
+    name="displayDeletePopup"
+    description="Display Delete Popup"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="closeAttPopup"
+    description="Close Att Popup"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="deletePopup"
+    description="Delete Popup"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="deleteAssessment"
+    description="Delete Assessment"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="saveAndExit"
+    description="Save and Exit"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="saveAndContinue"
+    description="Save and Continue"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="upsertAssessment"
+    description="upsertAssessment"
+    required="false"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="submit"
+    description="Submit"
+    required="true"
+  />
+  <apex:attribute
+    type="Date"
+    name="submittedDate"
+    description="Submitted Date"
+    required="false"
+  />
+
+  <apex:commandButton
+    value="Save and Exit"
+    action="{!saveAndExit}"
+    status="pageStatus"
+    rendered="{!userAcctType == 'Local Organization'}"
+  />
+  <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+    <a class="btn" href="{!URLFOR($Site.Prefix+'/Compliance')}"> Exit </a>
+    <apex:commandButton
+      value="Save"
+      action="{!upsertAssessment}"
+      status="pageStatus"
+      styleClass="primary"
+      rendered="{!(year >= 2019 && activeTabId == 9) || activeTabId == 10}"
+    />
+  </apex:outputPanel>
+  <apex:commandButton
+    value="Next"
+    action="{!saveAndContinue}"
+    status="pageStatus"
+    styleClass="primary"
+    rendered="{!((year >= 2019 && activeTabId < 9) || (year < 2019 && activeTabId < 10)) && hideStandards != true}"
+  />
+  <apex:outputPanel
+    rendered="{!((year >= 2019 && activeTabId == 9) || activeTabId == 10 || hideStandards == true) && userAcctType == 'Local Organization'}"
+  >
+    <apex:commandButton
+      value="Save"
+      action="{!upsertAssessment}"
+      status="pageStatus"
+    />
+    <apex:commandButton
+      value="Submit"
+      action="{!submit}"
+      status="pageStatus"
+      styleClass="primary"
+      disabled="{!errorMessage != '' || fileErrorMessage != '' || additionalReqsErrorMessage != '' || submittedDate != null}"
+    />
+  </apex:outputPanel>
+
+  <apex:outputLink
+    value="{!$Resource.Final_FP_Instructions}"
+    styleClass="pull-right"
+  >
+    Self-Assessment Step-by-Step Instructions
+  </apex:outputLink>
+
+  <c:ErrorMessage
+    errorMessage="{!errorMessage}"
+    rendered="{!(submittedDate == null && year == 2020) || year != 2020}"
+  />
+  <c:ErrorMessage
+    errorMessage="{!fileErrorMessage}"
+    rendered="{!submittedDate == null && (year >= 2019 && activeTabId == 9) || activeTabId == 10 || hideStandards == true}"
+  />
+  <c:ErrorMessage
+    errorMessage="{!additionalReqsErrorMessage}"
+    rendered="{!submittedDate == null && (year >= 2019 && activeTabId == 8) || activeTabId == 9 || activeTabId == 10 || hideStandards == true}"
+  />
+  <c:ErrorMessage
+    errorMessage="You must resolve all error messages before you submit."
+    rendered="{!submittedDate == null && errorMessage != '' || 
+                              (submittedDate == null && fileErrorMessage != '' && ((year >= 2019 && activeTabId == 9) || activeTabId == 10 || hideStandards == true)) || 
+                              (submittedDate == null && additionalReqsErrorMessage != '' && ((year >= 2019 && activeTabId == 8) || activeTabId == 9 || activeTabId == 10 || hideStandards == true))}"
+  />
+
+  <apex:pageMessages></apex:pageMessages>
+
+  <!-- BEGIN Attachments -->
+  <apex:outputPanel
+    styleClass="popupBackground"
+    layout="block"
+    rendered="{!displayAttPopup}"
+  />
+  <apex:outputPanel
+    styleClass="custPopup"
+    layout="block"
+    rendered="{!displayAttPopup}"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Upload New Attachment</h4>
+        </div>
+        <div class="modal-body">
+          <iframe
+            id="attachmentIFrame"
+            frameborder="0"
+            width="100%"
+            height="200px"
+            src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ parentId +'&filename=' + fileName)}"
+          >
+          </iframe>
+        </div>
+        <div class="modal-footer">
+          <apex:commandButton
+            action="{!closeAttPopup}"
+            value="Close"
+            status="pageStatus"
+            reRender="assessment"
+          />
+        </div>
+      </div>
+    </div>
+  </apex:outputPanel>
+  <!-- END Attachments -->
+</apex:component>

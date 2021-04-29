@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Ways_to_Prevent_Type_2_Diabetes__c</fullName>
+    <externalId>false</externalId>
+    <label>Ways to Prevent Type 2 Diabetes</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>a. Eating healthy food</fullName>
+                <default>false</default>
+                <label>a. Eating healthy food</label>
+            </value>
+            <value>
+                <fullName>b. Being active and exercising</fullName>
+                <default>false</default>
+                <label>b. Being active and exercising</label>
+            </value>
+            <value>
+                <fullName>c. Staying a healthy weight</fullName>
+                <default>false</default>
+                <label>c. Staying a healthy weight</label>
+            </value>
+            <value>
+                <fullName>d. All of the above</fullName>
+                <default>false</default>
+                <label>d. All of the above</label>
+            </value>
+            <value>
+                <fullName>No Response</fullName>
+                <default>false</default>
+                <label>No Response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

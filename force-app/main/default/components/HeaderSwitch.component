@@ -1,0 +1,50 @@
+<apex:component>
+  <apex:attribute type="String" name="activePage" description="activePage" />
+  <apex:attribute type="Account" name="acct" description="acct" />
+  <apex:attribute type="String" name="profile" description="profile" />
+  <apex:attribute type="String" name="grantId" description="grantId" />
+  <apex:attribute
+    type="String"
+    name="portalName"
+    description="portalName"
+    required="true"
+  />
+
+  <c:Header
+    ActivePage="{!activePage}"
+    acct="{!acct}"
+    profile="{!profile}"
+    rendered="{!portalName == 'BBBS'}"
+  />
+  <c:NPALHeader
+    ActivePage="{!activePage}"
+    acct="{!acct}"
+    profile="{!profile}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+  <c:DMVHeader
+    ActivePage="{!activePage}"
+    acct="{!acct}"
+    profile="{!profile}"
+    rendered="{!portalName == 'DMV'}"
+  />
+  <c:NCAIHeader
+    ActivePage="{!activePage}"
+    acct="{!acct}"
+    profile="{!profile}"
+    grantId="{!grantId}"
+    rendered="{!CONTAINS(portalName, 'NCAI')}"
+  />
+  <c:STEMHeader
+    ActivePage="{!activePage}"
+    acct="{!acct}"
+    profile="{!profile}"
+    rendered="{!portalName == 'STEM'}"
+  />
+  <c:RipkenHeader
+    ActivePage="{!activePage}"
+    acct="{!acct}"
+    profile="{!profile}"
+    rendered="{!portalName == 'Ripken'}"
+  />
+</apex:component>

@@ -1,0 +1,76 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="portalName"
+    description="portalName"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="header"
+    description="header"
+    required="true"
+  />
+  <apex:attribute
+    type="Application__c[]"
+    name="app_list"
+    description="Application List"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    default="false"
+    description="Show More Link?"
+  />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!app_list.size > 0}">
+        <table width="100%">
+          <tr>
+            <th>Application Id</th>
+            <th>Status</th>
+            <th>Submitted Date</th>
+          </tr>
+          <apex:repeat value="{!app_list}" var="i">
+            <tr>
+              <td>
+                <apex:commandLink
+                  value="{!i.Name}"
+                  rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}"
+                  action="{!URLFOR($Site.Prefix+'/'+portalName+'Application?appId='+ i.id)}"
+                />
+                <apex:commandLink
+                  value="{!i.Name}"
+                  rendered="{!CONTAINS(portalName, 'NCAI') && i.Grant_Type__c != 'SOI'}"
+                  action="{!URLFOR($Site.Prefix+'/'+i.Grant_Type__c+'Application?appId='+ i.id)}"
+                />
+                <apex:commandLink
+                  value="{!i.Name}"
+                  rendered="{!CONTAINS(portalName, 'NCAI') && i.Grant_Type__c == 'SOI'}"
+                  action="{!URLFOR($Site.Prefix+'/NCAIStatementOfInterestPDF?appId='+ i.id)}"
+                  target="_blank"
+                />
+              </td>
+              <td>{!i.Status__c}</td>
+              <td>
+                <apex:outputField value="{!i.Submitted_Date__c}" />
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!app_list.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <apex:commandLink action="{!URLFOR($Site.Prefix+'/Applications')}">
+          View All &raquo;
+        </apex:commandLink>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Progress_Report_Dates__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >IF(NOT(ISNULL(Progress_Report_1_Date__c)), CASE(MONTH(Progress_Report_1_Date__c) , 1, &quot;January&quot;, 2, &quot;February&quot;, 3, &quot;March&quot;, 4, &quot;April&quot;, 5, &quot;May&quot;, 6, &quot;June&quot;, 7, &quot;July&quot;, 8, &quot;August&quot;, 9, &quot;September&quot;, 10, &quot;October&quot;, 11, &quot;November&quot;, &quot;December&quot;) &amp; &apos; &apos; &amp; TEXT(DAY(Progress_Report_1_Date__c)) &amp; &apos;, &apos; &amp; TEXT(YEAR(Progress_Report_1_Date__c))&amp; &apos;; &apos;, &apos;&apos;) 
+&amp; 
+IF(NOT(ISNULL(Progress_Report_2_Date__c)), CASE(MONTH(Progress_Report_2_Date__c) , 1, &quot;January&quot;, 2, &quot;February&quot;, 3, &quot;March&quot;, 4, &quot;April&quot;, 5, &quot;May&quot;, 6, &quot;June&quot;, 7, &quot;July&quot;, 8, &quot;August&quot;, 9, &quot;September&quot;, 10, &quot;October&quot;, 11, &quot;November&quot;, &quot;December&quot;) &amp; &apos; &apos; &amp; TEXT(DAY(Progress_Report_2_Date__c)) &amp; &apos;, &apos; &amp; TEXT(YEAR(Progress_Report_2_Date__c))&amp;&quot;; &quot;, &apos;&apos;) 
+&amp; 
+IF(NOT(ISNULL(Progress_Report_3_Date__c)),CASE(MONTH(Progress_Report_3_Date__c) , 1, &quot;January&quot;, 2, &quot;February&quot;, 3, &quot;March&quot;, 4, &quot;April&quot;, 5, &quot;May&quot;, 6, &quot;June&quot;, 7, &quot;July&quot;, 8, &quot;August&quot;, 9, &quot;September&quot;, 10, &quot;October&quot;, 11, &quot;November&quot;, &quot;December&quot;) &amp; &apos; &apos; &amp; TEXT(DAY(Progress_Report_3_Date__c)) &amp; &apos;, &apos; &amp; TEXT(YEAR(Progress_Report_3_Date__c))&amp;&quot;; &quot;, &apos;&apos;) 
+&amp; 
+IF(NOT(ISNULL(Progress_Report_4_Date__c)),CASE(MONTH(Progress_Report_4_Date__c) , 1, &quot;January&quot;, 2, &quot;February&quot;, 3, &quot;March&quot;, 4, &quot;April&quot;, 5, &quot;May&quot;, 6, &quot;June&quot;, 7, &quot;July&quot;, 8, &quot;August&quot;, 9, &quot;September&quot;, 10, &quot;October&quot;, 11, &quot;November&quot;, &quot;December&quot;) &amp; &apos; &apos; &amp; TEXT(DAY(Progress_Report_4_Date__c)) &amp; &apos;, &apos; &amp; TEXT(YEAR(Progress_Report_4_Date__c)), &apos;&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Progress Report Dates</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

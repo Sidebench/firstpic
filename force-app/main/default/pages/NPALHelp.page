@@ -1,0 +1,695 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Resources</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <a
+        href="{!URLFOR($Site.Prefix+'/NPALHelpArchive')}"
+        class="btn pull-right"
+        >Archived Help Documents</a
+      >
+      <h3>Helpful Links and Documents</h3>
+      <br />
+      <h4>Documents</h4>
+      <hr />
+
+      <div class="panel panel-info">
+        <div class="panel-heading">NPAL Reimbursement Request Process</div>
+        <div class="panel-body">
+          These PDF slides outline the step-by-step directions for creating a
+          reimbursement request.
+          <br /><br />
+          <apex:outputLink
+            value="{!$Resource.NPALMentoringReimbursementRequestSlides}"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">Youth Summit Reimbursement Guidelines</div>
+        <div class="panel-body">
+          Please refer to the attached document for guidelines on allowable
+          expenses for the Youth Mentoring Summit
+          <br /><br />
+          <apex:outputLink
+            value="https://docs.google.com/document/d/10YeCCfW4ioBkGBpCSo33ZwKKrXHkaBfz0pidxN29XD0/edit?usp=sharing"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">Youth Summit Reimbursement Worksheet</div>
+        <div class="panel-body">
+          The attached form can be used to calculate reimbursable expenses for
+          the Youth Mentoring Summit. Once complete, it should be scanned to PDF
+          and included as the first page of your travel expenses documentation.
+          <br /><br />
+          <apex:outputLink
+            value="https://docs.google.com/spreadsheets/d/1lw-l5ScQuN1gpNwlTCJhGx7PRv4bU6upfjiO2l0xFUA/edit?usp=sharing"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="{!$Resource.NPAL_Updating_SAM_Registration}"
+            target="_blank"
+          >
+            Updating or renewing SAM Registration
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          This document will walk you through the process for updating or
+          renewing your organization's DUNS # registration on the SAM.gov
+          website
+          <br /><br />
+          <apex:outputLink
+            value="{!$Resource.NPAL_Updating_SAM_Registration}"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="{!$Resource.SAM_DUNS_Notarized_Letter_Template}"
+          >
+            SAM/DUNS Notarized Letter Template
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          Beginning on April 27, 2018, entities renewing or updating their
+          registration may be required to submit an original, signed notarized
+          letter confirming the authorized Entity Administrator associated with
+          the DUNS number before the registration is activated. Note: This
+          letter will have to be submitted via regular mail.
+          <br /><br />
+          <apex:outputLink
+            value="{!$Resource.SAM_DUNS_Notarized_Letter_Template}"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.dropbox.com/s/uihe5ynz0cejouz/NPAL Implementation Plan Template FINAL.xlsx?dl=0"
+            target="_blank"
+          >
+            Grantee Implementation Calendar
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          This is a document that outlines the key activities and due dates of
+          the program throughout the grant year. This must be completed and
+          attached to your budget by 5/15.
+          <br /><br />
+          Due Date: 5/15/2019; uploaded in Online Reporting Site as a budget
+          attachment
+          <br /><br />
+          <apex:outputLink
+            value="https://www.dropbox.com/s/uihe5ynz0cejouz/NPAL Implementation Plan Template FINAL.xlsx?dl=0"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink value="{!$Resource.NPAL_2018_Budget_Development}">
+            NPAL Budget Development
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          These PDF slides outline the step-by-step directions for developing
+          your budget.
+          <br /><br />
+          <apex:outputLink value="{!$Resource.NPAL_2018_Budget_Development}">
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.dropbox.com/s/00unfjeotpazk9s/Travel%20and%20FICA%20Calculator.xlsx?dl=0"
+            target="_blank"
+          >
+            Travel and FICA Calculator
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          This spreadsheet can assist you calculations of travel costs and FICA
+          amounts as you develop your budget.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.dropbox.com/s/00unfjeotpazk9s/Travel%20and%20FICA%20Calculator.xlsx?dl=0"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.dropbox.com/s/aq1xtpe9hf7jon6/2018_NPAL%20Mentoring%20Parent%20Consent.docx?dl=0"
+            target="_blank"
+          >
+            NPAL Mentoring Parent Consent
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          Template document that can be used in mentoring programs to ensure
+          that that the proper parental consent has been acquired. Not required
+          if your chapter has another form for acquiring parental consent.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.dropbox.com/s/aq1xtpe9hf7jon6/2018_NPAL%20Mentoring%20Parent%20Consent.docx?dl=0"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.dropbox.com/s/22b5wqlf62t5x6d/2018NPAL%20Mentoring%20Mentor%20Agreement_Final.docx?dl=0"
+            target="_blank"
+          >
+            NPAL Mentoring Mentor Agreement
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          Template document that can be used to ensure mentors are aware of and
+          commit to all of the requirements of the mentoring program.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.dropbox.com/s/22b5wqlf62t5x6d/2018NPAL%20Mentoring%20Mentor%20Agreement_Final.docx?dl=0"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.dropbox.com/s/oy2ftqghm1fs2xn/2018NPAL%20Mentoring%20Mentor%20Application_Final.docx?dl=0"
+            target="_blank"
+          >
+            NPAL Mentoring Mentor Application
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          Template document used to screen prospective mentors
+          <br /><br />
+          <apex:outputLink
+            value="https://www.dropbox.com/s/oy2ftqghm1fs2xn/2018NPAL%20Mentoring%20Mentor%20Application_Final.docx?dl=0"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.dropbox.com/s/9gixy9y32h909gf/NPAL_Mentoring_Youth_Application.pdf?dl=0"
+            target="_blank"
+          >
+            NPAL Mentoring Youth Application
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          Template document used to identify mentee interests and needs for
+          reporting purposes and to assist in developing appropriate matches
+          <br /><br />
+          <apex:outputLink
+            value="https://www.dropbox.com/s/9gixy9y32h909gf/NPAL_Mentoring_Youth_Application.pdf?dl=0"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink value="{!$Resource.Mentoring_Match_Tracking_Sheet}">
+            NPAL – Mentoring Match Tracking Sheet
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          Attendance tracking sheet that shows youth/mentor matches as well as
+          mentee attendance. This version is set up for a 1:7 mentor to mentee
+          ration. An attendance sheet will need to be uploaded with each monthly
+          report and quarterly reports.
+          <br /><br />
+          Due Date: Monthly
+          <br /><br />
+          <apex:outputLink value="{!$Resource.Mentoring_Match_Tracking_Sheet}">
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          The National PAL Mentoring Program - Mentor Training Survey
+        </div>
+        <div class="panel-body">
+          All mentors must complete the mentor training prior to beginning their
+          mentoring. To successfully complete this training and participate as a
+          National PAL mentor you will be required to take a brief survey to
+          acknowledge your understanding of the mentor training material. Please
+          note that each mentor must complete their own individual survey and
+          pass with a score of 100%.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.surveymonkey.com/r/NPALMentorTrainingSurvey"
+          >
+            View Survey &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">National PAL Youth Survey</div>
+        <div class="panel-body">
+          This survey can be used to quantify the number of youth exhibiting an
+          improved perception of social support (question on quarterly progress
+          reports).
+          <br /><br />
+          <apex:outputLink
+            value="{!$Resource.National_PAL_Youth_Survey_December}"
+            target="_blank"
+          >
+            View Survey &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+      <br />
+
+      <h4>Webinars</h4>
+      <hr />
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
+            target="_blank"
+          >
+            Beau Biden Foundation – Shield of Protection Informational Webinar
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          This webinar provides information on National PAL’s partnership with
+          the Beau Biden Foundation’s Shield of Protection Initiative (SOPI).
+          This training opportunity is available to all organizations
+          participating in the 2020 NPAL Mentoring program.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
+            target="_blank"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.anymeeting.com/171-179-092/E958D788894631"
+            target="_blank"
+          >
+            NPAL Mentoring Program Implementation (LOA Walkthrough) Webinar
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          This webinar will walk you through all requirements of the NPAL
+          Mentoring program (using the LOA as a guide).
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/171-179-092/E958D788894631"
+            target="_blank"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://www.youtube.com/watch?v=t55dHwsnrRc&t=64s"
+            target="_blank"
+          >
+            NPAL Mentoring Budget Development Webinar
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          This webinar will answer some common questions about the budget
+          development process and walk you through how to enter the budget on
+          the online reporting site.
+          <br /><br />
+          <apex:outputLink value="https://youtu.be/qkjPAax5_bE" target="_blank">
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <apex:outputLink
+            value="https://screencast-o-matic.com/watch/cYfeDE4sV0"
+            target="_blank"
+          >
+            NPAL Reimbursement Request Process
+          </apex:outputLink>
+        </div>
+        <div class="panel-body">
+          This webinar will walk you through the process for submitting a
+          reimbursement request on the online reporting site.
+          <br /><br />
+          <apex:outputLink
+            value="https://screencast-o-matic.com/watch/cYfeDE4sV0"
+            target="_blank"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">Progress Report and Youth Data Webinar</div>
+        <div class="panel-body">
+          This webinar walks you through the process of completing a monthly
+          progress report, entering youth data and assigning youth to a grant.
+          <br /><br />
+          Coming Soon
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          The National PAL Mentoring Program - Mentor Training Webinar
+        </div>
+        <div class="panel-body">
+          All mentors must complete the mentor training prior to beginning their
+          mentoring. To successfully complete this training and participate as a
+          National PAL mentor you will be required to take a brief survey to
+          acknowledge your understanding of the mentor training material. Please
+          note that each mentor must complete their own individual survey and
+          pass with a score of 100%.
+          <br /><br />
+          <apex:outputLink
+            value="https://screencast-o-matic.com/watch/cYfvbNBZqo"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          The National PAL Mentoring Program - Mentor Training Slides
+        </div>
+        <div class="panel-body">
+          All mentors must complete the mentor training prior to beginning their
+          mentoring. To successfully complete this training and participate as a
+          National PAL mentor you will be required to take a brief survey to
+          acknowledge your understanding of the mentor training material. Please
+          note that each mentor must complete their own individual survey and
+          pass with a score of 100%.
+          <br /><br />
+          <apex:outputLink value="{!$Resource.NPAL_Mentor_Training}">
+            View PDF &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          National PAL Mentoring Program - New Staff Training - Program
+        </div>
+        <div class="panel-body">
+          All new program staff who will be working on the NPAL Mentoring
+          program are required to view this webinar as part of their on-boarding
+          process.
+          <br /><br />
+          <apex:outputLink
+            value="https://screencast-o-matic.com/watch/cY63rA7W49"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          National PAL Mentoring Program - New Staff Training - Finance
+        </div>
+        <div class="panel-body">
+          All new finance staff who will be working on the NPAL Mentoring
+          program are required to view this webinar as part of their on-boarding
+          process.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/003-573-863/E959DD89854639"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          Training Mentoring Coordinators on the Elements of Effective Practice
+        </div>
+        <div class="panel-body">
+          This webinar, conducted by Dr. Susan G.Weinberger at the Mentor
+          Consulting Group, provides an overview of effectivementoring practices
+          to implement at your organization.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/006-044-685/E959DC8588463A"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">Recruiting Native Youth</div>
+        <div class="panel-body">
+          This webinar, the second in a series conductedby Dr. Susan G.
+          Weinberger at the Mentor Consulting Group, walks through someideas for
+          recruiting Native American/Alaska Native mentees and mentors to your
+          PAL.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/435-160-080/E959D983824A39"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">Mid-Year Reimbursement Request Review</div>
+        <div class="panel-body">
+          This webinar provides a mid-program refresher of the reimbursement
+          request process.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/024-739-423/E959DA82834D3B"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">The Opioid Crisis: Role of Mentors</div>
+        <div class="panel-body">
+          This webinar, the third in aseries conducted by Dr. Susan G.
+          Weinberger at the Mentor Consulting Group,walks through some ideas for
+          working with youth and families impacted by theopioid crisis.
+          <br /><br />
+          <a
+            href="https://www.anymeeting.com/056-270-157/E959D888834730"
+            target="_blank"
+          >
+            View Webinar &raquo;
+          </a>
+        </div>
+      </div>
+
+      <br /><br />
+      <h4>What's New/System Updates</h4>
+      <hr />
+      <h6>
+        This area will show you any updates that have been made to the system
+        recently, along with detail as to whether this change will affect how
+        you use the system and any changes that you will need to make to the how
+        you are using the system.
+      </h6>
+
+      <div class="panel panel-info" id="helpa">
+        <div class="panel-heading">
+          New Webinar
+          <span class="pull-right"> 04/08/2018 </span>
+        </div>
+        <div class="panel-body">
+          New training resource added on 12/13/2020.
+          <apex:outputLink
+            value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
+            target="_blank"
+            >Click here</apex:outputLink
+          >
+          to view the webinar recording.
+        </div>
+      </div>
+
+      <div class="panel panel-info" id="helpa">
+        <div class="panel-heading">
+          Ability to delete Youth Data records
+          <span class="pull-right"> 04/08/2018 </span>
+        </div>
+        <div class="panel-body">
+          You can now delete Youth Data records. Deleting these records will not
+          remove the Youth record from the system, it will only remove them from
+          the selected Grant Year.
+        </div>
+      </div>
+
+      <div class="panel panel-info" id="help0">
+        <div class="panel-heading">
+          Youth Data tab available to assign youth to a specific grant
+          <span class="pull-right"> 03/12/2018 </span>
+        </div>
+        <div class="panel-body">
+          You can assign youth to a grant through the Youth Data tab. Youth can
+          be assigned to more than one grant if they participated in more than
+          one year of the program. Youth should be made 'active' within the
+          current grant program so that they show up as currently served.
+          <apex:outputLink
+            value="{!$Resource.NPAL_Youth_Data_Instructions}"
+            target="_blank"
+          >
+            Step-by-step instructions can be found here.
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info" id="help0">
+        <div class="panel-heading">
+          DUNS/SAM.gov registration status and deadline now available on About
+          tab
+          <span class="pull-right"> 03/12/2018 </span>
+        </div>
+        <div class="panel-body">
+          The About tab shows your organization's DUNS number and expiration in
+          the SAM.gov system. When you update your SAM.gov registration, you can
+          submit for your SAM.gov expiration date to be updated by clicking on
+          "Update SAM.gov Date". When you enter a new expiration date and click
+          on "Save and Close" your updated expiration date will be confirmed and
+          then updated in the system.
+        </div>
+      </div>
+
+      <div class="panel panel-info" id="help1">
+        <div class="panel-heading">
+          Change to entering personnel start and end date
+          <span class="pull-right"> 03/01/2018 </span>
+        </div>
+        <div class="panel-body">
+          The personnel section of the Budget form has been updated to include
+          the employee start date and end date. Budgets approved prior to this
+          update will convert the ‘effective date’ originally used to the ‘start
+          date’ and will default the ‘end date’ to the end of the grant. You may
+          change these dates during a budget modification process and the system
+          will calculate the amount using the adjusted start and end dates
+          entered.
+        </div>
+      </div>
+
+      <div class="panel panel-info" id="help2">
+        <div class="panel-heading">
+          Ability to filter grants on the Reimbursements and Active Sub-grant
+          tab
+          <span class="pull-right"> 03/01/2018 </span>
+        </div>
+        <div class="panel-body">
+          The subgrant and reimbursement page has been redesigned to allow for
+          filtering the list by grant or status as well as searching by
+          sub-grant name.
+        </div>
+      </div>
+
+      <div class="panel panel-info" id="help3">
+        <div class="panel-heading">
+          Monthly Reports available under Programs tab
+          <span class="pull-right"> 03/01/2018 </span>
+        </div>
+        <div class="panel-body">
+          Monthly Reports are now live under the Programs tab. A webinar to
+          assist you in completing your monthly report will be uploaded here
+          soon.
+        </div>
+      </div>
+
+      <div class="panel panel-info" id="help4">
+        <div class="panel-heading">
+          "Approved Amount" added to reimbursement request line items
+          <span class="pull-right"> 03/01/2018 </span>
+        </div>
+        <div class="panel-body">
+          In order to expedite the reimbursement review process, NPAL will now
+          be able to approve any particular line item for less than the amount
+          submitted. If this happens NPAL or FirstPic will reach out to the site
+          first to explain why this is being done and a note will be included
+          with the line item.
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

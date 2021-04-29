@@ -1,0 +1,108 @@
+<apex:page
+  controller="BudgetCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Sub-Grant Documents</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:SubGrantDetails
+          userAcctType="{!userAcctType}"
+          portalName="{!portalName}"
+          grant="{!grant}"
+          displayYear="false"
+        />
+        <c:AwardDocs
+          portalName="{!portalName}"
+          userAcctType="{!userAcctType}"
+          createMOU="{!createMOU}"
+          sendLOASuccessful="{!sendLOASuccessful}"
+          sendFFATA="{!sendFFATA}"
+          sendFFATASuccessful="{!sendFFATASuccessful}"
+          grant="{!grant}"
+          atts="{!atts}"
+        />
+
+        <c:Documents
+          header="Grant Specific Documents"
+          showStatus="true"
+          showDueDate="true"
+          showModHist="true"
+          showRequired="true"
+          enableDeleteAtt="{!CONTAINS(approverLevel, 'Admin')}"
+          showNotesForNational="{!userAcctType == 'National Organization'}"
+          showAccessMode="{!userAcctType == 'National Organization'}"
+          showUploadBtn="{!userAcctType == 'National Organization'}"
+          showAttPopupOnly="{!userAcctType == 'Local Organization'}"
+          emptyListText="No Sub-Grant Documents Found"
+          hasAdmin="{!portalName == 'BBBS'}"
+          groupId="{!IF(grant.National_Grant_Type__c == 'OVC', 'OVC Required Documents', '')}"
+        >
+          <apex:outputPanel
+            style="display: block; margin-top: 10px"
+            rendered="{!grant.National_Grant_Type__c == 'OVC'}"
+          >
+            <apex:outputLink
+              value="{!$Resource.FinancialManagementCapacityandRequiredCertificationsDocument}"
+              target="_blank"
+            >
+              Financial Management Capacity and Required Certifications (Sign
+              and Upload)
+            </apex:outputLink>
+            <br />
+            <apex:outputLink
+              value="{!$Resource.SpecialConditions}"
+              target="_blank"
+            >
+              Special Conditions Attachment (Read Only)
+            </apex:outputLink>
+          </apex:outputPanel>
+        </c:Documents>
+
+        <apex:outputPanel rendered="{!grant.National_Grant_Type__c == 'OVC'}">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-info">
+                <div class="panel-heading">Instructions</div>
+                <div class="panel-body">
+                  <ul>
+                    <li>
+                      Instructions for accessing and uploading the document can
+                      be found
+                      <apex:outputLink
+                        value="{!$Resource.OVCDocumentUploadInstructions}"
+                        target="_blank"
+                      >
+                        here</apex:outputLink
+                      >.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <a
+          class="btn"
+          href="{!URLFOR($Site.Prefix+'/BudgetDetails?grantId=' + grantId)}"
+        >
+          View Sub-Grant Details
+        </a>
+
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Report_Date_Range__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >TEXT(MONTH(Program_Report__r.Start_Date__c))+&quot;/&quot; +TEXT(DAY(Program_Report__r.Start_Date__c))+&quot;/&quot; +TEXT(YEAR(Program_Report__r.Start_Date__c))
++ &apos; - &apos; + 
+TEXT(MONTH(Program_Report__r.End_Date__c))+&quot;/&quot; +TEXT(DAY(Program_Report__r.End_Date__c))+&quot;/&quot; 
++TEXT(YEAR(Program_Report__r.End_Date__c))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Report Date Range</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

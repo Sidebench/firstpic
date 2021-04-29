@@ -1,0 +1,46 @@
+<apex:page controller="ReportListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Grantee Report List</title>
+  </head>
+  <c:Header
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:ReportList
+          header="Incomplete Grantee Reports"
+          reportList="{!incomplete_report_list}"
+          showEdit="{!userAcctType == 'Local Organization'}"
+        />
+
+        <c:ReportList
+          header="Submitted Grantee Reports"
+          reportList="{!submitted_report_list}"
+        />
+
+        <c:ReportList
+          header="Approved Grantee Reports"
+          reportList="{!approved_report_list}"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

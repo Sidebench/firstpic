@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-home</defaultLandingTab>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>BBBSA</label>
+    <logo>Communities_Shared_Document_Folder/bbbs_png.png</logo>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Contact</tabs>
+    <tabs>Grant__c</tabs>
+    <tabs>Reimbursement_Request__c</tabs>
+    <tabs>Assessment__c</tabs>
+    <tabs>Document__c</tabs>
+    <tabs>standard-report</tabs>
+</CustomApplication>

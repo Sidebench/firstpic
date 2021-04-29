@@ -1,0 +1,282 @@
+<apex:page
+  controller="ProgressReportCtrl"
+  action="{!getReport}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Progress Report</title>
+  </head>
+  <c:DMVHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>Progress Report</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h5>Grant: {!report.Grant_Name__c}</h5>
+            <h5>Report Id: {!report.Name}</h5>
+            <h5>Status: {!report.Status__c}</h5>
+          </div>
+        </div>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'Local Organization' && (report.Status__c != 'Submitted' && report.Status__c != 'Approved')}"
+        >
+          <div
+            class="alert alert-warning"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            NOTE: This progress report has not yet been submitted. Please review
+            and click submit.
+            <apex:commandButton
+              action="{!dmvFieldValidation}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="btn primary pull-right"
+              style="margin-top: -7px"
+            />
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Performance Measures</div>
+          <div class="panel-body grid-pd-sm">
+            <div class="row">
+              <div class="col-auto semibold">
+                1. During the quarter how many participants successfully
+                completed the program?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Youth_Successfully_Completed_Program__c}"
+                  rendered="{!report.Status__c != 'Submitted'}"
+                />
+                <apex:outputField
+                  value="{!report.Youth_Successfully_Completed_Program__c}"
+                  rendered="{!report.Status__c == 'Submitted'}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                2. Provide the total number of mentoring relationships created
+                during the reporting quarter.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_of_Mentors__c}"
+                  rendered="{!report.Status__c != 'Submitted'}"
+                />
+                <apex:outputField
+                  value="{!report.Number_of_Mentors__c}"
+                  rendered="{!report.Status__c == 'Submitted'}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                3. Provide the total number of mentoring sessions attended by
+                youth in the program during the reporting quarter.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_of_Sessions_Attended__c}"
+                  rendered="{!report.Status__c != 'Submitted'}"
+                />
+                <apex:outputField
+                  value="{!report.Number_of_Sessions_Attended__c}"
+                  rendered="{!report.Status__c == 'Submitted'}"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Progress Report Questions</div>
+          <div class="panel-body grid-pd-sm">
+            <div class="semibold">
+              1. Every quarterly report should provide a brief narrative
+              assessment of the projects effectivness thus far. The brief
+              narrative should include qualitative and quantitative evidence, as
+              available, and also highlight factors that the author considers to
+              have facilitated or impaired the project's effectiveness.
+            </div>
+            <apex:inputField
+              value="{!report.Projects_Effectiveness__c}"
+              rendered="{!report.Status__c != 'Submitted'}"
+            />
+            <apex:outputField
+              value="{!report.Projects_Effectiveness__c}"
+              rendered="{!report.Status__c == 'Submitted'}"
+            />
+            <br /><br />
+            <div class="semibold">
+              2. Summarize the progress of completed goals for the quarter,
+              including program highlights or strategy activities (special
+              events, program achievements, etc.) and dates of completation, if
+              applicable. Also, highlight the status of any objectives that were
+              delayed the previous quarter.
+            </div>
+            <apex:inputField
+              value="{!report.Progress_of_Completed_Goals__c}"
+              rendered="{!report.Status__c != 'Submitted'}"
+            />
+            <apex:outputField
+              value="{!report.Progress_of_Completed_Goals__c}"
+              rendered="{!report.Status__c == 'Submitted'}"
+            />
+            <br /><br />
+            <div class="semibold">
+              3. Describe barriers/challenges to implementing or completing any
+              of the objectives. Include corrective actions taken or planned to
+              overcome described barriers (include timeline). Are there any
+              obstacles or barriers that could prevent you from expending all
+              grant funds? Please include any requests for technical assistance
+              needed.
+            </div>
+            <apex:inputField
+              value="{!report.Problems_Barriers_Encountered_Details__c}"
+              rendered="{!report.Status__c != 'Submitted'}"
+            />
+            <apex:outputField
+              value="{!report.Problems_Barriers_Encountered_Details__c}"
+              rendered="{!report.Status__c == 'Submitted'}"
+            />
+            <br /><br />
+            <div class="semibold">
+              4. If no funds or minimal funds (less than 25%) were expended
+              during this reporting period please provide an explanation as to
+              why and when you anticipate requesting funds. Your detailed
+              explanation should address each budget category.
+            </div>
+            <apex:inputField
+              value="{!report.Reason_Requesting_Funds__c}"
+              rendered="{!report.Status__c != 'Submitted'}"
+            />
+            <apex:outputField
+              value="{!report.Reason_Requesting_Funds__c}"
+              rendered="{!report.Status__c == 'Submitted'}"
+            />
+          </div>
+        </div>
+
+        <!-- BEGIN Notes -->
+        <div class="panel panel-default">
+          <div class="panel-heading">Reviewer Notes</div>
+          <div class="panel-body">
+            <c:Notes
+              userAcctType="{!userAcctType}"
+              nationalNote="{!report.Reviewer_Notes__c}"
+              nationalNotePrivate="{!report.Notes_for_National__c}"
+              displayLocalNote="false"
+              displayNationalNote="true"
+              displayNationalNotePrivate="true"
+              richText="true"
+            />
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <hr />
+              <div class="row">
+                <div class="col-xs-6">
+                  <strong>Reviewed By:</strong>&nbsp; {!report.Reviewer_Name__c}
+                </div>
+                <div class="col-xs-6">
+                  <strong>Reviewed Date:</strong>&nbsp;
+                  <apex:outputField value="{!report.Reviewed_Date__c}" />
+                </div>
+              </div>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <c:CollapsiblePanel
+          header="Modification History"
+          rendered="{!userAcctType == 'National Organization'}"
+        >
+          <apex:outputField value="{!report.Modification_History__c}" />
+        </c:CollapsiblePanel>
+        <!-- END Notes -->
+
+        <!-- BEGIN Popups -->
+        <apex:outputPanel id="sendBackPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displaySendBackPopup}"
+            userAcctType="{!userAcctType}"
+            header="Send Back"
+            nationalNote="{!report.Reviewer_Notes__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+          >
+            <apex:commandButton action="{!hideSendBackPopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send Back"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+        <!-- END Popups -->
+
+        <!-- BEGIN Page Actions -->
+        <apex:commandButton
+          action="{!URLFOR($Site.Prefix+'/DMVProgressReports?reportId='+reportId+'&status='+status)}"
+          value="Back"
+          status="pageStatus"
+        />
+        <apex:commandButton
+          action="{!edit}"
+          value="Update Report"
+          status="pageStatus"
+          rendered="{!userAcctType == 'Local Organization' && report.Status__c == 'Submitted'}"
+        />
+        <apex:outputPanel
+          id="btns"
+          rendered="{!userAcctType == 'Local Organization' && report.Status__c != 'Submitted'}"
+        >
+          <apex:commandButton
+            action="{!save}"
+            value="Save"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!dmvFieldValidation}"
+            value="Submit"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+        <apex:commandButton
+          action="{!markAsReviewed}"
+          value="Mark as Reviewed"
+          status="pageStatus"
+          rendered="{!userAcctType == 'National Organization' && report.Status__c == 'Submitted'}"
+        />
+        <apex:commandButton
+          action="{!showSendBackPopup}"
+          value="Send Back"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!userAcctType == 'National Organization' && report.Status__c == 'Submitted'}"
+        />
+        <!-- END Page Actions -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NPAL_Program_Red_Flag_List__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >IF((IF(ISPICKVAL( On_Track_to_Complete_Program__c,&quot;Yes&quot;),0,1)+IF(ISPICKVAL(  Problems_Barriers_Encountered__c ,&quot;No&quot;),0,1)=1),1,IF((IF(ISPICKVAL( On_Track_to_Complete_Program__c,&quot;Yes&quot;),0,1)+IF(ISPICKVAL(Problems_Barriers_Encountered__c ,&quot;No&quot;),0,1)=2),2,0))</formula>
+    <inlineHelpText
+  >NPAL Program Challenges Red Flag List Value. If both On Track and No Problems then 0, if one but not both then 1, if both then 2.</inlineHelpText>
+    <label>NPAL Program Red Flag List</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

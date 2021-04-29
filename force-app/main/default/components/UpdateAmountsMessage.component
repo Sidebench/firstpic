@@ -1,0 +1,6 @@
+<apex:component>
+  <c:ErrorMessage
+    type="warning"
+    errorMessage="Remember to select Update Amounts to review changes made to this page."
+  />
+</apex:component>

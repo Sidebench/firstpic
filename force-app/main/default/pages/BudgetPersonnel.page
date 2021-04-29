@@ -1,0 +1,161 @@
+<apex:page
+  controller="BudgetCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Budget Personnel Form</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total Awarded: &nbsp;
+              <apex:outputField value="{!grant.Amount__c}" />
+            </h2>
+            <apex:outputPanel
+              rendered="{!grant.National_Grant_Type__c == 'OVC'}"
+            >
+              Indirect Rate: &nbsp;
+              <apex:outputPanel
+                rendered="{!updateIndirectRate || grant.Indirect_Rate__c == null}"
+              >
+                <apex:inputField
+                  value="{!grant.Indirect_Rate__c}"
+                  styleClass="input-sm"
+                />
+                <span
+                  class="badge"
+                  title="Please enter your Indirect Rate. If you are choosing to use the De Minimis please enter ‘10’. If you do not have a Negotiated Indirect Rate (NICRA), please enter ‘0’."
+                  >?</span
+                >
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!NOT(updateIndirectRate)}">
+                <apex:outputField value="{!grant.Indirect_Rate__c}" />
+              </apex:outputPanel>
+              &nbsp;&nbsp; Apply Indirect Rate to Expenses: &nbsp;
+              <apex:inputField
+                value="{!grant.Apply_Indirect_Rate_to_Expenses__c}"
+                rendered="{!updateIndirectRate || grant.Indirect_Rate__c == null}"
+              />
+              <apex:outputField
+                value="{!grant.Apply_Indirect_Rate_to_Expenses__c}"
+                rendered="{!NOT(updateIndirectRate)}"
+              />
+              <div style="margin: 10px"></div>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <c:BudgetPersonnelItems
+          ctrl="{!BudgetCtrl}"
+          isEditMode="true"
+          isReviewMode="false"
+          showAddItems="true"
+        />
+
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            itemName="{!selectedItem.Name}"
+            localNote="{!selectedItem.Item_Note__c}"
+            nationalNote="{!selectedItem.Response__c}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              action="{!upsertItem}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+              reRender="form"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Personnel & Fringe Notes"
+          localNote="{!grant.Labor_Notes__c}"
+          nationalNote="{!grant.Labor_Response__c}"
+        />
+
+        <apex:outputPanel rendered="{!grant.National_Grant_Type__c == 'OVC'}">
+          <c:IndirectCostsTable
+            budgeted="{!totalIndirectCostsBudgetAmount}"
+            approved="{!grant.Reimbursement_Approved_Indirect_Costs__c}"
+            balance="{!totalIndirectCostsBudgetAmount - grant.Reimbursement_Approved_Indirect_Costs__c}"
+          />
+        </apex:outputPanel>
+
+        <!-- BEGIN Actions -->
+        <div class="row">
+          <div class="col-xs-6">
+            <apex:commandButton
+              action="{!updateAllLaborAmounts}"
+              value="Update Amounts"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!savePersonnel}"
+              value="Save"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!next}"
+              value="Next"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>
+              Total Personnel and Fringe Budget: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!laborBudgetAmount}" />
+              </apex:outputText>
+            </h5>
+            <h5>
+              Total Expense Budget: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!expenseBudgetAmount}" />
+              </apex:outputText>
+            </h5>
+            <h4
+              style="{!IF((totalBudgetAmount > grant.Amount__c),'color: #b94a48;','')}"
+            >
+              Total Budget Amount: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!totalBudgetAmount}" />
+              </apex:outputText>
+            </h4>
+          </div>
+        </div>
+        <!-- END Actions -->
+
+        <c:UpdateAmountsMessage rendered="{!portalName == 'Ripken'}" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

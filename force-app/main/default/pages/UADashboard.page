@@ -1,0 +1,115 @@
+<apex:page
+  controller="UADashboardCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <c:UAHeader ActivePage="dashboard" acct="{!userAcct}" />
+
+  <apex:form>
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          Hello &nbsp;
+          <apex:outputText
+            value="{!currentUser.Contact.FirstName + ' ' + currentUser.Contact.LastName}"
+          ></apex:outputText
+          >.
+        </h2>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">Submitted Applications</div>
+              <div class="panel-body">
+                <apex:outputPanel rendered="{!submitted_app_list.size == 0}">
+                  No Submitted Applications Found
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!submitted_app_list.size > 0}">
+                  <table style="width: 100%">
+                    <tr>
+                      <th>App #</th>
+                      <th>Organization Name</th>
+                      <th>Status</th>
+                    </tr>
+                    <apex:repeat value="{!submitted_app_list}" var="i">
+                      <tr>
+                        <td>
+                          <a
+                            href="{!URLFOR($Site.Prefix+'/UAApplicationDetails?AppId='+i.Id)}"
+                          >
+                            {!i.Name}
+                          </a>
+                        </td>
+                        <td>{!i.Organization_Name__c}</td>
+                        <td>{!i.Status__c}</td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                  <apex:outputPanel
+                    rendered="{!more_submitted}"
+                    styleClass="view-more-link"
+                  >
+                    <hr />
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/UAApplicationList?status=submitted')}"
+                    >
+                      View All &raquo;
+                    </a>
+                  </apex:outputPanel>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">Reviewed Applications</div>
+              <div class="panel-body">
+                <apex:outputPanel rendered="{!reviewed_app_list.size == 0}">
+                  No Reviewed Applications Found
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!reviewed_app_list.size > 0}">
+                  <table style="width: 100%">
+                    <tr>
+                      <th>App #</th>
+                      <th>Organization Name</th>
+                      <th>Status</th>
+                    </tr>
+                    <apex:repeat value="{!reviewed_app_list}" var="i">
+                      <tr>
+                        <td>
+                          <a
+                            href="{!URLFOR($Site.Prefix+'/UAApplicationDetails?AppId='+i.Id)}"
+                          >
+                            {!i.Name}
+                          </a>
+                        </td>
+                        <td>{!i.Organization_Name__c}</td>
+                        <td>{!i.Status__c}</td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                  <apex:outputPanel
+                    rendered="{!more_reviewed}"
+                    styleClass="view-more-link"
+                  >
+                    <hr />
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/UAApplicationList?status=reviewed')}"
+                    >
+                      View All &raquo;
+                    </a>
+                  </apex:outputPanel>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,222 @@
+<apex:page
+  controller="YouthDataCtrl"
+  action="{!getPACList}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>PA Challenges</title>
+    <style>
+      input,
+      select {
+        margin-bottom: 4px !important;
+      }
+    </style>
+  </head>
+  <c:TRAILHeader
+    ActivePage="{!IF(userAcctType == 'Site', 'reports', 'program')}"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!ypr.Contact_Name__c}</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h4 style="padding-top: 10px">
+              Status: &nbsp;&nbsp;{!ypr.PA_Challenge_Status__c}
+            </h4>
+          </div>
+        </div>
+
+        <table class="table fixedTbl">
+          <tr>
+            <td>
+              <span style="font-weight: bold"> Grant: &nbsp;&nbsp; </span>
+              {!ypr.Grant_Name__c}
+            </td>
+            <td class="text-center">
+              <span style="font-weight: bold"> Grant Year: &nbsp;&nbsp; </span
+              >{!ypr.Grant_Year__c}
+            </td>
+            <td class="text-right">
+              <span style="font-weight: bold">
+                Report Date Range: &nbsp;&nbsp;
+              </span>
+              {!ypr.Report_Date_Range__c}
+            </td>
+          </tr>
+        </table>
+
+        <c:ErrorMessage type="warning" errorMessage="{!ypr.Notes__c}" />
+
+        <apex:repeat value="{!pac_list}" var="i">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {!i.Title__c}
+              <div class="pull-right">
+                Unit of Measurement: {!i.Measurement__c}
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="row text-center">
+                <div class="col-xs-2">
+                  Challenge 1 <br />
+                  <apex:inputField
+                    value="{!i.Challenge_1__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c != 'Complete'}"
+                  />
+                  <apex:outputField
+                    value="{!i.Challenge_1__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c == 'Complete'}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  Challenge 2 <br />
+                  <apex:inputField
+                    value="{!i.Challenge_2__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c != 'Complete'}"
+                  />
+                  <apex:outputField
+                    value="{!i.Challenge_2__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c == 'Complete'}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  Challenge 3 <br />
+                  <apex:inputField
+                    value="{!i.Challenge_3__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c != 'Complete'}"
+                  />
+                  <apex:outputField
+                    value="{!i.Challenge_3__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c == 'Complete'}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  Challenge 4 <br />
+                  <apex:inputField
+                    value="{!i.Challenge_4__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c != 'Complete'}"
+                  />
+                  <apex:outputField
+                    value="{!i.Challenge_4__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c == 'Complete'}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  Challenge 5 <br />
+                  <apex:inputField
+                    value="{!i.Challenge_5__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c != 'Complete'}"
+                  />
+                  <apex:outputField
+                    value="{!i.Challenge_5__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c == 'Complete'}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  Challenge 6 <br />
+                  <apex:inputField
+                    value="{!i.Challenge_6__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c != 'Complete'}"
+                  />
+                  <apex:outputField
+                    value="{!i.Challenge_6__c}"
+                    rendered="{!ypr.PA_Challenge_Status__c == 'Complete'}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:repeat>
+
+        <!-- BEGIN Popups  -->
+        <apex:outputPanel id="sendBackPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displaySendBackPopup}"
+            userAcctType="{!userAcctType}"
+            header="Send Back"
+            nationalNote="{!ypr.Notes__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+          >
+            <apex:commandButton action="{!hideSendBackPopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!sendBackPACs}"
+              value="Send Back"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="approvePopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayApprovePopup}"
+            userAcctType="{!userAcctType}"
+            header="Approve"
+            nationalNote="{!ypr.Notes__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+          >
+            <apex:commandButton action="{!hideApprovePopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!approvePACs}"
+              value="Approve"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+        <!-- END Popups  -->
+
+        <apex:commandButton
+          action="{!URLFOR($Site.Prefix+'/YouthData?localOrgId='+localOrgId+'&siteId='+siteId+'&grantId='+grantId+'&year='+year)}"
+          value="Back"
+          status="pageStatus"
+        />
+        <apex:outputPanel
+          rendered="{!userAcctType != 'National Organization' && ypr.PA_Challenge_Status__c != 'Complete'}"
+        >
+          <apex:commandButton
+            action="{!savePACs}"
+            value="Save"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!saveAndExitPACs}"
+            value="Save and Exit"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!submitPACs}"
+            value="Submit"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && ypr.PA_Challenge_Status__c == 'Submitted'}"
+        >
+          <apex:commandButton
+            action="{!showSendBackPopup}"
+            value="Send Back"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!showApprovePopup}"
+            value="Approve"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

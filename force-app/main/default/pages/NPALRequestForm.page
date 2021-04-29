@@ -1,0 +1,103 @@
+<apex:page
+  controller="RequestFormController"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Reimbursement Request</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Balance: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!grant.Balance__c}" />
+              </apex:outputText>
+            </h2>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+          <div class="panel panel-warning">
+            <div class="panel-heading">Notes</div>
+            <div class="panel-body">
+              <apex:outputField value="{!request.Request_Notes__c}" />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <apex:outputText value="Request Details" />
+          </div>
+          <div class="panel-body grid-pd-md">
+            <div class="row">
+              <div class="col-auto" style="font-weight: bold">
+                Reimbursement Date Range:
+              </div>
+              <div class="col-auto">
+                From: &nbsp;
+                <apex:inputField
+                  value="{!request.Start_Date__c}"
+                  style="width: 100px; display: inline"
+                />
+              </div>
+              <div class="col-auto">
+                To: &nbsp;
+                <apex:inputField
+                  value="{!request.End_Date__c}"
+                  style="width: 100px; display: inline"
+                />
+              </div>
+            </div>
+            PLEASE NOTE: You must submit a monthly reimbursement, but you can
+            submit either based on a calendar month or aligned with your
+            pay-periods (i.e four 1-week pay periods or two 2-week pay periods)
+          </div>
+        </div>
+
+        <apex:commandButton
+          action="{!cancel}"
+          value="Cancel"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!next}"
+          value="Next"
+          status="pageStatus"
+          styleClass="btn primary"
+          reRender="errorMessage"
+        />
+        <br /><br />
+
+        <div class="alert alert-info" role="alert">
+          <strong>
+            You should not start a reimbursement without having an approved
+            budget.
+          </strong>
+        </div>
+        <apex:outputPanel id="errorMessage">
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+        </apex:outputPanel>
+        <h6>
+          Leaving a reimbursement request without saving or submitting will
+          result in the lose of information in this request.
+        </h6>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

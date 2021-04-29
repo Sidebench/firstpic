@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Shipping_State_Long__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(ShippingState, 
+&apos;AL&apos;,&apos;Alabama&apos;, 
+&apos;AK&apos;,&apos;Alaska&apos;, 
+&apos;AZ&apos;,&apos;Arizona&apos;, 
+&apos;AR&apos;,&apos;Arkansas&apos;, 
+&apos;CA&apos;,&apos;California&apos;, 
+&apos;CO&apos;,&apos;Colorado&apos;, 
+&apos;CT&apos;,&apos;Connecticut&apos;, 
+&apos;DE&apos;,&apos;Delaware&apos;, 
+&apos;FL&apos;,&apos;Florida&apos;, 
+&apos;GA&apos;,&apos;Georgia&apos;, 
+&apos;HI&apos;,&apos;Hawaii&apos;, 
+&apos;ID&apos;,&apos;Idaho&apos;, 
+&apos;IL&apos;,&apos;Illinois&apos;, 
+&apos;IN&apos;,&apos;Indiana&apos;, 
+&apos;IA&apos;,&apos;Iowa&apos;, 
+&apos;KS&apos;,&apos;Kansas&apos;, 
+&apos;KY&apos;,&apos;Kentucky&apos;, 
+&apos;LA&apos;,&apos;Louisiana&apos;, 
+&apos;ME&apos;,&apos;Maine&apos;, 
+&apos;MD&apos;,&apos;Maryland&apos;, 
+&apos;MA&apos;,&apos;Massachusetts&apos;, 
+&apos;MI&apos;,&apos;Michigan&apos;, 
+&apos;MN&apos;,&apos;Minnesota&apos;, 
+&apos;MS&apos;,&apos;Mississippi&apos;, 
+&apos;MO&apos;,&apos;Missouri&apos;, 
+&apos;MT&apos;,&apos;Montana&apos;, 
+&apos;NE&apos;,&apos;Nebraska&apos;, 
+&apos;NV&apos;,&apos;Nevada&apos;, 
+&apos;NH&apos;,&apos;New Hampshire&apos;, 
+&apos;NJ&apos;,&apos;New Jersey&apos;, 
+&apos;NM&apos;,&apos;New Mexico&apos;, 
+&apos;NY&apos;,&apos;New York&apos;, 
+&apos;NC&apos;,&apos;North Carolina&apos;, 
+&apos;ND&apos;,&apos;North Dakota&apos;, 
+&apos;OH&apos;,&apos;Ohio&apos;, 
+&apos;OK&apos;,&apos;Oklahoma&apos;, 
+&apos;OR&apos;,&apos;Oregon&apos;, 
+&apos;PA&apos;,&apos;Pennsylvania&apos;, 
+&apos;RI&apos;,&apos;Rhode Island&apos;, 
+&apos;SC&apos;,&apos;South Carolina&apos;, 
+&apos;SD&apos;,&apos;South Dakota&apos;, 
+&apos;TN&apos;,&apos;Tennessee&apos;, 
+&apos;TX&apos;,&apos;Texas&apos;, 
+&apos;UT&apos;,&apos;Utah&apos;, 
+&apos;VT&apos;,&apos;Vermont&apos;, 
+&apos;VA&apos;,&apos;Virginia&apos;, 
+&apos;WA&apos;,&apos;Washington&apos;, 
+&apos;WV&apos;,&apos;West Virginia&apos;, 
+&apos;WI&apos;,&apos;Wisconsin&apos;, 
+&apos;WY&apos;,&apos;Wyoming&apos;, 
+ShippingState)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Shipping State Long</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Item_Balance__c</fullName>
+    <externalId>false</externalId>
+    <formula>Total_Item_Budget__c - Approved_Amount__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>DEPRECATED: Total Item Budget - Approved Amount 
+(IF(Total_Approved_Amount__c == 0, Total_Approved_Salary__c + Total_Approved_Benefits__c, Total_Approved_Amount__c))</inlineHelpText>
+    <label>Item Balance</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

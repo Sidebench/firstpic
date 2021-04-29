@@ -1,0 +1,200 @@
+<apex:component allowDML="true">
+  <apex:attribute
+    type="TALogCtrl"
+    name="ctrl"
+    description="TALogCtrl"
+    required="true"
+  />
+  <apex:attribute type="Id" name="siteId" description="siteId" />
+  <apex:attribute
+    type="Boolean"
+    name="displayDetails"
+    description="displayDetails"
+    default="false"
+  />
+
+  <apex:outputPanel id="logs">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <apex:outputText
+          value="{!IF(ctrl.followUpOnly, 'TA Logs Flagged for Follow-up', 'TA Logs')}"
+        />
+        <apex:commandButton
+          action="{!ctrl.getTALogs}"
+          value="View All"
+          status="pageStatus"
+          styleClass="btn-small btn-white pull-right"
+          rendered="{!ctrl.followUpOnly && displayDetails}"
+          reRender="logs"
+        >
+          <apex:param
+            assignTo="{!ctrl.followUpOnly}"
+            name="followUpOnly"
+            value="false"
+          />
+        </apex:commandButton>
+        <apex:commandButton
+          action="{!ctrl.getTALogs}"
+          value="View Flagged for Follow-up"
+          status="pageStatus"
+          styleClass="btn-small btn-white pull-right"
+          rendered="{!NOT(ctrl.followUpOnly) && displayDetails}"
+          reRender="logs"
+        >
+          <apex:param
+            assignTo="{!ctrl.followUpOnly}"
+            name="followUpOnly"
+            value="true"
+          />
+        </apex:commandButton>
+      </div>
+      <div class="panel-body">
+        <apex:outputPanel
+          rendered="{!ctrl.logs.size > 0 && NOT(ctrl.displayLimitError)}"
+        >
+          <table width="100%">
+            <tr>
+              <th style="{!IF(siteId == null, '', 'width: 0')}">
+                <apex:outputText value="Site" rendered="{!siteId == null}" />
+              </th>
+              <th>Date</th>
+              <th>Topic</th>
+              <th>TA By</th>
+              <th>Grantee Attendee</th>
+              <th
+                style="{!IF(displayDetails, 'text-align: center; width: 100px;', 'width: 0')}"
+              >
+                <apex:outputText
+                  value="View Details"
+                  rendered="{!displayDetails}"
+                />
+              </th>
+              <th style="text-align: center; width: 100px">Edit</th>
+              <th style="text-align: center">Is Follow-Up?</th>
+              <th style="text-align: center">Flagged for Follow-Up</th>
+              <th style="text-align: center; width: 100px">Log Follow-up</th>
+            </tr>
+            <apex:repeat value="{!ctrl.logs}" var="i">
+              <tr>
+                <td>
+                  <apex:outputText
+                    value="{!i.Organization_Name__c}"
+                    rendered="{!siteId == null}"
+                  />
+                </td>
+                <td>
+                  <apex:outputField value="{!i.Date__c}" />
+                </td>
+                <td>{!i.Topic__c}</td>
+                <td>{!i.TA_By_Name__c}</td>
+                <td>{!i.Grantee_Attendee__c}</td>
+                <td class="text-center">
+                  <apex:commandLink
+                    action="{!ctrl.getTALog}"
+                    rendered="{!displayDetails}"
+                  >
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                    <apex:param
+                      name="selectedLogId"
+                      value="{!i.Id}"
+                      assignTo="{!ctrl.selectedLogId}"
+                    />
+                  </apex:commandLink>
+                </td>
+                <td class="text-center">
+                  <apex:commandLink
+                    action="{!ctrl.showTALogPopup}"
+                    status="pageStatus"
+                    reRender="logPopup"
+                  >
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    <apex:param
+                      name="selectedLogId"
+                      value="{!i.Id}"
+                      assignTo="{!ctrl.selectedLogId}"
+                    />
+                  </apex:commandLink>
+                </td>
+                <td class="text-center">
+                  <apex:outputField value="{!i.Is_Follow_Up__c}" />
+                </td>
+                <td class="text-center">
+                  <apex:outputText rendered="{!i.Flagged_for_Follow_Up__c}">
+                    <span class="glyphicon glyphicon-flag text-warning"></span>
+                  </apex:outputText>
+                </td>
+                <td class="text-center">
+                  <apex:commandLink
+                    action="{!ctrl.showTAFollowUpPopup}"
+                    status="pageStatus"
+                    rendered="{!i.Flagged_for_Follow_Up__c == true}"
+                    reRender="logPopup"
+                  >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <apex:param
+                      name="selectedLogId"
+                      value="{!i.Id}"
+                      assignTo="{!ctrl.selectedLogId}"
+                    />
+                  </apex:commandLink>
+                </td>
+              </tr>
+            </apex:repeat>
+          </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!ctrl.logs.size == 0}">
+          No TA Logs Found
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!ctrl.displayLimitError}">
+          List of results is too large to display. Please narrow search criteria
+          and refresh results.
+        </apex:outputPanel>
+      </div>
+      <apex:outputPanel rendered="{!NOT(displayDetails)}">
+        <div class="panel-footer">
+          <apex:commandButton
+            action="{!ctrl.showAddTALogPopup}"
+            value="Add TA Log"
+            styleClass="primary"
+            status="pageStatus"
+            reRender="logPopup"
+          />
+          <apex:commandButton
+            value="View All"
+            action="{!URLFOR($Site.Prefix+'/talogs?siteId='+siteId)}"
+          />
+        </div>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!displayDetails}">
+        <c:Pagination
+          disablePrevious="{!ctrl.disablePrevious}"
+          disableNext="{!ctrl.disableNext}"
+          recordCount="{!ctrl.recordCount}"
+          first="{!ctrl.first}"
+          previous="{!ctrl.previous}"
+          next="{!ctrl.next}"
+          last="{!ctrl.last}"
+          listId="logs"
+        >
+          <apex:commandButton
+            action="{!ctrl.showAddTALogPopup}"
+            value="Add TA Log"
+            styleClass="primary"
+            status="pageStatus"
+            reRender="logPopup"
+          />
+        </c:Pagination>
+      </apex:outputPanel>
+    </div>
+  </apex:outputPanel>
+
+  <apex:outputPanel id="logPopup">
+    <c:TALogPopup
+      log="{!ctrl.selectedLog}"
+      orgOptions="{!ctrl.orgOptions}"
+      hideTALogPopup="{!ctrl.hideTALogPopup}"
+      upsertTALog="{!ctrl.upsertTALog}"
+      rendered="{!ctrl.displayTALogPopup}"
+    />
+  </apex:outputPanel>
+</apex:component>

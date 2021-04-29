@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>An_Ad_Tells_People_About_a_Product__c</fullName>
+    <externalId>false</externalId>
+    <label>An Ad Tells People About a Product</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>True_or_False</valueSetName>
+    </valueSet>
+</CustomField>

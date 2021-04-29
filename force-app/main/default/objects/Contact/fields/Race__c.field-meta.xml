@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Race__c</fullName>
+    <externalId>false</externalId>
+    <label>Race</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not Specified</fullName>
+                <default>false</default>
+                <label>Not Specified</label>
+            </value>
+            <value>
+                <fullName>American Indian or Alaska Native</fullName>
+                <default>false</default>
+                <label>American Indian or Alaska Native</label>
+            </value>
+            <value>
+                <fullName>Asian</fullName>
+                <default>false</default>
+                <label>Asian</label>
+            </value>
+            <value>
+                <fullName>Black or African American</fullName>
+                <default>false</default>
+                <label>Black or African American</label>
+            </value>
+            <value>
+                <fullName>Native Hawaiian or Pacific Islander</fullName>
+                <default>false</default>
+                <label>Native Hawaiian or Pacific Islander</label>
+            </value>
+            <value>
+                <fullName>White or Caucasian</fullName>
+                <default>false</default>
+                <label>White or Caucasian</label>
+            </value>
+            <value>
+                <fullName>Multi Racial</fullName>
+                <default>false</default>
+                <label>Multi Racial</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Prefer not to provide</fullName>
+                <default>false</default>
+                <label>Prefer not to provide</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

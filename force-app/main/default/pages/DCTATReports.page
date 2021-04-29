@@ -1,0 +1,157 @@
+<apex:page
+  controller="QuarterlyProgressReportsCtrl"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Progress Reports</title>
+  </head>
+  <c:RipkenHeader
+    ActivePage="progress"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Progress Reports</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              Organization: &nbsp;
+              <apex:inputText value="{!orgName}" styleClass="input-md" />
+              &nbsp;&nbsp; Year: &nbsp;
+              <apex:selectList value="{!year}" size="1" id="years">
+                <apex:selectOption
+                  itemValue="View All"
+                  itemLabel="View All"
+                  rendered="{!siteId != null}"
+                />
+                <apex:selectOptions value="{!yearOptions}" />
+              </apex:selectList>
+              &nbsp;<apex:commandButton
+                action="{!getDCTATLists}"
+                value="Update"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                reRender="form"
+              />
+            </apex:outputPanel>
+            <div style="margin: 5px"></div>
+          </div>
+        </div>
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Progress Reports
+              <apex:outputPanel
+                styleClass="pull-right"
+                rendered="{!approverLevel == 'Level One' && portalName == 'Ripken'}"
+              >
+                <apex:commandButton
+                  action="{!getDCTATLists}"
+                  value="View All"
+                  status="pageStatus"
+                  styleClass="btn-small pull-right"
+                  rendered="{!NOT(viewAll)}"
+                  reRender="form"
+                >
+                  <apex:param
+                    assignTo="{!viewAll}"
+                    name="viewAll"
+                    value="true"
+                  />
+                </apex:commandButton>
+                <apex:commandButton
+                  action="{!getDCTATLists}"
+                  value="View My Assignments"
+                  status="pageStatus"
+                  styleClass="btn-small pull-right"
+                  rendered="{!viewAll}"
+                  reRender="form"
+                >
+                  <apex:param
+                    assignTo="{!viewAll}"
+                    name="viewAll"
+                    value="false"
+                  />
+                </apex:commandButton>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/DCTATReportsXLS?orgName='+ orgName +'&year='+ year +'&viewAll='+ IF(viewAll, 'true', 'false'))}"
+                  class="btn btn-small btn-white"
+                  target="_blank"
+                >
+                  Export Results
+                </a>
+              </apex:outputPanel>
+            </div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!items.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th
+                      style="{!IF(userAcctType == 'National Organization','','width:0;')}"
+                    >
+                      <apex:outputText
+                        value="Site"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>Primary Approver</th>
+                    <th>Grant Type</th>
+                    <th>Sub-Grant Name</th>
+                    <th>Mid-Year Report</th>
+                    <th>Final Report</th>
+                  </tr>
+                  <apex:repeat value="{!items}" var="i">
+                    <tr>
+                      <td>
+                        <apex:outputText
+                          value="{!i.orgName}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>{!i.approver}</td>
+                      <td>{!i.grantType}</td>
+                      <td>{!i.grantName}</td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.q2Status}"
+                          action="{!URLFOR($Site.Prefix+'/RipkenDCTATReport?reportId='+i.q2Id)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.q4Status}"
+                          action="{!URLFOR($Site.Prefix+'/RipkenDCTATReport?reportId='+i.q4Id)}"
+                        />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!items.size == 0}">
+                No Reports Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,56 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="field"
+    description="field"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="label"
+    description="label"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="readOnly"
+    description="readOnly"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="fullWidth"
+    description="fullWidth"
+    default="false"
+  />
+
+  <apex:outputPanel rendered="{!NOT(fullWidth)}">
+    <div class="row">
+      <div class="col-sm-9 col-xs-12 semibold">
+        <apex:outputText value="{!label}" escape="false" />
+      </div>
+      <div class="col-sm-3 col-xs-12 pull-right">
+        <apex:inputText value="{!field}" rendered="{!NOT(readOnly)}" />
+        <apex:outputText value="{!field}" rendered="{!readOnly}" />
+      </div>
+    </div>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!fullWidth}">
+    <div class="row">
+      <div class="col-xs-12 semibold">
+        <apex:outputText value="{!label}" escape="false" />
+      </div>
+      <div class="col-xs-12">
+        <apex:inputText value="{!field}" rendered="{!NOT(readOnly)}" />
+        <apex:outputText value="{!field}" rendered="{!readOnly}" />
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>
+
+<!--
+<c:DCTATQuestion label="{!labels['New_Youth_Served__c']}" 
+field="{!report.New_Youth_Served__c}" 
+readOnly="{!readOnly}" 
+rendered="{!i.Field_API__c == 'New_Youth_Served__c'}" />
+-->

@@ -1,0 +1,1121 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>PROGRAM STANDARDS</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="7"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 14: Inquiry and Orientation</div>
+          <div class="panel-body">
+            <h5>
+              Inquiry and Orientation process must include the following
+              requirements:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td colspan="3">
+                  <strong>Volunteer</strong>
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_Non_Exclusion__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Description of BBBS/Agency’s mission, programs, benefits, and
+                  purpose of program (why we do the work we do).
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_Non_Exclusion_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_Demographics_of_the_Children__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Demographics of the children served.</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_Demographics_of_the_Children_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_Eligibility_Criteria__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Eligibility criteria and commitment expectations</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_Eligibility_Criteria_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_Review_Enrollment_Process__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Review enrollment process steps, including the Agency’s right
+                  to accept or deny participants, or close a match at any time.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_Review_Enrollment_Process_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <hr />
+                  <strong>Parent</strong>
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_Description_Mission__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Description of BBBS/Agency mission, programs, benefits, and
+                  purpose of program (why we do the work we do).
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_Description_Mission_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_Child_Eligibility_Criteria__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Child eligibility criteria and commitment expectations,
+                  emphasizing the importance of parental involvement.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_Child_Eligibility_Criteria_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_Review_Parent_Enrollment__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Review enrollment process steps, including Agency’s right to
+                  accept or deny participants, or close a match at any time.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_Review_Parent_Enrollment_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S14_School_Site_Based_Mentoring__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  School / Site-Based Mentoring (SBM) ONLY: send to the home the
+                  application / permission forms, along with child safety
+                  prevention materials and enough program information for
+                  parent/guardian(s) to make an informed decision.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S14_School_Site_Based_Mentoring_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 15: Child Enrollment</div>
+          <div class="panel-body">
+            <h5>
+              Child Enrollment process must include the following requirements:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_Written_Eligibility_Reqs__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Child meets the Agency’s written eligibility requirements
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_Written_Eligibility_Reqs_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_Signed_Application__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Signed application from parent/guardian giving written
+                  consent; including appropriate releases (e.g. media,
+                  confidentiality)
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_Signed_Application_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_In_Person_Interview__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Conduct an in-person interview with child</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_In_Person_Interview_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_Parent_Interview__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Interview with parent (not required for School/Site-based
+                  matches; however, the parent/guardian and school must be given
+                  the opportunity to provide information about the social,
+                  educational, behavioral, and developmental strengths and needs
+                  of the child
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_Parent_Interview_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_Assessment_of_Home__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Conduct an assessment of home environment - A documented
+                  professional evaluation that can be done through a series of
+                  targeted questions relative to the physical surrounding and
+                  immediate neighborhood, and the residents of the home. For
+                  School/Site-based: The parent/guardian and school will be
+                  given the opportunity to provide information
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_Assessment_of_Home_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_Collateral_Information__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Request collateral Information as needed (therapy report,
+                  school report, etc.)
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_Collateral_Information_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_Professional_Assessment__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Written professional assessment and matching recommendations
+                  based on a holistic assessment of information gathered during
+                  the inquiry and enrollment process.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_Professional_Assessment_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S15_Reassessment__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Reassessment: Ready-to- be-Matched (RTBM) children must be
+                  reassessed every twelve months if they have been waitlisted
+                  and not matched. All information about the child, the family,
+                  and the home environment should be updated (a home visit is
+                  optional).
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S15_Reassessment_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 16: Volunteer Enrollment</div>
+          <div class="panel-body">
+            <h5>
+              Volunteer Enrollment process must include the following
+              requirements:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_Written_Eligibility_Reqs__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Volunteer Big applicant meets the Agency’s written eligibility
+                  requirements
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_Written_Eligibility_Reqs_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_Signed_Application__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Signed Application giving written consent from volunteer.
+                  <br />
+                  Parental permission for Bigs under 18.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_Signed_Application_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_References__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  ALL references must be obtained by Agency Staff trained in
+                  obtaining references and in Child Safety/Youth Protection.
+                  References may be completed by mail, email, phone, or in
+                  person with the exception of in-depth references from:
+                  <ul>
+                    <li>
+                      Spouse/ Spousal Equivalent (or family member if no
+                      spouse/spousal equivalent is available)
+                    </li>
+                    <li>
+                      Youth serving organizations where applicant has past
+                      relevant experience which must be conducted by
+                      Professional staff.
+                    </li>
+                  </ul>
+                  Both of the above must be conducted by degreed professional
+                  staff and must be conducted by phone or in person.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_References_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_Background_Checks__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Conduct layered (local, state, and national level) background
+                  checks, including criminal history record checks, in
+                  accordance with the standard, including updated layered checks
+                  at least every 3 years.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_Background_Checks_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_In_Person_Interview__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Conduct an in-person Interview</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_In_Person_Interview_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_Home_Environment_Assessment__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Conduct an assessment of home environment - a documented
+                  professional evaluation that can be done through a series of
+                  targeted questions relative to the physical surrounding and
+                  immediate neighborhood, and the residents of the home.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_Home_Environment_Assessment_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_Collateral_Information__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Request collateral Information as needed (e.g., therapist,
+                  counselor)
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_Collateral_Information_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S16_Assessment__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Written professional assessment and matching recommendation
+                  based on a holistic assessment of information gathered during
+                  the inquiry and enrollment process.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S16_Assessment_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 17: Pre-Match Training</div>
+          <div class="panel-body">
+            <h5>
+              Training must be conducted prior to the actual match and provide
+              participants (Volunteer Big, child, and parent/guardian) the
+              information needed to begin a match, develop, and sustain
+              effective and enduring match relationships.
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S17_Interactive__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Pre-match training must be interactive, evaluated, documented
+                  and can be provided in-person, online with interaction, and/or
+                  individually, in group sessions, or a combination thereof (in
+                  writing for School/Site-Based parent/guardians). Training
+                  should be conducted by an Agency Staff member who demonstrates
+                  a strong competency for training others.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S17_Interactive_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S17_Pre_Match_Volunteer__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Volunteer pre-match training must cover, at a minimum:
+                  <ul>
+                    <li>Ground rules / Program rules</li>
+                    <li>Volunteer Big obligations and appropriate roles</li>
+                    <li>
+                      Expectations for the match relationship; relationship
+                      development cycles
+                    </li>
+                    <li>What is match support and why we do it</li>
+                    <li>Child Safety/Youth Protection</li>
+                    <li>Ages and stages of child development</li>
+                    <li>The match closure process</li>
+                  </ul>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S17_Pre_Match_Volunteer_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S17_Pre_Match_Parent_Guardian__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Parent/Guardian pre-match training must cover, at a minimum:
+                  <ul>
+                    <li>Ground rules / Program rules</li>
+                    <li>
+                      Expectations for the match relationship; relationship
+                      development cycles
+                    </li>
+                    <li>What a Volunteer Big is and isn’t</li>
+                    <li>
+                      Expectations for parent partnership (why you are important
+                      to this experience)
+                    </li>
+                    <li>What is match support and why we do it</li>
+                    <li>Child Safety/Youth Protection</li>
+                    <li>The match closure process</li>
+                  </ul>
+                  <em
+                    >* For School/Site-Based parents this information may be
+                    sent electronically or through the mail.</em
+                  >
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S17_Pre_Match_Parent_Guardian_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S17_Pre_Match_Children__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Child(ren) pre-match training must cover, at a minimum:
+                  <ul>
+                    <li>What is a Big Brothers/Big Sister</li>
+                    <li>Ground rules/Program rules</li>
+                    <li>Expectations for the match relationship</li>
+                    <li>What is match support and why we do it</li>
+                    <li>Personal safety</li>
+                    <li>The match closure process</li>
+                  </ul>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S17_Pre_Match_Children_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 18: Pre-Matching &amp; Matching Process
+          </div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S18_Assess_All_Information__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Agency Staff will assess all information gathered through
+                  inquiry and enrollment, applications, references, and
+                  interviews of all parties, including taking into consideration
+                  parental, Volunteer Big and child preferences, in order to
+                  make a thoughtful match selection, with a documented match
+                  selection rationale.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S18_Assess_All_Information_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S18_Pre_Match_Presentation__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Pre-Match Presentation must be interactive, done in-person
+                  or by phone, and must ensure that each party understands the
+                  Agency’s matching rationale (including the needs of the child,
+                  and what the Volunteer Big brings to the match), resulting in
+                  all parties approving the match.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S18_Pre_Match_Presentation_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S18_Volunteer_Approval__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Volunteer Big must approve the match before the match
+                  introduction meeting for both Community-based and Site-based
+                  matches.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S18_Volunteer_Approval_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S18_Child_Approval__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Parent/Guardian must approve the match before the match
+                  introduction meeting for Community-based matches. For
+                  Site-based matches, written notification that a match has been
+                  made and with whom can be sent to the Parent/Guardian.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S18_Child_Approval_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S18_Introduction_Meeting__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Match Introduction Meeting must be in-person and conducted
+                  by Agency Staff in order to properly introduce all match
+                  parties and review critical information that will build the
+                  longest, strongest, safest match possible.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S18_Introduction_Meeting_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S18_Parent_Guardian_Involvement__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Involvement of the parent/guardian is mandatory for
+                  Community-Based and Site-Based Plus matches.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S18_Parent_Guardian_Involvement_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S18_Written_Documentation__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Written documentation of completed match introductions for all
+                  programs must include, at minimum:
+                  <ol type="a">
+                    <li>
+                      A signed match agreement form containing ground
+                      rules/program rules that outline roles, responsibilities,
+                      and expectations for each match participant; and
+                    </li>
+                    <li>
+                      A post-match meeting assessment by Agency Staff, reviewing
+                      overall reaction by participants to the match meeting and
+                      identifying areas for future match support.
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S18_Written_Documentation_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 19: The Youth Outcomes Development Plan
+          </div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S19_Written_YODP__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Agency Staff will develop a written YODP at the start of the
+                  match to address the desired Youth Outcomes in the first year
+                  of match.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S19_Written_YODP_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S19_Parent_Volunteer_Review__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The YODP will be reviewed with Volunteer Bigs and
+                  parent/guardians during the pre-match process and again with
+                  all match parties during the match introduction meeting (as
+                  appropriate given that the child is participating in this
+                  meeting).
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S19_Parent_Volunteer_Review_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S19_YODP_Reviewed_Annually__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The YODP will be reviewed annually to assess progress made
+                  and, if necessary, adjusts the YODP for the next twelve
+                  months, accordingly.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S19_YODP_Reviewed_Annually_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="7"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(8);
+    };
+  </script>
+</apex:page>

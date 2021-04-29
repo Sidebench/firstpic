@@ -1,0 +1,601 @@
+<apex:page
+  controller="PublicProgressReportCtrl"
+  action="{!setBJAG}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <link
+    href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    rel="stylesheet"
+    media="screen"
+  />
+  <apex:includeScript
+    value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"
+  />
+
+  <head>
+    <title>Program Report</title>
+    <style>
+      a,
+      .primary {
+        color: #ad2820;
+      }
+      a:hover {
+        color: #7d2302;
+      }
+      h6,
+      .h6 {
+        font-size: 12px;
+        color: #aaa;
+        display: block;
+        margin: 2px 0 0;
+      }
+      input[type="submit"].btn.primary,
+      .btn.primary {
+        background: #ad2820;
+        background-image: -webkit-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -moz-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -ms-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -o-linear-gradient(top, #ad2820, #7d2302);
+        background-image: linear-gradient(to bottom, #ad2820, #7d2302);
+        color: #fff;
+      }
+      input[type="submit"].primary:hover,
+      .btn.primary:hover {
+        background: #7d2302;
+        text-decoration: none;
+      }
+      input[type="text"],
+      select,
+      textarea {
+        display: block;
+        width: 100%;
+      }
+      input[type="radio"],
+      input[type="checkbox"] {
+        margin: 4px 4px 0 0;
+      }
+      .grid-pd [class*="col-"] {
+        padding-bottom: 10px;
+      }
+      label {
+        margin-right: 15px;
+      }
+      .semibold {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <apex:form id="form" style="margin: 40px">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row" style="margin-bottom: 10px">
+          <div class="col-xs-4">
+            <center>
+              <apex:image value="{!$Resource.BGCMDLogo}" height="100" />
+            </center>
+          </div>
+          <div class="col-xs-4">
+            <h2><center>Program Report</center></h2>
+          </div>
+          <div class="col-xs-4 pull-right">
+            <center>
+              <apex:image value="{!$Resource.MDGOLogo}" height="100" />
+            </center>
+          </div>
+        </div>
+
+        <apex:outputPanel
+          rendered="{!successMessage != null && successMessage != ''}"
+        >
+          <c:ErrorMessage
+            errorMessage="Program Report Submitted Successfully."
+            type="success"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!(successMessage == null || successMessage == '')}"
+          id="details"
+        >
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <span class="text-danger">* Required Field</span> <br />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Organization Information</h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-3 semibold">
+                  <apex:outputText value="DUNS Number" escape="false" />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3 semibold">
+                  <apex:outputText value="Organization Name" escape="false" />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3 semibold">
+                  <apex:outputText value="Submitted By" escape="false" />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3 semibold">
+                  <apex:outputText value="Submitter Email" escape="false" />
+                  <space class="text-danger"> *</space>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.DUNS_Number__c}"
+                    styleClass="input-md"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.Organization_Name_Text__c}"
+                    styleClass="input-md"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.Submitted_By_Text__c}"
+                    styleClass="input-md"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.DOD_Email__c}"
+                    styleClass="input-md"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Performance Measures</h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Served__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.Youth_Served__c}"
+                    styleClass="input-md"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Evidence_Activities__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField value="{!report.Number_Activities__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Wellbeing_Increase__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.Youth_Wellbeing_Increase__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Consistent_Mentorship__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField value="{!report.Number_of_Mentors__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Law_Enforcement_Engaged__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.Law_Enforcement_Engaged__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Improved_Opinion_of_Law__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.Increase_in_Perception_of_Social_Support__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Law_Enforcement_Improved_Knowledge__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField
+                    value="{!report.Law_Enforcement_Improved_Knowledge__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Laptops_Utilized__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField value="{!report.Laptops_Utilized__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-9 semibold">
+                  <apex:outputText
+                    value="{!fields['Chromebooks_Utilized__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-3">
+                  <apex:inputField value="{!report.Chromebooks_Utilized__c}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Progress Report Questions</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Project_Effectiveness__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Projects_Effectiveness__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Barriers_Challenges__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Problems_Barriers_Encountered_Details__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['No_Funds_Anticipated_Request__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Reason_Requesting_Funds__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Upcoming_Activities__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Major_Activities_Planned__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Successes_Best_Practices__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Accomplishments_this_Reporting_Period__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Reduced_Crime_Improve_Safety__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Innovative_Programs_Accomplishments__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Cooperation_Collaboration__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Cooperation_Collaboration__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Summarize_Goals__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!report.Progress_of_Completed_Goals__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="{!fields['Performance_Measurement__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Performance_Measurement__c}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                Community Activity - BJA (Additional Reporting) (Accountability
+                Measures)
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Surveyed_Topics__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectCheckboxes
+                      layout="pageDirection"
+                      value="{!topics}"
+                    >
+                      <apex:selectOptions value="{!topicOptions}" />
+                      <apex:actionSupport
+                        event="onchange"
+                        reRender="form"
+                        status="pageStatus"
+                      />
+                    </apex:selectCheckboxes>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Community_Activity_Frequency__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Hosted_Meetings__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:inputField value="{!report.Hosted_Meetings__c}" />
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Attended_Meetings__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:inputField value="{!report.Attended_Meetings__c}" />
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Distributed_Newsletter__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:inputField
+                        value="{!report.Distributed_Newsletter__c}"
+                      />
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Attended_Events__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:inputField value="{!report.Attended_Events__c}" />
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Social_Media_Activities__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:inputField
+                        value="{!report.Social_Media_Activities__c}"
+                      />
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Conducted_Outreach__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:inputField
+                        value="{!report.Conducted_Outreach__c}"
+                      />
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Other__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:inputField value="{!report.Other__c}" />
+                    </div>
+                  </div>
+                  <br />
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!fields['Other_Describe__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField value="{!report.Other_Describe__c}" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <apex:commandButton
+            value="Submit"
+            action="{!submit}"
+            styleClass="primary"
+            rendered="{!report.Id == null}"
+          />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

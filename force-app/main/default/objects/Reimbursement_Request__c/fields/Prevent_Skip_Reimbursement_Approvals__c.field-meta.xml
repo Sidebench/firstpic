@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Skip_Reimbursement_Approvals__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >OR(Grant__r.Prevent_Skip_Reimbursement_Approvals__c,  Grant__r.National_Grant__r.Prevent_Skip_Reimbursement_Approvals__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Prevent Skip Reimbursement Approvals</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

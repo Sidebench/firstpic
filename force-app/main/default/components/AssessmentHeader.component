@@ -1,0 +1,21 @@
+<apex:component>
+  <apex:attribute type="Assessment__c" name="assess" description="Assessment" />
+  <apex:attribute type="String" name="header" description="header" />
+
+  <div class="row">
+    <div class="col-xs-6">
+      <h2>{!header}</h2>
+    </div>
+    <div class="col-xs-6 pull-right">
+      <h5>{!assess.Organization_Name__c}</h5>
+      <h5>Self Assessment Year: {!assess.Year__c}</h5>
+      <apex:outputPanel rendered="{!assess.Submitted_Date__c != null}">
+        <h5>
+          Submitted Date:&nbsp;<apex:outputField
+            value="{!assess.Submitted_Date__c}"
+          />
+        </h5>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

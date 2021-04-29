@@ -1,0 +1,101 @@
+<apex:page
+  controller="ChapterReportCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Chapter Reports</title>
+  </head>
+  <c:TRAILHeader
+    ActivePage="progress"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Chapter Reports</h2>
+          </div>
+          <div class="col-auto pull-right">
+            Site: &nbsp;<apex:inputText
+              value="{!siteName}"
+              style="width: 200px"
+            />
+            &nbsp;&nbsp; Year: &nbsp;
+            <apex:selectList value="{!year}" size="1" id="yearOptions">
+              <apex:selectOptions value="{!yearOptions}" /> </apex:selectList
+            >&nbsp;
+            <apex:commandButton
+              action="{!getLists}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+          </div>
+        </div>
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">{!year} Chapter Reports</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!reports.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>
+                      <apex:outputText
+                        value="Organization"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>Site</th>
+                    <th>Grant</th>
+                    <th>Year</th>
+                    <th width="60px"></th>
+                  </tr>
+                  <apex:repeat value="{!reports}" var="i">
+                    <tr>
+                      <td>
+                        <apex:outputField
+                          value="{!i.Org_Name__c}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>{!i.Site_Name__c}</td>
+                      <td>{!i.Grant_Name__c}</td>
+                      <td>{!i.Grant_Year__c}</td>
+                      <td>
+                        <a
+                          href="{!$Site.Prefix+'/ChapterReport?reportId='+i.Id+'&year='+year}"
+                        >
+                          Edit
+                        </a>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!reports.size == 0}">
+                No Reports Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

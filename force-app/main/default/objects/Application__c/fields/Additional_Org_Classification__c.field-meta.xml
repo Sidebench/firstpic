@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Additional_Org_Classification__c</fullName>
+    <externalId>false</externalId>
+    <label>Additional Org Classification</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Boys &amp; Girls Club</fullName>
+                <default>false</default>
+                <label>Boys &amp; Girls Club</label>
+            </value>
+            <value>
+                <fullName>Law Enforcement Agency</fullName>
+                <default>false</default>
+                <label>Law Enforcement Agency</label>
+            </value>
+            <value>
+                <fullName>Youth Sports League</fullName>
+                <default>false</default>
+                <label>Youth Sports League</label>
+            </value>
+            <value>
+                <fullName>RBI League</fullName>
+                <default>false</default>
+                <label>RBI League</label>
+            </value>
+            <value>
+                <fullName>Community Non-profit</fullName>
+                <default>false</default>
+                <label>Community Non-profit</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

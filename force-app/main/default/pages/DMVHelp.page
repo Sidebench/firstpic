@@ -1,0 +1,245 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Resources</title>
+  </head>
+  <c:DMVHeader
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <h3>Helpful Links and Documents</h3>
+      <br />
+
+      <h4>Documents</h4>
+      <hr />
+
+      <div class="panel panel-info">
+        <div class="panel-heading">Youth Summit Reimbursement Guidelines</div>
+        <div class="panel-body">
+          Please refer to the attached document for guidelines on allowable
+          expenses for the 2018 Youth Mentoring Summit
+          <br /><br />
+          <apex:outputLink
+            value="{!$Resource.National_PAL_Youth_Mentoring_Summit_Travel_Reimbursement_Guidelines}"
+            target="_blank"
+          >
+            View Document &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">Youth Summit Reimbursement Worksheet</div>
+        <div class="panel-body">
+          The attached form can be used to calculate reimbursable expenses for
+          the 2018 Youth Mentoring Summit. Once complete, it should be scanned
+          to PDF and included as the first page of your travel expenses
+          documentation.
+          <br /><br />
+          <a
+            href="https://www.dropbox.com/s/4fk8dzfkipel71h/Reimbursement%20Worksheet_NPAL%20Youth%20Summit.xlsx?dl=0"
+            target="_blank"
+          >
+            View Document &raquo;
+          </a>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          The National PAL Mentoring Program - Mentor Training Survey
+        </div>
+        <div class="panel-body">
+          All mentors must complete the mentor training prior to beginning their
+          mentoring. To successfully complete this training and participate as a
+          National PAL mentor you will be required to take a brief survey to
+          acknowledge your understanding of the mentor training material. Please
+          note that each mentor must complete their own individual survey and
+          pass with a score of 100%.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/WebConference/RecordingDefault.aspx?c_psrid=E956D78689473D"
+          >
+            View Survey &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <br />
+
+      <h4>Webinars</h4>
+      <hr />
+      <div class="panel panel-info">
+        <div class="panel-heading">Progress Report and Youth Data Webinar</div>
+        <div class="panel-body">
+          This webinar walks you through the process of completing a monthly
+          progress report, entering youth data and assigning youth to a grant.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/xcragnoxgx/E957DF86814B3B"
+            target="_blank"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          The National PAL Mentoring Program - Mentor Training Webinar
+        </div>
+        <div class="panel-body">
+          All mentors must complete the mentor training prior to beginning their
+          mentoring. To successfully complete this training and participate as a
+          National PAL mentor you will be required to take a brief survey to
+          acknowledge your understanding of the mentor training material. Please
+          note that each mentor must complete their own individual survey and
+          pass with a score of 100%.
+          <br /><br />
+          <apex:outputLink
+            value="https://www.anymeeting.com/WebConference/RecordingDefault.aspx?c_psrid=E956D78689473D"
+          >
+            View Webinar &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          The National PAL Mentoring Program - Mentor Training Slides
+        </div>
+        <div class="panel-body">
+          All mentors must complete the mentor training prior to beginning their
+          mentoring. To successfully complete this training and participate as a
+          National PAL mentor you will be required to take a brief survey to
+          acknowledge your understanding of the mentor training material. Please
+          note that each mentor must complete their own individual survey and
+          pass with a score of 100%.
+          <br /><br />
+          <apex:outputLink value="{!$Resource.NPAL_Mentor_Training}">
+            View PDF &raquo;
+          </apex:outputLink>
+        </div>
+      </div>
+
+      <br />
+
+      <h4>Additional Resources</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://docs.google.com/document/d/11YPtr51ECzpO4QFBjXxpykB-7BpQjGv8mvhC7Mhwxuc/edit"
+              target="_blank"
+            >
+              <div class="panel-body text-center">DMV PAL FAQ’s</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSfuvBRDVG0r-rIbpF3Uxk8StSY6J0t0kvHNcwqgDol_H0ppww/viewform"
+              target="_blank"
+            >
+              <div class="panel-body text-center">Pre Survey</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://dmvpal.formstack.com/forms/dmv_pal_youth_application"
+              target="_blank"
+            >
+              <div class="panel-body text-center">Youth Application</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://dmvpal.formstack.com/forms/volunteer_application"
+              target="_blank"
+            >
+              <div class="panel-body text-center">Volunteer Application</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.DMV_Attendance_Tracker}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">Attendance Tracker</div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.DMV_PAL_Post_Survey}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">DMV PAL Post Survey</div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Post_Survey}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">NPAL Post Survey</div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://drive.google.com/file/d/17C5MEXki8fkSNKqYSJ7si1zn-b7ZK3Dn/view"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Unallowable Expenses
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://docs.google.com/document/d/1U97DC_gRSSdBvSr7hRaDCU0n7kGGWnh3_kJCx5bXKKw/edit"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                MD GOCCP Unallowable Expenses
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

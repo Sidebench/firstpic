@@ -1,0 +1,97 @@
+<apex:page controller="BBBSErrorController" showHeader="false" sidebar="false">
+  <head>
+    <title>Error</title>
+  </head>
+  <c:Header />
+
+  <div class="main-panel">
+    <div class="content grid-pd-md" style="max-width: 900px; margin: 20px auto">
+      <div class="row">
+        <div class="col-xs-12">
+          <h4>URL No Longer Exists</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          You have attempted to reach a URL that no longer exists.
+        </div>
+        <div class="col-xs-12">
+          You may have reached this page after clicking on a direct link into
+          the application. This direct link might be:
+          <ul>
+            <li>A bookmark to a particular page, such as a report or view</li>
+            <li>
+              A link to a particular page in the Custom Links section of your
+              Home Tab, or a Custom Link
+            </li>
+            <li>A link to a particular page in your email templates</li>
+          </ul>
+        </div>
+        <div class="col-xs-12">
+          If you reached this page through a bookmark, you are probably trying
+          to access something that has moved. Please update your bookmark.
+        </div>
+        <div class="col-xs-12">
+          If you reached this page through any of the other direct links listed
+          above, please notify your administrator to update the link.
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          Thank you again for your patience and assistance.
+        </div>
+      </div>
+      <br />
+
+      <apex:outputPanel id="emailForm">
+        <apex:outputPanel rendered="{!NOT(emailSent)}">
+          <apex:form>
+            <div class="panel panel-default">
+              <div class="panel-heading">Send an Email</div>
+              <div class="panel-body grid-pd-md">
+                <p>
+                  Please contact us if you feel you have reached this page in
+                  error and be as detailed as possible.
+                </p>
+                <div class="row">
+                  <div class="col-xs-12">
+                    Subject:
+                    <apex:inputText
+                      value="{!subject}"
+                      id="Subject"
+                      maxlength="80"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    Body:
+                    <apex:inputTextarea
+                      value="{!body}"
+                      id="Body"
+                      rows="10"
+                      cols="80"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <apex:commandButton
+                  value="Send Email"
+                  action="{!send}"
+                  styleClass="primary"
+                  reRender="emailForm"
+                />
+              </div>
+            </div>
+          </apex:form>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!emailSent}">
+          <div class="alert alert-success">
+            Your email has been sent successfully.
+          </div>
+        </apex:outputPanel>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:page>

@@ -1,0 +1,122 @@
+<apex:page
+  controller="ReimbursementDashboardCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Reimbursement Process Dashboard</title>
+  </head>
+  <c:Header
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form>
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!approver.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right"></div>
+        </div>
+
+        <div class="row" style="font-size: 16px">
+          <div class="col-xs-4 text-center">
+            <div class="alert alert-success" role="alert">
+              <span class="data-header"> {!totalActiveCount} </span>
+              Current # active requests
+            </div>
+          </div>
+          <div class="col-xs-4 text-center">
+            <div class="alert alert-info" role="alert">
+              <span class="data-header"> {!totalAverageTime} </span>
+              Avg. time in approval process (days)
+            </div>
+          </div>
+          <div class="col-xs-4 text-center">
+            <div class="alert alert-warning" role="alert">
+              <span class="data-header"> {!totalAverageSendBacks} </span>
+              Avg. Level 2 send backs per reimbursement
+            </div>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!ApproverId == null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Approver Details</div>
+            <div class="panel-body">
+              <table style="width: 100%">
+                <tr>
+                  <th>Name</th>
+                  <th>Current # active requests</th>
+                  <th>Avg. time with reimbursement (days)</th>
+                  <th>Avg. send backs from L2</th>
+                  <th>Avg. send backs from L3</th>
+                </tr>
+                <apex:repeat value="{!approver_map}" var="key">
+                  <apex:repeat value="{!approver_map[key]}" var="i">
+                    <tr>
+                      <td>
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/ReimbursementDashboard?ApproverId='+key)}"
+                        >
+                          {!i.name}
+                        </a>
+                      </td>
+                      <td>{!i.activeCount}</td>
+                      <td>{!i.averageTime}</td>
+                      <td>{!i.averageL2SendBacks}</td>
+                      <td>{!i.averageL3SendBacks}</td>
+                    </tr>
+                  </apex:repeat>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!ApproverId != null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Reimbursement Details</div>
+            <div class="panel-body">
+              <table style="width: 100%">
+                <tr>
+                  <th>Reimbursement</th>
+                  <th>Sub-Grant</th>
+                  <th>Status</th>
+                  <th>Days in Approval Process</th>
+                  <th>Days with L1</th>
+                  <th>Days with L2</th>
+                  <th>Days with L3</th>
+                  <th>Days with Affiliate</th>
+                </tr>
+                <apex:repeat value="{!request_list}" var="i">
+                  <tr>
+                    <td>
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/ReimbursementDetails?RequestID='+i.rId)}"
+                      >
+                        {!i.name}
+                      </a>
+                    </td>
+                    <td>{!i.grantName}</td>
+                    <td>{!i.status}</td>
+                    <td>{!i.daysInProcess}</td>
+                    <td>{!i.daysWithL1}</td>
+                    <td>{!i.daysWithL2}</td>
+                    <td>{!i.daysWithL3}</td>
+                    <td>{!i.daysWithAffiliate}</td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

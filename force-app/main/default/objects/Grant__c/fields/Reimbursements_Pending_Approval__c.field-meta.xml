@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reimbursements_Pending_Approval__c</fullName>
+    <externalId>false</externalId>
+    <label>Reimbursements Pending Approval</label>
+    <summaryFilterItems>
+        <field>Reimbursement_Request__c.Status__c</field>
+        <operation>equals</operation>
+        <value
+    >Pending First Approval, Pending Second Approval, Pending Third Approval, Pending Fourth Approval, Pending Final Approval, Submitted</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Reimbursement_Request__c.Grant__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,242 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+    required="true"
+  />
+  <apex:attribute
+    type="Id"
+    name="AssessmentId"
+    description="Assessment Id"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="activeTabId"
+    description="Active Tab Id"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="hideStandards"
+    description="hideStandards"
+    required="true"
+  />
+  <apex:attribute
+    type="Integer"
+    name="year"
+    description="year"
+    required="true"
+  />
+  <!--
+	<apex:attribute type="String" name="page1" description="page1" required="true" />
+    <apex:attribute type="String" name="page2" description="page2" required="true" />
+    <apex:attribute type="String" name="page3" description="page3" required="true" />
+    <apex:attribute type="String" name="page4" description="page4" required="true" />
+    <apex:attribute type="String" name="page5" description="page5" required="true" />
+    <apex:attribute type="String" name="page6" description="page6" required="true" />
+    <apex:attribute type="String" name="page7" description="page7" required="true" />
+    <apex:attribute type="String" name="page8" description="page8" />
+	-->
+  <apex:attribute
+    type="ApexPages.Action"
+    name="save"
+    description="Save"
+    required="true"
+  />
+
+  <apex:outputPanel rendered="{!hideStandards != true && year < 2019}">
+    <div class="nav nav-tabs">
+      <span id="1">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 1 - 4"
+          oncomplete="redirect('AssessmentPage1')"
+        />
+      </span>
+      <span id="2">
+        <apex:commandLink
+          action="{!save}"
+          value="Standard 5"
+          oncomplete="redirect('AssessmentPage2')"
+        />
+      </span>
+      <span id="3">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 6 - 7"
+          oncomplete="redirect('AssessmentPage3')"
+        />
+      </span>
+      <span id="4">
+        <apex:commandLink
+          action="{!save}"
+          value="Standard 8"
+          oncomplete="redirect('AssessmentPage4')"
+        />
+      </span>
+      <span id="5">
+        <apex:commandLink
+          action="{!save}"
+          value="Standard 9"
+          oncomplete="redirect('AssessmentPage5')"
+        />
+      </span>
+      <span id="6">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 10 – 13"
+          oncomplete="redirect('AssessmentPage6')"
+        />
+      </span>
+      <span id="7">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 14 – 19"
+          oncomplete="redirect('AssessmentPage7')"
+        />
+      </span>
+      <span id="8">
+        <apex:commandLink
+          action="{!save}"
+          value="Standard 20 - 25"
+          oncomplete="redirect('AssessmentPage8')"
+        />
+      </span>
+      <span id="9">
+        <apex:commandLink
+          action="{!save}"
+          value="Additional Requirements"
+          oncomplete="redirect('AssessmentPage9')"
+        />
+      </span>
+      <span id="10">
+        <apex:commandLink
+          action="{!save}"
+          value="Summary"
+          oncomplete="redirect('AssessmentPage10')"
+        />
+      </span>
+      <span id="11">
+        <apex:commandLink
+          action="{!save}"
+          value="Documents"
+          oncomplete="viewDocs()"
+          rendered="{!userAcctType == 'National Organization'}"
+        />
+      </span>
+    </div>
+  </apex:outputPanel>
+
+  <apex:outputPanel
+    rendered="{!hideStandards == true && userAcctType == 'National Organization'}"
+  >
+    <div class="nav nav-tabs">
+      <span id="9">
+        <apex:commandLink
+          action="{!save}"
+          value="Requirements"
+          oncomplete="redirect('AssessmentPage9')"
+        />
+      </span>
+      <span id="11">
+        <apex:commandLink
+          action="{!save}"
+          value="Documents"
+          oncomplete="viewDocs()"
+        />
+      </span>
+    </div>
+  </apex:outputPanel>
+
+  <apex:outputPanel rendered="{!hideStandards != true && year >= 2019}">
+    <div class="nav nav-tabs">
+      <span id="1">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 1 - 3"
+          oncomplete="redirect('AssessmentP01')"
+        />
+      </span>
+      <span id="2">
+        <apex:commandLink
+          action="{!save}"
+          value="Standard 4 - 5"
+          oncomplete="redirect('AssessmentP02')"
+        />
+      </span>
+      <span id="3">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 6 - 8"
+          oncomplete="redirect('AssessmentP03')"
+        />
+      </span>
+      <span id="4">
+        <apex:commandLink
+          action="{!save}"
+          value="Standard 9"
+          oncomplete="redirect('AssessmentP04')"
+        />
+      </span>
+      <span id="5">
+        <apex:commandLink
+          action="{!save}"
+          value="Standard 10 – 13"
+          oncomplete="redirect('AssessmentP05')"
+        />
+      </span>
+      <span id="6">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 14 – 19"
+          oncomplete="redirect('AssessmentP06')"
+        />
+      </span>
+      <span id="7">
+        <apex:commandLink
+          action="{!save}"
+          value="Standards 20 - 23"
+          oncomplete="redirect('AssessmentP07')"
+        />
+      </span>
+      <span id="8">
+        <apex:commandLink
+          action="{!save}"
+          value="Additional Requirements"
+          oncomplete="redirect('AssessmentP08')"
+        />
+      </span>
+      <span id="9">
+        <apex:commandLink
+          action="{!save}"
+          value="Summary"
+          oncomplete="redirect('AssessmentP09')"
+        />
+      </span>
+      <span id="10">
+        <apex:commandLink
+          action="{!save}"
+          value="Documents"
+          oncomplete="viewDocs()"
+          rendered="{!userAcctType == 'National Organization'}"
+        />
+      </span>
+    </div>
+  </apex:outputPanel>
+
+  <script type="text/javascript">
+    var $j = jQuery.noConflict();
+    $j(document).ready(function () {
+      var d = document.getElementById("{!activeTabId}");
+      d.className = "active";
+    });
+    function redirect(page) {
+      location.href = page + "?AssessmentId={!AssessmentId}";
+    }
+    function viewDocs() {
+      location.href = "AssessmentDocuments?AssessmentId={!AssessmentId}";
+    }
+  </script>
+</apex:component>

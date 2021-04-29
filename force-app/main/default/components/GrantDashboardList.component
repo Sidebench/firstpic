@@ -1,0 +1,49 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="portalName" description="Portal Name" />
+  <apex:attribute type="Grant__c[]" name="grantList" description="Grant List" />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    default="false"
+    description="Show More Link?"
+  />
+  <apex:attribute type="String" name="listType" description="List Type" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!grantList.size > 0}">
+        <table style="width: 100%">
+          <tr>
+            <th>Sub-Grant Name</th>
+            <th>Last Modified Date</th>
+          </tr>
+          <apex:repeat value="{!grantList}" var="i">
+            <tr>
+              <td>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/'+portalName+'SubGrantDetails?GrantID='+i.id)}"
+                >
+                  {!i.Name}
+                </a>
+              </td>
+              <td>
+                <apex:outputField value="{!i.LastModifiedDate}" />
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!grantList.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <a href="{!URLFOR($Site.Prefix+'/SubGrants?type='+listType)}">
+          View All &raquo;
+        </a>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

@@ -1,0 +1,344 @@
+<apex:page controller="UAApplicationCtrl" showHeader="false" sidebar="false">
+  <link
+    href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    rel="stylesheet"
+    media="screen"
+  />
+
+  <head>
+    <title>Application</title>
+    <style>
+      a,
+      .primary {
+        color: #e71b24;
+      }
+      a:hover {
+        color: #a11219;
+      }
+      h6,
+      .h6 {
+        font-size: 12px;
+        color: #aaa;
+        display: block;
+        margin: 2px 0 0;
+      }
+      input[type="submit"].btn.primary,
+      .btn.primary {
+        background: #e71b24;
+        background-image: -webkit-linear-gradient(top, #e71b24, #a11219);
+        background-image: -moz-linear-gradient(top, #e71b24, #a11219);
+        background-image: -ms-linear-gradient(top, #e71b24, #a11219);
+        background-image: -o-linear-gradient(top, #e71b24, #a11219);
+        background-image: linear-gradient(to bottom, #e71b24, #a11219);
+        color: #fff;
+      }
+      input[type="submit"].primary:hover,
+      .btn.primary:hover {
+        background: #a11219;
+        text-decoration: none;
+      }
+      input[type="text"],
+      select,
+      textarea {
+        display: block;
+        width: 100%;
+      }
+      input[type="radio"],
+      input[type="checkbox"] {
+        margin: 4px 4px 0 0;
+      }
+      .grid-pd [class*="col-"] {
+        padding-bottom: 10px;
+      }
+      label {
+        margin-right: 15px;
+      }
+    </style>
+  </head>
+
+  <apex:form id="form" style="padding: 40px">
+    <div class="main-panel">
+      <div class="content">
+        <apex:outputPanel rendered="{!showSuccess}">
+          <div
+            class="alert alert-success"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            You have successfully submitted your application.
+          </div>
+        </apex:outputPanel>
+        <apex:pageMessages />
+        <apex:outputPanel rendered="{!NOT(showSuccess)}">
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Contact Information</h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  Organization Name:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Organization_Name__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-4">
+                  Address:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Address__c}" />
+                </div>
+                <div class="col-xs-3">
+                  City:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.City__c}" />
+                </div>
+                <div class="col-xs-2">
+                  State:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.State__c}" />
+                </div>
+                <div class="col-xs-3">
+                  Zip Code:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Postal_Zip_Code__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  Please provide your Employer Identification Number (EIN):<span
+                    class="text-danger"
+                  >
+                    *</span
+                  >
+                  <apex:inputField value="{!app.EIN__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  Organization Mission Statement:<span class="text-danger">
+                    *</span
+                  >
+                  <apex:inputField value="{!app.Mission_Statement__c}" />
+                </div>
+              </div>
+              <br />
+              <h5 style="border-bottom: 1px solid #ccc">Point of Contact</h5>
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  First Name:<span class="text-danger"> *</span>
+                  <apex:inputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Last Name:<span class="text-danger"> *</span>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Email:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Program_Contact_Email__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Phone:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Program_Contact_Phone__c}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Request Details</h1>
+            </div>
+            <div class="panel-body grid-pd">
+              Total Amount Requested from Under Armour:<span
+                class="text-danger"
+              >
+                *</span
+              >
+              <br /><span style="float: left">$</span>
+              <span style="float: left">
+                <apex:inputField value="{!app.Total_Amount_Requested__c}" />
+              </span>
+              <br /><br /> Please explain how UA grant funds will be
+              utilized.<span class="text-danger"> *</span>
+              <apex:inputField value="{!app.How_Funds_Utilized__c}" />
+              <br />
+              If funding is being requested for a specific program, are
+              participants required to pay a fee?<span class="text-danger">
+                *</span
+              >
+              <apex:selectRadio
+                value="{!app.Has_Participation_Fee__c}"
+                style="display: inline-block"
+              >
+                <apex:selectOption itemLabel="No" itemValue="No" />
+                <apex:selectOption itemLabel="Yes" itemValue="Yes" />
+              </apex:selectRadio>
+              If so, how much:&nbsp;<apex:inputField
+                value="{!app.Participation_Fee__c}"
+                style="width: 100px; display: inline-block"
+              />
+              <br /><br /> What is the biggest issue your organization is facing
+              in light of the COVID-19 crisis?<span class="text-danger">
+                *</span
+              >
+              <apex:inputField
+                value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+              />
+              <br />
+              In light of COVID-19, has the organization been able to continue
+              to engage and support LGBTQ+ youth athletes and communities during
+              this time? If yes, please share a brief overview of how.<span
+                class="text-danger"
+              >
+                *</span
+              >
+              <apex:inputField
+                value="{!app.Able_to_Continue_Supporting_Youth__c}"
+              />
+              <br />
+              Do you currently have UA employees sitting on the Board for your
+              organization? If yes, please list individuals and their
+              involvement.<span class="text-danger"> *</span>
+              <apex:inputField
+                value="{!app.Employees_Donating_Volunteering_Sitting__c}"
+              />
+              <br />
+              What other organizations currently support your
+              program/organization? Please write n/a if you do not receive
+              additional support.<span class="text-danger"> *</span>
+              <apex:inputField
+                value="{!app.Other_Organizations_Supporting_Program__c}"
+              />
+              <br />
+              Please provide the website and/or social media handles for the
+              organization.
+              <table>
+                <tr>
+                  <td>Instagram:</td>
+                  <td>
+                    <apex:inputField
+                      value="{!app.Instagram__c}"
+                      style="width: 200px"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Twitter:</td>
+                  <td>
+                    <apex:inputField
+                      value="{!app.Twitter__c}"
+                      style="width: 200px"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Website:</td>
+                  <td>
+                    <apex:inputField
+                      value="{!app.Website__c}"
+                      style="width: 200px"
+                    />
+                  </td>
+                </tr>
+              </table>
+              <br />
+              Have you previously received support from Under Armour?<span
+                class="text-danger"
+              >
+                *</span
+              >
+              <apex:selectRadio
+                value="{!app.Previous_Support_Received__c}"
+                style="display: inline-block"
+              >
+                <apex:selectOption itemLabel="No" itemValue="No" />
+                <apex:selectOption itemLabel="Yes" itemValue="Yes" />
+              </apex:selectRadio>
+              If yes, please provide the year(s) and describe the contribution.
+              <apex:inputField
+                value="{!app.Support_Years_and_Contribution__c}"
+              />
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Required Documents</h1>
+            </div>
+            <div class="panel-body grid-pd">
+              Please attach a PDF version of the following documents<span
+                class="text-danger"
+              >
+                *</span
+              >
+              <br />
+              <table>
+                <tr>
+                  <td>W9:</td>
+                  <td>
+                    <apex:inputfile
+                      id="attW9"
+                      value="{!attW9.body}"
+                      filename="{!attW9.name}"
+                      accept="application/pdf"
+                      style="display: inline"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>990:</td>
+                  <td>
+                    <apex:inputfile
+                      id="att990"
+                      value="{!att990.body}"
+                      filename="{!att990.name}"
+                      accept="application/pdf"
+                      style="display: inline"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Grant funding allocation breakdown:</td>
+                  <td>
+                    <apex:inputfile
+                      id="attFunding"
+                      value="{!attFunding.body}"
+                      filename="{!attFunding.name}"
+                      accept="application/pdf"
+                      style="display: inline"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Hi-Res Logo:</td>
+                  <td>
+                    <apex:inputfile
+                      id="attLogo"
+                      value="{!attLogo.body}"
+                      filename="{!attLogo.name}"
+                      accept="application/pdf"
+                      style="display: inline"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <apex:commandButton
+            value="Submit"
+            action="{!submit}"
+            style="background: #cc2c2c; color: #fff; width: 150px; height: 60px"
+          />
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

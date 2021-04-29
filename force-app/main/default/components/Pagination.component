@@ -1,0 +1,103 @@
+<apex:component>
+  <style>
+    .btn-group .btnDisabled {
+      background: #fdfdfd;
+    }
+    .btn-group-sm .btn {
+      height: auto;
+    }
+  </style>
+
+  <apex:attribute type="String" name="recordCount" description="recordCount" />
+  <apex:attribute
+    type="String"
+    name="listId"
+    description="listId"
+    default="paginatedList"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="disablePrevious"
+    description="disablePrevious"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="disableNext"
+    description="disableNext"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="first"
+    description="first"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="previous"
+    description="previous"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="next"
+    description="next"
+    required="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="last"
+    description="last"
+    required="true"
+  />
+
+  <div class="panel-footer">
+    <div class="row">
+      <div class="col-auto">
+        <apex:componentBody />
+      </div>
+      <apex:outputPanel
+        rendered="{!NOT(disablePrevious) || NOT(disableNext) || (recordCount != '' && recordCount != null)}"
+      >
+        <div class="col-auto pull-right">
+          <span style="color: #777">{!recordCount} &nbsp;</span>
+          <div class="btn-group btn-group-sm">
+            <apex:commandButton
+              value="«"
+              action="{!first}"
+              disabled="{!disablePrevious}"
+              status="pageStatus"
+              styleClass="btn btn-white btn-secondary"
+              reRender="{!listId}"
+            />
+            <apex:commandButton
+              value="‹"
+              action="{!previous}"
+              disabled="{!disablePrevious}"
+              status="pageStatus"
+              styleClass="btn btn-white btn-secondary"
+              reRender="{!listId}"
+            />
+            <apex:commandButton
+              value="›"
+              action="{!next}"
+              disabled="{!disableNext}"
+              status="pageStatus"
+              styleClass="btn btn-white btn-secondary"
+              reRender="{!listId}"
+            />
+            <apex:commandButton
+              value="»"
+              action="{!last}"
+              disabled="{!disableNext}"
+              status="pageStatus"
+              styleClass="btn btn-white btn-secondary"
+              reRender="{!listId}"
+            />
+          </div>
+        </div>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

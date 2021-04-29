@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tribe_Represented__c</fullName>
+    <description
+  >Used in OVC SOI to allow Consortia and Designee submissions to indicate the tribe they represent.</description>
+    <externalId>false</externalId>
+    <label>Tribe Represented</label>
+    <length>255</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

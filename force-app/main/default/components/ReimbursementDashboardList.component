@@ -1,0 +1,66 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="portalName" description="Portal Name" />
+  <apex:attribute
+    type="Reimbursement_Request__c[]"
+    name="requestList"
+    description="Reimbursement Request List"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    default="false"
+    description="Show More Link?"
+  />
+  <apex:attribute type="String" name="listType" description="List Type" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!requestList.size > 0}">
+        <table style="width: 100%">
+          <tr>
+            <th>Request Id</th>
+            <th>Sub-Grant Name</th>
+            <th>Request Date</th>
+          </tr>
+          <apex:repeat value="{!requestList}" var="r">
+            <tr>
+              <td>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/'+portalName+'ReimbursementDetails?RequestID='+r.Id)}"
+                >
+                  {!r.Name}
+                </a>
+              </td>
+              <td>
+                <apex:outputLink
+                  value="{!URLFOR($Site.Prefix+'/'+portalName+'SubGrantDetails?GrantID='+r.Grant__c)}"
+                  rendered="{!portalName != 'DMV'}"
+                >
+                  {!r.Grant__r.Name}
+                </apex:outputLink>
+                <apex:outputText
+                  value="{!r.Grant__r.Name}"
+                  rendered="{!portalName == 'DMV'}"
+                />
+              </td>
+              <td>
+                <apex:outputfield value="{!r.Request_Date__c}" />
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!requestList.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <a href="{!URLFOR($Site.Prefix+'/Reimbursements?status='+listType)}">
+          View All &raquo;
+        </a>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

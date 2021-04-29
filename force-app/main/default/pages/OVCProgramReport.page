@@ -1,0 +1,2874 @@
+<apex:page
+  controller="VictimsServedReportCtrl"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>OVC Program Reports</title>
+    <style>
+      input[type="text"] {
+        width: auto !important;
+      }
+      .panel-body > .panel-default {
+        margin: 20px -16px 0;
+      }
+      .panel-body > .panel-default .panel-heading {
+        background: #f5f5f5;
+        font-size: 14px;
+        padding: 6px 15px;
+      }
+      .panel.last {
+        margin-bottom: -16px;
+      }
+    </style>
+  </head>
+  <c:NCAIHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!report.Name}</h2>
+            <apex:outputPanel
+              rendered="{!report.Status__c == 'Approved' && userAcctType == 'National Organization'}"
+            >
+              <a
+                href="{!URLFOR($Site.Prefix+'/OVCProgramReportXLS?reportID='+ report.Id)}"
+                class="btn btn-small btn-white"
+                target="_blank"
+              >
+                Export Report
+              </a>
+            </apex:outputPanel>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <h5>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+report.Organization__c )}"
+                  target="_blank"
+                  title="Click here to view contact information for this organization."
+                >
+                  {!report.Organization_Name__c}
+                </a>
+              </h5>
+            </apex:outputPanel>
+            <h5>
+              Reporting Period: {!report.Month__c}, {!report.Year__c} <br />
+              Page {!currentPage} of 4
+            </h5>
+          </div>
+        </div>
+
+        <c:ErrorMessage
+          errorMessage="Page does not automatically save. Be sure to click 'Save' at the bottom before navigating away from this report."
+          rendered="{!(report.Status__c == 'Requested' || report.Status__c == 'In Progress' || report.Status__c == 'Revisions Needed' || report.Status__c == 'Revisions in Progress') && userAcctType == 'Local Organization' || userAcctType == 'National Organization'}"
+        />
+
+        <apex:outputPanel rendered="{!reportId != null}">
+          <apex:outputPanel rendered="{!currentPage == 1}">
+            <h5>
+              The purpose of these Program Reports is to provide information
+              about the outcomes of your Micro-grant Program. Please provide the
+              requested information for the applicable reporting period. This
+              information will be transmitted to the Department of Justice's
+              Office for Victims of Crime (OVC), per the terms of the NCAI
+              Fund's Cooperative Agreement with OVC. Please contact
+              <a href="mailto:support@firstpic.org">support@firstpic.org</a> if
+              you have any questions about completing or submitting this report.
+            </h5>
+            <div class="panel panel-default">
+              <div class="panel-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <apex:outputText
+                      value="{!labels['Number_of_Individuals_Received_Services__c']}"
+                      escape="false"
+                    /><br />
+                    <font color="red"
+                      >Anonymous contacts should be included in Question 2. If
+                      your program only had anonymous contacts, please enter
+                      zero (0).</font
+                    >
+                    <span
+                      class="badge"
+                      title="INSTRUCTIONS: This number should be an UNDUPLICATED count of people served during a single reporting period, regardless of the number of services they received or victimization types with which they presented."
+                      >?</span
+                    >
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Number_of_Individuals_Received_Services__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Number_of_Individuals_Received_Services__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <apex:outputText
+                      value="{!labels['Number_of_Anonymous_Contacts__c']}"
+                      escape="false"
+                    />
+                    <span
+                      class="badge"
+                      title="INSTRUCTIONS: COUNT all anonymous contacts received by your organization through a hotline, online chat, or other service where the individuality of each contact cannot be established. If your organization did not have any anonymous contacts enter zero (0)."
+                      >?</span
+                    >
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Number_of_Anonymous_Contacts__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Number_of_Anonymous_Contacts__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    3. Is your organization able to track new individuals served
+                    for this reporting period? (If 'no', you will move on to
+                    question 6.)<br />
+                    <i
+                      ><font color="red">For the first reporting period</font>,
+                      ALL individuals should be counted as new.</i
+                    >
+                    <span
+                      class="badge"
+                      title="INSTRUCTIONS: Report the number of NEW individuals served with the use of VOCA plus match funds for the first time during the reporting period. This number should be an unduplicated count of identified NEW clients served during a single reporting period, regardless of the number of services they received or victimization types with which they presented."
+                      >?</span
+                    >
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectList
+                      disabled="{!readOnly}"
+                      value="{!ableToTrack}"
+                      size="1"
+                    >
+                      <apex:selectOption itemLabel="Yes" itemValue="true" />
+                      <apex:selectOption itemLabel="No" itemValue="false" />
+                      <apex:actionSupport
+                        event="onchange"
+                        action="{!updateFieldVisibility}"
+                        reRender="form"
+                      />
+                    </apex:selectList>
+                    <!-- <apex:outputField value="{!report.Tracking_New_Individuals__c}" rendered="{!readOnly}" /> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <apex:outputPanel
+              rendered="{!ableToTrack || report.Tracking_New_Individuals__c}"
+            >
+              <div class="panel panel-default">
+                <div class="panel-heading">New Individuals</div>
+                <div class="panel-body grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!labels['Number_of_New_Individuals__c']}"
+                        escape="false"
+                      />
+                      <apex:outputPanel
+                        rendered="{!report.Month__c == 'Oct - Dec' && report.Year__c == 2020}"
+                        ><br /><i
+                          >For the first reporting period, ALL individuals
+                          should be counted as new.</i
+                        ></apex:outputPanel
+                      >
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!report.Number_of_New_Individuals__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Number_of_New_Individuals__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel panel-default">
+                <div class="panel-heading">5. Demographics</div>
+                <div class="panel-body grid-pd-md">
+                  The total number of individuals in each demographic category
+                  should equal the number of NEW individuals reported in
+                  Question 4. This data is used for statistical purposes to
+                  comply with Federal regulations.
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Race/Ethnicity</div>
+                    <div class="panel-body grid-pd-md">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['Race_Ethnicity_Tracked__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:selectList
+                            disabled="{!readOnly}"
+                            value="{!raceTracked}"
+                            size="1"
+                          >
+                            <apex:selectOption
+                              itemLabel="Yes"
+                              itemValue="true"
+                            />
+                            <apex:selectOption
+                              itemLabel="No"
+                              itemValue="false"
+                            />
+                            <apex:actionSupport
+                              event="onchange"
+                              action="{!updateFieldVisibility}"
+                              reRender="form"
+                            />
+                          </apex:selectList>
+                          <!--<apex:outputField value="{!report.Race_Ethnicity_Tracked__c}" rendered="{!readOnly}" />-->
+                        </div>
+                      </div>
+                      <apex:outputPanel
+                        rendered="{!raceTracked || report.Race_Ethnicity_Tracked__c}"
+                      >
+                        <div class="row">
+                          <div class="col-xs-12">
+                            Please enter a number for each field. Enter a Zero
+                            (0) if no individuals were served within a
+                            demographic category.<br /> If an individual did not
+                            report, enter the total in the “Not Reported”
+                            field.<br /><br /> Individuals who self-report in
+                            more than one race and/or ethnicity category should
+                            be counted in the “Multiple Races” category. See
+                            &nbsp;
+                            <apex:outputLink
+                              value="{!$Resource.OVCProgramAppendixA}"
+                              target="_blank"
+                              ><u>Appendix A</u></apex:outputLink
+                            >
+                            &nbsp;for definitions of each race/ethnicity
+                            category.<br /><br />
+                            <apex:outputText
+                              value="American Indian/Alaska Native"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.American_Indian_Alaska_Native__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.American_Indian_Alaska_Native__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText value="Asian" escape="false" />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Asian__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Asian__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Black/African American"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Black_African_American__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Black_African_American__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Hispanic or Latino"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Hispanic_or_Latino__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Hispanic_or_Latino__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Native Hawaiian and Other Pacific Islander"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Native_Hawaiian_and_Other_Pacific_Island__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Native_Hawaiian_and_Other_Pacific_Island__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="White Non-Latino/Caucasian"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.White_Non_Latino_Caucasian__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.White_Non_Latino_Caucasian__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Some Other Race"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Some_Other_Race__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Some_Other_Race__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Multiple Races"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Multiple_Races__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Multiple_Races__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Not Reported"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Not_Reported__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Not_Reported__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                      </apex:outputPanel>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Gender Identity</div>
+                    <div class="panel-body grid-pd-md">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['Gender_Tracked__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:selectList
+                            disabled="{!readOnly}"
+                            value="{!genderTracked}"
+                            size="1"
+                          >
+                            <apex:selectOption
+                              itemLabel="Yes"
+                              itemValue="true"
+                            />
+                            <apex:selectOption
+                              itemLabel="No"
+                              itemValue="false"
+                            />
+                            <apex:actionSupport
+                              event="onchange"
+                              action="{!updateFieldVisibility}"
+                              reRender="form"
+                            />
+                          </apex:selectList>
+                          <!--<apex:outputField value="{!report.Gender_Tracked__c}" rendered="{!readOnly}" />-->
+                        </div>
+                      </div>
+                      <apex:outputPanel
+                        rendered="{!genderTracked || report.Gender_Tracked__c}"
+                      >
+                        <div class="row">
+                          <div class="col-xs-12">
+                            Please enter a number for each field. Enter a Zero
+                            (0) if no individuals were served within a
+                            demographic category.<br /> If an individual did not
+                            report, enter the total in the “Not Reported”
+                            field.<br /><br />
+                            <apex:outputText
+                              value="Number of Males"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Male__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Male__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Number of Females"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Female__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Female__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Number of Other Individuals"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Other_Gender__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Other_Gender__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="If available, please provide a description for individuals listed in the Other category."
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Other_Genders__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Other_Genders__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Number of Not Reported"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Gender_Not_Reported__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Gender_Not_Reported__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                      </apex:outputPanel>
+                    </div>
+                  </div>
+
+                  <div class="panel panel-default last">
+                    <div class="panel-heading">Age</div>
+                    <div class="panel-body grid-pd-md">
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['Age_Tracked__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:selectList
+                            disabled="{!readOnly}"
+                            value="{!ageTracked}"
+                            size="1"
+                          >
+                            <apex:selectOption
+                              itemLabel="Yes"
+                              itemValue="true"
+                            />
+                            <apex:selectOption
+                              itemLabel="No"
+                              itemValue="false"
+                            />
+                            <apex:actionSupport
+                              event="onchange"
+                              action="{!updateFieldVisibility}"
+                              reRender="form"
+                            />
+                          </apex:selectList>
+                          <!--<apex:outputField value="{!report.Age_Tracked__c}" rendered="{!readOnly}" />-->
+                        </div>
+                      </div>
+                      <apex:outputPanel
+                        rendered="{!ageTracked || report.Age_Tracked__c}"
+                      >
+                        <div class="row">
+                          <div class="col-xs-12">
+                            Please enter a number for each field. Enter a Zero
+                            (0) if no individuals were served within a
+                            demographic category.<br /> If an individual did not
+                            report, enter the total in the “Not Reported”
+                            field.<br /><br />
+                            <apex:outputText value="0-12" escape="false" />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Age_0_12__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Age_0_12__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText value="13-17" escape="false" />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Age_13_17__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Age_13_17__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText value="18-24" escape="false" />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Age_18_24__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Age_18_24__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText value="25-59" escape="false" />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Age_25_59__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Age_25_59__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="60 and Older"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Age_60_and_Older__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Age_60_and_Older__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <apex:outputText
+                              value="Not Reported"
+                              escape="false"
+                            />
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!report.Age_Not_Reported__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputText
+                              value="{!report.Age_Not_Reported__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                      </apex:outputPanel>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!currentPage == 2}">
+            <div class="panel panel-default">
+              <div class="panel-heading">6. Types of Victimizations</div>
+              <div class="panel-body grid-pd-md">
+                <i
+                  >Enter data for ALL individuals who received services during
+                  this reporting period for each type of victimization. <br />If
+                  you do not track a type of victimization, enter N/T. If no
+                  victims were served in a category, enter Zero (0).</i
+                >
+              </div>
+              <div class="panel-body grid-pd-md">
+                <div class="panel panel-default" style="margin-top: 0">
+                  <div class="panel-heading">
+                    A. Number of individuals who received services based on the
+                    presenting victimization during this reporting period<br />
+                  </div>
+                  <div class="panel-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        An individual MAY be counted in more than one
+                        victimization type, but should not be counted more than
+                        once within the same victimization type.
+                        <br />See&nbsp;<apex:outputLink
+                          value="{!$Resource.OVCProgramAppendixB}"
+                          >Appendix B</apex:outputLink
+                        >
+                        for definitions of each victimization type. <br /><br />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="Adult Physical Assault"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Adult_Physical_Assault__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Adult_Physical_Assault__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="Adult Sexual Assault"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Adult_Sexual_Assault__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Adult_Sexual_Assault__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="Adults Sexually Abused/Assaulted as Children"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Adults_Sexually_Abused__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Adults_Sexually_Abused__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText value="Arson" escape="false" />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Arson__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Arson__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="Bullying (Verbal, Cyber, or Physical)"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Bullying__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Bullying__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText value="Burglary" escape="false" />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Burglary__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Burglary__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="Child Physical Abuse or Neglect"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Child_Physical_Abuse__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Child_Physical_Abuse__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Child Pornography</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Child_Pornography__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Child_Pornography__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Child Sexual Abuse/Assault</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Child_Sexual_Abuse__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Child_Sexual_Abuse__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Domestic and/or Family Violence
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Domestic_Violence__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Domestic_Violence__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">DUI/DWI Incidents</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.DUI_DWI__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.DUI_DWI__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Elder Abuse or Neglect</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Elder_Abuse__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Elder_Abuse__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Hate Crimes</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Hate_Crime__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Hate_Crime__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Please provide an explanation of any hate crimes
+                        reported (i.e. Racial/Religious/Gender/Sexual
+                        Orientation/Other)
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Hate_Crime_Explanation__c }"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Hate_Crime_Explanation__c }"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Human Trafficking: Labor</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Human_Trafficking_Labor__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Human_Trafficking_Labor__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Human Trafficking: Sex</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Human_Trafficking_Sex__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Human_Trafficking_Sex__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Identity Theft/Fraud/Financial Crime
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Identity_Theft__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Identity_Theft__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Kidnapping (Non-custodial)</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Kidnapping_Non_custodial__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Kidnapping_Non_custodial__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Kidnapping (Custodial)</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Kidnapping_Custodial__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Kidnapping_Custodial__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Mass Violence (Domestic/International)
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Mass_Violence__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Mass_Violence__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Other Vehicular Victimization (e.g., Hit and Run)
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Other_Vehicular_Victimization__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Other_Vehicular_Victimization__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Robbery</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Robbery__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Robbery__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Stalking/Harassment</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Stalking__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Stalking__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Survivors of Homicide Victims</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Survivors_of_Homicide_Victims__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Survivors_of_Homicide_Victims__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Teen Dating Victimization</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Teen_Dating_Victimization__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Teen_Dating_Victimization__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Terrorism (Domestic/International)
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Terrorism__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Terrorism__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Other - Victimization</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Other_Victimization__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Other_Victimization__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Please provide a description of any victimizations
+                        reported under 'Other-Victimization'
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Other_Victimization_Explanation__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Other_Victimization_Explanation__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    B. Multiple Types of Victimizations
+                  </div>
+                  <div class="panel-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="{!labels['Number_w_Multiple_Type_of_Victimization__c']}"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Number_w_Multiple_Type_of_Victimization__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Number_w_Multiple_Type_of_Victimization__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="panel panel-default last">
+                  <div class="panel-heading">
+                    C. Special Classifications of Individuals
+                  </div>
+                  <div class="panel-body grid-pd-md">
+                    <br />Enter the number of individuals who self-identify in
+                    one or more of these categories.
+                    <div class="row">
+                      <div class="col-xs-12">Deaf/Hard of Hearing</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Deaf_Hard_of_Hearing__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Deaf_Hard_of_Hearing__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Homeless</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Homeless__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Homeless__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Immigrants/Refugees/Asylum Seekers
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Immigrants_Refugees_Asylum_Seekers__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Immigrants_Refugees_Asylum_Seekers__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">LGBTQ</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.LGBTQ__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.LGBTQ__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">Veterans</div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Veterans__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Veterans__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Victims with Disabilities: Cognitive/Physical/Mental
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Victims_with_Disabilities__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Victims_with_Disabilities__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Victims with Limited English Proficiency
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Victims_with_Limited_English_Proficiency__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Victims_with_Limited_English_Proficiency__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Other - Special Classification
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Other_Special_Classification__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Other_Special_Classification__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Please provide a description of any special
+                        classifications reported under 'Other - Special
+                        Classification'
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Other_Special_Classification_Explanation__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Other_Special_Classification_Explanation__c }"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!currentPage == 3}">
+            <div class="panel panel-default">
+              <div class="panel-heading">7. Victim Compensation</div>
+              <div class="panel-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <apex:outputText
+                      value="{!labels['Victim_Compensation_Application__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Victim_Compensation_Application__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Victim_Compensation_Application__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                8. Types of services provided by your organization during this
+                reporting period:
+              </div>
+              <div class="panel-body grid-pd-md">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Information &amp; Referral Services
+                  </div>
+                  <div class="panel-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12 semibold">
+                        <apex:outputText
+                          value="{!labels['Info_and_Referral_Services_Provided__c']}"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:selectList
+                          disabled="{!readOnly}"
+                          value="{!infoProvided}"
+                          size="1"
+                        >
+                          <apex:selectOption itemLabel="Yes" itemValue="true" />
+                          <apex:selectOption itemLabel="No" itemValue="false" />
+                          <apex:actionSupport
+                            event="onchange"
+                            action="{!updateFieldVisibility}"
+                            reRender="form"
+                          />
+                        </apex:selectList>
+                        <!--<apex:outputField value="{!report.Info_and_Referral_Services_Provided__c}" rendered="{!readOnly}" />-->
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!infoProvided || report.Info_and_Referral_Services_Provided__c}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12">
+                          Enter a number into each field. Enter Zero (0) if no
+                          services were provided for a subcategory.<br /><br />
+                          Enter the
+                          <strong
+                            ><font color="red"
+                              >NUMBER OF INDIVIDUALS</font
+                            ></strong
+                          >
+                          who received Information &amp; Referral Services:
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.Number_Received_Referral_Services__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.Number_Received_Referral_Services__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      Enter the
+                      <strong><font color="red">NUMBER OF TIMES</font></strong>
+                      services were provided in each subcategory:
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['A1_Provide_Criminal_Justice_System_Info__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.A1_Provide_Criminal_Justice_System_Info__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.A1_Provide_Criminal_Justice_System_Info__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['A2_Information_About_Victim_Rights__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.A2_Information_About_Victim_Rights__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.A2_Information_About_Victim_Rights__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['A3_Referral_to_Other_Victim_Programs__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.A3_Referral_to_Other_Victim_Programs__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.A3_Referral_to_Other_Victim_Programs__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['A4_Referral_to_Other_Services__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.A4_Referral_to_Other_Services__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.A4_Referral_to_Other_Services__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading">Personal Advocacy Services</div>
+                  <div class="panel-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12 semibold">
+                        <apex:outputText
+                          value="{!labels['Personal_Advocacy_Services_Provided__c']}"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:selectList
+                          disabled="{!readOnly}"
+                          value="{!advocacyProvided}"
+                          size="1"
+                        >
+                          <apex:selectOption itemLabel="Yes" itemValue="true" />
+                          <apex:selectOption itemLabel="No" itemValue="false" />
+                          <apex:actionSupport
+                            event="onchange"
+                            action="{!updateFieldVisibility}"
+                            reRender="form"
+                          />
+                        </apex:selectList>
+                        <!--<apex:outputField value="{!report.Personal_Advocacy_Services_Provided__c}" rendered="{!readOnly}" />-->
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!advocacyProvided || report.Personal_Advocacy_Services_Provided__c}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12">
+                          Enter a number into each field. Enter Zero (0) if no
+                          services were provided for a subcategory.<br /><br />
+                          Enter the
+                          <strong
+                            ><font color="red"
+                              >NUMBER OF INDIVIDUALS</font
+                            ></strong
+                          >
+                          who received personal advocacy/accompaniment services:
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.Number_Received_Advocacy_Services__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.Number_Received_Advocacy_Services__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      Enter the
+                      <strong><font color="red">NUMBER OF TIMES</font></strong>
+                      services were provided in each subcategory:
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B1_Advocacy_to_Emergency_Medical_Care__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B1_Advocacy_to_Emergency_Medical_Care__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B1_Advocacy_to_Emergency_Medical_Care__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B2_Advocacy_to_Medical_Forensic_Exam__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B2_Advocacy_to_Medical_Forensic_Exam__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B2_Advocacy_to_Medical_Forensic_Exam__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B3_Law_Enforcement_Interview_Advocacy__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B3_Law_Enforcement_Interview_Advocacy__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B3_Law_Enforcement_Interview_Advocacy__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B4_Individual_Advocacy__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B4_Individual_Advocacy__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B4_Individual_Advocacy__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B5_Performance_of_Medical_Forensic_Exam__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B5_Performance_of_Medical_Forensic_Exam__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B5_Performance_of_Medical_Forensic_Exam__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B6_Immigration_Assistance__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B6_Immigration_Assistance__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B6_Immigration_Assistance__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B7_Intervention_with_Employer_or_Other__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B7_Intervention_with_Employer_or_Other__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B7_Intervention_with_Employer_or_Other__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B8_Child_or_Dependent_Care_Assistance__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B8_Child_or_Dependent_Care_Assistance__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B8_Child_or_Dependent_Care_Assistance__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B9_Transportation_Assistance__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B9_Transportation_Assistance__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B9_Transportation_Assistance__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['B10_Interpreter_Services__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.B10_Interpreter_Services__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.B10_Interpreter_Services__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading">Emotional Support Services</div>
+                  <div class="panel-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12 semibold">
+                        <apex:outputText
+                          value="{!labels['Emotional_Support_Services_Provided__c']}"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:selectList
+                          disabled="{!readOnly}"
+                          value="{!supportProvided}"
+                          size="1"
+                        >
+                          <apex:selectOption itemLabel="Yes" itemValue="true" />
+                          <apex:selectOption itemLabel="No" itemValue="false" />
+                          <apex:actionSupport
+                            event="onchange"
+                            action="{!updateFieldVisibility}"
+                            reRender="form"
+                          />
+                        </apex:selectList>
+                        <!--<apex:outputField value="{!report.Emotional_Support_Services_Provided__c}" rendered="{!readOnly}" />-->
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!supportProvided || report.Emotional_Support_Services_Provided__c}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12">
+                          Enter a number into each field. Enter Zero (0) if no
+                          services were provided for a subcategory.<br /><br />
+                          Enter the
+                          <strong
+                            ><font color="red"
+                              >NUMBER OF INDIVIDUALS</font
+                            ></strong
+                          >
+                          who received Emotional Support or Safety Services:
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.Number_Received_Support_Services__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.Number_Received_Support_Services__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      Enter the
+                      <strong><font color="red">NUMBER OF TIMES</font></strong>
+                      services were provided in each subcategory:
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['C1_Crisis_Intervention__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.C1_Crisis_Intervention__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.C1_Crisis_Intervention__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['C2_HotlineCrisis_Line_counseling__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.C2_HotlineCrisis_Line_counseling__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.C2_HotlineCrisis_Line_counseling__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['C3_On_Scene_Crisis_Response__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.C3_On_Scene_Crisis_Response__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.C3_On_Scene_Crisis_Response__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['C4_Individual_Counseling__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.C4_Individual_Counseling__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.C4_Individual_Counseling__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['C5_Support_Groups__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.C5_Support_Groups__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.C5_Support_Groups__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['C6_Other_Therapy__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.C6_Other_Therapy__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.C6_Other_Therapy__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['C7_Emergency_Financial_Assistance__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.C7_Emergency_Financial_Assistance__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.C7_Emergency_Financial_Assistance__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading">Shelter/Housing Services</div>
+                  <div class="panel-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12 semibold">
+                        <apex:outputText
+                          value="{!labels['Shelter_Housing_Services_Provided__c']}"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:selectList
+                          disabled="{!readOnly}"
+                          value="{!housingProvided}"
+                          size="1"
+                        >
+                          <apex:selectOption itemLabel="Yes" itemValue="true" />
+                          <apex:selectOption itemLabel="No" itemValue="false" />
+                          <apex:actionSupport
+                            event="onchange"
+                            action="{!updateFieldVisibility}"
+                            reRender="form"
+                          />
+                        </apex:selectList>
+                        <!--<apex:outputField value="{!report.Shelter_Housing_Services_Provided__c}" rendered="{!readOnly}" />-->
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!housingProvided || report.Shelter_Housing_Services_Provided__c}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12">
+                          Enter a number into each field. Enter Zero (0) if no
+                          services were provided for a subcategory.<br /><br />
+                          Enter the
+                          <strong
+                            ><font color="red"
+                              >NUMBER OF INDIVIDUALS</font
+                            ></strong
+                          >
+                          who received Shelter/Housing Services:
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.Number_Received_Housing_Services__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.Number_Received_Housing_Services__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      Enter the
+                      <strong><font color="red">NUMBER OF TIMES</font></strong>
+                      services were provided in each subcategory:
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['D1_Emergency_Shelter_or_Safe_House__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.D1_Emergency_Shelter_or_Safe_House__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.D1_Emergency_Shelter_or_Safe_House__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['D2_Transitional_Housing__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.D2_Transitional_Housing__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.D2_Transitional_Housing__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['D3_Relocation_Assistance__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.D3_Relocation_Assistance__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.D3_Relocation_Assistance__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+
+                <div class="panel panel-default">
+                  <div class="panel-heading">Justice System Services</div>
+                  <div class="panel-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12 semibold">
+                        <apex:outputText
+                          value="{!labels['Justice_System_Services_Provided__c']}"
+                          escape="false"
+                        />
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:selectList
+                          disabled="{!readOnly}"
+                          value="{!justiceProvided}"
+                          size="1"
+                        >
+                          <apex:selectOption itemLabel="Yes" itemValue="true" />
+                          <apex:selectOption itemLabel="No" itemValue="false" />
+                          <apex:actionSupport
+                            event="onchange"
+                            action="{!updateFieldVisibility}"
+                            reRender="form"
+                          />
+                        </apex:selectList>
+                        <!--<apex:outputField value="{!report.Justice_System_Services_Provided__c}" rendered="{!readOnly}" />-->
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!justiceProvided || report.Justice_System_Services_Provided__c}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12">
+                          Enter a number into each field. Enter Zero (0) if no
+                          services were provided for a subcategory.<br /><br />
+                          Enter the
+                          <strong
+                            ><font color="red"
+                              >NUMBER OF INDIVIDUALS</font
+                            ></strong
+                          >
+                          who received Criminal/Civil Justice System Assistance
+                          services:
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.Number_Received_Justice_System_Services__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.Number_Received_Justice_System_Services__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      Enter the
+                      <strong><font color="red">NUMBER OF TIMES</font></strong>
+                      services were provided in each subcategory:
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E1_Notified_of_Criminal_Justice_Events__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E1_Notified_of_Criminal_Justice_Events__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E1_Notified_of_Criminal_Justice_Events__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E2_Victim_Impact_Statement_Assistance__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E2_Victim_Impact_Statement_Assistance__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E2_Victim_Impact_Statement_Assistance__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E3_Assistance_with_Restitution__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E3_Assistance_with_Restitution__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E3_Assistance_with_Restitution__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E4_Legal_Assist_with_Restraining_Order__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E4_Legal_Assist_with_Restraining_Order__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E4_Legal_Assist_with_Restraining_Order__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E5_Legal_Assist_with_Family_Law__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E5_Legal_Assist_with_Family_Law__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E5_Legal_Assist_with_Family_Law__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E6_Emergency_Justice_Related_Assist__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E6_Emergency_Justice_Related_Assist__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E6_Emergency_Justice_Related_Assist__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E7_Immigration_Assistance__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E7_Immigration_Assistance__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E7_Immigration_Assistance__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E8_Prosecution_Interview_Advocacy__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E8_Prosecution_Interview_Advocacy__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E8_Prosecution_Interview_Advocacy__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E9_Law_Enforcement_Interview__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E9_Law_Enforcement_Interview__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E9_Law_Enforcement_Interview__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E10_Criminal_Advocacy_or_Accompaniment__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E10_Criminal_Advocacy_or_Accompaniment__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E10_Criminal_Advocacy_or_Accompaniment__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-xs-12">
+                          <apex:outputText
+                            value="{!labels['E11_Other_Legal_Advice__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!report.E11_Other_Legal_Advice__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputText
+                            value="{!report.E11_Other_Legal_Advice__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <apex:outputText
+                      value="{!labels['Types_of_Services_Additional_Info__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Types_of_Services_Additional_Info__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Types_of_Services_Additional_Info__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!currentPage == 4}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Quarterly Program Report Narrative Questions
+              </div>
+              <div class="panel-body grid-pd-md">
+                Please complete the following questions to the best of your
+                ability. All questions marked with an
+                <font color="red">*</font> are required. Your answers will help
+                the NCAI Fund and our TA providers identify needs for technical
+                assistance and training.
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <apex:outputText
+                      value="{!labels['Ongoing_Successes__c']}"
+                      escape="false"
+                    /><font color="red"> *</font>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Ongoing_Successes__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Ongoing_Successes__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel rendered="{!NOT(isFinalReport)}">
+                  <div class="row">
+                    <div class="col-xs-11">
+                      <apex:outputText
+                        value="{!labels['Challenges_or_Barriers__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-11">
+                      <apex:inputField
+                        value="{!report.Challenges_or_Barriers__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Challenges_or_Barriers__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Training and Technical Assistance</strong
+                    ><br /><br />
+                    <apex:outputText
+                      value="{!labels['Training_and_Technical_Assistance__c']}"
+                      escape="false"
+                    /><font color="red"> *</font>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Training_and_Technical_Assistance__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Training_and_Technical_Assistance__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-11">
+                    <apex:outputText
+                      value="{!labels['Preferred_Method_of_T_TA_Delivery__c']}"
+                      escape="false"
+                    /><font color="red"> *</font>
+                  </div>
+                  <div class="col-xs-11">
+                    <apex:inputField
+                      value="{!report.Preferred_Method_of_T_TA_Delivery__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Preferred_Method_of_T_TA_Delivery__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <!--
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <apex:outputText value="{!labels['Fiscally_on_Track__c']}" escape="false" /><font color="red"> *</font>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <apex:inputField value="{!report.Fiscally_on_Track__c}" rendered="{!NOT(readOnly)}" />
+                                        <apex:outputText value="{!report.Fiscally_on_Track__c}" rendered="{!readOnly}" />
+                                    </div>
+                                </div>
+-->
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!labels['Fiscally_on_Track__c']}"
+                      escape="false"
+                    /><font color="red"> *</font>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectList
+                      disabled="{!readOnly}"
+                      value="{!onTrackFiscally}"
+                      size="1"
+                    >
+                      <apex:selectOption itemLabel="Yes" itemValue="true" />
+                      <apex:selectOption itemLabel="No" itemValue="false" />
+                      <apex:actionSupport
+                        event="onchange"
+                        action="{!updateFieldVisibility}"
+                        reRender="form"
+                      />
+                    </apex:selectList>
+                    <!-- <apex:outputField value="{!report.Clients_Surveyed_for_Feedback__c}" rendered="{!readOnly}" />-->
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!NOT(onTrackFiscally) || NOT(report.On_Track_Fiscally__c)}"
+                >
+                  <div class="row">
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-11">
+                      Please Explain:<font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-11">
+                      <apex:inputField
+                        value="{!report.Fiscally_on_Track__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Fiscally_on_Track__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <apex:outputText
+                      value="{!labels['Challenges_During_COVID__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Challenges_During_COVID__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Challenges_During_COVID__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <apex:outputText
+                      value="{!labels['Issues_Out_of_Scope__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Issues_Out_of_Scope__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputText
+                      value="{!report.Issues_Out_of_Scope__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <apex:outputPanel rendered="{!isFinalReport}">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  Fiscal Year End/Final Report Narrative Questions
+                  <!--
+                                    <apex:outputText value="Fiscal Year End Report Narrative Questions" rendered="{!report.Month__c == 'Jul - Sep'}" />
+                                    <apex:outputText value="Final Report Narrative Questions" rendered="{!report.Month__c != 'Jul - Sep'}" />
+-->
+                </div>
+                <div class="panel-body grid-pd-md">
+                  Please complete these following questions to the best of your
+                  ability.
+
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!labels['Number_of_Unmet_Requests__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!report.Number_of_Unmet_Requests__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Number_of_Unmet_Requests__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!labels['Unmet_Requests_Explanation__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!report.Unmet_Requests_Explanation__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Unmet_Requests_Explanation__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!labels['Services_Not_Provided__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!report.Services_Not_Provided__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Services_Not_Provided__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      <apex:outputText
+                        value="{!labels['Clients_Surveyed_for_Feedback__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:selectList
+                        disabled="{!readOnly}"
+                        value="{!clientsSurveyed}"
+                        size="1"
+                      >
+                        <apex:selectOption itemLabel="Yes" itemValue="true" />
+                        <apex:selectOption itemLabel="No" itemValue="false" />
+                        <apex:actionSupport
+                          event="onchange"
+                          action="{!updateFieldVisibility}"
+                          reRender="form"
+                        />
+                      </apex:selectList>
+                      <!--<apex:outputField value="{!report.Clients_Surveyed_for_Feedback__c}" rendered="{!readOnly}" />-->
+                    </div>
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!clientsSurveyed || report.Clients_Surveyed_for_Feedback__c}"
+                  >
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="{!labels['Number_of_Surveys_Distributed__c']}"
+                          escape="false"
+                        /><font color="red"> *</font>
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Number_of_Surveys_Distributed__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Number_of_Surveys_Distributed__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <apex:outputText
+                          value="{!labels['Number_of_Surveys_Completed__c']}"
+                          escape="false"
+                        /><font color="red"> *</font>
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!report.Number_of_Surveys_Completed__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputText
+                          value="{!report.Number_of_Surveys_Completed__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                  </apex:outputPanel>
+
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!labels['Challenges_During_Fiscal_Year__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!report.Challenges_During_Fiscal_Year__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Challenges_During_Fiscal_Year__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!labels['Project_Description__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!report.Project_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Project_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!labels['Changes_in_Community__c']}"
+                        escape="false"
+                      /><font color="red"> *</font>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!report.Changes_in_Community__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputText
+                        value="{!report.Changes_in_Community__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization' || (userAcctType == 'Local Organization' && report.Notes_from_National__c != null)}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-body grid-pd-md">
+                <strong>Notes From National:</strong><br />
+                <apex:outputText
+                  escape="false"
+                  value="{!report.Notes_from_National__c}"
+                />
+              </div>
+            </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!userAcctType == 'Local Organization'}">
+            <h5>
+              Please contact
+              <a href="mailto:support@firstpic.org">support@firstpic.org</a> if
+              you have any questions about completing or submitting this report.
+            </h5>
+          </apex:outputPanel>
+          <div class="row">
+            <div class="col-md-6">
+              <apex:commandButton
+                action="{!previous}"
+                reRender="form"
+                value="Previous"
+                status="pageStatus"
+                rendered="{!currentPage > 1}"
+                oncomplete="scrollTop()"
+              />
+              <apex:commandButton
+                action="{!save}"
+                reRender="form"
+                value="Save"
+                status="pageStatus"
+                rendered="{!NOT(readOnly) || (userAcctType == 'National Organization' && report.Status__c == 'Submitted')}"
+              />
+              <apex:commandButton
+                action="{!next}"
+                reRender="form"
+                value="Next"
+                status="pageStatus"
+                rendered="{!currentPage < 4}"
+                styleClass="primary"
+                oncomplete="scrollTop()"
+              />
+              <apex:commandButton
+                action="{!submit}"
+                reRender="form"
+                value="Submit"
+                status="pageStatus"
+                styleClass="primary"
+                rendered="{!currentPage == 4 && userAcctType == 'Local Organization' && NOT(readOnly)}"
+              />
+              <apex:commandButton
+                action="{!showSendBackPopup}"
+                value="Send Back"
+                status="pageStatus"
+                rendered="{!currentPage == 4 && userAcctType == 'National Organization' && report.Status__c == 'Submitted'}"
+              />
+              <apex:commandButton
+                action="{!approve}"
+                value="Approve"
+                status="pageStatus"
+                styleClass="primary"
+                rendered="{!currentPage == 4 && userAcctType == 'National Organization' && report.Status__c == 'Submitted'}"
+                reRender="form"
+              />
+            </div>
+            <!--START PAGE NAVIGATION (for dev use only - breaks valildation)-->
+            <apex:outputPanel rendered="false">
+              <div class="col-md-6 pull-right">
+                <apex:commandButton
+                  action="{!pageOne}"
+                  reRender="form"
+                  value="Page 1"
+                  status="pageStatus"
+                  rendered="{!currentPage != 1}"
+                />
+                <apex:commandButton
+                  action="{!pageTwo}"
+                  reRender="form"
+                  value="Page 2"
+                  status="pageStatus"
+                  rendered="{!currentPage != 2}"
+                />
+                <apex:commandButton
+                  action="{!pageThree}"
+                  reRender="form"
+                  value="Page 3"
+                  status="pageStatus"
+                  rendered="{!currentPage != 3}"
+                />
+                <apex:commandButton
+                  action="{!pageFour}"
+                  reRender="form"
+                  value="Page 4"
+                  status="pageStatus"
+                  rendered="{!currentPage != 4}"
+                />
+              </div>
+            </apex:outputPanel>
+            <!--END PAGE NVIGATION-->
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="validationPopup">
+          <c:ConfirmationPopup
+            displayConfirmPopup="{!displayValidationPopup}"
+            header="Types of Victimizations Not Tracked"
+            body="{!notTrackedMessage}"
+          >
+            <apex:commandButton
+              action="{!hideValidationPopup}"
+              value="Cancel"
+              reRender="validationPopup"
+            />
+            <apex:commandButton
+              action="{!hideValidationPopupAndContinue}"
+              value="Confirm"
+              styleClass="primary"
+              reRender="form"
+            />
+          </c:ConfirmationPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="sendBackPopup">
+          <c:NotesPopup
+            userAcctType="{!userAcctType}"
+            header="Send Back"
+            richText="true"
+            displayNotesPopup="{!displaySendBackPopup}"
+            nationalNote="{!report.Notes_from_National__c}"
+            readOnly="false"
+            displayNationalNote="true"
+            displayLocalNote="false"
+          >
+            <apex:commandButton
+              action="{!cancelSendBackPopup}"
+              value="Cancel"
+            />
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send Back"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <br />
+        <apex:pageMessages></apex:pageMessages>
+        <c:ErrorMessage errorMessage="{!pageTwoErrorMessage}" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <!--                <c:ErrorMessage errorMessage="{!successMessage}" type="success" />-->
+        <br />
+      </div>
+    </div>
+  </apex:form>
+  <script>
+    function scrollTop() {
+      document.querySelector("form").scrollIntoView();
+    }
+  </script>
+</apex:page>

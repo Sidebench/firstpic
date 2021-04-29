@@ -1,0 +1,64 @@
+<apex:page
+  controller="GrantCtrl"
+  action="{!getGrants}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Grants</title>
+  </head>
+  <c:HeaderSwitch
+    activePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="panel panel-default">
+          <div class="panel-heading">Grants</div>
+          <div class="panel-body">
+            <table style="width: 100%">
+              <tr>
+                <th>Grant Name</th>
+                <th>Budget</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+              <apex:repeat value="{!grants}" var="g">
+                <tr>
+                  <td>
+                    <a href="{!URLFOR($Site.Prefix+'/Grant?grantId='+ g.Id)}">
+                      {!g.Name}
+                    </a>
+                  </td>
+                  <td>
+                    <apex:outputfield value="{!g.Amount__c}" />
+                  </td>
+                  <td>
+                    <apex:outputfield value="{!g.Start_Date__c}" />
+                  </td>
+                  <td>
+                    <apex:outputfield value="{!g.End_Date__c}" />
+                  </td>
+                  <td>{!g.Grant_Status__c}</td>
+                  <td class="text-right">
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/SubGrants?GrantId='+ g.Id)}"
+                    >
+                      View Sub-Grants
+                    </a>
+                  </td>
+                </tr>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

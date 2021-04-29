@@ -1,0 +1,787 @@
+<apex:page
+  controller="ReimbursementDetailsController"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Reimbursement Details</title>
+  </head>
+  <c:DMVHeader
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div class="content">
+      <div class="row">
+        <div class="col-xs-6">
+          <h2>{!grant.Name}</h2>
+        </div>
+        <div class="col-xs-6 pull-right text-right">
+          <apex:outputPanel
+            rendered="{!request.Status__c != 'Approved' && request.Status__c != 'Paid'}"
+          >
+            <h2>
+              Requested Amount: &nbsp;
+              <apex:outputField value="{!request.Total_Requested_Amount__c}" />
+            </h2>
+          </apex:outputPanel>
+          <apex:outputPanel
+            rendered="{!request.Status__c == 'Approved' || request.Status__c == 'Paid'}"
+          >
+            <h2>
+              Approved Amount: &nbsp;
+              <apex:outputField value="{!request.Total_Approved_Amount__c}" />
+            </h2>
+          </apex:outputPanel>
+        </div>
+      </div>
+
+      <table class="table">
+        <tr>
+          <td>
+            <span style="font-weight: bold"> Request Id: &nbsp;&nbsp; </span>
+            {!request.Name}
+          </td>
+          <td>
+            <div class="row">
+              <div class="col-auto" style="font-weight: bold">
+                Reimbursement Date Range:
+              </div>
+              <div class="col-auto">
+                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                  <apex:param value="{!request.Start_Date__c}" />
+                </apex:outputText>
+                -
+                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                  <apex:param value="{!request.End_Date__c}" />
+                </apex:outputText>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span style="font-weight: bold"> Request Date: &nbsp;&nbsp; </span>
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!request.Request_Date__c}" />
+            </apex:outputText>
+          </td>
+          <td class="text-right">
+            <span style="font-weight: bold">
+              Request Status: &nbsp;&nbsp;
+              <apex:outputText
+                value="{!request.Status__c}"
+                styleClass="{!statusColor}"
+              />
+            </span>
+            <apex:outputPanel
+              rendered="{!request.Paid_Date__c != null}"
+              styleClass="{!statusColor}"
+            >
+              &nbsp;(<apex:outputField value="{!request.Paid_Date__c}" />)
+            </apex:outputPanel>
+          </td>
+        </tr>
+      </table>
+
+      <apex:form id="form">
+        <apex:outputPanel id="lists">
+          <apex:outputPanel id="laborItems">
+            <div class="panel panel-default">
+              <apex:repeat value="{!labor_map}" var="cat">
+                <div class="panel-heading">Personnel</div>
+                <div class="panel-body">
+                  <table style="width: 100%">
+                    <tr>
+                      <th>Name</th>
+                      <th>Title</th>
+                      <th>Rate</th>
+                      <th>Total Hours</th>
+                      <th>Hours on Grant</th>
+                      <th>% Time on Grant</th>
+                      <th>Requested Salary</th>
+                      <th>Approved Salary</th>
+                      <th>Notes</th>
+                    </tr>
+                    <apex:repeat value="{!labor_map[cat]}" var="i">
+                      <tr>
+                        <td>
+                          <apex:outputfield value="{!i.Budget_Item__r.Name}" />
+                        </td>
+                        <td>
+                          <apex:outputfield
+                            value="{!i.Budget_Item__r.Title__c}"
+                          />
+                        </td>
+                        <td>
+                          <apex:outputfield value="{!i.Rate__c}" />
+                        </td>
+                        <td>
+                          <apex:outputfield value="{!i.Quantity__c}" />
+                        </td>
+                        <td>
+                          <apex:outputfield
+                            value="{!i.Quantity_Towards_Grant__c}"
+                          />
+                        </td>
+                        <td>
+                          <apex:outputText
+                            value="{0, number, ###,###,###,##0.000}"
+                          >
+                            <apex:param
+                              value="{!i.Percent_Towards_Grant__c}"
+                            /> </apex:outputText
+                          >%
+                        </td>
+                        <td>
+                          <apex:outputfield value="{!i.Requested_Salary__c}" />
+                        </td>
+                        <td>
+                          <apex:inputField
+                            value="{!i.Approved_Salary__c}"
+                            rendered="{!displayApprovalButtons}"
+                            styleClass="input-sm"
+                          />
+                          <apex:outputField
+                            value="{!i.Approved_Salary__c}"
+                            rendered="{!NOT(displayApprovalButtons)}"
+                          />
+                        </td>
+
+                        <td class="text-center">
+                          <apex:commandLink
+                            action="{!laborNotesPopup}"
+                            reRender="laborPopup"
+                          >
+                            <apex:outputPanel id="laborNoteIcon">
+                              <apex:outputText
+                                rendered="{!i.Item_Note__c != null || i.Response__c != null}"
+                              >
+                                <span
+                                  class="glyphicon glyphicon-comment"
+                                ></span>
+                              </apex:outputText>
+                              <apex:outputText
+                                rendered="{!userAcct.RecordType.Name == 'National Organization' && i.Response__c == null && i.Item_Note__c == null}"
+                                >+</apex:outputText
+                              >
+                            </apex:outputPanel>
+                          </apex:commandLink>
+                          <apex:outputPanel id="laborPopup">
+                            <apex:outputPanel
+                              styleClass="popupBackground"
+                              layout="block"
+                              rendered="{!displayLaborNotesPopup}"
+                            />
+                            <apex:outputPanel
+                              styleClass="custPopup"
+                              layout="block"
+                              rendered="{!displayLaborNotesPopup}"
+                            >
+                              <div class="modal-dialog text-left">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h4 class="modal-title">
+                                      Notes for &nbsp;<apex:outputText
+                                        value="{!i.Budget_Item__r.Name}"
+                                      />
+                                    </h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <apex:outputPanel
+                                      rendered="{!i.Item_Note__c != null}"
+                                    >
+                                      <apex:outputText
+                                        value="{!i.Item_Note__c}"
+                                      />
+                                    </apex:outputPanel>
+                                    <apex:outputPanel
+                                      rendered="{!i.Item_Note__c == null}"
+                                    >
+                                      No notes from Affiliate
+                                    </apex:outputPanel>
+                                    <br />
+                                    <hr />
+                                    <apex:outputPanel
+                                      rendered="{!userAcct.RecordType.Name == 'National Organization'}"
+                                    >
+                                      <apex:inputTextarea
+                                        value="{!i.Response__c}"
+                                      />
+                                    </apex:outputPanel>
+                                    <apex:outputPanel
+                                      rendered="{!userAcct.RecordType.Name == 'Local Organization'}"
+                                    >
+                                      <apex:outputPanel
+                                        rendered="{!i.Response__c == null}"
+                                      >
+                                        <apex:outputText
+                                          value="{!i.Response__c}"
+                                        />
+                                      </apex:outputPanel>
+                                      <apex:outputPanel
+                                        rendered="{!i.Response__c == null}"
+                                      >
+                                        No Notes from National
+                                      </apex:outputPanel>
+                                    </apex:outputPanel>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <apex:commandButton
+                                      action="{!updateItems}"
+                                      value="Save and Close"
+                                      styleClass="primary"
+                                      reRender="laborNoteIcon, laborPopup"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </apex:outputPanel>
+                          </apex:outputPanel>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                    <tr>
+                      <td colspan="6"></td>
+                      <td>
+                        <span class="subtotal"> ${!requestSub} </span>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </table>
+                </div>
+              </apex:repeat>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!request.Labor_Notes__c != null}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Personnel Notes</div>
+              <div class="panel-body">
+                <apex:outputText value="{!request.Labor_Notes__c}" />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Expenses</div>
+            <apex:repeat value="{!expense_map}" var="cat">
+              <div class="panel-heading sub-panel-heading">{!cat}</div>
+              <div class="panel-body">
+                <table class="fixedTbl">
+                  <tr>
+                    <th>Name</th>
+                    <th>Monthly Rate</th>
+                    <th>Requested Amount</th>
+                    <th>Approved Amount</th>
+                    <th style="text-align: center">Notes</th>
+                    <th>Attachments</th>
+                  </tr>
+                  <apex:repeat value="{!expense_map[cat]}" var="i">
+                    <tr>
+                      <td>{!i.Budget_Item__r.Name}</td>
+                      <td>
+                        <apex:outputfield value="{!i.Rate__c }" />
+                      </td>
+                      <td>
+                        <apex:outputfield value="{!i.Requested_Amount__c}" />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!i.Approved_Amount__c}"
+                          rendered="{!displayApprovalButtons}"
+                          styleClass="input-sm"
+                        />
+                        <apex:outputField
+                          value="{!i.Approved_Amount__c}"
+                          rendered="{!NOT(displayApprovalButtons)}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:commandLink
+                          action="{!expenseNotesPopup}"
+                          reRender="expensePopup"
+                        >
+                          <apex:outputPanel id="expenseNoteIcon">
+                            <apex:outputText
+                              rendered="{!i.Item_Note__c != null || i.Response__c != null}"
+                            >
+                              <span class="glyphicon glyphicon-comment"></span>
+                            </apex:outputText>
+                            <apex:outputText
+                              rendered="{!userAcct.RecordType.Name == 'National Organization' && i.Response__c == null && i.Item_Note__c == null}"
+                              >+</apex:outputText
+                            >
+                          </apex:outputPanel>
+                        </apex:commandLink>
+                        <apex:outputPanel id="expensePopup">
+                          <apex:outputPanel
+                            styleClass="popupBackground"
+                            layout="block"
+                            rendered="{!displayPopupBg}"
+                          />
+                          <apex:outputPanel
+                            styleClass="custPopup"
+                            layout="block"
+                            rendered="{!displayExpenseNotesPopup}"
+                          >
+                            <div class="modal-dialog text-left">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h4 class="modal-title">
+                                    Notes for &nbsp;<apex:outputText
+                                      value="{!i.Budget_Item__r.Name}"
+                                    />
+                                  </h4>
+                                </div>
+                                <div class="modal-body">
+                                  <apex:outputPanel
+                                    rendered="{!i.Item_Note__c != null}"
+                                  >
+                                    <apex:outputText
+                                      value="{!i.Item_Note__c}"
+                                    />
+                                  </apex:outputPanel>
+                                  <apex:outputPanel
+                                    rendered="{!i.Item_Note__c == null}"
+                                  >
+                                    No notes from Affiliate
+                                  </apex:outputPanel>
+                                  <br />
+                                  <hr />
+                                  <apex:outputPanel
+                                    rendered="{!userAcct.RecordType.Name == 'National Organization'}"
+                                  >
+                                    <apex:inputTextarea
+                                      value="{!i.Response__c}"
+                                    />
+                                  </apex:outputPanel>
+                                  <apex:outputPanel
+                                    rendered="{!userAcct.RecordType.Name == 'Local Organization'}"
+                                  >
+                                    <apex:outputText
+                                      value="{!i.Response__c}"
+                                      rendered="{!i.Response__c != null}"
+                                    />
+                                    <apex:outputPanel
+                                      rendered="{!i.Response__c == null}"
+                                    >
+                                      No Notes from National
+                                    </apex:outputPanel>
+                                  </apex:outputPanel>
+                                </div>
+                                <div class="modal-footer">
+                                  <apex:commandButton
+                                    action="{!updateItems}"
+                                    value="Save and Close"
+                                    styleClass="primary"
+                                    reRender="expenseNoteIcon, expensePopup"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </apex:outputPanel>
+                        </apex:outputPanel>
+                      </td>
+                      <td>
+                        <apex:repeat value="{!att_list}" var="a">
+                          <apex:outputPanel rendered="{!a.ParentId == i.Id }">
+                            <apex:outputPanel rendered="{!a.Id != null}">
+                              <apex:outputLink
+                                value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                                style="
+                                  margin-right: 10px;
+                                  display: inline-block;
+                                "
+                                target="_blank"
+                              >
+                                {!a.Name}
+                              </apex:outputLink>
+                            </apex:outputPanel>
+                          </apex:outputPanel>
+                        </apex:repeat>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </apex:repeat>
+          </div>
+
+          <apex:outputPanel rendered="{!request.Expense_Notes__c != null}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Expense Notes</div>
+              <div class="panel-body">
+                <apex:outputText value="{!request.Expense_Notes__c}" />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!request_att_list.size > 0}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Attachments</div>
+              <div class="panel-body">
+                <apex:repeat value="{!request_att_list}" var="a">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputLink
+                        value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                        style="margin-right: 10px"
+                        target="_blank"
+                        >{!a.Name}</apex:outputLink
+                      >
+                    </div>
+                  </div>
+                </apex:repeat>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!request.Request_Notes__c != null || userAcctType == 'National Organization'}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                General Notes from National
+                <div class="pull-right">
+                  <apex:commandButton
+                    action="{!requestNotesPopup}"
+                    value="Edit"
+                    rendered="{!userAcctType == 'National Organization'}"
+                    styleClass="btn-small btn-white"
+                  />
+                </div>
+              </div>
+              <div class="panel-body">
+                <h5>Notes for Affiliate:</h5>
+                <apex:outputField value="{!request.Request_Notes__c}" />
+                <apex:outputPanel
+                  rendered="{!userAcctType == 'National Organization'}"
+                >
+                  <br />
+                  <hr />
+                  <h5>Notes for National:</h5>
+                  <apex:outputField value="{!request.Notes_for_National__c}" />
+                </apex:outputPanel>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!grant.Use_Indirect_Rate__c == 'Yes'}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <apex:outputText value="Modified Direct Cost" />
+              </div>
+              <div class="panel-body grid-pd-sm">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Total Reqeusted for Personnel: </strong>
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!laborRequestedAmount}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Total Reqeusted for Expenses: </strong>
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!expenseRequestedAmount}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <apex:outputText value="Approvals" />
+                <a
+                  data-toggle="collapse"
+                  href="#collapse1"
+                  class="toggle pull-right"
+                >
+                </a>
+              </div>
+              <div id="collapse1" class="panel-collapse">
+                <div class="panel-body grid-pd-sm">
+                  <div class="row">
+                    <div class="col-xs-4 col-sm-3">
+                      <strong>Approver Level</strong>
+                    </div>
+                    <div class="col-xs-4 col-sm-3">
+                      <strong>Approved By</strong>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 text-center">
+                      <strong>Approved Date</strong>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4 col-sm-3">Level One</div>
+                    <div class="col-xs-4 col-sm-3">
+                      {!request.Level_One_Approver__r.Name}
+                    </div>
+                    <div class="col-xs-4 col-sm-3 text-center">
+                      <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                        <apex:param
+                          value="{!request.Level_One_Approved_Date__c}"
+                        />
+                      </apex:outputText>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4 col-sm-3">Level Two</div>
+                    <div class="col-xs-4 col-sm-3">
+                      {!request.Level_Two_Approver__r.Name}
+                    </div>
+                    <div class="col-xs-4 col-sm-3 text-center">
+                      <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                        <apex:param
+                          value="{!request.Level_Two_Approved_Date__c}"
+                        />
+                      </apex:outputText>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4 col-sm-3">Level Three (Final)</div>
+                    <div class="col-xs-4 col-sm-3">
+                      {!request.Level_Three_Approver__r.Name}
+                    </div>
+                    <div class="col-xs-4 col-sm-3 text-center">
+                      <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                        <apex:param
+                          value="{!request.Level_Three_Approved_Date__c}"
+                        />
+                      </apex:outputText>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Modification History
+                <a
+                  data-toggle="collapse"
+                  href="#collapse2"
+                  class="toggle pull-right"
+                ></a>
+              </div>
+              <div id="collapse2" class="panel-collapse collapse in">
+                <div class="panel-body grid-pd-sm">
+                  <apex:outputField
+                    value="{!request.Modification_History__c}"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'Local Organization' || isNationalRequest}"
+          >
+            <apex:outputPanel
+              rendered="{!request.Status__c == 'Incomplete' || request.Status__c == 'Revisions Needed' || request.Status__c == 'Revision in Progress'}"
+            >
+              <apex:commandButton action="{!editRequest}" value="Edit" />
+            </apex:outputPanel>
+            <apex:outputPanel
+              rendered="{!request.Status__c == 'Incomplete' || 
+                                                    request.Status__c == 'In Progress' ||
+                                                    request.Status__c == 'Revisions Needed' ||
+                                                    request.Status__c == 'Revision in Progress'}"
+            >
+              <apex:commandButton
+                action="{!deleteRequestPopup}"
+                value="Delete"
+                reRender="deletePopup"
+              />
+            </apex:outputPanel>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <apex:commandButton
+              action="{!denyPopup}"
+              value="Deny"
+              rendered="{!request.Status__c == 'Revisions Needed' || request.Status__c == 'Revision in Progress'}"
+            />
+            <apex:outputPanel rendered="{!displayApprovalButtons}">
+              <apex:commandButton
+                action="{!getTotals}"
+                value="Update Amounts"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                action="{!saveAndClose}"
+                value="Save and Close"
+              />
+              <apex:commandButton action="{!sendBackPopup}" value="Send Back" />
+              <apex:commandButton
+                action="{!approvePopup}"
+                value="Approve"
+                styleClass="primary"
+              />
+            </apex:outputPanel>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <!-- BEGIN Totals -->
+        <apex:outputPanel id="totals" styleClass="pull-right">
+          <h4>
+            Total Requested Amount: &nbsp;
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!totalRequestedAmount}" />
+            </apex:outputText>
+          </h4>
+          <h4>
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization' || (userAcctType == 'Local Organization' && request.Status__c == 'Approved')}"
+            >
+              Total Approved Amount: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!totalApprovedAmount}" />
+              </apex:outputText>
+            </apex:outputPanel>
+          </h4>
+        </apex:outputPanel>
+        <!-- END Totals -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages />
+
+        <apex:outputPanel id="requestPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayRequestNotesPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayRequestNotesPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Add a note</h4>
+                </div>
+                <div class="modal-body">
+                  <h5>Notes for Affiliate:</h5>
+                  <apex:inputField value="{!request.Request_Notes__c}" />
+                  <br />
+                  <h5>Notes for National:</h5>
+                  <apex:inputField value="{!request.Notes_for_National__c}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!requestNotesPopup}"
+                    value="Cancel"
+                  />
+                  <apex:outputPanel rendered="{!sendBack == true}">
+                    <apex:outputPanel
+                      rendered="{!approverLevel == 'Level One'}"
+                    >
+                      <apex:commandButton
+                        action="{!sendBack}"
+                        value="Send Back"
+                        styleClass="primary"
+                      />
+                    </apex:outputPanel>
+                    <apex:outputPanel
+                      rendered="{!approverLevel == 'Level Two' || approverLevel == 'Finance Admin'}"
+                    >
+                      <apex:commandButton
+                        action="{!sendBack}"
+                        value="Send to Affiliate"
+                        styleClass="primary"
+                        style="margin: auto 2px"
+                      />
+                      <apex:commandButton
+                        action="{!sendBackToLevelOne}"
+                        value="Send to Level One"
+                        styleClass="primary"
+                        style="margin: auto 2px"
+                      />
+                    </apex:outputPanel>
+                    <apex:outputPanel
+                      rendered="{!approverLevel == 'Level Three'}"
+                    >
+                      <apex:commandButton
+                        action="{!sendBackToLevelTwo}"
+                        value="Send Back"
+                        styleClass="primary"
+                      />
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                  <apex:commandButton
+                    action="{!denyRequest}"
+                    value="Deny"
+                    styleClass="primary"
+                    rendered="{!deny == true}"
+                  />
+                  <apex:commandButton
+                    action="{!approveRequest}"
+                    value="Approve"
+                    styleClass="primary"
+                    rendered="{!approve == true}"
+                  />
+                  <apex:commandButton
+                    action="{!save}"
+                    value="Save"
+                    styleClass="primary"
+                    rendered="{!sendBack == false && deny == false && approve == false}"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="deletePopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayDeletePopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayDeletePopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">
+                    Are you sure you want to delete this requests?
+                  </h4>
+                </div>
+                <div class="modal-body">
+                  This action is final. Once a request is deleted, it cannot be
+                  recovered.
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!deleteRequestPopup}"
+                    value="Cancel"
+                  />
+                  <apex:commandButton
+                    action="{!deleteRequest}"
+                    value="Confirm Delete"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+      </apex:form>
+    </div>
+  </div>
+</apex:page>

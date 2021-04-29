@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Healthy_Ways_to_Handle_Stress__c</fullName>
+    <externalId>false</externalId>
+    <label>Healthy Ways to Handle Stress</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>a. Go for a walk outside</fullName>
+                <default>false</default>
+                <label>a. Go for a walk outside</label>
+            </value>
+            <value>
+                <fullName>b. Talk to a trusted friend or adult</fullName>
+                <default>false</default>
+                <label>b. Talk to a trusted friend or adult</label>
+            </value>
+            <value>
+                <fullName>c. Yell at your parents or friends</fullName>
+                <default>false</default>
+                <label>c. Yell at your parents or friends</label>
+            </value>
+            <value>
+                <fullName>d. Write in a journal</fullName>
+                <default>false</default>
+                <label>d. Write in a journal</label>
+            </value>
+            <value>
+                <fullName>No Response</fullName>
+                <default>false</default>
+                <label>No Response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

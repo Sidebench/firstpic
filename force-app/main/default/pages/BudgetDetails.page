@@ -1,0 +1,459 @@
+<apex:page
+  controller="BudgetCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Sub-Grant Details</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    grantId="{!grant.National_Grant__c}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:SubGrantDetails
+          userAcctType="{!userAcctType}"
+          portalName="{!portalName}"
+          grant="{!grant}"
+          displayYear="{!portalName == 'STEM'}"
+        />
+        <c:AwardDetails
+          userAcctType="{!userAcctType}"
+          approverLevel="{!approverLevel}"
+          grant="{!grant}"
+          rendered="{!portalName == 'Ripken' && userAcctType == 'National Organization'}"
+        />
+        <c:AwardDocs
+          portalName="{!portalName}"
+          userAcctType="{!userAcctType}"
+          createMOU="{!createMOU}"
+          updateLOASubmittedDate="{!updateLOASubmittedDate}"
+          sendLOASuccessful="{!sendLOASuccessful}"
+          sendFFATA="{!sendFFATA}"
+          sendFFATASuccessful="{!sendFFATASuccessful}"
+          grant="{!grant}"
+          atts="{!atts}"
+          rendered="{!CONTAINS(portalName, 'NCAI') || portalName == 'Ripken'}"
+        />
+
+        <apex:outputPanel
+          style="display: block; height: 45px"
+          rendered="{!userAcctType == 'Local Organization'}"
+        >
+          <apex:commandButton
+            action="{!showUpdatePopup}"
+            value="Update Budget"
+            styleClass="pull-right"
+            reRender="form"
+            rendered="{!NOT(CONTAINS(grant.Grant_Status__c, 'Pending')) && grant.Grant_Status__c != 'Closed'}"
+          />
+          <apex:commandButton
+            action="{!URLFOR($Site.Prefix+'/BudgetDocuments?grantId='+ grant.Id)}"
+            value="Required Compliance Documents"
+            styleClass="pull-right"
+            rendered="{!grant.National_Grant_Type__c == 'OVC'}"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'Local Organization' && (grant.Grant_Status__c == 'Incomplete' || grant.Grant_Status__c == 'Revisions Needed' || grant.Grant_Status__c == 'Revision in Progress') && errorMessage == ''}"
+        >
+          <div class="alert alert-warning" role="alert">
+            NOTE: This budget has not yet been submitted. Please review and
+            click submit.
+            <apex:commandButton
+              action="{!submit}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="btn primary pull-right"
+              style="margin-top: -7px"
+            />
+          </div>
+        </apex:outputPanel>
+
+        <c:BudgetPersonnelItems
+          id="laborItems"
+          ctrl="{!BudgetCtrl}"
+          isEditMode="false"
+          isReviewMode="{!isReviewMode}"
+          showAddItems="false"
+        />
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Personnel & Fringe Notes"
+          localNote="{!grant.Labor_Notes__c}"
+          nationalNote="{!grant.Labor_Response__c}"
+          readOnly="{!userAcctType == 'Local Organization'}"
+        />
+
+        <div class="text-right">
+          <h4>
+            Total Personnel and Fringe Budget: &nbsp;
+            <apex:outputText value="${0, number, ###,###,###,##0.00}">
+              <apex:param value="{!laborBudgetAmount}" />
+            </apex:outputText>
+          </h4>
+        </div>
+        <br />
+
+        <c:BudgetExpenseItems
+          id="expenseItems"
+          ctrl="{!BudgetCtrl}"
+          isEditMode="false"
+          isReviewMode="{!isReviewMode}"
+          showAddItems="false"
+        />
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Expense Notes"
+          localNote="{!grant.Expense_Notes__c}"
+          nationalNote="{!grant.Expense_Response__c}"
+          readOnly="{!userAcctType == 'Local Organization'}"
+        />
+
+        <div class="text-right">
+          <h4>
+            Total Expense Budget: &nbsp;
+            <apex:outputText value="${0, number, ###,###,###,##0.00}">
+              <apex:param value="{!expenseBudgetAmount}" />
+            </apex:outputText>
+          </h4>
+        </div>
+        <br />
+
+        <apex:outputPanel rendered="{!grant.National_Grant_Type__c == 'OVC'}">
+          <c:IndirectCostsTable
+            budgeted="{!grant.Total_Indirect_Rate_Budgeted__c}"
+            approved="{!grant.Reimbursement_Approved_Indirect_Costs__c}"
+            balance="{!grant.Indirect_Costs_Balance__c}"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            itemName="{!selectedItem.Name}"
+            localNote="{!selectedItem.Item_Note__c}"
+            nationalNote="{!selectedItem.Response__c}"
+            readOnly="{!userAcctType == 'Local Organization'}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              action="{!upsertItem}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <c:CollapsiblePanel
+          header="Modification History"
+          rendered="{!userAcctType == 'National Organization'}"
+        >
+          <apex:outputField value="{!grant.Modification_History__c}" />
+        </c:CollapsiblePanel>
+
+        <c:Documents
+          showStatus="false"
+          showUploadBtn="{!IF(userAcctType == 'Local Organization' && grant.Grant_Status__c == 'Closed', false, true)}"
+          fileNames="{!IF(portalName != 'Ripken','Workers Comp,SUTA,Pension,Verification Letter,Other','')}"
+          groupId="{!IF(grant.National_Grant_Type__c == 'OVC', 'OVC Attachments', '')}"
+        >
+          <apex:outputLink
+            value="{!$Resource.TRAIL_Verification_Letter_Template}"
+            style="display: block; margin-top: 10px"
+            rendered="{!grant.National_Grant_Type__c == 'TRAIL' && grant.Grant_Status__c == 'Approved'}"
+          >
+            Download Verification Letter Template
+          </apex:outputLink>
+        </c:Documents>
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="General Notes from National"
+          displayLocalNote="false"
+          displayNationalNotePrivate="true"
+          richText="true"
+          nationalNote="{!grant.Budget_Notes__c}"
+          nationalNotePrivate="{!grant.Notes_for_National__c}"
+          readOnly="{!userAcctType == 'Local Organization' || isReviewMode == false}"
+        />
+
+        <!-- BEGIN Popups -->
+        <apex:outputPanel id="sendBackPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displaySendBackPopup}"
+            userAcctType="{!userAcctType}"
+            header="Send Back"
+            nationalNote="{!grant.Budget_Notes__c}"
+            nationalNotePrivate="{!grant.Notes_for_National__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+            displayNationalNotePrivate="true"
+            richText="true"
+          >
+            <apex:commandButton action="{!hideSendBackPopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Affiliate"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!grant.Grant_Status__c == 'Pending First Approval' || grant.Grant_Status__c == 'Pending Second Approval'}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="affiliate"
+              />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Level One"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!grant.Grant_Status__c == 'Pending Second Approval'}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="levelone"
+              />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Level Two"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!(approverLevel == 'Level Three' || approverLevel == 'Level Four') && (grant.Grant_Status__c == 'Pending Third Approval' || grant.Grant_Status__c == 'Pending Fourth Approval')}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="leveltwo"
+              />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Level Three"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!grant.Grant_Status__c == 'Pending Fourth Approval'}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="levelthree"
+              />
+            </apex:commandButton>
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="approvePopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayApprovePopup}"
+            userAcctType="{!userAcctType}"
+            header="Approve"
+            nationalNote="{!grant.Budget_Notes__c}"
+            nationalNotePrivate="{!grant.Notes_for_National__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+            displayNationalNotePrivate="true"
+            richText="true"
+          >
+            <apex:commandButton action="{!hideApprovePopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!approve}"
+              value="Approve"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="updatePopup">
+          <c:ConfirmationPopup
+            displayConfirmPopup="{!displayUpdatePopup && grant.National_Grant_Type__c = 'OVC'}"
+            header="Update Budget"
+            body="You will not be able to submit any reimbursement requests until your updated budget has been submitted and approved. Are you sure you want to continue? <br/><br/>
+                                               When you select Update Budget and Indirect Rate, any line item that you have made a charge against on a reimbursement request will be made inactive and a duplicate line item will be created that the new indirect rate will apply to. You will not be able to edit the inactive line but you will be able to edit the active line item."
+          >
+            <apex:commandButton action="{!hideUpdatePopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!updateBudget}"
+              value="Update Budget"
+              styleClass="primary"
+            />
+            <apex:commandButton
+              action="{!updateBudgetIndirectRate}"
+              value="Update Budget & Indirect Rate"
+              styleClass="primary"
+              rendered="{!grant.National_Grant_Type__c == 'OVC'}"
+            />
+          </c:ConfirmationPopup>
+          <c:ConfirmationPopup
+            displayConfirmPopup="{!displayUpdatePopup && grant.National_Grant_Type__c != 'OVC'}"
+            header="Update Budget"
+            body="You will not be able to submit any reimbursement requests until your updated budget has been submitted and approved. Are you sure you want to continue?"
+          >
+            <apex:commandButton action="{!hideUpdatePopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!updateBudget}"
+              value="Update Budget"
+              styleClass="primary"
+            />
+            <apex:commandButton
+              action="{!updateBudgetIndirectRate}"
+              value="Update Budget & Indirect Rate"
+              styleClass="primary"
+              rendered="{!grant.National_Grant_Type__c == 'OVC'}"
+            />
+          </c:ConfirmationPopup>
+        </apex:outputPanel>
+
+        <c:ConfirmationPopup
+          header="Close Grant"
+          body="Closing this grants will also close all related reimbursement requests."
+          displayConfirmPopup="{!displayCloseGrantPopup}"
+        >
+          <apex:commandButton value="Cancel" action="{!hideCloseGrantPopup}" />
+          <apex:commandButton
+            value="Close Grant"
+            styleClass="primary"
+            action="{!closeGrant}"
+          />
+        </c:ConfirmationPopup>
+        <!-- END Popups -->
+
+        <!-- BEGIN Actions -->
+        <div class="row">
+          <div class="col-xs-6">
+            <apex:commandButton
+              value="View Reimbursements"
+              action="{!URLFOR($Site.Prefix+'/Reimbursements?grantId='+ grant.Id)}"
+              rendered="{!grant.Grant_Status__c != 'Closed'}"
+            />
+            <apex:outputPanel
+              rendered="{!userAcctType == 'Local Organization' && NOT(CONTAINS(grant.Grant_Status__c, 'Pending')) && grant.Grant_Status__c != 'Closed'}"
+            >
+              <apex:commandButton
+                action="{!showUpdatePopup}"
+                value="Update Budget"
+                status="pageStatus"
+                reRender="form"
+              />
+              <apex:commandButton
+                value="Create Reimbursement"
+                action="{!URLFOR($Site.Prefix+'/ReimbursementForm?grantId='+ grant.Id)}"
+                styleClass="primary"
+                rendered="{!grant.Grant_Status__c == 'Approved' && (portalName != 'Ripken' || grant.LOA_Submitted_Date__c != null)}"
+              />
+            </apex:outputPanel>
+            <apex:commandButton
+              action="{!submit}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="btn primary"
+              rendered="{!userAcctType == 'Local Organization' && grant.Grant_Status__c == 'Incomplete'}"
+            />
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <apex:commandButton
+                action="{!upsertGrant}"
+                value="Save"
+                status="pageStatus"
+                styleClass="btn primary"
+              />
+              <apex:commandButton
+                value="Close Grant"
+                action="{!showCloseGrantPopup}"
+                rendered="{!canCloseGrant}"
+              />
+              <apex:commandButton
+                value="Reopen Grant"
+                action="{!reopenGrant}"
+                rendered="{!canReopenGrant}"
+              />
+              <apex:outputPanel rendered="{!isReviewMode}">
+                <apex:commandButton
+                  action="{!showSendBackPopup}"
+                  value="Send Back"
+                  status="pageStatus"
+                />
+                <apex:commandButton
+                  action="{!showApprovePopup}"
+                  value="Approve"
+                  status="pageStatus"
+                  styleClass="primary"
+                />
+              </apex:outputPanel>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!grant.Grant_Status__c == 'Closed'}">
+              <apex:commandButton
+                value="View Reimbursements"
+                action="{!URLFOR($Site.Prefix+'/Reimbursements?grantId='+ grant.Id +'&grantStatus=Closed')}"
+              />
+              <apex:commandButton
+                value="View Reports"
+                action="{!URLFOR($Site.Prefix+'/QuarterlyProgressReports?grantId='+ grant.Id +'&grantStatus=Closed')}"
+                rendered="{!portalName == 'STEM'}"
+              />
+              <apex:commandButton
+                value="View Reports"
+                action="{!URLFOR($Site.Prefix+'/ProgressReports?grantId='+ grant.Id +'&grantStatus=Closed')}"
+                rendered="{!CONTAINS(portalName, 'NCAI')}"
+              />
+              <apex:commandButton
+                value="View Reports"
+                action="{!URLFOR($Site.Prefix+'/DCTATReports?grantId='+ grant.Id +'&grantStatus=Closed')}"
+                rendered="{!portalName == 'Ripken'}"
+              />
+            </apex:outputPanel>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h4
+              style="{!IF((totalBudgetAmount > grant.Amount__c),'color: #b94a48;','')}"
+            >
+              Total Budgeted Amount: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param
+                  value="{!IF(CONTAINS(grant.Grant_Status__c, 'Pending') || grant.Grant_Status__c == 'Incomplete', totalBudgetAmount, grant.Total_Budgeted__c)}"
+                />
+              </apex:outputText>
+            </h4>
+          </div>
+        </div>
+        <!-- END Actions -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+        <c:ErrorMessage
+          type="info"
+          rendered="{!grant.National_Grant_Type__c == 'TRAIL'}"
+          errorMessage="There may be in-kind donations, as well as other leveraged funding used in order to implement the T.R.A.I.L. program."
+        />
+        <c:ErrorMessage
+          type="info"
+          rendered="{!grant.National_Grant_Name__c == 'TRAIL National Grant 2018-19'}"
+          errorMessage="A provisional award amount has been provided; however, you are able to create a budget at a greater or lower amount based on the actual needs associated with implementing the T.R.A.I.L. program."
+        />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

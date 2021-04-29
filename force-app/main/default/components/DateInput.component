@@ -1,0 +1,21 @@
+<apex:component>
+  <script
+    type="text/javascript"
+    src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+  ></script>
+  <span id="hideMyParent"></span>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      var startYear = 1970;
+      var endYear = 2020;
+      var optionsString = "";
+      if (startYear < endYear) {
+        for (i = startYear; i < endYear + 1; i++) {
+          optionsString += '<option value="' + i + '">' + i + "</option>";
+        }
+        $("#calYearPicker").html(optionsString);
+      }
+      $("#sidebarDiv #hideMyParent").parent().parent().hide();
+    });
+  </script>
+</apex:component>

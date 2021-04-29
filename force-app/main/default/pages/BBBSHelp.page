@@ -1,0 +1,234 @@
+<apex:page controller="BBBSHelpController" showHeader="false" sidebar="false">
+  <head>
+    <title>Help</title>
+  </head>
+  <c:Header
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <a
+        href="{!URLFOR($Site.Prefix+'/FAQ')}"
+        target="_blank"
+        class="btn primary pull-right"
+        style="margin-top: -15px"
+        >Need Help?</a
+      >
+      <h4>Help Video and Documents</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.BBBS_SA_Instructions}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Self Assessment Instructions
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <apex:outputPanel
+          rendered="{!approverLevel == 'Level Three' || currentUser.Profile.Name == 'BBBS Accounts Payable'}"
+        >
+          <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="panel panel-default">
+              <apex:outputLink
+                value="{!$Resource.BBBS_DrawdownProcessInstructions}"
+              >
+                <div class="panel-body text-center">
+                  Drawdown Process Instructions
+                </div>
+              </apex:outputLink>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://www.anymeeting.com/551-534-780/EA53D680834D3B"
+              target="_blank"
+            >
+              <div class="panel-body text-center">JJ10/MYIO3 Webinar</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Webinar_PDF}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">JJ10/MYIO3 PDF</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Budget_Worksheet}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 Budget Worksheet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Reimbursement_Worksheet}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 Reimbursement Worksheet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Allowable_Costs}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 Allowable Costs
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_General_Ledger}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 General Ledger
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Mileage}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">JJ10/MYIO3 Mileage</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Timesheets}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">JJ10/MYIO3 Timesheets</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_TCS_Report}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">JJ10/MYIO3 TCS Report</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Unallowable_Costs}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 Unallowable Costs
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Points_of_Contact_Form}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 Points of Contact Form
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_3rd_Party_Accounting_Invoices}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 3rd Party Accounting Invoices
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.JJ10_MYIO3_Tips_and_Reminders}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                JJ10/MYIO3 Tips and Reminders
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <br /><br />
+      <h4>What's New/System Updates</h4>
+      <hr />
+      <h6>
+        This area will show you any updates that have been made to the system
+        recently, along with detail as to whether this change will affect how
+        you use the system and any changes that you will need to make to the how
+        you are using the system.
+      </h6>
+
+      <div class="panel panel-info" id="help0">
+        <div class="panel-heading">
+          None
+          <span class="pull-right"> 02/21/2021 </span>
+        </div>
+        <div class="panel-body">There are no updates at this time.</div>
+      </div>
+
+      <h6>
+        If you have any questions about any of these updates, please contact
+        FirstPic, at support@firstpic.org.
+        <!--<a href="{!URLFOR($Site.Prefix+'/WhatsNewPDF')}" target="_blank" style="float: right; font-weight: bold;">Past Updates >></a>-->
+      </h6>
+    </div>
+  </div>
+</apex:page>

@@ -1,0 +1,172 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="ActivePage"
+    description="Name of active nav item"
+  />
+  <apex:attribute type="Account" name="acct" description="Account" />
+  <apex:attribute
+    type="String"
+    name="profile"
+    description="Current User profile name"
+  />
+
+  <apex:stylesheet
+    value="{!URLFOR($Resource.styles, 'css/bootstrap.min.css')}"
+  />
+  <apex:stylesheet value="{!URLFOR($Resource.styles, 'css/style.css')}" />
+  <style>
+    a,
+    .primary {
+      color: #1e9ef7;
+    }
+    a:hover {
+      color: #187ec5;
+    }
+    input[type="submit"].btn.primary,
+    .btn.primary {
+      background: #1e9ef7;
+      background-image: -webkit-linear-gradient(top, #1e9ef7, #187ec5);
+      background-image: -moz-linear-gradient(top, #1e9ef7, #187ec5);
+      background-image: -ms-linear-gradient(top, #1e9ef7, #187ec5);
+      background-image: -o-linear-gradient(top, #1e9ef7, #187ec5);
+      background-image: linear-gradient(to bottom, #1e9ef7, #187ec5);
+      color: #fff;
+    }
+    input[type="submit"].primary:hover,
+    .btn.primary:hover {
+      background: #187ec5;
+      text-decoration: none;
+    }
+  </style>
+
+  <c:AdditionalStyles />
+  <c:Spinner />
+
+  <apex:includeScript
+    value="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+  />
+  <apex:includeScript
+    value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+  />
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle"
+          data-toggle="collapse"
+          data-target=".navbar-collapse"
+        >
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="navbar-brand">
+          <apex:image url="{!$Resource.DMV_logo}" height="44" />
+          <span class="title"> DMV-PAL </span>
+          <apex:outputPanel
+            rendered="{!acct.RecordType.Name == 'Local Organization'}"
+            styleClass="subtitle"
+          >
+            {!acct.Name}
+          </apex:outputPanel>
+        </span>
+      </div>
+      <apex:outputPanel rendered="{!acct == null}">
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="login">
+              <a href="{!URLFOR($Site.Prefix+'/login')}"> Login </a>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+
+      <apex:outputPanel rendered="{!acct != null}">
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="dashboard">
+              <a href="{!URLFOR($Site.Prefix+'/DMVDashboard')}"> Dashboard </a>
+            </li>
+            <li class="{!IF((activePage == 'about'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/DMVAbout')}"> About </a>
+            </li>
+            <li
+              class="{!IF((activePage == 'grants' || activePage == 'subgrants'),'dropdown active','dropdown')}"
+            >
+              <apex:outputPanel
+                rendered="{!acct.RecordType.Name == 'National Organization'}"
+              >
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Grants <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="{!URLFOR($Site.Prefix+'/Grants')}"> Grants </a>
+                  </li>
+                  <li>
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/SubGrants?status=approved')}"
+                    >
+                      Sub-Grants
+                    </a>
+                  </li>
+                </ul>
+              </apex:outputPanel>
+            </li>
+            <li class="{!IF((activePage == 'reimbursements'),'active','')}">
+              <apex:outputPanel rendered="{!NOT(CONTAINS(profile, 'Program'))}">
+                <a href="{!URLFOR($Site.Prefix+'/Reimbursements')}">
+                  Reimbursements
+                </a>
+              </apex:outputPanel>
+            </li>
+            <li
+              class="{!IF((activePage == 'program'),'active dropdown','dropdown')}"
+            >
+              <a
+                href="#"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Program <span class="caret"></span
+              ></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="{!$Site.Prefix+'/DMVProgressReports'}">
+                    Progress Reports
+                  </a>
+                </li>
+                <li>
+                  <a href="{!$Site.Prefix+'/YouthData'}"> Youth Data </a>
+                </li>
+              </ul>
+            </li>
+            <li class="{!IF((activePage == 'help'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/DMVHelp')}"> Resources </a>
+            </li>
+            <li id="logout">
+              <apex:outputLink
+                value="{!$Site.Prefix}/secur/logout.jsp"
+                rendered="{!NOT(ISPICKVAL($User.UserType,'Guest'))}"
+              >
+                {!$Label.site.logout}
+              </apex:outputLink>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+    </div>
+  </nav>
+</apex:component>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-home</defaultLandingTab>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>NCAI</label>
+    <logo>Communities_Shared_Document_Folder/NCAI_png.png</logo>
+    <tabs>Application__c</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Contact</tabs>
+    <tabs>Grant__c</tabs>
+    <tabs>Reimbursement_Request__c</tabs>
+    <tabs>Session_Report__c</tabs>
+    <tabs>Program_Report__c</tabs>
+    <tabs>Youth_in_Program_Report__c</tabs>
+    <tabs>Document__c</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>Victims_Served_Report__c</tabs>
+    <tabs>TA_Plan__c</tabs>
+    <tabs>Program_Plan__c</tabs>
+</CustomApplication>

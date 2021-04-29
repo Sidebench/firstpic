@@ -1,0 +1,928 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>PROGRAM STANDARDS</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="5"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9a: Obtaining Criminal History Record Checks
+          </div>
+          <div class="panel-body">
+            <h5>
+              The Agency’s Program Manual and/or Risk Management Plan contains
+              written, board approved policies and procedures which address, at
+              a minimum:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9a_Volunteer_Bigs__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Volunteer Bigs: Requiring a layered criminal history record
+                  check
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9a_Volunteer_Bigs_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9a_Board_Members__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Board members and Agency Staff. Agencies must assess whether a
+                  layered check is necessary
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9a_Board_Members_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9a_Non_Mentoring__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Non-mentoring volunteers: A criminal history record check is
+                  required for volunteers who come into meaningful contact with
+                  children. Agencies must assess whether a layered check is
+                  necessary in other non-mentoring volunteer cases
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9a_Non_Mentoring_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9a_Law_Adherence__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Adherence to all applicable federal, state and local laws
+                  regulating the use of criminal history records
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9a_Law_Adherence_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9a_Potential_Volunteers__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Potential Volunteer Bigs and volunteers who have been accepted
+                  as Volunteer Bigs, Board members, and Agency Staff, will be
+                  disqualified for: failure to complete the application and
+                  screening process, past history of sexual abuse of children,
+                  conviction for any crime in which children were involved,
+                  history of any sexually exploitive behavior, termination from
+                  a paid or volunteer position caused by misconduct with a child
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9a_Potential_Volunteers_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9b: Obtaining References when Volunteer Applicant has Prior
+            Experience with Children
+          </div>
+          <div class="panel-body">
+            <h5>
+              It is critical to evaluate a Volunteer Big applicant’s prior
+              volunteer and paid experience with children. The policy must
+              include, at a minimum, that:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9b_Phone_References__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Agency Staff must attempt to obtain in-depth phone
+                  reference(s) from any disclosed relevant prior volunteer or
+                  paid experience with children in the most recent five year
+                  period
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9b_Phone_References_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9b_Written_References__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  A written record of the reference(s) and attempts must be
+                  documented in the Volunteer Big applicant's file
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9b_Written_References_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9c: Obtaining In-depth Reference from Spouse or Spousal
+            Equivalent
+          </div>
+          <div class="panel-body">
+            <h5>The policy must include, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9c_Spouse_or_Equivalent_Reference__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Guidelines for Agency Staff as to when an in-depth reference
+                  should be acquired from the Spouse or Spousal Equivalent, in
+                  order to assess child safety in the Volunteer Big applicant's
+                  home and to gain additional insight into their qualifications
+                  and appropriateness to serve as a Volunteer Big
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9c_Spouse_or_Equivalent_Reference_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 9d: Transporting Children</div>
+          <div class="panel-body">
+            <h5>The policy must include, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9d_Transport_Volunteer_Licensure__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Agency Staff document in the volunteers file verification of
+                  appropriate licensure and insurance held by the volunteer if
+                  they will be transporting the child. Copy of drivers license
+                  and auto insurance
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9d_Transport_Volunteer_Licensure_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9d_Transport_Staff_Licensure__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Documentation of verification of appropriate licensure and
+                  insurance held by Agency Staff if they will be transporting
+                  children
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9d_Transport_Staff_Licensure_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9d_Transport_Staff_Licensure__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Safety requirements in accordance with state law</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9d_Transport_Staff_Licensure_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9e: Mandatory Training on Child Safety and Youth Protection
+            for Volunteer Bigs, Parent/Guardians, Children, and all BBBS Agency
+            Staff and Board Members
+          </div>
+          <div class="panel-body">
+            <h5>The policy must include, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9e_Completion_of_Online_Training__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  All Agency Staff, both paid and unpaid, including interns,
+                  must successfully complete the BBBS Child Safety and Youth
+                  Protection on-line training within 30 days of hire or prior to
+                  carrying out work that requires independent professional
+                  decision-making in service delivery, such as interviewing or
+                  conducting match support (Trainings on Impact U)
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9e_Completion_of_Online_Training_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9e_Child_Safety_Training__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Volunteer Bigs, parent/guardians, children must receive child
+                  safety and youth protection training prior to matching, which
+                  must be documented to the file
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9e_Child_Safety_Training_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9e_Training_Documentation__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Documentation that all non-mentoring volunteers, including
+                  Board members, and non-program BBBS Agency Staff coming into
+                  meaningful contact with children, have been provided
+                  information on child safety and youth protection
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9e_Training_Documentation_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9f: Children Visiting Volunteer Applicants Home
+          </div>
+          <div class="panel-body">
+            <h5>The policy must address, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9f_Healthy_Relationships__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Promotion of healthy relationship development, especially
+                  early in the match relationship
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9f_Healthy_Relationships_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9f_Monitor_Safety_Levels__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Procedures to monitor safety levels of activities that take
+                  place in the Volunteer Bigs’ home
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9f_Monitor_Safety_Levels_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9f_Childrens_Personal_Safety__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Reinforcement of the children’s personal safety education
+                  provided to children, parents and volunteers at
+                  enrollment/orientation
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9f_Childrens_Personal_Safety_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 9g: Overnight Visits</div>
+          <div class="panel-body">
+            <h5>
+              If overnight visits with children and Volunteer Bigs are
+              permitted, the policy establishes written guidelines including, at
+              a minimum:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9g_Waiting_Period__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>A waiting period before overnight visits can occur</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9g_Waiting_Period_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9g_Accommodations__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Requirements for accommodations that allow for privacy for
+                  sleeping and changing clothes
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9g_Accommodations_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9g_Agency_Staff_Monitoring__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Procedures for Agency Staff monitoring of safety levels and
+                  frequency of overnight visits
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9g_Agency_Staff_Monitoring_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 9h: Firearms and Weapons</div>
+          <div class="panel-body">
+            <h5>
+              The policy must include, at a minimum, requirements that any
+              firearms and/or weapons ownership by the Volunteer Big applicant
+              be:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9h_Disclosed_to_Agency_Staff__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Disclosed to BBBS Agency Staff at enrollment and throughout
+                  the life of the match
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9h_Disclosed_to_Agency_Staff_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9h_Disclosed_to_Parent_Guardian__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Disclosed to the child's parent/guardian by Agency Staff
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9h_Disclosed_to_Parent_Guardian_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9h_Licensed_Permitted__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Volunteer Big must attest to the fact that any weapons,
+                  firearms or ammunition ownership are licensed, permitted,
+                  registered, and handled in accordance with all applicable
+                  state and federal laws
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9h_Licensed_Permitted_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9h_Guidelines__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Guidelines which will be reviewed with and agreed to by the
+                  Volunteer Big and parent/guardian, and documented in the match
+                  file covering, at a minimum:
+                  <ul>
+                    <li>
+                      Weapons, firearms and ammunition will be made inaccessible
+                      at all times to a child while in the Volunteer Bigs’ care,
+                      unless participating in specific, approved activity(ies),
+                      which the parent/guardian and Volunteer Big have approved
+                      in advance and such approval is documented in the match
+                      file (e.g., hunter safety courses).
+                    </li>
+                  </ul>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9h_Guidelines_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9i: Digital Technology and Social Networking
+          </div>
+          <div class="panel-body">
+            <h5>The policy must address, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9i_Confidentiality__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Confidentiality</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9i_Confidentiality_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9i_Privacy__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Privacy</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9i_Privacy_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9i_Child_Safety__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Child Safety</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9i_Child_Safety_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9j: Mandatory Child Abuse and Exploitation Reporting
+          </div>
+          <div class="panel-body">
+            <h5>The policy must include, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9j_Incident_Reporting__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  A requirement that any incident or allegation of child abuse
+                  or exploitation involving a non-mentoring volunteer, a
+                  Volunteer Big, Board member, or Agency Staff associated with
+                  BBBS, be reported immediately to Big Brothers Big Sisters of
+                  America and to law enforcement or child protection
+                  authorities, in accordance with state and federal law.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9j_Incident_Reporting_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9j_Suspicion_Reporting__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Procedures to report any suspicion of child abuse or
+                  exploitation involving a child to child protection authorities
+                  in accordance with state law
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9j_Suspicion_Reporting_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 9k: Board Members and Staff Serving as Volunteer Bigs
+          </div>
+          <div class="panel-body">
+            <h5>The policy must include, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S9k_Staff_Serving_as_Volunteers__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Whether current Board members and Agency Staff are allowed to
+                  serve as Volunteer Bigs, and if allowed, establishes
+                  procedures to provide for Agency Staff to remain objective in
+                  decision-making, in the best interests of the child served
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S9k_Staff_Serving_as_Volunteers_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="5"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(6);
+    };
+  </script>
+</apex:page>

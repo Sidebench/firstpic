@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Adults_in_House_Eat_Fruits_Vegetables__c</fullName>
+    <externalId>false</externalId>
+    <label>Adults in House Eat Fruits Vegetables</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>How_Often</valueSetName>
+    </valueSet>
+</CustomField>

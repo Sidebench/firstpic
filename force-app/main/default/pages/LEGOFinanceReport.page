@@ -1,0 +1,231 @@
+<apex:page
+  controller="LEGOFinanceReportCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Finance Report</title>
+  </head>
+  <c:LEGOHeader ActivePage="reports" acct="{!userAcct}" />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>{!acct.Name}</h2>
+
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Finance Report
+                <span class="pull-right">
+                  Status:
+                  <span class="{!statusColor}"
+                    >{!acct.Finance_Report_Status__c}</span
+                  >
+                </span>
+              </div>
+              <div class="panel-body">
+                <div class="grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-4">
+                      <strong
+                        >Did you receive the sum of $2400 from FIRST to enhance
+                        your program? &nbsp;&nbsp;</strong
+                      >
+                      <apex:inputField
+                        value="{!acct.Funds_Received_from_First__c}"
+                        styleClass="input-md"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!acct.Funds_Received_from_First__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                      <strong
+                        >Did you use the $2400 given to you by FIRST to purchase
+                        tablets for your program? &nbsp;&nbsp;</strong
+                      >
+                      <apex:inputField
+                        value="{!acct.Tablets_Purchased__c}"
+                        styleClass="input-md"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!acct.Tablets_Purchased__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                    <div class="col-xs-12 col-sm-4">
+                      <strong>If no, please explain.</strong>
+                      <br />
+                      <apex:inputField
+                        value="{!acct.Tablets_Purchased_Notes__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!acct.Tablets_Purchased_Notes__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >If you did not spend all of the funds on tablets,
+                        please describe what you used it for.</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!acct.How_Funds_Where_Used__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!acct.How_Funds_Where_Used__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >Did you find the funds to be helpful with enhancing
+                        your program? Please explain.</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!acct.Were_Funds_Helpful__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!acct.Were_Funds_Helpful__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BEGIN Attachments -->
+        <apex:outputPanel id="attachments">
+          <div class="panel panel-default">
+            <div class="panel-heading">Receipts</div>
+            <div class="panel-body grid-pd-md">
+              <p>
+                Please upload all receipts for items you purchased using the
+                funds sent by FIRST. <br />
+                Please upload all attachments (including photos) in PDF format.
+              </p>
+              <apex:repeat value="{!att_list}" var="a">
+                <div class="row">
+                  <div class="col-auto">
+                    <apex:outputPanel rendered="{!a.Id != null}">
+                      <apex:commandLink
+                        action="{!deleteAtt}"
+                        status="pageStatus"
+                        rerender="attachments"
+                      >
+                        <span class="glyphicon glyphicon-remove-circle"></span>
+                        <apex:param
+                          name="deleteAtt"
+                          value="{!a.Id}"
+                          assignTo="{!deleteAttId}"
+                        ></apex:param>
+                      </apex:commandLink>
+                      <apex:outputLink
+                        value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                        style="margin-right: 10px"
+                        target="_blank"
+                      >
+                        {!a.Name}
+                      </apex:outputLink>
+                      <apex:outputText rendered="{!a.Description != null}">
+                        ({!a.Description})
+                      </apex:outputText>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </apex:repeat>
+            </div>
+            <apex:outputPanel rendered="{!editMode}">
+              <div class="panel-footer">
+                <apex:commandButton
+                  action="{!attPopup}"
+                  value="Upload Attachments"
+                  status="pageStatus"
+                  reRender="attachments"
+                />
+              </div>
+            </apex:outputPanel>
+          </div>
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAttPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAttPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Upload New Attachment</h4>
+                </div>
+                <div class="modal-body">
+                  <iframe
+                    id="attachmentIFrame"
+                    frameborder="0"
+                    width="100%"
+                    height="200px"
+                    src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ acct.id +'&filename=Receipt')}"
+                  >
+                  </iframe>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!closeAttPopup}"
+                    value="Close"
+                    status="pageStatus"
+                    reRender="form"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Attachments -->
+
+        <apex:commandButton
+          action="{!save}"
+          value="Save"
+          status="pageStatus"
+          rendered="{!editMode}"
+          reRender="form"
+        />
+        <apex:commandButton
+          action="{!submit}"
+          value="Submit"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!editMode}"
+          reRender="form"
+        />
+        <apex:commandButton
+          action="{!sendBack}"
+          value="Send Back"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!userAcctType == 'National Organization'}"
+          reRender="form"
+        />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

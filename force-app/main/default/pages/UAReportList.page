@@ -1,0 +1,69 @@
+<apex:page controller="SubGrantListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Report List</title>
+  </head>
+  <c:UAHeader ActivePage="reports" acct="{!userAcct}" />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="panel panel-default">
+          <div class="panel-heading">Reports</div>
+          <div class="panel-body">
+            <table style="width: 100%">
+              <tr>
+                <th>Organization</th>
+                <th>Application</th>
+                <th>Grant</th>
+                <th>Report Due Date</th>
+                <th>Report Submitted Date</th>
+              </tr>
+              <apex:repeat value="{!grant_list}" var="i">
+                <tr>
+                  <td>{!i.Account__r.Name}</td>
+                  <td>
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/UAApplicationDetails?AppId='+i.Application__r.Id)}"
+                    >
+                      {!i.Application__r.Name}
+                    </a>
+                  </td>
+                  <td>
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/UAGrantDetails?GrantId='+i.Id)}"
+                    >
+                      {!i.Name}
+                    </a>
+                  </td>
+                  <td>
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!i.Report_Due_Date__c}" />
+                    </apex:outputText>
+                  </td>
+                  <td>
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!i.Report_Submitted_Date__c}" />
+                    </apex:outputText>
+                  </td>
+                </tr>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grant_Type__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >IF(CONTAINS(RecordType.Name, &apos;GREAT&apos;), &quot;I&apos;m GREAT&quot;,
+IF(CONTAINS(RecordType.Name, &apos;Baseball&apos;), &apos;Badges for Baseball&apos;, 
+IF(CONTAINS(RecordType.Name, &apos;Special Initiative&apos;), &apos;Special Initiative&apos;,
+IF(CONTAINS(RecordType.Name, &apos;Healthy Lifestyles&apos;), &apos;Healthy Lifestyles&apos;,
+IF(CONTAINS(RecordType.Name, &apos;TRAIL&apos;), &apos;TRAIL&apos;,
+IF(CONTAINS(RecordType.Name, &apos;OVC&apos;), &apos;OVC&apos;,
+IF(CONTAINS(RecordType.Name, &apos;SOI&apos;), &apos;SOI&apos;,
+&apos;&apos;)))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Grant Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

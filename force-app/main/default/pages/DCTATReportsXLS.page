@@ -1,0 +1,43 @@
+<apex:page
+  controller="QuarterlyProgressReportsCtrl"
+  showHeader="false"
+  sidebar="false"
+  readOnly="true"
+  contentType="application/vnd.ms-excel#ProgressReports.xls"
+>
+  <h4>
+    Progress Reports
+    <apex:outputText value=" - {!orgName}" rendered="{!orgName != null}" />
+    <apex:outputText value=" - {!year}" rendered="{!year != null}" />
+  </h4>
+  <table>
+    <tr>
+      <th style="{!IF(userAcctType == 'National Organization','','width:0;')}">
+        <apex:outputText
+          value="Site"
+          rendered="{!userAcctType == 'National Organization'}"
+        />
+      </th>
+      <th>Primary Approver</th>
+      <th>Grant Type</th>
+      <th>Sub-Grant Name</th>
+      <th>Mid-Year Report</th>
+      <th>Final Report</th>
+    </tr>
+    <apex:repeat value="{!allItems}" var="i">
+      <tr>
+        <td>
+          <apex:outputText
+            value="{!i.orgName}"
+            rendered="{!userAcctType == 'National Organization'}"
+          />
+        </td>
+        <td>{!i.approver}</td>
+        <td>{!i.grantType}</td>
+        <td>{!i.grantName}</td>
+        <td>{!i.q2Status}</td>
+        <td>{!i.q4Status}</td>
+      </tr>
+    </apex:repeat>
+  </table>
+</apex:page>

@@ -1,0 +1,332 @@
+<apex:page
+  controller="StatementOfInterestCtrl"
+  showHeader="false"
+  sidebar="false"
+>
+  <link
+    href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    rel="stylesheet"
+    media="screen"
+  />
+
+  <head>
+    <title>Application</title>
+    <style>
+      a,
+      .primary {
+        color: #ad2820;
+      }
+      a:hover {
+        color: #7d2302;
+      }
+      h5,
+      .h5 {
+        font-size: 16px;
+        font-weight: bold;
+        display: block;
+      }
+      h6,
+      .h6 {
+        font-size: 12px;
+        color: #aaa;
+        display: block;
+        margin: 2px 0 0;
+      }
+      input[type="submit"].btn.primary,
+      .btn.primary {
+        background: #ad2820;
+        background-image: -webkit-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -moz-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -ms-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -o-linear-gradient(top, #ad2820, #7d2302);
+        background-image: linear-gradient(to bottom, #ad2820, #7d2302);
+        color: #fff;
+      }
+      input[type="submit"].primary:hover,
+      .btn.primary:hover {
+        background: #7d2302;
+        text-decoration: none;
+      }
+      input[type="text"],
+      textarea {
+        display: block;
+        width: 100%;
+      }
+      input[type="radio"],
+      input[type="checkbox"] {
+        margin: 4px 4px 0 0;
+      }
+      select {
+        display: block;
+      }
+      .grid-pd [class*="col-"] {
+        padding-bottom: 10px;
+      }
+      label {
+        margin-right: 15px;
+      }
+    </style>
+  </head>
+
+  <apex:form id="form" style="padding: 40px">
+    <div class="main-panel">
+      <div class="content">
+        <apex:outputPanel rendered="{!showSuccess}">
+          <div
+            class="alert alert-success"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            <center>
+              Thank you for submitting your Statement of Interest (SOI) for
+              the<br /><br /> NCAI Fund Victim Services Micro-grant Program.<br /><br />
+              You can download a completed version of your SOI
+              <a
+                href="{!URLFOR($Site.Prefix+'/NCAIStatementOfInterestPDF?appId='+app.Id)}"
+                style="color: #333; font-weight: bold"
+              >
+                here </a
+              >.<br /><br /> If you have any questions please see the Technical
+              Assistance page or contact us at<br /><br />
+              <a href="mailto:microgrants@ncai.org">microgrants@ncai.org</a>.
+            </center>
+          </div>
+        </apex:outputPanel>
+        <apex:pageMessages />
+        <apex:outputPanel rendered="{!NOT(showSuccess)}">
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <center>
+            <h1>
+              NCAI Fund Victim Services Micro-grant Program<br />Application
+              Step 1: Statement of Interest Webform
+            </h1>
+          </center>
+          <br />
+          <p>
+            If you are interested in receiving funding as part of the NCAI
+            Fund’s Tribal Victim Assistance Micro-Grant Program, please complete
+            Step 1 of the application below. Completion of this Statement of
+            Interest indicates an applicant’s intention to apply for funds, but
+            does not commit the applicant to completing the Full Application
+            (Step 2). Applicants may change their project proposal or requested
+            budget amount later in the application process.
+          </p>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                Applicant Tribe/Organization Information
+              </h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-3">
+                  Entity Name:<span class="text-danger"> *</span> &nbsp;
+                  <apex:inputField value="{!app.Organization_Name__c}" />
+                </div>
+                <div class="col-xs-3">
+                  DUNS Number:<span class="text-danger"> *</span> &nbsp;
+                  <apex:inputField value="{!app.DUNS_Number__c}" /> &nbsp;
+                </div>
+                <div class="col-xs-3">
+                  No DUNS Number: (<a
+                    href="https://tribalvictimservices.org/technical-assistance/"
+                    >Find Info on Obtaining a DUNS</a
+                  >)<br /> <apex:inputField value="{!app.No_DUNS_Number__c}" />
+                </div>
+                <div class="col-xs-3">
+                  Applicant Org Type: <span class="text-danger"> *</span> &nbsp;
+                  <span
+                    class="badge"
+                    title="CONSORTIUM: Two or more eligible tribes who are interested in receiving funding as a consortium. DESIGNEE: An organization that has been designated by the tribal nation to apply on behalf of the tribe."
+                    >?</span
+                  >
+                  <apex:inputField value="{!app.Organization_Type__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-4">
+                  Address:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Address__c}" />
+                </div>
+                <div class="col-xs-3">
+                  City:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.City__c}" />
+                </div>
+                <div class="col-xs-2">
+                  State:<span class="text-danger"> *</span> <br />
+                  <apex:inputField value="{!app.State__c}" />
+                </div>
+                <div class="col-xs-3">
+                  Zip Code:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Postal_Zip_Code__c}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                Applicant Tribe/Organization Point of Contact
+              </h1>
+            </div>
+            <div class="panel-body">
+              <h5>Grant Admin</h5>
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  First Name:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Grant_Admin_First_Name__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Last Name:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Grant_Admin_Last_Name__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Email:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Grant_Admin_Email__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Phone:<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.Grant_Admin_Phone__c}" />
+                </div>
+              </div>
+              <br />
+              Is the Point of Contact listed above the appropriate individual to
+              receive communication from the technical assistance team?<span
+                class="text-danger"
+              >
+                *</span
+              >
+              <apex:selectRadio value="{!app.POC_Can_Receive_Communication__c}">
+                <apex:selectOption itemValue="true" itemLabel="Yes" />
+                <apex:selectOption itemValue="false" itemLabel="No" />
+              </apex:selectRadio>
+              <hr />
+              <h5>
+                If it is not, you must provide an alternate point of contact for
+                technical assistance.
+              </h5>
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  First Name:
+                  <apex:inputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Last Name:
+                  <apex:inputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Email:
+                  <apex:inputField value="{!app.Program_Contact_Email__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  Phone:
+                  <apex:inputField value="{!app.Program_Contact_Phone__c}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Request Details</h1>
+            </div>
+            <div class="panel-body grid-pd">
+              <h5>Eligibility Notice</h5>
+              Did your tribe receive an Eligibility Notice from the NCAI Fund to
+              apply for the NCAI Fund Victim Services Micro-Grant Program?<span
+                class="text-danger"
+              >
+                *</span
+              >
+              <apex:selectRadio value="{!app.Eligibility_Notice_Received__c}">
+                <apex:selectOption itemValue="true" itemLabel="Yes" />
+                <apex:selectOption itemValue="false" itemLabel="No" />
+              </apex:selectRadio>
+              <hr />
+              <h5>Proposed Use of Funds</h5>
+              <br />
+              <div class="row">
+                <div class="col-xs-6 col-sm-6">
+                  1a. Are you seeking funding for a new or existing victim
+                  services program?<span class="text-danger"> *</span>
+                  <apex:inputField value="{!app.New_or_Existing__c}" />
+                  <br />
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                  1b. If <i>Existing</i>, please describe your existing victim
+                  services, in 3-5 sentences.
+                  <apex:inputField value="{!app.Existing_Services__c}" />
+                  <br />
+                </div>
+              </div>
+              2. Please describe how you would like to use the requested
+              funding, in 3-5 sentences.<span class="text-danger"> *</span>
+              <apex:inputField value="{!app.Needs_Assessment__c }" />
+              <br />
+              3. Do you plan to use the funding to purchase a vehicle to
+              transport victims to access necessary services or attend court
+              proceedings?<span class="text-danger"> *</span>
+              <apex:selectRadio value="{!app.Funding_to_Purchase_Vehicle__c}">
+                <apex:selectOption itemValue="true" itemLabel="Yes" />
+                <apex:selectOption itemValue="false" itemLabel="No" />
+              </apex:selectRadio>
+              <br />
+              <div class="row">
+                <div class="col-xs-6 col-sm-6">
+                  4a. Has your tribe, consortium or designee organization
+                  previously completed a needs assessment or strategic plan
+                  around victim services?<span class="text-danger"> *</span>
+                  <apex:selectRadio
+                    value="{!app.Strategic_Plan_Victim_Services__c}"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                  </apex:selectRadio>
+                  <br />
+                </div>
+                <div class="col-xs-6 col-sm-6">
+                  4b. If <i>Yes</i>, when?
+                  <apex:inputField value="{!app.Strategic_Plan__c}" />
+                  <br />
+                </div>
+              </div>
+              5. Estimated amount of funding to be requested (final funding
+              amounts will be determined in the Full Application
+              <span class="text-danger"> *</span>
+              <apex:inputField
+                value="{!app.Equipment_and_Supplies_Amount__c}"
+              />
+              <br />
+              6. Do you have the authority to apply for grants on behalf of your
+              tribal nation?<span class="text-danger"> *</span>
+              <apex:selectRadio value="{!app.Authority_to_Apply__c}">
+                <apex:selectOption itemValue="true" itemLabel="Yes" />
+                <apex:selectOption itemValue="false" itemLabel="No" />
+              </apex:selectRadio>
+              <br />
+              7. If you are submitting as a Consortium or Designee, which Tribal
+              Nation(s) do you represent?
+              <apex:inputField value="{!app.Tribe_Represented__c}" />
+            </div>
+          </div>
+
+          <apex:commandButton
+            value="Submit"
+            action="{!submit}"
+            style="background: #ad2820; color: #fff; width: 120px; height: 40px"
+          />
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NPAL_Target_Number_of_Youth__c</fullName>
+    <externalId>false</externalId>
+    <formula>Amount__c /900</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText
+  >The target number of youth for the organization to serve with this grant. Equals the grant amount divided by 900. This calculation is for NPAL only.</inlineHelpText>
+    <label>NPAL Target Number of Youth</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

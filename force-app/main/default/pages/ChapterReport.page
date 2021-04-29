@@ -1,0 +1,119 @@
+<apex:page
+  controller="ChapterReportCtrl"
+  action="{!getReport}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Chapter Reports</title>
+    <style>
+      th {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <c:TRAILHeader
+    ActivePage="progress"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Chapter Reports</h2>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!report.Name} Chapter Reports</div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!chapterReports.size > 0}">
+              <table class="fixedTbl text-center">
+                <tr>
+                  <th class="text-left">Youth</th>
+                  <th>Chapter 1</th>
+                  <th>Chapter 2</th>
+                  <th>Chapter 3</th>
+                  <th>Chapter 4</th>
+                  <th>Chapter 5</th>
+                  <th>Chapter 6</th>
+                  <th>Chapter 7</th>
+                  <th>Chapter 8</th>
+                  <th>Chapter 9</th>
+                  <th>Chapter 10</th>
+                  <th>Chapter 11</th>
+                  <th>Chapter 12</th>
+                </tr>
+                <apex:repeat value="{!chapterReports}" var="i">
+                  <tr>
+                    <td class="text-left">
+                      <apex:commandLink
+                        action="{!URLFOR($Site.Prefix+'/YouthDetails?youthId='+i.Contact_Id__c)}"
+                      >
+                        {!i.Contact_Name__c}
+                      </apex:commandLink>
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_1_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_2_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_3_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_4_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_5_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_6_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_7_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_8_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_9_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_10_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_11_Complete__c}" />
+                    </td>
+                    <td>
+                      <apex:inputField value="{!i.Chapter_12_Complete__c}" />
+                    </td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!chapterReports.size == 0}">
+              No Reports Found
+            </apex:outputPanel>
+          </div>
+        </div>
+        <a
+          href="{!URLFOR($Site.PreFix+'/ChapterReports?year='+year)}"
+          class="btn"
+          >Back</a
+        >
+        <apex:commandButton
+          value="Save"
+          action="{!save}"
+          styleClass="btn primary"
+        />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

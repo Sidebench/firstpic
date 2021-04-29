@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reimbursement_Approved_Indirect_Costs__c</fullName>
+    <externalId>false</externalId>
+    <label>Reimbursement Approved Indirect Costs</label>
+    <summarizedField
+  >Reimbursement_Request__c.Requested_Indirect_Costs__c</summarizedField>
+    <summaryFilterItems>
+        <field>Reimbursement_Request__c.Status__c</field>
+        <operation>equals</operation>
+        <value>Approved, Paid, Closed</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Reimbursement_Request__c.Grant__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

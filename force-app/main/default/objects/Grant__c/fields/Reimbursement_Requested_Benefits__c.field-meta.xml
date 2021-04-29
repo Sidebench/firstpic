@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reimbursement_Requested_Benefits__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Reimbursement Requests: Requested Benefits where Status = Incomplete or Denied</inlineHelpText>
+    <label>Reimbursement Requested Benefits</label>
+    <summarizedField
+  >Reimbursement_Request__c.Requested_Benefits__c</summarizedField>
+    <summaryFilterItems>
+        <field>Reimbursement_Request__c.Status__c</field>
+        <operation>notEqual</operation>
+        <value>Incomplete, Denied</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Reimbursement_Request__c.Grant__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>D_Shelter_Housing_Services__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >D1_Emergency_Shelter_or_Safe_House__c +  D2_Transitional_Housing__c +  D3_Relocation_Assistance__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>D. Shelter/Housing Services</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

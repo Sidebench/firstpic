@@ -1,0 +1,763 @@
+<apex:page
+  controller="BBBSAboutController"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>About</title>
+  </head>
+  <c:Header
+    ActivePage="about"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2 style="display: inline">{!acct.Name}</h2>
+        <span class="col-auto pull-right" style="padding-bottom: 10px">
+          <apex:outputPanel
+            rendered="{!approverLevel == 'Level Two Admin' || approverLevel == 'Level Three'}"
+            styleClass="pull-right"
+          >
+            <a href="{!URLFOR($Site.Prefix+'/AffiliateList')}" class="btn"
+              >View Affiliates</a
+            >
+          </apex:outputPanel>
+          <apex:commandLink
+            value="Update SAM.gov Date"
+            action="{!showEditDUNSPopup}"
+            rendered="{!userAcctType == 'Local Organization'}"
+          />
+        </span>
+
+        <table class="table">
+          <tr>
+            <td>
+              <span style="font-weight: bold">
+                D.U.N.S. Number: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="{!acct.DUNS__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                D.U.N.S. Name: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="{!acct.DUNS_Name__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                SAM.gov Expiration Date: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!acct.DUNS_Exp_Date__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                SAM.gov Current Status: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="{!acct.DUNS_Current_Status__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                SAM.gov Review Status: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="{!acct.DUNS_Review_Status__c}" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span style="font-weight: bold"> EIN: &nbsp;&nbsp; </span>
+              <apex:outputField value="{!acct.EIN__c}" />
+            </td>
+            <td colspan="2">
+              <div class="pull-left" style="font-weight: bold">
+                Address: &nbsp;&nbsp;
+              </div>
+              <div class="pull-left">
+                {!acct.BillingStreet} <br />
+                {!acct.BillingCity},&nbsp; {!acct.BillingState}&nbsp;
+                {!acct.BillingPostalCode}
+              </div>
+            </td>
+            <td>
+              <span style="font-weight: bold"> Phone: &nbsp;&nbsp; </span>
+              {!acct.Phone}
+            </td>
+            <td>
+              <span style="font-weight: bold"> Website: &nbsp;&nbsp; </span>
+              {!acct.Website}
+            </td>
+          </tr>
+        </table>
+
+        <!-- BEGIN Contact List -->
+        <apex:outputPanel id="contacts">
+          <div class="panel panel-default">
+            <div class="panel-heading">Associated Contacts</div>
+            <div class="panel-body">
+              <h5>
+                The following contacts are required to create an assessment:
+                CEO, Board Chair, Program Lead, Finance Lead, Fund Development
+                Lead, Marketing/Recruitment Lead
+              </h5>
+              <apex:outputPanel rendered="{!contact_list.size > 0}">
+                <table style="width: 100%">
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Title</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Extension</th>
+                    <th></th>
+                  </tr>
+                  <apex:repeat value="{!contact_list}" var="i">
+                    <tr>
+                      <td>{!i.FirstName}</td>
+                      <td>{!i.LastName}</td>
+                      <td>{!i.Title}</td>
+                      <td>{!i.Role__c}</td>
+                      <td>{!i.Email}</td>
+                      <td>{!i.Phone}</td>
+                      <td>{!i.Extension__c}</td>
+                      <td class="text-right">
+                        <apex:commandLink
+                          action="{!editContactPopup}"
+                          status="pageStatus"
+                        >
+                          Edit
+                          <apex:param
+                            name="selectedContactId"
+                            value="{!i.Id}"
+                            assignTo="{!selectedContactId}"
+                          />
+                        </apex:commandLink>
+                        <apex:outputPanel
+                          rendered="{!currentUser.Contact.Role__c == 'CEO'}"
+                        >
+                          &nbsp;|&nbsp;
+                          <apex:commandLink
+                            action="{!deleteContactPopup}"
+                            status="pageStatus"
+                          >
+                            Delete
+                            <apex:param
+                              name="selectedContactId"
+                              value="{!i.Id}"
+                              assignTo="{!selectedContactId}"
+                            />
+                          </apex:commandLink>
+                        </apex:outputPanel>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!contact_list.size == 0}">
+                No Associated Contacts Found
+              </apex:outputPanel>
+            </div>
+            <div class="panel-footer">
+              <apex:commandButton
+                value="Add Contact"
+                action="{!addContactPopup}"
+                status="pageStatus"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Contact List -->
+
+        <!-- BEGIN User List -->
+        <apex:outputPanel id="users">
+          <div class="panel panel-default">
+            <div class="panel-heading">Users</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!user_list.size > 0}">
+                <table style="width: 100%">
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Profile</th>
+                    <th>Is Active?</th>
+                  </tr>
+                  <apex:repeat value="{!user_list}" var="i">
+                    <tr>
+                      <td>{!i.FirstName}</td>
+                      <td>{!i.LastName}</td>
+                      <td>{!i.Email}</td>
+                      <td>
+                        <apex:outputText
+                          value="{!SUBSTITUTE(i.Profile.Name, 'BBBSA', '')}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                        <apex:outputText
+                          value="{!SUBSTITUTE(i.Profile.Name, 'BBBS', '')}"
+                          rendered="{!userAcctType != 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!IF(i.IsActive, 'Yes', 'No')}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:commandLink
+                          action="{!deactivateUserPopup}"
+                          status="pageStatus"
+                          reRender="userPopup"
+                          rendered="{!currentUser.Contact.Role__c == 'CEO' && i.IsActive}"
+                        >
+                          Deactivate
+                          <apex:param
+                            name="selectedUserId"
+                            value="{!i.Id}"
+                            assignTo="{!selectedUserId}"
+                          />
+                        </apex:commandLink>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!user_list.size == 0}">
+                No Users Found
+              </apex:outputPanel>
+            </div>
+            <div class="panel-footer">
+              <apex:commandButton
+                value="Show Inactive Users"
+                action="{!getUsers}"
+                status="pageStatus"
+                reRender="users"
+                rendered="{!NOT(showInactiveUsers)}"
+              >
+                <apex:param
+                  name="showInactiveUsers"
+                  value="true"
+                  assignTo="{!showInactiveUsers}"
+                />
+              </apex:commandButton>
+              <apex:commandButton
+                value="Hide Inactive Users"
+                action="{!getUsers}"
+                status="pageStatus"
+                reRender="users"
+                rendered="{!showInactiveUsers}"
+              >
+                <apex:param
+                  name="showInactiveUsers"
+                  value="false"
+                  assignTo="{!showInactiveUsers}"
+                />
+              </apex:commandButton>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END User List -->
+        <apex:outputPanel rendered="{!userAcctType == 'Local Organization'}">
+          <!-- BEGIN Assessment List -->
+          <apex:outputPanel id="assessments">
+            <apex:outputPanel rendered="{!sa.id != null}">
+              <div class="panel panel-default">
+                <div class="panel-heading">Current Self Assessment</div>
+                <div class="panel-body">
+                  <table class="fixedTbl">
+                    <tr>
+                      <th>Year</th>
+                      <th>Assessment Status</th>
+                      <th>Attachment Status</th>
+                      <th>Last Modified Date</th>
+                      <th>Submitted Date</th>
+                      <th style="width: 60px"></th>
+                    </tr>
+                    <tr>
+                      <td>{!sa.Year__c}</td>
+                      <td>{!sa.Assessment_Status__c}</td>
+                      <td>{!sa.Attachment_Status__c}</td>
+                      <td>
+                        <apex:outputField value="{!sa.LastModifiedDate}" />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!sa.Submitted_Date__c}" />
+                      </td>
+                      <td class="text-center">
+                        <apex:commandLink
+                          action="{!showAssessmentPopup}"
+                          value="Edit"
+                          rendered="{!hasContacts}"
+                        >
+                          <apex:param
+                            assignTo="{!selectedSAId}"
+                            name="selectedSAId"
+                            value="{!sa.Id}"
+                          />
+                        </apex:commandLink>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="panel-footer">
+                  <apex:outputLink value="{!$Resource.Final_FP_Instructions}">
+                    Self-Assessment Step-by-Step Instructions
+                  </apex:outputLink>
+                </div>
+              </div>
+            </apex:outputPanel>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Past Self Assessments</div>
+              <div class="panel-body">
+                <h5>
+                  Do not edit Past Self Assessments after December 31 of the
+                  Assessment Year
+                </h5>
+                <apex:outputPanel rendered="{!assess_list.size > 0}">
+                  <table class="fixedTbl">
+                    <tr>
+                      <th>Year</th>
+                      <th>Assessment Status</th>
+                      <th>Compliance Status</th>
+                      <th>Last Modified Date</th>
+                      <th>Submitted Date</th>
+                      <th style="width: 60px"></th>
+                    </tr>
+                    <apex:repeat value="{!assess_list}" var="i">
+                      <tr>
+                        <td>{!i.Year__c}</td>
+                        <td>{!i.Assessment_Status__c}</td>
+                        <td>{!i.Compliance_Status__c}</td>
+                        <td>
+                          <apex:outputField value="{!i.LastModifiedDate}" />
+                        </td>
+                        <td>
+                          <apex:outputField value="{!i.Submitted_Date__c}" />
+                        </td>
+                        <td class="text-center">
+                          <apex:commandLink
+                            action="{!showAssessmentPopup}"
+                            value="Edit"
+                            rendered="{!hasContacts}"
+                          >
+                            <apex:param
+                              assignTo="{!selectedSAId}"
+                              name="selectedSAId"
+                              value="{!i.Id}"
+                            />
+                          </apex:commandLink>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!assess_list.size == 0}">
+                  No Past Assessments Found
+                </apex:outputPanel>
+              </div>
+            </div>
+          </apex:outputPanel>
+          <!-- END Assessment List -->
+        </apex:outputPanel>
+
+        <c:Documents
+          header="All Federal Grant Compliance Documents"
+          enableDeleteAtt="false"
+          showAttPopupOnly="true"
+          showStatus="true"
+          showRequired="true"
+          showDueDate="true"
+          groupId="Organization Documents"
+          rendered="{!orgId != null}"
+        />
+
+        <c:HoldStatus
+          org="{!acct}"
+          approverLevel="{!approverLevel}"
+          displayUpdateBtn="false"
+        />
+
+        <!-- BEGIN Edit DUNS Details -->
+        <apex:outputPanel id="editDUNSPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayEditDUNSPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayEditDUNSPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Edit SAM.gov Expiration Date</h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      SAM.gov Expiration Date &nbsp;&nbsp;
+                      <apex:input type="date" value="{!dunsExpDate}" />
+                    </div>
+                    <div class="col-xs-12">
+                      <br />
+                      Enter an updated expiration date for your SAM.gov
+                      registration. Once this is verified it will be updated in
+                      the system.
+                    </div>
+                  </div>
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideEditDUNSPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                  />
+                  <apex:commandButton
+                    action="{!updateOrg}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="addContactPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAddContactPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAddContactPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Add New Contact</h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-6">
+                      First Name
+                      <apex:inputField value="{!newContact.FirstName}" />
+                    </div>
+                    <div class="col-xs-6">
+                      Last Name
+                      <apex:inputField
+                        value="{!newContact.LastName}"
+                        required="false"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      Title
+                      <apex:inputField value="{!newContact.Title}" />
+                    </div>
+                    <div class="col-xs-6">
+                      Role
+                      <apex:inputField
+                        value="{!newContact.Role__c}"
+                        style="display: block"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4">
+                      Phone
+                      <apex:inputField value="{!newContact.Phone}" />
+                    </div>
+                    <div class="col-xs-2">
+                      Extension
+                      <apex:inputField value="{!newContact.Extension__c}" />
+                    </div>
+                    <div class="col-xs-6">
+                      Email
+                      <apex:inputField
+                        value="{!newContact.Email}"
+                        required="false"
+                      />
+                    </div>
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!currentUser.Contact.Role__c == 'CEO' || currentUser.Contact.Role__c == 'CFO'}"
+                  >
+                    <div class="row">
+                      <div class="col-xs-8">
+                        User Profile
+                        <apex:selectList
+                          value="{!newContact.User_Profile__c}"
+                          size="1"
+                          style="display: block"
+                        >
+                          <apex:selectOptions value="{!profiles}" />
+                        </apex:selectList>
+                      </div>
+                    </div>
+                  </apex:outputPanel>
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!cancelAddContactPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    immediate="true"
+                  />
+                  <apex:commandButton
+                    value="Submit"
+                    action="{!addContact}"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="editContactPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayEditContactPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayEditContactPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">
+                    Edit &nbsp;<apex:outputText
+                      value="{!selectedContact.Name}"
+                    />
+                  </h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-6">
+                      First Name
+                      <apex:inputField value="{!selectedContact.FirstName}" />
+                    </div>
+                    <div class="col-xs-6">
+                      Last Name
+                      <apex:inputField
+                        value="{!selectedContact.LastName}"
+                        required="true"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      Title
+                      <apex:inputField value="{!selectedContact.Title}" />
+                    </div>
+                    <div class="col-xs-6">
+                      <span style="display: block">Role</span>
+                      <apex:inputField value="{!selectedContact.Role__c}" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4">
+                      Phone
+                      <apex:inputField value="{!selectedContact.Phone}" />
+                    </div>
+                    <div class="col-xs-2">
+                      Extension
+                      <apex:inputField
+                        value="{!selectedContact.Extension__c}"
+                      />
+                    </div>
+                    <div class="col-xs-6">
+                      Email
+                      <apex:inputField
+                        value="{!selectedContact.Email}"
+                        required="false"
+                      />
+                    </div>
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!currentUser.Contact.Role__c == 'CEO' || currentUser.Contact.Role__c == 'CFO'}"
+                  >
+                    <div class="row">
+                      <div class="col-xs-8">
+                        User Profile
+                        <apex:selectList
+                          value="{!selectedContact.User_Profile__c}"
+                          size="1"
+                          style="display: block"
+                        >
+                          <apex:selectOptions value="{!profiles}" />
+                        </apex:selectList>
+                      </div>
+                    </div>
+                  </apex:outputPanel>
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                  <apex:pageMessages></apex:pageMessages>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!cancelEditContactPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    reRender="editContactPopup"
+                  />
+                  <apex:commandButton
+                    action="{!updateContacts}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                    reRender="editContactPopup, contacts"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="deleteContactPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayDeleteContactPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayDeleteContactPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Delete Contact</h4>
+                </div>
+                <div class="modal-body">
+                  Are you sure you'd like to delete
+                  <strong>{!selectedContact.Name}</strong>? <br /><br />
+                  <apex:outputText
+                    value="This contact is also an active User.  To deactivate them as a User, please click on the Deactivate link next to their name in the User table."
+                    styleClass="text-danger"
+                    rendered="{!selectedContactIsUser}"
+                  />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!cancelDeleteContactPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    reRender="deleteContactPopup"
+                  />
+                  <apex:commandButton
+                    action="{!deleteContact}"
+                    value="Delete"
+                    status="pageStatus"
+                    styleClass="primary"
+                    reRender="form"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="userPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayUserPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayUserPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Deactivate User</h4>
+                </div>
+                <div class="modal-body">
+                  Are you sure you'd like to deactivate
+                  <strong>{!selectedUser.Name}</strong>?
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!cancelDeactivateUserPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    reRender="form"
+                  />
+                  <apex:commandButton
+                    action="{!deactivateUser}"
+                    value="Deactivate"
+                    status="pageStatus"
+                    styleClass="primary"
+                    reRender="userPopup, users"
+                  />
+                  <!--<apex:commandButton action="{!deactivateAndDelete}" value="Deactivate User and Delete Contact" status="pageStatus" styleClass="primary" 
+                                                        reRender="form" rendered="{!shouldDeactivateAndDelete}" />-->
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="assessmentPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAssessmentPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAssessmentPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Edit Self Assessment</h4>
+                </div>
+                <div class="modal-body">
+                  Are all of your contact records up to date?
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideAssessmentPopup}"
+                    value="No"
+                    status="pageStatus"
+                    reRender="assessmentPopup"
+                  />
+                  <apex:commandButton
+                    action="{!URLFOR($Site.Prefix+'/'+ selectedSAStart +'?AssessmentID='+ selectedSAId)}"
+                    value="Yes"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+      </div>
+    </div>
+
+    <c:ErrorMessage errorMessage="{!errorMessage}" />
+    <apex:pageMessages></apex:pageMessages>
+  </apex:form>
+</apex:page>

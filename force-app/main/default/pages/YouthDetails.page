@@ -1,0 +1,150 @@
+<apex:page
+  controller="YouthDataCtrl"
+  action="{!getYouthYPRList}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Youth Details</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="{!IF(userAcctType == 'Site', 'reports', 'program')}"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!CONTAINS(portalName, 'NCAI')}"
+  />
+  <c:NPALHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+  <c:DMVHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'DMV'}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!youth.Name}</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <h2>
+              <apex:outputText
+                value="{!youth.Account.Name}"
+                rendered="{!userAcctType != 'Site'}"
+              />
+            </h2>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Youth Details</div>
+          <div class="panel-body grid-pd-md">
+            <c:YouthForm
+              ctrl="{!YouthDataCtrl}"
+              rendered="{!CONTAINS(portalName, 'NCAI')}"
+            />
+            <c:NPALYouthForm
+              ctrl="{!YouthDataCtrl}"
+              rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}"
+            />
+          </div>
+          <div class="panel-footer">
+            <apex:commandButton
+              action="{!showAddYouthToGrantPopup}"
+              value="Add Youth to Grant Year"
+              status="pageStatus"
+              reRender="addYouthToGrantPopupPopup"
+              rendered="{!CONTAINS(portalName, 'NCAI')}"
+            />
+            <apex:commandButton
+              action="{!saveYouthDetails}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </div>
+        </div>
+
+        <c:YouthDataReportList
+          header="Youth Data"
+          ctrl="{!YouthDataCtrl}"
+          showNameCol="false"
+          showSiteCol="false"
+          showPagination="false"
+          rendered="{!CONTAINS(portalName, 'NCAI')}"
+        />
+
+        <c:YouthDataGrantReportList
+          header="Youth Data"
+          ctrl="{!YouthDataCtrl}"
+          showNameCol="false"
+          showGrantCol="true"
+          showPagination="false"
+          rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}"
+        />
+
+        <!-- BEGIN addYouthToGrantPopupPopup -->
+        <apex:outputPanel id="addYouthToGrantPopupPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAddYouthToGrantPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAddYouthToGrantPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Add Youth to Grant Year</h4>
+                </div>
+                <div class="modal-body">
+                  <strong>
+                    Grant <span class="text-danger">*</span> <br />
+                  </strong>
+                  <apex:selectList
+                    value="{!grantId}"
+                    size="1"
+                    id="grantOptions"
+                  >
+                    <apex:selectOptions value="{!grantOptions}" />
+                  </apex:selectList>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideAddYouthToGrantPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    reRender="form"
+                  />
+                  <apex:commandButton
+                    action="{!saveYouth}"
+                    value="Save"
+                    status="pageStatus"
+                    styleClass="primary"
+                  >
+                    <apex:param assignTo="{!ypr.Id}" name="yprId" value="" />
+                  </apex:commandButton>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END addYouthToGrantPopupPopup -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

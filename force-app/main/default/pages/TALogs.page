@@ -1,0 +1,82 @@
+<apex:page
+  controller="TALogCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>TA Logs</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="about"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>
+              <apex:outputText
+                value="{!site.Name}"
+                rendered="{!siteId != null}"
+              />
+              TA Logs
+            </h2>
+          </div>
+          <div class="col-auto pull-right">
+            Organization: &nbsp;
+            <apex:selectList value="{!siteId}" size="1">
+              <apex:selectOptions value="{!orgOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp; TA By: &nbsp;
+            <apex:selectList value="{!ta}" size="1">
+              <apex:selectOptions value="{!taOptions}" />
+            </apex:selectList>
+            &nbsp;
+            <apex:commandButton
+              action="{!URLFOR($Site.Prefix+'/talogs?siteId='+siteId+'&ta='+ta)}"
+              value="Update"
+              styleClass="btn-small primary"
+            />
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!selectedLog.Id != null}">
+          <c:TALog log="{!selectedLog}" />
+          <apex:outputPanel
+            rendered="{!selectedLog.Original_TA_Log__c != null || selectedLog.Follow_Up_TA_Log__c != null}"
+          >
+            <div class="row" style="margin-bottom: 20px">
+              <div class="col-auto">
+                <apex:commandLink
+                  action="{!getOriginalTALog}"
+                  value="<< View Original TA Log"
+                  rendered="{!selectedLog.Original_TA_Log__c != null}"
+                />
+              </div>
+              <div class="col-auto pull-right">
+                <apex:commandLink
+                  action="{!getFollowUpTALog}"
+                  value="View Follow-Up TA Log >>"
+                  styleClass="pull-right"
+                  rendered="{!selectedLog.Follow_Up_TA_Log__c != null}"
+                />
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <c:TALogList
+          ctrl="{!TALogCtrl}"
+          siteId="{!siteId}"
+          displayDetails="true"
+        />
+
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

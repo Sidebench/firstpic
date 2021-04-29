@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Class_QuickBooks__c</fullName>
+    <externalId>false</externalId>
+    <label>Class QuickBooks</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Federal Grant COPS: 2020-2021 COPS</fullName>
+                <default>false</default>
+                <label>Federal Grant COPS: 2020-2021 COPS</label>
+            </value>
+            <value>
+                <fullName
+        >Federal Grant HIDTA: 2021 Washington/Baltimore HIDTA</fullName>
+                <default>false</default>
+                <label
+        >Federal Grant HIDTA: 2021 Washington/Baltimore HIDTA</label>
+            </value>
+            <value>
+                <fullName
+        >Federal Grant - OJJDP: 2020-2021 Mentoring Grant</fullName>
+                <default>false</default>
+                <label>Federal Grant - OJJDP: 2020-2021 Mentoring Grant</label>
+            </value>
+            <value>
+                <fullName>Private Grants: BGE 2021</fullName>
+                <default>false</default>
+                <label>Private Grants: BGE 2021</label>
+            </value>
+            <value>
+                <fullName>Private Grants: Blue Cross Blue Shield</fullName>
+                <default>false</default>
+                <label>Private Grants: Blue Cross Blue Shield</label>
+            </value>
+            <value>
+                <fullName
+        >Private Grants: Charles T. Bauer Charitable Fdn 2021</fullName>
+                <default>false</default>
+                <label
+        >Private Grants: Charles T. Bauer Charitable Fdn 2021</label>
+            </value>
+            <value>
+                <fullName>Private Grants: Niagara Cares 2021</fullName>
+                <default>false</default>
+                <label>Private Grants: Niagara Cares 2021</label>
+            </value>
+            <value>
+                <fullName>Private Grants: PNC 2021</fullName>
+                <default>false</default>
+                <label>Private Grants: PNC 2021</label>
+            </value>
+            <value>
+                <fullName>Private Grants: Sherman Fairchild Fdn 2021</fullName>
+                <default>false</default>
+                <label>Private Grants: Sherman Fairchild Fdn 2021</label>
+            </value>
+            <value>
+                <fullName>Private Grants: Toledo Community Fdn 2021</fullName>
+                <default>false</default>
+                <label>Private Grants: Toledo Community Fdn 2021</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

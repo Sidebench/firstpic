@@ -1,0 +1,79 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="header"
+    description="header"
+    required="true"
+  />
+  <apex:attribute
+    type="Session_Report__c[]"
+    name="report_list"
+    description="Session Report List"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showSiteCol"
+    description="showSiteCol"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    default="false"
+    description="Show More Link?"
+  />
+  <apex:attribute type="String" name="listType" description="List Type" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!report_list.size > 0}">
+        <table class="fixedTbl">
+          <tr>
+            <th>Report Name</th>
+            <th>
+              <apex:outputText value="Site" rendered="{!showSiteCol}" />
+            </th>
+            <th>Status</th>
+            <th>Submitted Date</th>
+          </tr>
+          <apex:repeat value="{!report_list}" var="i">
+            <tr>
+              <td>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/ProgressReport?reportId='+i.Id)}"
+                >
+                  {!i.Name}
+                </a>
+              </td>
+              <td>
+                <apex:outputPanel rendered="{!showSiteCol}">
+                  <a
+                    href="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+ i.Site__r.Id)}"
+                  >
+                    {!i.Site__r.Name}
+                  </a>
+                </apex:outputPanel>
+              </td>
+              <td>{!i.Status__c}</td>
+              <td>
+                <apex:outputField value="{!i.Submitted_Date__c}" />
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!report_list.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <a href="{!URLFOR($Site.Prefix+'/'+'ProgressReports?type='+listType)}">
+          View All &raquo;
+        </a>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

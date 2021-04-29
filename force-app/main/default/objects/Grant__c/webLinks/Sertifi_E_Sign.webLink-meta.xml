@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sertifi_E_Sign</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <height>600</height>
+    <linkType>url</linkType>
+    <masterLabel>Sertifi E-Sign</masterLabel>
+    <openType>sidebar</openType>
+    <protected>false</protected>
+    <url
+  >/apex/Sertifi2_0__CreateSignatureRequest?objectID={!Grant__c.Id}&amp;1stsigner={!Grant__c.Primary_Contact_Email__c}</url>
+</WebLink>

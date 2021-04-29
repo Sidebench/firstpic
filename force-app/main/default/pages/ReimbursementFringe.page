@@ -1,0 +1,164 @@
+<apex:page
+  controller="ReimbursementCtrl"
+  action="{!getFringe}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Reimbursement Fringe</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:ReimbursementDetails
+          userAcctType="{!userAcctType}"
+          request="{!request}"
+          awarded="{!awarded}"
+          balance="{!balance}"
+        />
+
+        <c:ErrorMessage errorMessage="{!warningMessage}" type="warning" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+          <div class="panel panel-info">
+            <div class="panel-heading">Notes</div>
+            <div class="panel-body">
+              <apex:outputField value="{!request.Request_Notes__c}" />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="lists">
+          <c:FringeItems
+            type="request"
+            requestCtrl="{!ReimbursementCtrl}"
+            isEditMode="true"
+            isReviewMode="false"
+          >
+            <div class="fringeTotals">
+              <table class="fixedTbl">
+                <tr>
+                  <th colspan="3"></th>
+                  <th class="text-center">Hours Towards Grant</th>
+                  <th class="text-center">Percent Towards Grant</th>
+                  <th class="text-center">Salary Requested</th>
+                </tr>
+                <tr>
+                  <td colspan="3"></td>
+                  <td class="text-center">
+                    {!i.Personnel_Quantity_Towards_Grant__c}
+                  </td>
+                  <td class="text-center">
+                    {!i.Personnel_Percent_Towards_Grant__c}%
+                  </td>
+                  <td class="text-center">
+                    <apex:outputText value="${0,number,###,###,###,##0.00}">
+                      <apex:param value="{!i.Personnel_Requested_Salary__c}" />
+                    </apex:outputText>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </c:FringeItems>
+        </apex:outputPanel>
+
+        <c:Documents
+          groupId="Fringe"
+          fileNames="Benefits"
+          enableDeleteDoc="true"
+          showStatus="false"
+          showWarning="true"
+          showUploadBtn="true"
+        />
+
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            itemName="{!selectedItem.Title__c}"
+            localNote="{!selectedItem.Item_Note__c}"
+            nationalNote="{!selectedItem.Response__c}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              action="{!upsertItem}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+              reRender="form"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <c:UpdateAmountsMessage rendered="{!portalName == 'Ripken'}" />
+        <c:ErrorMessage errorMessage="{!warningMessage}" type="warning" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <apex:commandButton
+          action="{!previousFromFringe}"
+          value="Previous"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!upsertFringeItems}"
+          value="Save"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!saveFringeAndExit}"
+          value="Save and Exit"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!goToExpensesForm}"
+          value="Next"
+          status="pageStatus"
+          styleClass="btn primary"
+        />
+
+        <apex:outputPanel id="totals" styleClass="pull-right">
+          Total Requested Benefits: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!fringeRequested}" />
+          </apex:outputText>
+          <br />
+          Benefits Balance: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!grant.Benefits_Balance__c}" />
+          </apex:outputText>
+          <br />
+          Benefits Budgeted Amount: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!grant.Total_Fringe_Benefits__c}" />
+          </apex:outputText>
+          <h4
+            style="{!IF((totalRequested > balance),'color: #b94a48; padding-top: 4px;','padding-top: 4px;')}"
+          >
+            Total Requested Amount: &nbsp;
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!totalRequested}" />
+            </apex:outputText>
+          </h4>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

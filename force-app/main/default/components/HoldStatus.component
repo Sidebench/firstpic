@@ -1,0 +1,67 @@
+<apex:component>
+  <apex:attribute type="Account" name="org" description="org" />
+  <apex:attribute type="String" name="portalName" description="portalName" />
+  <apex:attribute
+    type="String"
+    name="approverLevel"
+    description="approverLevel"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayUpdateBtn"
+    description="displayUpdateBtn"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="showOnHoldPopup"
+    description="showOnHoldPopup"
+  />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Agency Hold Status
+      <div class="pull-right">
+        <apex:commandButton
+          value="Update Hold Status"
+          action="{!showOnHoldPopup}"
+          styleClass="pull-right btn-small btn-white"
+          reRender="onHoldPopup"
+          rendered="{!displayUpdateBtn == true}"
+        />
+      </div>
+    </div>
+    <div class="panel-body grid-pd-md">
+      <div class="row">
+        <div class="col-xs-6">
+          <span style="font-weight: bold"> Hold Status: &nbsp;&nbsp; </span>
+          <apex:outputText
+            value="No Holds in Place"
+            rendered="{!CONTAINS(portalName, 'NCAI') && (org.Hold_Status__c == null || org.Hold_Status__c == '')}"
+          />
+          <apex:outputField
+            value="{!org.Hold_Status__c}"
+            rendered="{!NOT(CONTAINS(portalName, 'NCAI')) || (org.Hold_Status__c != null && org.Hold_Status__c != '')}"
+          />
+        </div>
+        <div class="col-xs-6">
+          <span style="font-weight: bold"> Hold Reason: &nbsp;&nbsp; </span>
+          <apex:outputField value="{!org.Hold_Reason__c}" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <span style="font-weight: bold"> Hold Notes: &nbsp;&nbsp; </span>
+          <apex:outputField value="{!org.Hold_Notes__c}" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div style="font-weight: bold">
+            Agency Grant Hold History: &nbsp;&nbsp;
+          </div>
+          <apex:outputField value="{!org.Hold_History__c}" />
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:component>

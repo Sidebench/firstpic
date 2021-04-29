@@ -1,0 +1,168 @@
+<apex:page
+  controller="QuarterlyProgressReportsCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Progress Reports</title>
+  </head>
+  <c:STEMHeader
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Progress Reports</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              Organization: &nbsp;
+              <apex:inputText value="{!orgName}" styleClass="input-md">
+                <apex:actionSupport
+                  event="onchange"
+                  action="{!getSiteOptions}"
+                  focus="siteOptions"
+                  reRender="siteOptions"
+                />
+              </apex:inputText>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+              &nbsp;&nbsp; Site: &nbsp;
+              <apex:selectList value="{!siteId}" size="1" id="siteOptions">
+                <apex:selectOptions value="{!siteOptions}" />
+                <apex:actionSupport event="onchange" reRender="years" />
+              </apex:selectList>
+            </apex:outputPanel>
+            <div style="margin: 5px"></div>
+            &nbsp;&nbsp; Year: &nbsp;
+            <apex:selectList value="{!year}" size="1" id="years">
+              <apex:selectOption
+                itemValue="View All"
+                itemLabel="View All"
+                rendered="{!siteId != null}"
+              />
+              <apex:selectOptions value="{!yearOptions}" />
+            </apex:selectList>
+            &nbsp;
+            <apex:commandButton
+              action="{!getLists}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+            <div style="margin: 5px"></div>
+          </div>
+        </div>
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">{!year} Progress Reports</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!items.size > 0}">
+                <table
+                  class="{!IF(userAcctType == 'Site', 'fixedTbl', '')}"
+                  width="100%"
+                >
+                  <tr>
+                    <th style="{!IF(userAcctType == 'National','','width:0;')}">
+                      <apex:outputText
+                        value="Organization"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th style="{!IF(userAcctType != 'Site','','width:0;')}">
+                      <apex:outputText
+                        value="Site"
+                        rendered="{!userAcctType != 'Site'}"
+                      />
+                    </th>
+                    <th
+                      width="{!IF(userAcctType == 'Site', '', '80px')}"
+                      class="text-center"
+                    >
+                      Year
+                    </th>
+                    <th width="{!IF(userAcctType == 'Site', '', '150px')}">
+                      April Check-in
+                    </th>
+                    <th width="{!IF(userAcctType == 'Site', '', '150px')}">
+                      Mid-Year Report
+                    </th>
+                    <th width="{!IF(userAcctType == 'Site', '', '150px')}">
+                      October Check-in
+                    </th>
+                    <th width="{!IF(userAcctType == 'Site', '', '150px')}">
+                      Final Report
+                    </th>
+                  </tr>
+                  <apex:repeat value="{!items}" var="i">
+                    <tr>
+                      <td>
+                        <apex:outputText
+                          value="{!i.orgName}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.siteName}"
+                          rendered="{!userAcctType != 'Site'}"
+                        />
+                      </td>
+                      <td class="text-center">{!i.year}</td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.q1Status}"
+                          action="{!URLFOR($Site.Prefix+'/QuarterlyCheckIn?reportId='+i.q1Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.q2Status}"
+                          action="{!URLFOR($Site.Prefix+'/SemiAnnualReport?reportId='+i.q2Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.q3Status}"
+                          action="{!URLFOR($Site.Prefix+'/QuarterlyCheckIn?reportId='+i.q3Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.q4Status}"
+                          action="{!URLFOR($Site.Prefix+'/SemiAnnualReport?reportId='+i.q4Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!items.size == 0}">
+                No Reports Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

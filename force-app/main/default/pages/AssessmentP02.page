@@ -1,0 +1,455 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <c:AssessmentHeader
+          assess="{!assess}"
+          header="BOARD/GOVERNANCE STANDARDS"
+        />
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="2"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 4']}</div>
+          <div class="panel-body">
+            <h5>
+              <apex:outputText
+                value="{!labels['Standard 4 Subheader']}"
+                escape="false"
+              />
+            </h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S7a_Succession_Plan__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S7a_Succession_Plan__c}"
+                    label="{!labels['S7a_Succession_Plan__c']}"
+                    textField="{!assess.S7a_Succession_Plan_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Code_of_Ethics__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Code_of_Ethics__c}"
+                    label="{!labels['S5a_Code_of_Ethics__c']}"
+                    textField="{!assess.S5a_Code_of_Ethics_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Whistleblowers__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Whistleblowers__c}"
+                    label="{!labels['S5a_Whistleblowers__c']}"
+                    textField="{!assess.S5a_Whistleblowers_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Conflict_of_Interest__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Conflict_of_Interest__c}"
+                    label="{!labels['S5a_Conflict_of_Interest__c']}"
+                    textField="{!assess.S5a_Conflict_of_Interest_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S24_Confidentiality__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S24_Confidentiality__c}"
+                    label="{!labels['S24_Confidentiality__c']}"
+                    textField="{!assess.S24_Confidentiality_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Political_Activity__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Political_Activity__c}"
+                    label="{!labels['S5a_Political_Activity__c']}"
+                    textField="{!assess.S5a_Political_Activity_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5a_Staff_as_Volunteer_Mentors__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5a_Staff_as_Volunteer_Mentors__c}"
+                    label="{!labels['S5a_Staff_as_Volunteer_Mentors__c']}"
+                    textField="{!assess.S5a_Staff_as_Volunteer_Mentors_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Fundraising_Risks__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Fundraising_Risks__c}"
+                    label="{!labels['S5c_Fundraising_Risks__c']}"
+                    textField="{!assess.S5c_Fundraising_Risks_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Check_Authorization_Levels__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 4B: Executive Limitations Policies"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Check_Authorization_Levels__c}"
+                    label="{!labels['S5b_Check_Authorization_Levels__c']}"
+                    textField="{!assess.S5b_Check_Authorization_Levels_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Corporate_Loan__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Corporate_Loan__c}"
+                    label="{!labels['S5b_Corporate_Loan__c']}"
+                    textField="{!assess.S5b_Corporate_Loan_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Roles_and_Responsibilities__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 4C: Finance Policies"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Roles_and_Responsibilities__c}"
+                    label="{!labels['S5b_Roles_and_Responsibilities__c']}"
+                    textField="{!assess.S5b_Roles_and_Responsibilities_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Independent_Accounting_Firm__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Independent_Accounting_Firm__c}"
+                    label="{!labels['S5b_Independent_Accounting_Firm__c']}"
+                    textField="{!assess.S5b_Independent_Accounting_Firm_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Cash_Reserves__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Cash_Reserves__c}"
+                    label="{!labels['S5b_Cash_Reserves__c']}"
+                    textField="{!assess.S5b_Cash_Reserves_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Selection_of_Vendors__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Selection_of_Vendors__c}"
+                    label="{!labels['S5c_Selection_of_Vendors__c']}"
+                    textField="{!assess.S5c_Selection_of_Vendors_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Corporate_Investment__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Corporate_Investment__c}"
+                    label="{!labels['S5b_Corporate_Investment__c']}"
+                    textField="{!assess.S5b_Corporate_Investment_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Capital_Expenditure__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Capital_Expenditure__c}"
+                    label="{!labels['S5b_Capital_Expenditure__c']}"
+                    textField="{!assess.S5b_Capital_Expenditure_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Procurement_Policy__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Procurement_Policy__c}"
+                    label="{!labels['Procurement_Policy__c']}"
+                    textField="{!assess.Procurement_Policy_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Notification_of_Insolvency__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Notification_of_Insolvency__c}"
+                    label="{!labels['S5b_Notification_of_Insolvency__c']}"
+                    textField="{!assess.S5b_Notification_of_Insolvency_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Corporate_Credit_Card__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Corporate_Credit_Card__c}"
+                    label="{!labels['S5b_Corporate_Credit_Card__c']}"
+                    textField="{!assess.S5b_Corporate_Credit_Card_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Reimbursements__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Reimbursements__c}"
+                    label="{!labels['S5b_Reimbursements__c']}"
+                    textField="{!assess.S5b_Reimbursements_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Administrative_Costs__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Administrative_Costs__c}"
+                    label="{!labels['S5b_Administrative_Costs__c']}"
+                    textField="{!assess.S5b_Administrative_Costs_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Monies_Raised__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Monies_Raised__c}"
+                    label="{!labels['S5b_Monies_Raised__c']}"
+                    textField="{!assess.S5b_Monies_Raised_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Technology_Security_Policies__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 4D: Risk Management Policies"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Technology_Security_Policies__c}"
+                    label="{!labels['S5c_Technology_Security_Policies__c']}"
+                    textField="{!assess.S5c_Technology_Security_Policies_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Insurance_Plan__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Insurance_Plan__c}"
+                    label="{!labels['S5c_Insurance_Plan__c']}"
+                    textField="{!assess.S5c_Insurance_Plan_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Crisis_Management_Practices__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Crisis_Management_Practices__c}"
+                    label="{!labels['S5c_Crisis_Management_Practices__c']}"
+                    textField="{!assess.S5c_Crisis_Management_Practices_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5c_Child_Safety_Policies__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5c_Child_Safety_Policies__c}"
+                    label="{!labels['S5c_Child_Safety_Policies__c']}"
+                    textField="{!assess.S5c_Child_Safety_Policies_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Operations_Plan__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Operations_Plan__c}"
+                    label="{!labels['Operations_Plan__c']}"
+                    textField="{!assess.Operations_Plan_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 5']}</div>
+          <div class="panel-body">
+            <h5>
+              <apex:outputText
+                value="{!labels['Standard 5 Subheader']}"
+                escape="false"
+              />
+            </h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Generally_Accepted_Accounting__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Generally_Accepted_Accounting__c}"
+                    label="{!labels['S5b_Generally_Accepted_Accounting__c']}"
+                    textField="{!assess.S5b_Generally_Accepted_Accounting_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Separation_of_Duties__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Separation_of_Duties__c}"
+                    label="{!labels['S5b_Separation_of_Duties__c']}"
+                    textField="{!assess.S5b_Separation_of_Duties_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Annual_Operating_Budget__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Annual_Operating_Budget__c}"
+                    label="{!labels['S5b_Annual_Operating_Budget__c']}"
+                    textField="{!assess.S5b_Annual_Operating_Budget_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S5b_Monthly_Review__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S5b_Monthly_Review__c}"
+                    label="{!labels['S5b_Monthly_Review__c']}"
+                    textField="{!assess.S5b_Monthly_Review_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="2"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          year="{!assess.Year__c}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          parentId="{!parentId}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(3);
+    };
+  </script>
+</apex:page>

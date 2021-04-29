@@ -1,0 +1,604 @@
+<apex:component>
+  <apex:attribute type="String" name="type" description="type" />
+  <apex:attribute
+    type="BudgetCtrl"
+    name="budgetCtrl"
+    description="BudgetCtrl"
+    required="false"
+  />
+  <apex:attribute
+    type="ReimbursementCtrl"
+    name="requestCtrl"
+    description="ReimbursementCtrl"
+    required="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isEditMode"
+    description="isEditMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isReviewMode"
+    description="isReviewMode"
+    default="false"
+  />
+
+  <style>
+    th {
+      white-space: normal;
+    }
+    .text-muted {
+      display: inline-block;
+      width: 50%;
+      font-style: italic;
+    }
+    .fringe table td {
+      padding-bottom: 5px;
+    }
+    .fringe table {
+      border-bottom: 1px solid #eee;
+      margin-bottom: 10px;
+    }
+    .fringe table:last-child {
+      border-bottom: none;
+    }
+    .fringeTotals {
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 10px;
+    }
+    .fringe .fringeTotals:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .checkImg {
+      margin-left: -5px;
+    }
+  </style>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Fringe Benefits</div>
+    <div class="panel-body fringe">
+      <apex:repeat
+        value="{!IF((type == 'budget'), budgetCtrl.laborItem_list, requestCtrl.fringe_list)}"
+        var="i"
+      >
+        <apex:outputPanel
+          rendered="{!budgetCtrl.portalName != 'Ripken' && requestCtrl.portalName != 'Ripken'}"
+        >
+          <table class="fixedTbl">
+            <tr>
+              <th style="min-width: 100px">Title</th>
+              <th style="width: 20px">
+                <apex:outputPanel rendered="{!isEditMode}">
+                  <apex:outputPanel rendered="{!type == 'budget'}">
+                    <span
+                      class="badge"
+                      title="Please enter the applicable annual premium amounts on the top line"
+                      >?</span
+                    >
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!type == 'request'}">
+                    <span
+                      class="badge"
+                      title="Please enter the applicable premium amounts for this request period on the top line"
+                      >?</span
+                    >
+                  </apex:outputPanel>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(isEditMode)}">
+                  <span
+                    class="badge"
+                    title="Grayed/italicized amount is user input; number in bold is reimbursable amount."
+                    >?</span
+                  >
+                </apex:outputPanel>
+              </th>
+              <th>Medical</th>
+              <th>Dental</th>
+              <th>Vision</th>
+              <th>Short Term</th>
+              <th>Long Term</th>
+              <th>Life</th>
+              <th>Other</th>
+              <th
+                class="text-center"
+                style="{!IF(type == 'request','width: 60px;','width: 0;')}"
+              >
+                <apex:outputText
+                  value="Notes"
+                  rendered="{!type == 'request'}"
+                />
+              </th>
+            </tr>
+            <tr>
+              <td>
+                <apex:outputText
+                  value="{!i.Name}"
+                  rendered="{!type == 'budget'}"
+                />
+                <apex:outputText
+                  value="{!i.Title__c}"
+                  rendered="{!type == 'request'}"
+                />
+              </td>
+              <td></td>
+              <td>
+                <apex:inputField
+                  value="{!i.Medical_Premium__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Medical__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Medical__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  style="width: 18px; display: inline-block"
+                  rendered="{!isEditMode}"
+                ></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Medical_Premium__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Medical__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Dental_Premium__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Dental__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Dental__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  style="width: 18px; display: inline-block"
+                  rendered="{!isEditMode}"
+                ></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Dental_Premium__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Dental__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Vision_Premium__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Vision__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Vision__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  style="width: 18px; display: inline-block"
+                  rendered="{!isEditMode}"
+                ></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Vision_Premium__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Vision__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Short_Term_Premium__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Short_Term__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Short_Term__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  style="width: 18px; display: inline-block"
+                  rendered="{!isEditMode}"
+                ></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Short_Term_Premium__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Short_Term_Disability__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Long_Term_Premium__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Long_Term__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Long_Term__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  style="width: 18px; display: inline-block"
+                  rendered="{!isEditMode}"
+                ></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Long_Term_Premium__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Long_Term_Disability__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Life_Premium__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Life__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Life__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  style="width: 18px; display: inline-block"
+                  rendered="{!isEditMode}"
+                ></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Life_Premium__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Life__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Other_Premium__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Other_Premium__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Other_Premium__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  style="width: 18px; display: inline-block"
+                  rendered="{!isEditMode}"
+                ></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Other_Premium__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Other_Benefits__c}" />
+              </td>
+              <td class="text-center">
+                <apex:commandLink
+                  action="{!requestCtrl.showNotesPopup}"
+                  status="pageStatus"
+                  rendered="{!type == 'request'}"
+                  reRender="notesPopup"
+                >
+                  <apex:param
+                    assignTo="{!requestCtrl.selectedItemId}"
+                    name="selectedItemId"
+                    value="{!i.Id}"
+                  />
+                  <apex:param
+                    assignTo="{!requestCtrl.selectedItemType}"
+                    name="selectedItemType"
+                    value="fringe"
+                  />
+                  <apex:outputText rendered="{!i.Has_Notes__c == true}">
+                    <span class="glyphicon glyphicon-comment"></span>
+                  </apex:outputText>
+                  <apex:outputText
+                    value="+"
+                    rendered="{!i.Has_Notes__c == false}"
+                  />
+                </apex:commandLink>
+              </td>
+            </tr>
+            <tr>
+              <th></th>
+              <th></th>
+              <th>FICA</th>
+              <th>SUTA</th>
+              <th>Workers Comp</th>
+              <th>Retirement</th>
+              <th>Other</th>
+              <th
+                colspan="3"
+                style="{!IF((isEditMode || type == 'request'),'','width: 0;')}"
+              >
+                <div
+                  class="{!IF(isEditMode,'text-center','col-xs-6 text-center')}"
+                  style="{!IF(NOT(isEditMode) && type == 'request','padding: 0;','')}"
+                >
+                  <apex:outputText
+                    value="Total Benefits Requested"
+                    rendered="{!(type == 'request')}"
+                  />
+                  <apex:outputText
+                    value="Benefits Allocated to Grant"
+                    rendered="{!(isEditMode && type == 'budget')}"
+                  />
+                </div>
+                <div
+                  class="col-xs-6 text-center"
+                  style="{!IF(type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization'),'padding: 0;','width: 0;')}"
+                >
+                  <apex:outputText
+                    value="Total Benefits Approved"
+                    rendered="{!type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization')}"
+                  />
+                </div>
+              </th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                <apex:inputField
+                  value="{!i.FICA_Percent__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_FICA__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_FICA__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputText
+                  value="%"
+                  style="width: 20px; display: inline-block"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_FICA__c)}"
+                />
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.FICA_Percent__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.FICA__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.SUTA_Percent__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_SUTA__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_SUTA__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputText
+                  value="%"
+                  style="width: 20px; display: inline-block"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_SUTA__c)}"
+                />
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.SUTA_Percent__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.SUTA__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Workers_Comp_Percent__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Workers_Comp__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Workers_Comp__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputText
+                  value="%"
+                  style="width: 20px; display: inline-block"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Workers_Comp__c)}"
+                />
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Workers_Comp_Percent__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Workers_Comp__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Retirement_Percent__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Retirement__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Retirement__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputText
+                  value="%"
+                  style="width: 20px; display: inline-block"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Retirement__c)}"
+                />
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Retirement_Percent__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Retirement__c}" />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.Other_Percent__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Other_Percent__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_Other_Percent__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputText
+                  value="%"
+                  style="width: 20px; display: inline-block"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_Other_Percent__c)}"
+                />
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.Other_Percent__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.Other_Percent_Based__c}" />
+              </td>
+              <td colspan="3">
+                <div
+                  class="text-center"
+                  style="{!IF(NOT(isEditMode) && type == 'request','width: 50%; display: inline-block;','')}"
+                >
+                  <apex:outputField
+                    value="{!i.New_Fringe_Benefits__c}"
+                    style="{!IF(type == 'request','width: 50%;','')}"
+                    rendered="{!(isEditMode || type == 'request')}"
+                  />
+                </div>
+                <div
+                  class="text-center"
+                  style="{!IF(type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization'),'width: 45%; display: inline-block;','')}"
+                >
+                  <apex:outputPanel
+                    rendered="{!type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization')}"
+                  >
+                    <apex:inputField
+                      value="{!i.Approved_Benefits__c}"
+                      rendered="{!isReviewMode}"
+                    />
+                    <apex:outputField
+                      value="{!i.Approved_Benefits__c}"
+                      rendered="{!NOT(isReviewMode)}"
+                    />
+                  </apex:outputPanel>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </apex:outputPanel>
+        <apex:outputPanel
+          rendered="{!budgetCtrl.portalName == 'Ripken' || requestCtrl.portalName == 'Ripken'}"
+        >
+          <table>
+            <tr>
+              <th width="200px">Title</th>
+              <th width="160px">FICA</th>
+              <th
+                width="400px"
+                style="{!IF((isEditMode || type == 'request'),'','width: 0;')}"
+              >
+                <div
+                  class="{!IF(isEditMode,'text-center','col-xs-6 text-center')}"
+                  style="{!IF(NOT(isEditMode) && type == 'request','padding: 0;','')}"
+                >
+                  <apex:outputText
+                    value="Total Benefits Requested"
+                    rendered="{!(type == 'request')}"
+                  />
+                </div>
+                <div
+                  class="col-xs-6 text-center"
+                  style="{!IF(type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization'),'padding: 0;','width: 0;')}"
+                >
+                  <apex:outputText
+                    value="Total Benefits Approved"
+                    rendered="{!type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization')}"
+                  />
+                </div>
+              </th>
+            </tr>
+            <tr>
+              <td>
+                <apex:outputText
+                  value="{!i.Name}"
+                  rendered="{!type == 'budget'}"
+                />
+                <apex:outputText
+                  value="{!i.Title__c}"
+                  rendered="{!type == 'request'}"
+                />
+              </td>
+              <td>
+                <apex:inputField
+                  value="{!i.FICA_Percent__c}"
+                  style="width: 40%"
+                  rendered="{!i.Is_Active__c && isEditMode && (type == 'budget' || i.Has_FICA__c)}"
+                />
+                <apex:outputPanel
+                  rendered="{!type == 'request' && NOT(i.Has_FICA__c) && isEditMode}"
+                  ><input disabled="true" style="width: 40%"
+                /></apex:outputPanel>
+                <apex:outputPanel
+                  styleClass="text-muted"
+                  rendered="{!NOT(isEditMode)}"
+                >
+                  <apex:outputField value="{!i.FICA_Percent__c}" />
+                </apex:outputPanel>
+                <apex:outputField value="{!i.FICA__c}" />
+              </td>
+              <td>
+                <div
+                  class="text-center"
+                  style="{!IF(NOT(isEditMode) && type == 'request','width: 50%; display: inline-block;','')}"
+                >
+                  <apex:outputField
+                    value="{!i.New_Fringe_Benefits__c}"
+                    style="{!IF(type == 'request','width: 50%;','')}"
+                    rendered="{!(isEditMode || type == 'request')}"
+                  />
+                </div>
+                <div
+                  class="text-center"
+                  style="{!IF(type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization'),'width: 45%; display: inline-block;','')}"
+                >
+                  <apex:outputPanel
+                    rendered="{!type == 'request' && (requestCtrl.request.Status__c == 'Approved' || requestCtrl.userAcctType == 'National Organization')}"
+                  >
+                    <apex:inputField
+                      value="{!i.Approved_Benefits__c}"
+                      rendered="{!isReviewMode}"
+                    />
+                    <apex:outputField
+                      value="{!i.Approved_Benefits__c}"
+                      rendered="{!NOT(isReviewMode)}"
+                    />
+                  </apex:outputPanel>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </apex:outputPanel>
+        <apex:componentBody />
+      </apex:repeat>
+    </div>
+    <div class="panel-footer" style="{!IF((isEditMode),'','padding: 0;')}">
+      <apex:commandButton
+        value="Update Amounts"
+        action="{!budgetCtrl.updateAllLaborAmounts}"
+        status="pageStatus"
+        rendered="{!isEditMode && type == 'budget'}"
+      />
+      <apex:commandButton
+        value="Update Amounts"
+        action="{!requestCtrl.updateFringeAmounts}"
+        status="pageStatus"
+        rendered="{!isEditMode && type == 'request'}"
+      />
+    </div>
+  </div>
+</apex:component>

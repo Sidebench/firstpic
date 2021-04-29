@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Example_of_Being_Emotionally_Healthy__c</fullName>
+    <externalId>false</externalId>
+    <label>Example of Being Emotionally Healthy</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>a. Riding a bike</fullName>
+                <default>false</default>
+                <label>a. Riding a bike</label>
+            </value>
+            <value>
+                <fullName>b. Going for a walk</fullName>
+                <default>false</default>
+                <label>b. Going for a walk</label>
+            </value>
+            <value>
+                <fullName>c. Sharing feelings of being happy or sad</fullName>
+                <default>false</default>
+                <label>c. Sharing feelings of being happy or sad</label>
+            </value>
+            <value>
+                <fullName>d. Swimming in the pool</fullName>
+                <default>false</default>
+                <label>d. Swimming in the pool</label>
+            </value>
+            <value>
+                <fullName>No Response</fullName>
+                <default>false</default>
+                <label>No Response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,458 @@
+<apex:page controller="ProgramPlanCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Program Plan</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>OVC Micro Grant Program Plan</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <h5>{!plan.Organization_Name__c}</h5>
+            </apex:outputPanel>
+            <h5>
+              Status: {!plan.Status__c}
+              <br />
+              Submitted Date:
+              <apex:outputField value="{!plan.Submitted_Date__c}" />
+            </h5>
+            <apex:commandButton
+              value="Update Program Plan"
+              action="{!updatePlan}"
+              styleClass="btn primary"
+              rendered="{!userAcctType == 'Local Organization' && readOnly == true && plan.Is_Current_Plan__c && plan.Status__c == 'Approved'}"
+            />
+          </div>
+        </div>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <apex:actionRegion>
+          <apex:outputPanel id="details">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">
+                  <apex:outputText
+                    value="Current Program Plan"
+                    rendered="{!plan.Is_Current_Plan__c}"
+                  />
+                  <apex:outputText
+                    value="Previous Program Plan"
+                    rendered="{!NOT(plan.Is_Current_Plan__c)}"
+                  />
+                </h1>
+              </div>
+              <div class="panel-body grid-pd-md">
+                <apex:outputPanel
+                  rendered="{!plan.Reason_for_Updating__c != null || readOnly == false}"
+                >
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      Reason for updating Program Plan?
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!plan.Reason_for_Updating__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!plan.Reason_for_Updating__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                    <hr />
+                  </div>
+                </apex:outputPanel>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="1. {!labels['Biggest_Issue_Organization_is_Facing__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!plan.Biggest_Issue_Organization_is_Facing__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!plan.Biggest_Issue_Organization_is_Facing__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="2. {!labels['How_Funds_Utilized__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!plan.How_Funds_Utilized__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!plan.How_Funds_Utilized__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <hr />
+                <h5>
+                  This funding opportunity can be used to support a wide variety
+                  of programming and services for victims of crime in your
+                  community. Please select which activities your grant will
+                  include:<br />
+                </h5>
+                <h4>
+                  <strong><u>Needs Assessment</u> </strong>
+                </h4>
+                <br />
+                <apex:selectRadio
+                  disabled="{!readOnly}"
+                  value="{!plan.Has_Needs_Assessment__c}"
+                >
+                  <apex:selectOption itemValue="true" itemLabel="Yes" />
+                  <apex:selectOption itemValue="false" itemLabel="No" />
+                  <apex:actionSupport
+                    event="onchange"
+                    reRender="details"
+                    status="pageStatus"
+                  />
+                </apex:selectRadio>
+                <apex:outputPanel
+                  rendered="{!plan.Has_Needs_Assessment__c == true}"
+                >
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      <apex:outputText
+                        value="3a. {!labels['Previous_Experiences__c']}"
+                        escape="false"
+                      />
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!plan.Previous_Experiences__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!plan.Previous_Experiences__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      <apex:outputText
+                        value="3b. {!labels['Needs_Assessment__c']}"
+                        escape="false"
+                      />
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!plan.Needs_Assessment__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!plan.Needs_Assessment__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <br />
+                <h4>
+                  <strong><u>Strategic Planning</u> </strong>
+                </h4>
+                <br />
+                <apex:selectRadio
+                  disabled="{!readOnly}"
+                  value="{!plan.Has_Strategic_Plan__c}"
+                >
+                  <apex:selectOption itemValue="true" itemLabel="Yes" />
+                  <apex:selectOption itemValue="false" itemLabel="No" />
+                  <apex:actionSupport
+                    event="onchange"
+                    reRender="details"
+                    status="pageStatus"
+                  />
+                </apex:selectRadio>
+                <apex:outputPanel
+                  rendered="{!plan.Has_Strategic_Plan__c == true}"
+                >
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      <apex:outputText
+                        value="4a. {!labels['Strategic_Plan__c']}"
+                        escape="false"
+                      />
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!plan.Strategic_Plan__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!plan.Strategic_Plan__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      <apex:outputText
+                        value="4b. {!labels['Additional_Resources_for_Strategic_Plan__c']}"
+                        escape="false"
+                      />
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!plan.Additional_Resources_for_Strategic_Plan__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!plan.Additional_Resources_for_Strategic_Plan__c}"
+                        rendered="{!readOnly}"
+                      /><br />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <br />
+                <h4>
+                  <strong><u>Support for Victim Services</u></strong>
+                </h4>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="5a. {!labels['Areas_of_Service__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectCheckboxes
+                      disabled="{!readOnly}"
+                      layout="pageDirection"
+                      value="{!services}"
+                    >
+                      <apex:selectOptions value="{!serviceOptions}" />
+                    </apex:selectCheckboxes>
+                    <apex:inputField
+                      value="{!plan.Areas_of_Service_Explaination__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!plan.Areas_of_Service_Explaination__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="5b. {!labels['Current_Program_Description__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!plan.Current_Program_Description__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!plan.Current_Program_Description__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <br />
+                <h4>
+                  <strong><u>Equipment and Supplies</u> </strong>
+                </h4>
+                <apex:selectRadio
+                  disabled="{!readOnly}"
+                  value="{!plan.Has_Equipment_and_Supplies__c}"
+                >
+                  <apex:selectOption itemValue="true" itemLabel="Yes" />
+                  <apex:selectOption itemValue="false" itemLabel="No" />
+                  <apex:actionSupport
+                    event="onchange"
+                    reRender="details"
+                    status="pageStatus"
+                  />
+                </apex:selectRadio>
+                <apex:outputPanel
+                  rendered="{!plan.Has_Equipment_and_Supplies__c == true}"
+                >
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      <apex:outputText
+                        value="6. {!labels['Equipment_and_Supplies__c']}"
+                        escape="false"
+                      />
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:inputField
+                        value="{!plan.Equipment_and_Supplies__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!plan.Equipment_and_Supplies__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <br />
+                <h4>
+                  <strong><u>Capabilities and Competencies</u></strong>
+                </h4>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="7. {!labels['Responsibilities__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!plan.Responsibilities__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!plan.Responsibilities__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="8. {!labels['Able_to_Recruit__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!plan.Able_to_Recruit__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!plan.Able_to_Recruit__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="9. {!labels['Other_Challenges__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!plan.Other_Challenges__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!plan.Other_Challenges__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:actionRegion>
+
+        <apex:actionRegion>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Notes</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  Project Description Summary Plans from National
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!plan.Notes__c}"
+                    rendered="{!userAcctType == 'National Organization' && plan.Status__c == 'Submitted'}"
+                  />
+                  <apex:outputField
+                    value="{!plan.Notes__c}"
+                    rendered="{!userAcctType != 'National Organization' || plan.Status__c != 'Submitted'}"
+                  />
+                </div>
+              </div>
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization'}"
+              >
+                <div class="row">
+                  <div class="col-xs-12 semibold">Reviewer Notes</div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!plan.Reviewer_Notes__c}"
+                      rendered="{!plan.Status__c == 'Submitted'}"
+                    />
+                    <apex:outputField
+                      value="{!plan.Reviewer_Notes__c}"
+                      rendered="{!plan.Status__c != 'Submitted'}"
+                    />
+                  </div>
+                </div>
+              </apex:outputPanel>
+            </div>
+          </div>
+        </apex:actionRegion>
+
+        <apex:commandLink
+          value="Export Program Plan to PDF"
+          action="{!URLFOR($Site.Prefix+'/ProgramPlanPDF?planId='+plan.Id)}"
+          styleClass="btn"
+          target="_blank"
+        />
+        <apex:commandButton
+          value="Update Program Plan"
+          action="{!updatePlan}"
+          styleClass="btn primary"
+          rendered="{!userAcctType == 'Local Organization' && readOnly == true && plan.Is_Current_Plan__c && plan.Status__c == 'Approved'}"
+        />
+        <apex:commandButton
+          value="Submit"
+          action="{!submit}"
+          styleClass="btn primary"
+          rendered="{!userAcctType == 'Local Organization' && readOnly == false}"
+        />
+        <apex:commandButton
+          value="Send Back"
+          action="{!sendBack}"
+          styleClass="btn"
+          rendered="{!userAcctType == 'National Organization' && plan.Status__c == 'Submitted'}"
+        />
+        <apex:commandButton
+          value="Approve"
+          action="{!approve}"
+          styleClass="btn primary"
+          rendered="{!userAcctType == 'National Organization' && plan.Status__c == 'Submitted'}"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

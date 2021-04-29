@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Monthly_PA_Report__c</fullName>
+    <externalId>false</externalId>
+    <label>Monthly PA Report</label>
+    <referenceTo>Program_Report__c</referenceTo>
+    <relationshipLabel>PA Logs</relationshipLabel>
+    <relationshipName>Daily_PA_Logs</relationshipName>
+    <relationshipOrder>1</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

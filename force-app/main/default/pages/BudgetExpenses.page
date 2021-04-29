@@ -1,0 +1,158 @@
+<apex:page
+  controller="BudgetCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Budget Expense Form</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total Awarded: &nbsp;
+              <apex:outputField value="{!grant.Amount__c}" />
+            </h2>
+            <apex:outputPanel
+              rendered="{!grant.National_Grant_Type__c == 'OVC'}"
+            >
+              Indirect Rate: &nbsp;
+              <apex:outputField
+                value="{!grant.Indirect_Rate__c}"
+                styleClass="input-sm"
+              />
+              &nbsp;&nbsp; Procurement Threshold: &nbsp;
+              <apex:inputField
+                value="{!grant.Procurement_Threshold__c}"
+                styleClass="input-sm"
+              />
+              <div style="margin: 10px"></div>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <c:BudgetExpenseItems
+          ctrl="{!BudgetCtrl}"
+          isEditMode="true"
+          isReviewMode="false"
+          showAddItems="true"
+        />
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Expense Notes"
+          localNote="{!grant.Expense_Notes__c}"
+          nationalNote="{!grant.Expense_Response__c}"
+        />
+
+        <apex:outputPanel rendered="{!grant.National_Grant_Type__c == 'OVC'}">
+          <c:IndirectCostsTable
+            budgeted="{!totalIndirectCostsBudgetAmount}"
+            approved="{!grant.Reimbursement_Approved_Indirect_Costs__c}"
+            balance="{!totalIndirectCostsBudgetAmount - grant.Reimbursement_Approved_Indirect_Costs__c}"
+          />
+        </apex:outputPanel>
+
+        <c:Documents
+          showStatus="false"
+          showUploadBtn="true"
+          enableDeleteDoc="true"
+          fileNames="{!IF(portalName != 'Ripken','Workers Comp,SUTA,Pension,Verification Letter,NICRA,Other','')}"
+          groupId="{!IF(grant.National_Grant_Type__c == 'OVC', 'OVC Attachments', '')}"
+        />
+
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            itemName="{!selectedItem.Name}"
+            localNote="{!selectedItem.Item_Note__c}"
+            nationalNote="{!selectedItem.Response__c}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              action="{!upsertItem}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <!-- BEGIN Actions -->
+        <div class="row">
+          <div class="col-xs-6">
+            <apex:commandButton
+              action="{!previous}"
+              value="Previous"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!updateAllExpenseAmounts}"
+              value="Update Amounts"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!saveExpenses}"
+              value="Save"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!review}"
+              value="Review and Submit"
+              status="pageStatus"
+              styleClass="btn primary"
+            />
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>
+              Total Personnel and Fringe Budget: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!laborBudgetAmount}" />
+              </apex:outputText>
+            </h5>
+            <h5>
+              Total Expense Budget: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!expenseBudgetAmount}" />
+              </apex:outputText>
+            </h5>
+            <h4
+              style="{!IF((totalBudgetAmount > grant.Amount__c),'color: #b94a48;','')}"
+            >
+              Total Budget Amount: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!totalBudgetAmount}" />
+              </apex:outputText>
+            </h4>
+          </div>
+        </div>
+        <!-- END Actions -->
+
+        <c:UpdateAmountsMessage rendered="{!portalName == 'Ripken'}" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

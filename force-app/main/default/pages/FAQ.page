@@ -1,0 +1,253 @@
+<apex:page controller="BBBSHelpController" showHeader="false" sidebar="false">
+  <head>
+    <title>Frequently Asked Questions</title>
+  </head>
+  <c:Header
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <div class="main-panel">
+    <div class="content">
+      <h2 class="text-center">
+        FirstPic Reporting Site Frequently Asked Questions
+      </h2>
+      <div class="row">
+        <div class="col-xs-12 col-sm-8">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <strong>Link to Login:</strong>
+              <a href="https://firstpic.force.com/bbbs/login" target="_blank"
+                >https://firstpic.force.com/bbbs/login</a
+              >
+              <br />
+              <strong>Recommended Browser:</strong> Google Chrome
+              <br />
+              All updates to the system will be shared in the “What’s New”
+              section on the home page of the reporting site. There you will see
+              any and all new updates and capabilities, as well as any bug
+              fixes.
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+          <apex:outputLink
+            value="https://goo.gl/forms/mLjCFYFPqLdPCTJ22"
+            target="_blank"
+          >
+            <div class="panel panel-warning">
+              <div class="panel-heading text-center">Still Need Help?</div>
+              <div
+                class="panel-body text-center"
+                style="color: #333; font-weight: bold"
+              >
+                Request Technical Assistance
+              </div>
+            </div>
+          </apex:outputLink>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">General Information</div>
+        <div class="panel-body">
+          <p>
+            <strong
+              >Q: I never received my login information. Where do I get
+              it?</strong
+            >
+            <br />
+            A: Please reach out to support@firstpic.org and we will resend your
+            information.
+          </p>
+          <p>
+            <strong>Q: I lost/forgot my password. What should I do?</strong>
+            <br />
+            A: Reach out to support@firstpic.org and your password will be
+            resent.
+          </p>
+          <p>
+            <strong
+              >Q: I am trying to upload a document, but it is not working
+              properly.</strong
+            >
+            <br />
+            A: The document may be too large to upload. If it is a PDF, you can
+            use http://www.pdfcompressor.org/ to compress the file and upload it
+            successfully. Otherwise, reach out to support@firstpic.org for
+            assistance.
+          </p>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Self-Assessment</div>
+        <div class="panel-body">
+          <p>
+            <strong
+              >Q: I don’t have the option to create an assessment. What do I
+              do?</strong
+            >
+            <br />
+            A: In order to be able to create an assessment, you need to enter
+            all of your contacts under “Associated Contacts” in the
+            “Organization Info” tab. You must assign all of the required roles
+            in order to have the option to create an assessment. These roles
+            include CEO, Board Chair, Finance Lead, Program Lead, Fund
+            Development Lead, and Marketing/Recruitment Lead. Once you have
+            assigned all of the roles to a contact, you will have the option to
+            “Create Assessment” under the “Assessments” section.
+          </p>
+          <p>
+            <strong
+              >Q: I play the role of more than one of the required roles. What
+              should I do?</strong
+            >
+            <br />
+            A: If you play more than one role at your organization, for instance
+            CEO and Finance Lead, then you may enter yourself as a contact more
+            than once and assign the second contact the other role. The site
+            will not allow the same email address to be entered under multiple
+            roles, so as a workaround, please enter their email address under
+            their primary role, and fake emails for the additional roles (use
+            sample1@yourdomain.org, sample2@yourdomain.org etc. for the extra
+            emails, using your organization’s actual domain so that it is a
+            unique email).
+            <br />
+            For example, if your domain is “@bbbsofABCcounty.org”:  
+          </p>
+          <table class="table">
+            <tr>
+              <th>First Name</th>
+               
+              <th>Last Name</th>
+              <th>Role</th>
+                          
+              <th>Email</th>
+            </tr>
+            <tr>
+              <td>John</td>
+              <td>Doe</td>
+                   
+              <td>CEO</td>
+                                     
+              <td>johndow@bbbsofABCcounty.org</td>
+            </tr>
+            <tr>
+              <td>John</td>
+              <td>Doe</td>
+                   
+              <td>Finance Lead</td>
+                                     
+              <td>sample1@bbbsofABCcounty.org</td>
+            </tr>
+            <tr>
+              <td>John</td>
+              <td>Doe</td>
+                   
+              <td>Fund Development Lead</td>
+                                     
+              <td>sample2@bbbsofABCcounty.org</td>
+            </tr>
+          </table>
+          <br />
+          <p>
+            <strong
+              >Q: I am currently working on my assessment, but need to finish it
+              another time.</strong
+            >
+            <br />
+            A: If you need to step away from working on the assessment, select
+            “Save &amp; Exit” and it will be saved in the reporting site. To
+            continue working on it, select the pencil icon on the far right
+            adjacent to your assessment name.
+          </p>
+          <p>
+            <strong
+              >Q: I have accidentally created multiple assessments. How can I
+              delete the extra assessments?</strong
+            >
+            <br />
+            A: To delete an assessment, go into the assessment that you want to
+            delete by clicking on pencil icon under Edit. When you scroll to the
+            bottom of the page you will find the button to delete the
+            assessment.
+          </p>
+          <p>
+            <strong
+              >Q: Where can I find the required documents to complete the
+              self-assessment, such as the AIM Fee Form and Affiliation
+              Form?</strong
+            >
+            <br />
+            A: The templates for those documents can be found under the
+            “Additional Requirements” section in the self-assessment.
+          </p>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">Reimbursement Requests</div>
+        <div class="panel-body">
+          <p>
+            <strong
+              >Q: When working on a reimbursement request, how can I update the
+              salaries for grant personnel? </strong
+            >
+            <br />
+            A: To update staff salaries in the reporting site, select Active
+            Sub-Grant, select the grant you would like to edit, and on the
+            sub-grant detail page click the update budget button.
+          </p>
+          <p>
+            <strong
+              >Q: I need to go back in and make a change on my reimbursement
+              request, but it has already been approved.</strong
+            >
+            <br />
+            A: You cannot change a reimbursement request that has been approved.
+            You must reach out to your assigned BBBSA federal grant staff
+            accountant if there is a problem with an approved reimbursement and
+            they will contact FirstPic with the required change.
+          </p>
+          <p>
+            <strong
+              >Q: I need to go back in and make a change on my reimbursement
+              request, but it has already been submitted.</strong
+            >
+            <br />
+            A: In order to prevent users from editing a reimbursement when it is
+            being reviewed by BBBSA, the ability to edit has been removed. If
+            you need to edit a reimbursement during any approval stage, please
+            contact your assigned BBBSA federal grant staff accountant.
+          </p>
+          <p>
+            <strong
+              >Q: How do I delete an incomplete reimbursement request?</strong
+            >
+            <br />
+            A: To delete an incomplete request, go to the Reimbursements page
+            and click on the View Details link for the request you'd like to
+            delete. Scroll to the bottom of the details page and click the
+            delete button. 
+          </p>
+          <p>
+            <strong
+              >Q: What if I would like to give access to the reporting site to
+              other people at my agency?</strong
+            >
+            <br />
+            A: Only CEOs can give access to the reporting site to others in your
+            agency. If you are a CEO and you would like to give access to other
+            people at your agency, simply go to their contact info that you
+            provided under the “Organization Info” tab, select the option to
+            edit their contact info, select “User Profile”, and select whether
+            you would like to give the “All Access” or “Self-Assessment Only.”
+            Please be careful, because giving all access would mean that they
+            would be able to see sensitive financial information. Activation for
+            that individual will take place within 24 hours.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

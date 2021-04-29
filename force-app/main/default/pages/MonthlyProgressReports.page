@@ -1,0 +1,168 @@
+<apex:page
+  controller="ProgressReportCtrl"
+  action="{!getOptions}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Monthly Progress Reports</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+  <c:DMVHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'DMV'}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Progress Reports</h2>
+          </div>
+          <div class="col-auto pull-right">
+            Report Id: &nbsp;<apex:inputText
+              value="{!reportId}"
+              styleClass="input-md"
+            />
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              &nbsp;&nbsp; Organization: &nbsp;<apex:inputText
+                value="{!orgName}"
+                styleClass="input-md"
+              />
+            </apex:outputPanel>
+            &nbsp;&nbsp; Status: &nbsp;
+            <apex:selectList value="{!status}" size="1" id="statusOptions">
+              <apex:selectOptions value="{!statusOptions}" />
+            </apex:selectList>
+            <div style="margin: 5px"></div>
+            Month: &nbsp;
+            <apex:selectList value="{!month}" size="1" id="monthOptions">
+              <apex:selectOptions value="{!monthOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp; Year: &nbsp;
+            <apex:selectList value="{!year}" size="1">
+              <apex:selectOptions value="{!yearOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp; Sort By: &nbsp;
+            <apex:selectList value="{!sortBy}" size="1">
+              <apex:selectOptions value="{!sortByOptions}" />
+            </apex:selectList>
+            <div style="margin: 5px"></div>
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <apex:inputCheckbox value="{!showOnlyNeedsAttention}" />
+              Needs Attention &nbsp;&nbsp;&nbsp;&nbsp;
+              <apex:inputCheckbox value="{!showOnlyNeedsReview}" />
+              Needs Additional Review &nbsp;&nbsp;
+              <apex:inputCheckbox value="{!showOnlyOverdue}" />
+              Overdue Reports &nbsp;&nbsp;
+            </apex:outputPanel>
+            <apex:commandButton
+              action="{!getLists}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+          </div>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">{!status}</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!items.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>Report Id</th>
+                    <th>
+                      <apex:outputText
+                        value="Organization"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>Grant</th>
+                    <th>Month</th>
+                    <th>Status</th>
+                    <th>Submitted Date</th>
+                    <th class="text-center">
+                      <apex:outputText
+                        value="Needs Attention"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th class="text-center">
+                      <apex:outputText
+                        value="Needs Additional Review"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                  </tr>
+                  <apex:repeat value="{!items}" var="i">
+                    <tr>
+                      <td>
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/MonthlyProgressReport?reportId='+i.Id+'&status='+status+'&month='+month)}"
+                        >
+                          {!i.Name}
+                        </a>
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.Organization_Name__c}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>{!i.Grant_Name__c}</td>
+                      <td>{!i.Month__c}</td>
+                      <td>{!i.Status__c}</td>
+                      <td>
+                        <apex:outputField value="{!i.Submitted_Date__c}" />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputField
+                          value="{!i.Needs_Attention__c}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputField
+                          value="{!i.Needs_Additional_Review__c}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!items.size == 0}">
+                No Reports Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

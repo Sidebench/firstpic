@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Factor_Type__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>BBBSA only: 
+if Factor Type = FTE, New Item Budget = New Rate * Estimated FTE (from Sub-Grant);
+if Factor Type = TCS, New Item Budget = New Rate * Youth Served % (from Sub-Grant);
+if Factor Type = Other, New Item Budget = New Rate * Other Factor %;</inlineHelpText>
+    <label>Factor Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>FTE</fullName>
+                <default>false</default>
+                <label>FTE</label>
+            </value>
+            <value>
+                <fullName>TCS</fullName>
+                <default>false</default>
+                <label>TCS</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>true</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

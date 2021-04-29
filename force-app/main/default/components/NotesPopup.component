@@ -1,0 +1,96 @@
+<apex:component>
+  <apex:attribute
+    type="Boolean"
+    name="displayNotesPopup"
+    description="displayNotesPopup"
+  />
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+  />
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="itemName" description="itemName" />
+  <apex:attribute
+    type="Boolean"
+    name="richText"
+    description="richText"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="readOnly"
+    description="readOnly"
+    default="false"
+  />
+
+  <apex:attribute type="String" name="localNote" description="localNote" />
+  <apex:attribute
+    type="String"
+    name="nationalNote"
+    description="nationalNote"
+  />
+  <apex:attribute
+    type="String"
+    name="nationalNotePrivate"
+    description="nationalNotePrivate"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayLocalNote"
+    description="displayLocalNote"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayNationalNote"
+    description="displayNationalNote"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayNationalNotePrivate"
+    description="displayNationalNotePrivate"
+    default="false"
+  />
+
+  <apex:outputPanel
+    styleClass="popupBackground"
+    layout="block"
+    rendered="{!displayNotesPopup}"
+  />
+  <apex:outputPanel
+    styleClass="custPopup"
+    layout="block"
+    rendered="{!displayNotesPopup}"
+  >
+    <div class="modal-dialog" style="text-align: left">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            {!header}
+            <apex:outputPanel rendered="{!header == null}">
+              Notes for &nbsp;<apex:outputText value="{!itemName}" />
+            </apex:outputPanel>
+          </h4>
+        </div>
+        <div class="modal-body">
+          <c:Notes
+            userAcctType="{!userAcctType}"
+            readOnly="{!readOnly}"
+            richText="{!richText}"
+            localNote="{!localNote}"
+            nationalNote="{!nationalNote}"
+            nationalNotePrivate="{!nationalNotePrivate}"
+            displayLocalNote="{!displayLocalNote}"
+            displayNationalNote="{!displayNationalNote}"
+            displayNationalNotePrivate="{!displayNationalNotePrivate}"
+          />
+        </div>
+        <div class="modal-footer">
+          <apex:componentBody />
+        </div>
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>

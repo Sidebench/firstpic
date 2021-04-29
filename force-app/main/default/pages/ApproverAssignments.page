@@ -1,0 +1,189 @@
+<apex:page
+  controller="ApproverAssignmentsCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Manage Approver Assignments</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="approverAssignments"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>Manage Approver Assignments</h2>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}"></c:ErrorMessage>
+
+        <div class="row" style="padding-bottom: 15px">
+          <div class="col-auto" style="padding-right: 0">Site:</div>
+          <div class="col-sm-12 col-md-2">
+            <apex:inputText value="{!keyword}" />
+          </div>
+          <div class="col-auto" style="padding-right: 0">
+            Primary Approver Name:
+          </div>
+          <div class="col-sm-12 col-md-2">
+            <apex:inputText value="{!primary}" />
+          </div>
+          <div class="col-auto" style="padding-right: 0">
+            Secondary Approver Name:
+          </div>
+          <div class="col-sm-12 col-md-2">
+            <apex:inputText value="{!secondary}" />
+          </div>
+          <div class="col-auto" style="padding-right: 0">
+            <apex:commandButton
+              action="{!getLists}"
+              value="Search"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+            <apex:commandButton
+              action="{!clear}"
+              value="Clear"
+              status="pageStatus"
+              styleClass="btn-small"
+              reRender="form"
+            >
+              <apex:param assignTo="{!keyword}" name="keyword" value="" />
+              <apex:param assignTo="{!primary}" name="primary" value="" />
+              <apex:param assignTo="{!secondary}" name="secondary" value="" />
+            </apex:commandButton>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Approvers On Leave</div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!onLeave.size > 0}">
+              <table width="100%">
+                <tr>
+                  <th>Name</th>
+                  <th></th>
+                </tr>
+                <apex:repeat value="{!onLeave}" var="i">
+                  <tr>
+                    <td>{!i.Name}</td>
+                    <td>
+                      <apex:commandLink
+                        action="{!removeFromLeave}"
+                        value="Remove from On Leave Status"
+                        status="pageStatus"
+                        reRender="form"
+                        rendered="{!NOT(readOnly)}"
+                      >
+                        <apex:param
+                          assignTo="{!approverId}"
+                          name="approverId"
+                          value="{!i.Id}"
+                        />
+                      </apex:commandLink>
+                    </td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </apex:outputPanel>
+            <apex:outputText
+              value="No approvers are currently on leave"
+              rendered="{!onLeave.size == 0}"
+            />
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Sites
+            <div class="pull-right">
+              <apex:commandButton
+                action="{!markAllOnLeave}"
+                value="Update all to On Leave status"
+                status="pageStatus"
+                styleClass="btn-small"
+                reRender="form"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:commandButton
+                value="Save"
+                action="{!save}"
+                styleClass="btn-small primary"
+                status="pageStatus"
+                reRender="form"
+                rendered="{!NOT(readOnly)}"
+              />
+            </div>
+          </div>
+          <div class="panel-body">
+            <table width="100%" class="tblWithBorders tbl-pd-md">
+              <tr>
+                <th>Site</th>
+                <th>Primary Approver</th>
+                <th>Secondary Approver</th>
+                <th class="text-center">Primary Approver On Leave</th>
+              </tr>
+              <apex:repeat value="{!accts}" var="i">
+                <tr>
+                  <td>{!i.Name}</td>
+                  <td>
+                    <apex:outputText
+                      value="{!i.Primary_Approver_Name__c}"
+                      rendered="{!readOnly}"
+                    />
+                    <apex:selectList
+                      value="{!i.Primary_Approver__c}"
+                      size="1"
+                      rendered="{!NOT(readOnly)}"
+                    >
+                      <apex:selectOptions value="{!primApprovers}" />
+                    </apex:selectList>
+                  </td>
+                  <td>
+                    <apex:outputText
+                      value="{!i.Secondary_Approver_Name__c}"
+                      rendered="{!readOnly}"
+                    />
+                    <apex:selectList
+                      value="{!i.Secondary_Approver__c}"
+                      size="1"
+                      rendered="{!NOT(readOnly)}"
+                    >
+                      <apex:selectOptions value="{!secApprovers}" />
+                    </apex:selectList>
+                  </td>
+                  <td class="text-center">
+                    <apex:outputField
+                      value="{!i.Primary_Approver_On_Leave__c}"
+                      rendered="{!readOnly}"
+                    />
+                    <apex:inputField
+                      value="{!i.Primary_Approver_On_Leave__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                  </td>
+                </tr>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <apex:commandButton
+          value="Save"
+          action="{!save}"
+          styleClass="primary"
+          status="pageStatus"
+          reRender="form"
+          rendered="{!NOT(readOnly)}"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}"></c:ErrorMessage>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

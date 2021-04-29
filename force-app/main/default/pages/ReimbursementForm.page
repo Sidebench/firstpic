@@ -1,0 +1,142 @@
+<apex:page controller="ReimbursementCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Reimbursement Request</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <apex:selectList
+          value="{!grantId}"
+          size="1"
+          rendered="{!grantId == null}"
+        >
+          <apex:selectOptions value="{!grant_list}" /> </apex:selectList
+        >&nbsp;&nbsp;
+        <apex:commandButton
+          action="{!getGrant}"
+          value="Next"
+          status="pageStatus"
+          styleClass="btn-small primary"
+          rendered="{!grantId == null}"
+        />
+
+        <apex:outputPanel rendered="{!grantId != null}">
+          <div class="row">
+            <div class="col-xs-6">
+              <h2>{!grant.Name}</h2>
+            </div>
+            <div class="col-xs-6 pull-right text-right">
+              <h2>
+                Balance: &nbsp;
+                <apex:outputField value="{!grant.Balance__c}" />
+              </h2>
+            </div>
+          </div>
+
+          <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+            <div class="panel panel-warning">
+              <div class="panel-heading">Notes</div>
+              <div class="panel-body">
+                <apex:outputField value="{!request.Request_Notes__c}" />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <apex:outputText value="Reimbursement Details" />
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-auto" style="font-weight: bold">
+                  Reimbursement Date Range:
+                </div>
+                <div class="col-auto">
+                  From: &nbsp;
+                  <apex:inputField
+                    value="{!request.Start_Date__c}"
+                    style="width: 100px; display: inline"
+                  />
+                </div>
+                <div class="col-auto">
+                  To: &nbsp;
+                  <apex:inputField
+                    value="{!request.End_Date__c}"
+                    style="width: 100px; display: inline"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  How many pay periods are in the request period? &nbsp;
+                  <apex:outputField
+                    value="{!request.Number_of_Pay_Periods__c}"
+                    style="width: auto; display: inline"
+                    rendered="{!requestId != null}"
+                  />
+                  <apex:inputField
+                    value="{!request.Number_of_Pay_Periods__c}"
+                    style="width: auto; display: inline"
+                    rendered="{!requestId == null}"
+                  />
+                </div>
+              </div>
+              <!--
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    Are you currently running the TRAIL curriculum? &nbsp;
+                                    <apex:inputField value="{!request.Currently_Running_Curriculum__c}" style="width: auto; display: inline;" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    If yes, what chapter are you on? &nbsp;
+                                    <apex:inputField value="{!request.Current_Chapter__c}" style="width: auto; display: inline;" />
+                                </div>
+                            </div>
+                            -->
+            </div>
+          </div>
+
+          <apex:commandButton
+            action="{!cancel}"
+            value="Cancel"
+            status="pageStatus"
+            styleClass="btn"
+          />
+          <apex:commandButton
+            action="{!upsertRequest}"
+            value="Save"
+            status="pageStatus"
+            styleClass="btn"
+          />
+          <apex:commandButton
+            action="{!saveAndExit}"
+            value="Save and Exit"
+            status="pageStatus"
+            styleClass="btn"
+          />
+          <apex:commandButton
+            action="{!goToPersonnelForm}"
+            value="Next"
+            status="pageStatus"
+            styleClass="btn primary"
+          />
+
+          <c:ErrorMessage errorMessage="{!warningMessage}" type="warning" />
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+        </apex:outputPanel>
+
+        <br /><br />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,452 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <c:AssessmentHeader
+          assess="{!assess}"
+          header="BOARD/GOVERNANCE STANDARDS"
+        />
+
+        <!--
+<c:AssessmentTabs userAcctType="{!userAcctType}" assessmentId="{!AssessmentId}" activeTabId="1" 
+page1="{!labels['Page1Tab']}" page2="{!labels['Page2Tab']}" page3="{!labels['Page3Tab']}" page4="{!labels['Page4Tab']}" 
+page5="{!labels['Page5Tab']}" page6="{!labels['Page6Tab']}" page7="{!labels['Page7Tab']}" page8="{!IF(assess.Year__c < 2019, labels['Page8Tab'], null)}" 
+hideStandards="{!assess.Hide_Standards__c}" save="{!save}" />
+-->
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="1"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 1']}</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S1_Board_Governance_Standards__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S1_Board_Governance_Standards__c}"
+                    textField="{!assess.S1_Board_Governance_Standards_Text__c}"
+                    label="{!labels['S1_Board_Governance_Standards__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 2']}</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S2a_Board_Charged_with_Governance__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S2a_Board_Charged_with_Governance__c}"
+                    label="{!labels['S2a_Board_Charged_with_Governance__c']}"
+                    textField="{!assess.S2a_Board_Charged_with_Governance_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                  <c:AssessmentStandardHeader
+                    header="{!labels['Standard 2 Subheader']}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4b_BBBSA_Approved_Name_of_Agency__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="BBBS Program Bylaws - must be approved by Board and Advisory Council"
+                    rendered="{!acct.Type == 'Sponsored'}"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4b_BBBSA_Approved_Name_of_Agency__c}"
+                    textField="{!assess.S4b_BBBSA_Approved_Name_of_Agency_Text__c}"
+                    label="{!labels['S4b_BBBSA_Approved_Name_of_Agency__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Governing_Authority_of_Board__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Governing_Authority_of_Board__c}"
+                    textField="{!assess.Governing_Authority_of_Board_Text__c}"
+                    label="{!labels['Governing_Authority_of_Board__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4b_Board_Meetings__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4b_Board_Meetings__c}"
+                    textField="{!assess.S4b_Board_Meetings_Text__c}"
+                    label="{!labels['S4b_Board_Meetings__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4b_Board_Membership__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4b_Board_Membership__c}"
+                    textField="{!assess.S4b_Board_Membership_Text__c}"
+                    label="{!labels['S4b_Board_Membership__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Nondiscrimination_Provision__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Nondiscrimination_Provision__c}"
+                    textField="{!assess.Nondiscrimination_Provision_Text__c}"
+                    label="{!labels['Nondiscrimination_Provision__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Provisions__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Provisions__c}"
+                    textField="{!assess.Provisions_Text__c}"
+                    label="{!labels['Provisions__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!i.Field_API__c == 'Voting__c'}">
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Voting__c}"
+                    textField="{!assess.Voting_Text__c}"
+                    label="{!labels['Voting__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4b_Officers__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4b_Officers__c}"
+                    textField="{!assess.S4b_Officers_Text__c}"
+                    label="{!labels['S4b_Officers__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4b_Committee_Structure__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4b_Committee_Structure__c}"
+                    textField="{!assess.S4b_Committee_Structure_Text__c}"
+                    label="{!labels['S4b_Committee_Structure__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Indemnification__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Indemnification__c}"
+                    textField="{!assess.Indemnification_Text__c}"
+                    label="{!labels['Indemnification__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Process_for_Amending__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Process_for_Amending__c}"
+                    textField="{!assess.Process_for_Amending_Text__c}"
+                    label="{!labels['Process_for_Amending__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'Books_and_Records__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.Books_and_Records__c}"
+                    textField="{!assess.Books_and_Records_Text__c}"
+                    label="{!labels['Books_and_Records__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4b_Procedure_for_Dissolving__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4b_Procedure_for_Dissolving__c}"
+                    textField="{!assess.S4b_Procedure_for_Dissolving_Text__c}"
+                    label="{!labels['S4b_Procedure_for_Dissolving__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4_Governance_and_Finance_Policies__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4_Governance_and_Finance_Policies__c}"
+                    textField="{!assess.S4_Governance_and_Finance_Policies_Text__c}"
+                    label="{!labels['S4_Governance_and_Finance_Policies__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S4a_Legal_Compliance__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 2C: Compliance"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S4a_Legal_Compliance__c}"
+                    textField="{!assess.S4a_Legal_Compliance_Text__c}"
+                    label="{!labels['S4a_Legal_Compliance__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S7a_BBBS_Program_Director__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="{!labels['Standard 2d']}"
+                    subheader="{!labels['Standard 2d Subheader']}"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S7a_BBBS_Program_Director__c}"
+                    textField="{!assess.S7a_BBBS_Program_Director_Text__c}"
+                    label="{!labels['S7a_BBBS_Program_Director__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S7a_Job_Description__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S7a_Job_Description__c}"
+                    textField="{!assess.S7a_Job_Description_Text__c}"
+                    label="{!labels['S7a_Job_Description__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S7a_Review_and_Evaluation__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S7a_Review_and_Evaluation__c}"
+                    textField="{!assess.S7a_Review_and_Evaluation_Text__c}"
+                    label="{!labels['S7a_Review_and_Evaluation__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S7b_Notification_of_Change__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S7b_Notification_of_Change__c}"
+                    textField="{!assess.S7b_Notification_of_Change_Text__c}"
+                    label="{!labels['S7b_Notification_of_Change__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S6_Clarity_of_Roles__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 2E. Board Development"
+                    subheader="{!labels['Standard 2e Subheader']}"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S6_Clarity_of_Roles__c}"
+                    textField="{!assess.S6_Clarity_of_Roles_Text__c}"
+                    label="{!labels['S6_Clarity_of_Roles__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+          <apex:outputPanel
+            rendered="{!assess.Year__c > 2019 && board_parentId != null}"
+          >
+            <div class="panel-footer">
+              <apex:commandButton
+                action="{!attPopup}"
+                value="Upload Board Development Plan"
+                status="pageStatus"
+                reRender="assessment"
+              >
+                <apex:param
+                  assignTo="{!fileName}"
+                  name="fileName"
+                  value="Board Development Plan"
+                />
+                <apex:param
+                  assignTo="{!parentId}"
+                  name="parentId"
+                  value="{!board_parentId}"
+                />
+              </apex:commandButton>
+              &nbsp;&nbsp;
+              <apex:repeat value="{!att_list}" var="a">
+                <apex:outputPanel
+                  rendered="{!a.Name == 'Board Development Plan'}"
+                >
+                  <apex:outputLink
+                    value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                    target="_blank"
+                  >
+                    {!a.Name}
+                  </apex:outputLink>
+                  ({!a.Description})
+                </apex:outputPanel>
+              </apex:repeat>
+            </div>
+          </apex:outputPanel>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 3']}</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S3_Strategic_Planning__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S3_Strategic_Planning__c}"
+                    textField="{!assess.S3_Strategic_Planning_Text__c}"
+                    label="{!labels['S3_Strategic_Planning__c']}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+          <apex:outputPanel
+            rendered="{!assess.Year__c > 2019 && strategic_parentId != null}"
+          >
+            <div class="panel-footer">
+              <apex:commandButton
+                action="{!attPopup}"
+                value="Upload Strategic and Annual Plan"
+                status="pageStatus"
+                reRender="assessment"
+              >
+                <apex:param
+                  assignTo="{!fileName}"
+                  name="fileName"
+                  value="Strategic and Annual Plan"
+                />
+                <apex:param
+                  assignTo="{!parentId}"
+                  name="parentId"
+                  value="{!strategic_parentId}"
+                />
+              </apex:commandButton>
+              &nbsp;&nbsp;
+              <apex:repeat value="{!att_list}" var="a">
+                <apex:outputPanel
+                  rendered="{!a.Name == 'Strategic and Annual Plan'}"
+                >
+                  <apex:outputLink
+                    value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                    target="_blank"
+                  >
+                    {!a.Name}
+                  </apex:outputLink>
+                  ({!a.Description})
+                </apex:outputPanel>
+              </apex:repeat>
+            </div>
+          </apex:outputPanel>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="1"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          year="{!assess.Year__c}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          parentId="{!parentId}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(2);
+    };
+  </script>
+</apex:page>

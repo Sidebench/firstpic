@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Most_Important_Drink__c</fullName>
+    <externalId>false</externalId>
+    <label>Most Important Drink</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>a. Milk</fullName>
+                <default>false</default>
+                <label>a. Milk</label>
+            </value>
+            <value>
+                <fullName>b. Gatorade</fullName>
+                <default>false</default>
+                <label>b. Gatorade</label>
+            </value>
+            <value>
+                <fullName>c. Water</fullName>
+                <default>false</default>
+                <label>c. Water</label>
+            </value>
+            <value>
+                <fullName>d. Fruit juice</fullName>
+                <default>false</default>
+                <label>d. Fruit juice</label>
+            </value>
+            <value>
+                <fullName>No Response</fullName>
+                <default>false</default>
+                <label>No Response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

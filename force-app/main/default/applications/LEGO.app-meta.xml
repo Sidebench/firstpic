@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-home</defaultLandingTab>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>LEGO</label>
+    <logo>Communities_Shared_Document_Folder/FIRST_logo_png.png</logo>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Contact</tabs>
+    <tabs>Session__c</tabs>
+    <tabs>Session_Report__c</tabs>
+    <tabs>Document__c</tabs>
+    <tabs>standard-report</tabs>
+</CustomApplication>

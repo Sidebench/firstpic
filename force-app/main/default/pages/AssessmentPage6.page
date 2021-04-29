@@ -1,0 +1,533 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>PROGRAM STANDARDS</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="6"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 10: Agency Information Management
+          </div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S10_Agency_Information_Management__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Agencies must use AIM systems for collecting, reporting,
+                  managing and analyzing program performance and outcomes.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S10_Agency_Information_Management_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 11: Outcomes System</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S11_Outcomes_System__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Agencies must use the BBBS Outcomes System, which currently
+                  includes collection, reporting, and analysis of data on the
+                  length, strength, and quality of matches; individual child
+                  outcomes; and the survey tools Strength of Relationship (SoR)
+                  and Youth Outcomes Survey (YOS)
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S11_Outcomes_System_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 12: Program Manual (Upload Program Manual Below)
+          </div>
+          <div class="panel-body">
+            <h5>
+              Each agency must have a written Program Manual that must contain
+              written procedures that address the folling, at a minimum:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Eligibility__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Eligibility: Written eligibility criteria for Volunteer Bigs,
+                  children, and parent/guardians that addresses the expectations
+                  of all parties and the ability of the child to form a
+                  relationship
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Eligibility_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Inquiry_and_Orientation__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Inquiry and Orientation</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Inquiry_and_Orientation_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Enrollment_of_Volunteer__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Enrollment of Volunteer Bigs and children</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Enrollment_of_Volunteer_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Pre_match_Training__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Pre-match Training</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Pre_match_Training_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Pre_matching_Matching__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Pre-matching and Matching</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Pre_matching_Matching_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Youth_Outcomes__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Youth Outcomes Development Plan</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Youth_Outcomes_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Match_Supervision__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Match Supervision and Support</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Match_Supervision_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Match_Closure__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Match Closure</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Match_Closure_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Reassessment_and_Rematch__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Reassessment and Rematch</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Reassessment_and_Rematch_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Agency_Staff_Training__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Agency Staff training</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Agency_Staff_Training_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Document_Retention__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Document retention and confidentiality</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Document_Retention_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Agency_Information_Management__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Agency Information Management System</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Agency_Information_Management_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Outcomes_System__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Big Brothers Big Sisters Outcomes System</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Outcomes_System_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S12_Quality_Assurance__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>Quality Assurance</td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S12_Quality_Assurance_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="panel-footer">
+            <apex:commandButton
+              action="{!attPopup}"
+              value="Upload Program Manual"
+              status="pageStatus"
+              reRender="assessment"
+            >
+              <apex:param
+                assignTo="{!fileName}"
+                name="fileName"
+                value="Program Manual"
+              />
+              <apex:param
+                assignTo="{!parentId}"
+                name="parentId"
+                value="{!program_parentId}"
+              />
+            </apex:commandButton>
+            &nbsp;&nbsp;
+            <apex:repeat value="{!att_list}" var="a">
+              <apex:outputPanel rendered="{!a.Name == 'Program Manual'}">
+                <apex:outputLink
+                  value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                  target="_blank"
+                >
+                  {!a.Name}
+                </apex:outputLink>
+                ({!a.Description})
+              </apex:outputPanel>
+            </apex:repeat>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 13: Non-Discrimination</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S13_Non_Discrimination_of_Children__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Children are not excluded on the basis of race, religion,
+                  national origin, color, gender, marital status of parent,
+                  sexual orientation, gender identity, veteran status or
+                  disability
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S13_Non_Discrimination_of_Children_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S13_Staff_Non_Discrimination__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Volunteer Big Brothers, Big Sisters, Board Members, and Agency
+                  Staff as Volunteer Bigs are not excluded on the basis of race,
+                  religion, national origin, color, gender, marital status,
+                  sexual orientation, gender identity, veteran status, or
+                  disability
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S13_Staff_Non_Discrimination_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="6"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          parentId="{!parentId}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(7);
+    };
+  </script>
+</apex:page>

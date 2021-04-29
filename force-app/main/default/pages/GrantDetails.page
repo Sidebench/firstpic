@@ -1,0 +1,203 @@
+<apex:page
+  controller="GrantDetailsController"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Grant Details</title>
+  </head>
+  <c:Header
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'BBBS' || portalName == ''}"
+  />
+  <c:NPALHeader
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+
+  <apex:form id="form">
+    <apex:outputPanel id="grantDetails">
+      <div class="main-panel">
+        <div class="content">
+          <div class="row">
+            <div class="col-xs-6">
+              <h2>{!grant.Name}</h2>
+            </div>
+            <div class="col-xs-6 pull-right text-right">
+              <h2>
+                Total: &nbsp;
+                <apex:outputField value="{!grant.Amount__c}" />
+              </h2>
+            </div>
+          </div>
+          <table class="table">
+            <tr>
+              <td>
+                <span style="font-weight: bold"> Total Awarded Amount: </span>
+                <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                  <apex:param value="{!awarded}" />
+                </apex:outputText>
+              </td>
+              <td>
+                <span style="font-weight: bold"> Total Budgeted Amount: </span>
+                <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                  <apex:param value="{!budgeted}" />
+                </apex:outputText>
+              </td>
+              <td>
+                <span style="font-weight: bold"> Total Requested Amount: </span>
+                <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                  <apex:param value="{!requested}" />
+                </apex:outputText>
+              </td>
+              <td>
+                <span style="font-weight: bold"> Total Approved Amount: </span>
+                <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                  <apex:param value="{!approved}" />
+                </apex:outputText>
+              </td>
+              <td>
+                <span style="font-weight: bold"> Status: &nbsp;&nbsp; </span>
+                {!grant.Grant_Status__c}
+              </td>
+            </tr>
+          </table>
+
+          <apex:outputPanel rendered="{!hasLabor}">
+            <div class="panel panel-default">
+              <apex:repeat value="{!labor_map}" var="cat">
+                <div class="panel-heading sub-panel-heading">
+                  <apex:outputText value="{!cat}" />
+                </div>
+                <div class="panel-body">
+                  <table class="fixedTbl">
+                    <tr>
+                      <th>Name</th>
+                      <th>Title</th>
+                      <th>Item Budget</th>
+                      <th>Total Requested Amount</th>
+                      <th>Total Approved Amount</th>
+                      <th>Item Balance</th>
+                    </tr>
+                    <apex:repeat value="{!labor_map[cat]}" var="i">
+                      <tr>
+                        <td>{!i.Name}</td>
+                        <td>{!i.Title__c}</td>
+                        <td>{!i.Item_Budget__c}</td>
+                        <td>{!i.Total_Requested_Amount__c}</td>
+                        <td>{!i.Total_Approved_Amount__c}</td>
+                        <td>{!i.Item_Balance__c}"/></td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+              </apex:repeat>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!hasExpenses}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Expenses</div>
+              <apex:repeat value="{!expense_map}" var="cat">
+                <div class="panel-heading sub-panel-heading">
+                  <apex:outputText value="{!cat}" />
+                </div>
+                <div class="panel-body">
+                  <table class="fixedTbl">
+                    <tr>
+                      <th>Name</th>
+                      <th>Title</th>
+                      <th>Item Budget</th>
+                      <th>Total Requested Amount</th>
+                      <th>Total Approved Amount</th>
+                      <th>Item Balance</th>
+                    </tr>
+                    <apex:repeat value="{!expense_map[cat]}" var="i">
+                      <tr>
+                        <td>{!i.Name}</td>
+                        <td>{!i.Title__c}</td>
+                        <td>{!i.Item_Budget__c}</td>
+                        <td>{!i.Total_Requested_Amount__c}</td>
+                        <td>{!i.Total_Approved_Amount__c}</td>
+                        <td>{!i.Item_Balance__c}"/></td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+              </apex:repeat>
+            </div>
+          </apex:outputPanel>
+
+          <c:Documents
+            header="Grant Specific Documents"
+            showStatus="true"
+            showRequired="true"
+            showUploadBtn="false"
+            enableDeleteAtt="true"
+            emptyListText="No Grant Documents Found"
+          />
+
+          <!-- BEGIN Page Actions -->
+          <apex:outputPanel
+            rendered="{!userAcct.RecordType.Name == 'National Organization'}"
+          >
+            <apex:outputPanel
+              rendered="{!NOT(CONTAINS(currentUser.Profile.Name, 'Accounts Payable'))}"
+            >
+              <apex:commandButton
+                value="Sub-Grants"
+                action="{!URLFOR($Site.Prefix+'/SubGrants?grantId='+GrantID)}"
+              />
+              <apex:commandButton
+                value="Reimbursements"
+                action="{!URLFOR($Site.Prefix+'/Reimbursements?GrantID='+GrantID)}"
+              />
+            </apex:outputPanel>
+            <apex:commandButton
+              value="Drawdown Reports"
+              action="{!createDrawdown}"
+              styleClass="primary"
+              rendered="{!portalName == 'BBBS'}"
+            />
+            <apex:commandButton
+              value="Drawdown Reports"
+              action="{!URLFOR($Site.Prefix+'/Drawdowns?grantId='+ grant.Id)}"
+              styleClass="primary"
+              rendered="{!portalName == 'NPAL'}"
+            />
+            <apex:commandButton
+              value="Close All Grants"
+              action="{!showCloseGrantPopup}"
+              reRender="form"
+              rendered="{!canCloseGrant && (portalName == 'NPAL' || CONTAINS(approverLevel, 'Admin'))}"
+            />
+          </apex:outputPanel>
+          <!-- END Page Actions -->
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <c:ConfirmationPopup
+            header="Close All Grants"
+            body="This will close all Associated sub-grants."
+            displayConfirmPopup="{!displayCloseGrantPopup}"
+          >
+            <apex:commandButton
+              value="Cancel"
+              action="{!hideCloseGrantPopup}"
+            />
+            <apex:commandButton
+              value="Close All Grants"
+              styleClass="primary"
+              action="{!closeGrant}"
+            />
+          </c:ConfirmationPopup>
+        </div>
+      </div>
+    </apex:outputPanel>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,104 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Frequently Asked Questions</title>
+  </head>
+  <c:LEGOHeader ActivePage="help" acct="{!userAcct}" />
+
+  <div class="main-panel">
+    <div class="content">
+      <h2 class="text-center">
+        FirstPic Reporting Site Frequently Asked Questions
+      </h2>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <strong>Link to Login:</strong>
+              <a href="https://firstpic.force.com/lego/login" target="_blank"
+                >https://firstpic.force.com/lego/login</a
+              >
+              <br />
+              <strong>Recommended Browser:</strong> Google Chrome
+              <br />
+              All updates to the system will be shared in the “What’s New”
+              section on the home page of the reporting site. There you will see
+              any and all new updates and capabilities, as well as any bug
+              fixes.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">General Information</div>
+        <div class="panel-body">
+          <p>
+            <strong
+              >Q: I never received my login information. Where do I get
+              it? </strong
+            >
+            <br />
+            A: Please reach out to support@firstpic.org and we will resend your
+            information.
+          </p>
+          <p>
+            <strong>Q: I lost/forgot my password. What should I do?  </strong>
+            <br />
+            A: Reach out to support@firstpic.org and your password will be
+            resent.
+          </p>
+          <p>
+            <strong
+              >Q: I am trying to enter myself as a coach, but it is not
+              accepting my email. </strong
+            >
+            <br />
+            A: Your email is already associated with your login information. You
+            can either enter a different email or a fake one.
+          </p>
+          <p>
+            <strong
+              >Q: One of my coaches is also a parent of one of the participating
+              youth, but it is not accepting their email for the coach
+              information. </strong
+            >
+            <br />
+            A: The email is likely already associated with the parent info, and
+            cannot be duplicated. You can enter an alternate or a fake email.
+          </p>
+          <p>
+            <strong
+              >Q: I don’t see where I can enter meeting information. </strong
+            >
+            <br />
+            A: If you scroll to the bottom, you will see individual cohorts. You
+            must enter in meeting information for all of your cohorts. Select
+            the name and it will take you to a different screen where you can
+            edit meeting information for that particular cohort.
+          </p>
+          <p>
+            <strong
+              >Q: I submitted a report and forgot to add something. How can I go
+              back and edit my report? </strong
+            >
+            <br />
+            A: Please reach out to support@firstpic.org and we will send your
+            report back for revisions. Don’t forget to select ‘Submit’ again.
+          </p>
+          <p>
+            <strong
+              >Q: There seems to be some sort of glitch when I try to enter
+              information into the system. </strong
+            >
+            <br />
+            A: Please reach out to support@firstpic.org, and be as detailed as
+            you possibly can with the issue being reported. The way in which we
+            remedy issues in the reporting system is by attempting to recreate
+            it ourselves. If you don’t detail your process, we can’t recreate
+            the issue with any precision.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

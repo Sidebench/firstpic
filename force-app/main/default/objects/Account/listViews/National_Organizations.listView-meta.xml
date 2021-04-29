@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>National_Organizations</fullName>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>FirstPic_Org_Code__c</columns>
+    <columns>Has_Sites__c</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>ACCOUNT.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Account.National_Organization</value>
+    </filters>
+    <label>National Organizations</label>
+    <sharedTo>
+        <allInternalUsers />
+    </sharedTo>
+</ListView>

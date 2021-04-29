@@ -1,0 +1,264 @@
+<apex:page
+  controller="SubGrantsCtrl"
+  action="{!getOptions}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Sub-Grants</title>
+  </head>
+  <c:HeaderSwitch
+    activePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    grantId="{!grantId}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2 style="display: inline">Sub-Grants</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel id="filters">
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization'}"
+              >
+                Organization: &nbsp;<apex:inputText
+                  value="{!orgName}"
+                  style="width: 400px"
+                />
+                <div style="margin: 5px"></div>
+              </apex:outputPanel>
+              &nbsp;&nbsp; Grant: &nbsp;
+              <apex:selectList value="{!grantId}" size="1">
+                <apex:selectOptions value="{!grantOptions}" />
+                <apex:actionSupport
+                  action="{!getStatusOptions}"
+                  event="onchange"
+                  reRender="filters"
+                />
+              </apex:selectList>
+              &nbsp;&nbsp; Sub-Grant Name: &nbsp;<apex:inputText
+                value="{!grantName}"
+                styleClass="input-md"
+              />
+              <div style="margin: 5px"></div>
+              <apex:outputPanel
+                rendered="{!portalName == 'Ripken' && userAcctType == 'National Organization'}"
+              >
+                &nbsp;&nbsp; Funder: &nbsp;
+                <apex:selectList
+                  value="{!sourceType}"
+                  size="1"
+                  id="sourceTypeOptions"
+                >
+                  <apex:selectOptions value="{!sourceTypeOptions}" />
+                </apex:selectList>
+                <div style="margin: 5px"></div>
+              </apex:outputPanel>
+              &nbsp;&nbsp; Status: &nbsp;
+              <apex:selectList value="{!status}" size="1" id="statusOptions">
+                <apex:selectOptions value="{!statusOptions}" />
+              </apex:selectList>
+              &nbsp;&nbsp; Sort By: &nbsp;
+              <apex:selectList value="{!sortBy}" size="1">
+                <apex:selectOptions value="{!sortByOptions}" />
+              </apex:selectList>
+              &nbsp;
+              <apex:commandButton
+                action="{!getLists}"
+                value="Update"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                reRender="form"
+              />
+            </apex:outputPanel>
+          </div>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {!status}
+              <apex:outputText
+                value="Sub-Grants"
+                rendered="{!status == null || status == ''}"
+              />
+              <div class="pull-right">
+                <apex:outputPanel styleClass="pull-right">
+                  <apex:commandButton
+                    action="{!getLists}"
+                    value="View All"
+                    status="pageStatus"
+                    styleClass="btn-small pull-right"
+                    rendered="{!NOT(viewAll)}"
+                    reRender="form"
+                  >
+                    <apex:param
+                      assignTo="{!viewAll}"
+                      name="viewAll"
+                      value="true"
+                    />
+                  </apex:commandButton>
+                  <apex:commandButton
+                    action="{!getLists}"
+                    value="View My Assignments"
+                    status="pageStatus"
+                    styleClass="btn-small pull-right"
+                    rendered="{!viewAll && userAcctType = 'National Organization'}"
+                    reRender="form"
+                  >
+                    <apex:param
+                      assignTo="{!viewAll}"
+                      name="viewAll"
+                      value="false"
+                    />
+                  </apex:commandButton>
+                </apex:outputPanel>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/SubGrantsXLS?grantId='+ grantId +'&status='+ status +'&orgName='+ orgName +'&grantName='+ grantName +'&sortBy='+ sortBy)}"
+                  class="btn btn-small btn-white"
+                  target="_blank"
+                >
+                  Export Results
+                </a>
+              </div>
+            </div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!subgrants.size > 0}">
+                <table style="width: 100%">
+                  <tr>
+                    <th>Sub-Grant Name</th>
+                    <th
+                      style="{!IF(userAcctType == 'National Organization','','width: 0')}"
+                    >
+                      <apex:outputText
+                        value="Organization"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>Awarded</th>
+                    <th>Total Budgeted</th>
+                    <th>Requested Amount</th>
+                    <th>Approved Amount</th>
+                    <th style="{!IF(portalName == 'Ripken','','width: 0')}">
+                      <apex:outputText
+                        value="Submitted Balance"
+                        rendered="{!portalName == 'Ripken'}"
+                      />
+                    </th>
+                    <th>Balance</th>
+                    <th style="{!IF(displayStatus,'','width: 0')}">
+                      <apex:outputText
+                        value="Status"
+                        rendered="{!displayStatus}"
+                      />
+                    </th>
+                  </tr>
+                  <apex:repeat value="{!subgrants}" var="i">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          action="{!URLFOR($Site.Prefix+'/BudgetDetails?grantId='+ i.id)}"
+                          target="_blank"
+                          value="{!i.Name}"
+                          rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != 'DMV'}"
+                        />
+                        <apex:commandLink
+                          action="{!URLFOR($Site.Prefix+'/SubGrantDetails?grantId='+ i.id)}"
+                          value="{!i.Name}"
+                          rendered="{!portalName == 'BBBS'}"
+                        />
+                        <apex:commandLink
+                          action="{!URLFOR($Site.Prefix+'/NPALSubGrantDetails?grantId='+ i.id)}"
+                          value="{!i.Name}"
+                          rendered="{!portalName == 'NPAL'}"
+                          target="_blank"
+                        />
+                        <apex:commandLink
+                          action="{!URLFOR($Site.Prefix+'/DMVSubGrantDetails?grantId='+ i.id)}"
+                          value="{!i.Name}"
+                          rendered="{!portalName == 'DMV'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.Account__r.Name}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield value="{!i.Amount__c}" />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!i.Total_Budgeted__c}" />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Reimbursement_Requested_Amount__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Reimbursement_Approved_Amount__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Submitted_Balance__c}"
+                          rendered="{!portalName == 'Ripken'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield value="{!i.Balance__c}" />
+                      </td>
+                      <td>
+                        <apex:outputField
+                          value="{!i.Grant_Status__c}"
+                          rendered="{!displayStatus && (userAcctType == 'National Organization' || NOT(CONTAINS(i.Grant_Status__c, 'Pending')))}"
+                        />
+                        <apex:outputText
+                          value="Pending Approval"
+                          rendered="{!displayStatus && userAcctType == 'Local Organization' && CONTAINS(i.Grant_Status__c, 'Pending')}"
+                        />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!subgrants.size == 0}">
+                No Sub-Grants Found
+              </apex:outputPanel>
+            </div>
+
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+
+        <apex:commandButton
+          action="{!getLists}"
+          value="View Closed Grants"
+          reRender="form"
+          rendered="{!status != 'Closed' && userAcctType == 'Local Organization'}"
+        >
+          <apex:param assignTo="{!status}" name="status" value="Closed" />
+        </apex:commandButton>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,638 @@
+<apex:page
+  controller="DocumentRepositoryCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Document Repository</title>
+  </head>
+  <c:Header
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'BBBS'}"
+  />
+  <c:NCAIHeader
+    ActivePage="documents"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!CONTAINS(portalName, 'NCAI')}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <!-- Page 1 -->
+        <apex:outputPanel rendered="{!orgId == null && grantId == null}">
+          <div class="row">
+            <div class="col-auto">
+              <h2 style="display: inline">Organizations</h2>
+            </div>
+            <div class="col-auto pull-right">
+              Export to Excel: &nbsp;
+              <select onChange="window.open(this.value,'_blank')">
+                <option value="{!URLFOR($Site.Prefix+'/Compliance')}">
+                  -- Select a Report --
+                </option>
+                <option
+                  value="{!URLFOR($Site.Prefix+'/DocumentRepositoryXLS')}"
+                >
+                  All Documents
+                </option>
+                <option
+                  value="{!URLFOR($Site.Prefix+'/DocumentRepositoryXLS?reportType=compliance')}"
+                >
+                  All Grant Compliance Documents
+                </option>
+                <option
+                  value="{!URLFOR($Site.Prefix+'/DocumentRepositoryXLS?reportType=grant')}"
+                >
+                  Grant Specific Documents
+                </option>
+              </select>
+              <div style="margin: 5px"></div>
+              Name<apex:outputText
+                value=" or BBBS Id"
+                rendered="{!portalName == 'BBBS'}"
+              />: &nbsp;
+              <apex:inputText
+                value="{!keyword}"
+                style="display: inline-block; width: 400px"
+              />
+              &nbsp;
+              <div style="margin: 5px"></div>
+              &nbsp;&nbsp; Hold Status: &nbsp;
+              <apex:selectList
+                value="{!holdStatus}"
+                size="1"
+                id="holdStatusOptions"
+              >
+                <apex:selectOptions value="{!holdStatusOptions}" />
+              </apex:selectList>
+              &nbsp;&nbsp; Hold Reason: &nbsp;
+              <apex:selectList
+                value="{!holdReason}"
+                size="1"
+                id="holdReasonOptions"
+              >
+                <apex:selectOptions value="{!holdReasonOptions}" />
+              </apex:selectList>
+              <apex:commandButton
+                action="{!getLists}"
+                value="Search"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                reRender="form"
+              />
+            </div>
+          </div>
+          <br />
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <table style="width: 100%" class="table">
+                <tr>
+                  <th>
+                    <apex:outputText
+                      value="Organization Id"
+                      rendered="{!portalName == 'BBBS'}"
+                    />
+                  </th>
+                  <th>Organization Name</th>
+                  <th>
+                    <apex:outputText
+                      value="{!IF(portalName == 'BBBS', 'Grant Status', 'Renewal Status')}"
+                    />
+                  </th>
+                  <th>
+                    <apex:outputText
+                      value="Sam.Gov Status"
+                      rendered="{!CONTAINS(portalName, 'NCAI')}"
+                    />
+                  </th>
+                  <th>Hold Status</th>
+                  <th>Hold Reason</th>
+                  <th>Hold Last Updated Date</th>
+                </tr>
+                <apex:repeat value="{!orgs}" var="i">
+                  <tr>
+                    <td>
+                      <apex:outputText
+                        value="{!i.BBBS_ID__c}"
+                        rendered="{!portalName == 'BBBS'}"
+                      />
+                    </td>
+                    <td>
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/DocumentRepository?orgId='+i.Id)}"
+                      >
+                        {!i.Name}
+                      </a>
+                    </td>
+                    <td>{!i.Active_Grant_Status__c}</td>
+                    <td>
+                      <apex:outputText
+                        value="{!i.DUNS_Current_Status__c}"
+                        rendered="{!CONTAINS(portalName, 'NCAI') && i.RecordType.Name != 'Site'}"
+                      />
+                    </td>
+                    <td>{!i.Hold_Status__c}</td>
+                    <td>{!i.Hold_Reason__c}</td>
+                    <td><apex:outputField value="{!i.Hold_Date__c}" /></td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Page 1 -->
+
+        <!-- BEGIN Page 2 -->
+        <apex:outputPanel rendered="{!orgId != null && grantId == null}">
+          <h2>
+            {!page2title}
+            <div class="pull-right" style="margin-bottom: 10px">
+              <apex:commandButton
+                value="Update SAM.gov Date"
+                action="{!showEditDunsPopup}"
+                styleClass="btn-small"
+                reRender="editDunsPopup"
+              />
+              <apex:commandButton
+                action="{!showContactPopup}"
+                value="View Contacts"
+                styleClass="btn-small"
+              />
+            </div>
+          </h2>
+          <table class="table">
+            <tr>
+              <td>
+                <span style="font-weight: bold">
+                  DUNS Number: &nbsp;&nbsp;
+                </span>
+                <apex:outputText value="{!org.DUNS_Number__c}" />
+              </td>
+              <td>
+                <span style="font-weight: bold"> DUNS Name: &nbsp;&nbsp; </span>
+                <apex:outputText value="{!org.DUNS_Name__c}" />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  SAM.gov Expiration Date: &nbsp;&nbsp;
+                </span>
+                <apex:outputField value="{!org.DUNS_Exp_Date__c}" />
+              </td>
+              <td>
+                <apex:outputPanel rendered="{!org.RecordType.Name != 'Site'}">
+                  <span style="font-weight: bold">
+                    SAM.gov Current Status: &nbsp;&nbsp;
+                  </span>
+                  <apex:outputText value="{!org.DUNS_Current_Status__c}" />
+                </apex:outputPanel>
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  SAM.gov Review Status: &nbsp;&nbsp;
+                </span>
+                <apex:outputText value="{!org.DUNS_Review_Status__c}" />
+              </td>
+            </tr>
+          </table>
+
+          <c:HoldStatus
+            org="{!org}"
+            portalName="{!portalName}"
+            approverLevel="{!approverLevel}"
+            displayUpdateBtn="{!displayUpdateBtn}"
+            showOnHoldPopup="{!showOnHoldPopup}"
+            rendered="{!org.National_Grants__c != 'OVC'}"
+          />
+
+          <apex:outputPanel
+            rendered="{!CONTAINS(portalName, 'NCAI') && org.National_Grants__c != 'OVC'}"
+          >
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="panel panel-info">
+                  <div class="panel-heading">Instructions</div>
+                  <div class="panel-body">
+                    <ul>
+                      <li>
+                        Please note: Implementation Plans must be uploaded for
+                        each individual site. For instructions on how to do so,
+                        please click&nbsp;
+                        <apex:outputLink
+                          value="{!$Resource.TRAILDocRepoImplementationUpload}"
+                          target="_blank"
+                          >here</apex:outputLink
+                        >.
+                      </li>
+                      <li>
+                        For a brief overview recording on how to use the
+                        Documents Repository, please click
+                        <a
+                          href="https://screencast-o-matic.com/watch/cYXlDiMGJj"
+                          target="_blank"
+                          >here</a
+                        >.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!CONTAINS(portalName, 'NCAI') && org.National_Grants__c != 'OVC'}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Templates - Please use these downloadable templates to upload
+                your required documents below
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-4 text-left">
+                    <apex:outputLink
+                      value="{!$Resource.Community_Health_Partner_MOA}"
+                      target="_blank"
+                    >
+                      Community Health Partner MOA
+                    </apex:outputLink>
+                  </div>
+                  <div class="col-xs-4 text-left">
+                    <apex:outputLink
+                      value="{!$Resource.Healthy_Snack_Recipe}"
+                      target="_blank"
+                    >
+                      Healthy Snack Recipe
+                    </apex:outputLink>
+                  </div>
+                  <div class="col-xs-4 text-left">
+                    <apex:outputLink
+                      value="{!$Resource.TRAIL_Implementation_Plan}"
+                      target="_blank"
+                    >
+                      T.R.A.I.L. Implementation Plan
+                    </apex:outputLink>
+                  </div>
+                  <div class="col-xs-4 text-left">
+                    <apex:outputLink
+                      value="{!$Resource.TRAIL_Verification_Letter }"
+                      target="_blank"
+                    >
+                      T.R.A.I.L. Verification Letter
+                    </apex:outputLink>
+                  </div>
+                  <div class="col-xs-4 text-left">
+                    <apex:outputLink
+                      value="{!$Resource.Contact_Form}"
+                      target="_blank"
+                    >
+                      Contact Form
+                    </apex:outputLink>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!grants.size > 0}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Grant Specific Documents</div>
+              <div class="panel-body">
+                <table style="width: 100%" class="table">
+                  <tr>
+                    <th>Sub-grant name</th>
+                    <th class="text-center">Attachments</th>
+                  </tr>
+                  <apex:repeat value="{!grants}" var="i">
+                    <tr>
+                      <td>
+                        <apex:outputLink
+                          value="{!URLFOR($Site.Prefix+'/SubGrantDocuments?grantId=' + i.Id)}"
+                          rendered="{!portalName == 'BBBS'}"
+                        >
+                          {!i.Name}
+                        </apex:outputLink>
+                        <apex:outputText
+                          rendered="{!CONTAINS(portalName, 'NCAI')}"
+                        >
+                          {!i.Name}
+                        </apex:outputText>
+                      </td>
+                      <td class="text-center">
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/DocumentRepository?orgId='+orgId+'&grantId='+i.Id)}"
+                        >
+                          <span class="glyphicon glyphicon-folder-open"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <c:Documents
+            header="{!allDocsHeader}"
+            enableDeleteAtt="{!enableDeleteAtt}"
+            showStatus="true"
+            showDueDate="true"
+            showAccessMode="{!showAccessMode}"
+            year="{!year}"
+            years="{!yearOptions}"
+            showYearOptions="{!showYearOptions}"
+            showRequired="{!showRequired}"
+            hasAdmin="{!hasAdmin}"
+            showAttPopupOnly="{!userAcctType == 'Local Organization'}"
+            showUploadBtn="{!userAcctType == 'National Organization'}"
+            showNotesForNational="{!userAcctType == 'National Organization'}"
+            showModHist="{!userAcctType == 'National Organization'}"
+            groupId="Organization Documents"
+            newDocGroupId="Organization Documents"
+            rendered="{!org.National_Grants__c != 'OVC'}"
+          >
+            <apex:outputPanel rendered="{!displayUploadHelpText}">
+              <p style="font-weight: bold; margin-top: 15px">
+                Please note that all documents must be saved as PDF files upon
+                completion in order to effectively upload to the Required
+                Documents section. You can do this by selecting ‘Save As’ on
+                your document and clicking the PDF option from the ‘Save as
+                type’ dropdown menu.
+              </p>
+            </apex:outputPanel>
+          </c:Documents>
+
+          <apex:outputLink
+            value="{!URLFOR($Site.Prefix+'/DocumentRepository')}"
+            styleClass="btn"
+          >
+            Back
+          </apex:outputLink>
+        </apex:outputPanel>
+        <!-- END Page 2 -->
+
+        <!-- BEGIN Page 3 -->
+        <apex:outputPanel rendered="{!grantId != null}">
+          <h2>{!grant.Name}</h2>
+
+          <apex:outputPanel rendered="{!displayAtts}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Attachments</div>
+              <div class="panel-body">
+                <table width="100%" class="tblWithBorders">
+                  <tr>
+                    <th>Compliance Document Name</th>
+                  </tr>
+                  <apex:repeat value="{!atts}" var="a">
+                    <tr>
+                      <td>
+                        <apex:outputLink
+                          value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                          style="margin-right: 10px"
+                          target="_blank"
+                        >
+                          {!a.Name}
+                        </apex:outputLink>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <c:Documents
+            header="Grant Specific Documents"
+            showStatus="true"
+            showAccessMode="{!grant.National_Grant_Type__c != 'OVC'}"
+            showDueDate="true"
+            showNotesForNational="{!grant.National_Grant_Type__c != 'OVC'}"
+            hasAdmin="{!hasAdmin}"
+            showModHist="true"
+            showRequired="true"
+            showUploadBtn="true"
+            enableDeleteAtt="{!CONTAINS(approverLevel, 'Admin') || grant.National_Grant_Type__c == 'OVC'}"
+            rendered="{!portalName == 'BBBS' || grant.National_Grant_Type__c == 'OVC'}"
+          />
+
+          <a
+            href="{!URLFOR($Site.Prefix+'/DocumentRepository?orgId='+orgId)}"
+            class="btn"
+          >
+            Back
+          </a>
+        </apex:outputPanel>
+        <!-- END Page 3 -->
+
+        <!-- BEGIN Edit Duns -->
+        <apex:outputPanel id="editDunsPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayEditDunsPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayEditDunsPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Edit SAM.gov Expiration Date</h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <apex:outputText
+                    value="This only updates the date in the Online Reporting Site and will not update your SAM/DUNS in Sam.Gov"
+                    rendered="{!userAcctType != 'National Organization'}"
+                  />
+                  <div class="row">
+                    <div class="col-xs-6">
+                      D.U.N.S Name &nbsp;&nbsp;
+                      <apex:inputField value="{!org.DUNS_Name__c}" />
+                    </div>
+                    <div class="col-xs-6">
+                      SAM.gov Expiration Date &nbsp;&nbsp;
+                      <apex:input type="date" value="{!dunsExpDate}" />
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideEditDunsPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    reRender="editDunsPopup"
+                  />
+                  <apex:commandButton
+                    action="{!updateDuns}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Edit Duns -->
+
+        <!-- BEGIN Edit On Hold -->
+        <apex:outputPanel id="onHoldPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayOnHoldPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayOnHoldPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Update Hold Status</h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <table width="100%">
+                    <tr>
+                      <td>
+                        <strong>Hold Status &nbsp;&nbsp;</strong>
+                        <apex:inputField value="{!org.Hold_Status__c}" />
+                      </td>
+                      <td>
+                        <strong>Hold Reason &nbsp;&nbsp;</strong>
+                        <apex:selectList value="{!org.Hold_Reason__c}" size="1">
+                          <apex:selectOptions value="{!holdReasonOptions}" />
+                        </apex:selectList>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">
+                        <br />
+                        <strong>Hold Notes &nbsp;&nbsp;</strong>
+                        <apex:inputField value="{!org.Hold_Notes__c}" />
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideOnHoldPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    reRender="onHoldPopup"
+                  />
+                  <apex:commandButton
+                    action="{!updateHold}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Edit On Hold -->
+
+        <!-- BEGIN Contact Popup -->
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayContactPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopupLg"
+          layout="block"
+          rendered="{!displayContactPopup}"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Contacts &amp; Users</h4>
+              </div>
+              <div
+                class="modal-body"
+                style="max-height: 350px; overflow: scroll"
+              >
+                <apex:outputPanel rendered="{!contacts.size > 0}">
+                  <h5>Contacts</h5>
+                  <table class="table pad-sm borders-none">
+                    <tr>
+                      <th>Name</th>
+                      <th>Role</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                    </tr>
+                    <apex:repeat value="{!contacts}" var="i">
+                      <tr>
+                        <td>{!i.Name}</td>
+                        <td>{!i.Role__c}</td>
+                        <td>{!i.Email}</td>
+                        <td>{!i.Phone}</td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!contacts.size == 0}">
+                  This Affiliate does not have any contacts.
+                </apex:outputPanel>
+                <hr />
+                <apex:outputPanel rendered="{!users.size > 0}">
+                  <h5>Users</h5>
+                  <table style="width: 100%">
+                    <tr>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Email</th>
+                      <th>Profile</th>
+                      <th>Is Active?</th>
+                    </tr>
+                    <apex:repeat value="{!users}" var="i">
+                      <tr>
+                        <td>{!i.FirstName}</td>
+                        <td>{!i.LastName}</td>
+                        <td>{!i.Email}</td>
+                        <td>
+                          <apex:outputText
+                            value="{!SUBSTITUTE(i.Profile.Name, 'BBBS', '')}"
+                          />
+                        </td>
+                        <td>
+                          <apex:outputText
+                            value="{!IF(i.IsActive, 'Yes', 'No')}"
+                          />
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!users.size == 0}">
+                  No Users Found
+                </apex:outputPanel>
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!hideContactPopup}"
+                  value="Close"
+                  status="pageStatus"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Contact Popup -->
+
+        <apex:pageMessages />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

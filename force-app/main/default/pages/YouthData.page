@@ -1,0 +1,161 @@
+<apex:page
+  controller="YouthDataCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Youth Data</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="{!IF(userAcctType == 'Site', 'reports', 'program')}"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!CONTAINS(portalName, 'NCAI')}"
+  />
+  <c:NPALHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+  <c:DMVHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'DMV'}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Youth Data</h2>
+            <apex:outputLink
+              value="{!$Resource.NPAL_Youth_Data_Instructions}"
+              target="_blank"
+              rendered="{!portalName == 'NPAL'}"
+            >
+              Click here for Instructions to Assign Youth to Grant
+            </apex:outputLink>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              Local Organization: &nbsp;
+              <apex:selectList value="{!localOrgId}" size="1">
+                <apex:selectOptions value="{!localOrgOptions}" />
+                <apex:param assignTo="{!siteId}" name="siteId" value="" />
+                <apex:actionSupport
+                  event="onchange"
+                  action="{!getLists}"
+                  rerender="siteOptions, grantOptions"
+                />
+              </apex:selectList>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!userAcctType != 'Site' && hasSites}">
+              &nbsp;&nbsp; Site: &nbsp;
+              <apex:selectList value="{!siteId}" size="1" id="siteOptions">
+                <apex:selectOptions value="{!siteOptions}" />
+                <apex:actionSupport
+                  event="onchange"
+                  action="{!getGrantOptions}"
+                  rerender="grantOptions"
+                />
+              </apex:selectList>
+            </apex:outputPanel>
+            <div style="margin: 5px"></div>
+            &nbsp;&nbsp; Grant: &nbsp;
+            <apex:selectList value="{!grantId}" size="1" id="grantOptions">
+              <apex:selectOptions value="{!grantOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp; Year: &nbsp;
+            <apex:selectList value="{!year}" size="1">
+              <apex:selectOptions value="{!yearOptions}" />
+            </apex:selectList>
+            <apex:outputPanel
+              style="display: block; margin: 5px"
+              rendered="{!userAcctType == 'Site'}"
+            />
+            &nbsp;&nbsp; Sort By: &nbsp;
+            <apex:selectList value="{!sortBy}" size="1">
+              <apex:selectOptions value="{!sortByOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp;
+            <apex:commandButton
+              action="{!getYPRs}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              rendered="{!userAcctType != 'Site' || (grantOptions.size > 1 || yearOptions.size > 1)}"
+              reRender="form"
+            />
+            <apex:commandButton
+              action="{!clear}"
+              value="Clear"
+              status="pageStatus"
+              styleClass="btn-small"
+              rendered="{!userAcctType != 'Site' || (grantOptions.size > 1 || yearOptions.size > 1)}"
+              reRender="form"
+            />
+            <div style="margin: 5px"></div>
+          </div>
+        </div>
+
+        <apex:outputPanel
+          rendered="{!sizeErrorMessage == null || sizeErrorMessage == ''}"
+        >
+          <apex:outputPanel rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}">
+            <table class="table text-center">
+              <tr>
+                <td>
+                  <div style="font-weight: bold">Total # of active youth</div>
+                  {!activeYouth}
+                </td>
+                <td>
+                  <div style="font-weight: bold">
+                    # of youth who joined within the past 30 days
+                  </div>
+                  {!joinedPast30}
+                </td>
+                <td>
+                  <div style="font-weight: bold">
+                    # of youth who left within the past 30 days
+                  </div>
+                  {!leftPast30}
+                </td>
+              </tr>
+            </table>
+          </apex:outputPanel>
+
+          <c:YouthDataReportList
+            header="Participating Youth"
+            ctrl="{!YouthDataCtrl}"
+            showAddBtn="true"
+            rendered="{!CONTAINS(portalName, 'NCAI')}"
+          />
+
+          <c:YouthDataGrantReportList
+            header="Participating Youth"
+            ctrl="{!YouthDataCtrl}"
+            showNameCol="{!userAcctType == 'Local Organization'}"
+            showGrantCol="true"
+            showAddBtn="{!userAcctType == 'Local Organization'}"
+            rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}"
+          />
+
+          <c:ErrorMessage
+            type="info"
+            rendered="{!portalName == 'NPAL'}"
+            errorMessage="Reminder: After assigning a Youth to a Grant you must click on Edit to update their Active Date to the date they started the program."
+          />
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!sizeErrorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Activity_Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Activity Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Club Activity</fullName>
+                <default>false</default>
+                <label>Club Activity</label>
+            </value>
+            <value>
+                <fullName>Club Closed</fullName>
+                <default>false</default>
+                <label>Club Closed</label>
+            </value>
+            <value>
+                <fullName>No Activity</fullName>
+                <default>false</default>
+                <label>No Activity</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

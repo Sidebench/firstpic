@@ -1,0 +1,97 @@
+<apex:component>
+  <apex:attribute
+    type="Grant__c"
+    name="grant"
+    description="grant"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="approverLevel"
+    description="approverLevel"
+  />
+  <apex:attribute type="String" name="statusColor" description="statusColor" />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="showAwardPopup"
+    description="showAwardPopup"
+  />
+
+  <div class="row">
+    <div class="col-xs-6">
+      <h2>{!grant.Name}</h2>
+    </div>
+    <div class="col-xs-6 pull-right text-right">
+      <h2>
+        Total Awarded: &nbsp;
+        <apex:outputField value="{!grant.Amount__c}" />
+      </h2>
+    </div>
+  </div>
+  <table class="table fixedTbl">
+    <tr>
+      <td>
+        <div class="row">
+          <div class="col-auto" style="font-weight: bold">Date Range:</div>
+          <div class="col-auto">
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!grant.National_Grant__r.Start_Date__c}" />
+            </apex:outputText>
+            -
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!grant.National_Grant__r.End_Date__c}" />
+            </apex:outputText>
+          </div>
+        </div>
+      </td>
+      <td>
+        <span style="font-weight: bold"> Balance: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Balance__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Status: &nbsp;&nbsp; </span>
+        <span class="{!statusColor}"> {!grant.Grant_Status__c} </span>
+        <apex:commandLink
+          value="Modify Award"
+          action="{!showAwardPopup}"
+          status="pageStatus"
+          styleClass="pull-right"
+          reRender="uploadAwardPopup"
+          rendered="{!approverLevel == 'Level Two Admin' && grant.Grant_Status__c != 'Closed'}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span style="font-weight: bold"> Total Budgeted: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Total_Budgeted__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Requested Amount: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Reimbursement_Requested_Amount__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Approved Amount: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Reimbursement_Approved_Amount__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span style="font-weight: bold"> Children Served: &nbsp;&nbsp; </span>
+        {!grant.Youth_Served__c}
+      </td>
+      <td>
+        <span style="font-weight: bold">
+          Children Served w/Funding: &nbsp;&nbsp;
+        </span>
+        {!grant.Youth_Served_with_Grant_Funding__c}
+      </td>
+      <td>
+        <span style="font-weight: bold">
+          Full Time Equivalent staff at Affiliate: &nbsp;&nbsp;
+        </span>
+        {!grant.FTE_at_Affiliate__c}
+      </td>
+    </tr>
+  </table>
+</apex:component>

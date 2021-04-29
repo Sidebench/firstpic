@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Viability_Score__c</fullName>
+    <externalId>false</externalId>
+    <label>Viability Score</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Very Likely</fullName>
+                <default>false</default>
+                <label>Very Likely</label>
+            </value>
+            <value>
+                <fullName>Likely</fullName>
+                <default>false</default>
+                <label>Likely</label>
+            </value>
+            <value>
+                <fullName>Probably Likely</fullName>
+                <default>false</default>
+                <label>Probably Likely</label>
+            </value>
+            <value>
+                <fullName>Possibly Likely</fullName>
+                <default>false</default>
+                <label>Possibly Likely</label>
+            </value>
+            <value>
+                <fullName>Possibly</fullName>
+                <default>false</default>
+                <label>Possibly</label>
+            </value>
+            <value>
+                <fullName>Possibly Not Likely</fullName>
+                <default>false</default>
+                <label>Possibly Not Likely</label>
+            </value>
+            <value>
+                <fullName>Not Likely</fullName>
+                <default>false</default>
+                <label>Not Likely</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

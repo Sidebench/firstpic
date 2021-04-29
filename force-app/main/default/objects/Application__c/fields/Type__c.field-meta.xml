@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Type</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Challenge</fullName>
+                <default>true</default>
+                <label>Challenge</label>
+            </value>
+            <value>
+                <fullName>Freedom</fullName>
+                <default>false</default>
+                <label>Freedom</label>
+            </value>
+            <value>
+                <fullName>Academic</fullName>
+                <default>false</default>
+                <label>Academic</label>
+            </value>
+            <value>
+                <fullName>Civic &amp; Community</fullName>
+                <default>false</default>
+                <label>Civic &amp; Community</label>
+            </value>
+            <value>
+                <fullName>Government</fullName>
+                <default>false</default>
+                <label>Government</label>
+            </value>
+            <value>
+                <fullName>Human Services</fullName>
+                <default>false</default>
+                <label>Human Services</label>
+            </value>
+            <value>
+                <fullName>New</fullName>
+                <default>false</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Existing</fullName>
+                <default>false</default>
+                <label>Existing</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

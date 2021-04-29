@@ -1,0 +1,161 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute
+    type="String"
+    name="portalName"
+    description="Portal Name"
+    required="true"
+  />
+  <apex:attribute
+    type="Reimbursement_Request__c[]"
+    name="requestList"
+    description="Reimbursement Request List"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showStatus"
+    default="false"
+    description="Show Status Column?"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    default="false"
+    description="Show More Link?"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showEdit"
+    default="false"
+    description="Show Edit Link?"
+  />
+  <apex:attribute type="String" name="listType" description="List Type" />
+  <apex:attribute
+    type="Boolean"
+    name="isDashboard"
+    default="false"
+    description="isDashboard"
+  />
+  <apex:attribute type="Id" name="grantId" description="Grant Id" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!requestList.size > 0}">
+        <table width="100%">
+          <tr>
+            <th>Request Id</th>
+            <th>Sub-Grant Name</th>
+            <th style="{!IF(isDashboard,'width: 0','')}">
+              <apex:outputText
+                value="Start Date"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF(isDashboard,'width: 0','')}">
+              <apex:outputText
+                value="End Date"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th>Request Date</th>
+            <th style="{!IF(isDashboard,'width: 0','')}">
+              <apex:outputText
+                value="Requested Amount"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF(showStatus,'','width: 0')}">
+              <apex:outputText value="Status" rendered="{!showStatus}" />
+            </th>
+            <th style="{!IF(isDashboard,'width: 0;','width: 120px;')}"></th>
+          </tr>
+          <apex:repeat value="{!requestList}" var="r">
+            <tr>
+              <td>
+                <apex:commandLink
+                  action="{!URLFOR($Site.Prefix+'/NPALReimbursementDetails?RequestID='+r.Id)}"
+                  value="{!r.Name}"
+                  rendered="{!portalName == 'NPAL'}"
+                />
+                <apex:commandLink
+                  action="{!URLFOR($Site.Prefix+'/ReimbursementDetails?RequestID='+r.Id)}"
+                  value="{!r.Name}"
+                  rendered="{!portalName == 'BBBS' || portalName == ''}"
+                />
+                <apex:commandLink
+                  action="{!URLFOR($Site.Prefix+'/Reimbursement?requestID='+r.Id)}"
+                  value="{!r.Name}"
+                  rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != ''}"
+                />
+              </td>
+              <td>{!r.Grant__r.Name}</td>
+              <td>
+                <apex:outputfield
+                  value="{!r.Start_Date__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!r.End_Date__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputfield value="{!r.Request_Date__c}" />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!r.Total_Requested_Amount__c}"
+                  rendered="{!NOT(isDashboard) && (portalName == 'NPAL' || portalName == 'BBBS' || portalName == '')}"
+                />
+                <apex:outputfield
+                  value="{!r.Total_Requested__c}"
+                  rendered="{!NOT(isDashboard) && portalName != 'NPAL' && portalName != 'BBBS' && portalName != ''}"
+                />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!r.Status__c}"
+                  rendered="{!showStatus}"
+                />
+              </td>
+              <td class="text-right">
+                <apex:outputPanel
+                  rendered="{!showEdit && NOT(isDashboard) && (r.Status__c == 'Incomplete' || r.Status__c == 'Revisions Needed' || r.Status__c == 'Revision in Progress')}"
+                >
+                  <apex:commandLink
+                    action="{!URLFOR($Site.Prefix+'/NPALRequestForm?GrantID='+r.Grant__c+'&RequestID='+r.Id)}"
+                    value="Edit"
+                    rendered="{!portalName == 'NPAL'}"
+                  />
+                  <apex:commandLink
+                    action="{!URLFOR($Site.Prefix+'/RequestForm?GrantID='+r.Grant__c+'&RequestID='+r.Id)}"
+                    value="Edit"
+                    rendered="{!portalName == 'BBBS' || portalName == ''}"
+                  />
+                  <apex:commandLink
+                    action="{!URLFOR($Site.Prefix+'/ReimbursementForm?RequestID='+r.Id)}"
+                    value="Edit"
+                    rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != '' && NOT(isDashboard)}"
+                  />
+                </apex:outputPanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!requestList.size == 0}">
+        No Reimbursements Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <apex:commandLink
+          value="View All »"
+          action="{!URLFOR($Site.Prefix+'/Reimbursements?status='+listType+'&grantId='+grantId)}"
+        />
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

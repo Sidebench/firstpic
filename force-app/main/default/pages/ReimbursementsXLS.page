@@ -1,0 +1,76 @@
+<apex:page
+  controller="ReimbursementsCtrl"
+  showHeader="false"
+  sidebar="false"
+  readOnly="true"
+  contentType="application/vnd.ms-excel#Reimbursements.xls"
+>
+  <h4>{!status} Reimbursements</h4>
+  <table>
+    <tr>
+      <th>Request Id</th>
+      <th>Organization</th>
+      <th>Sub-Grant Name</th>
+      <th style="{!IF(showStatus,'','width: 0')}">
+        <apex:outputText value="Status" rendered="{!showStatus}" />
+      </th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Request Date</th>
+      <th>Requested Amount</th>
+      <th style="{!IF(showApprovedAmount,'','width: 0')}">
+        <apex:outputText
+          value="Approved Amount"
+          rendered="{!showApprovedAmount}"
+        />
+      </th>
+      <th style="{!IF(showPrimaryApprover,'','width: 0')}">
+        <apex:outputText
+          value="Primary Approver"
+          rendered="{!showPrimaryApprover}"
+        />
+      </th>
+    </tr>
+    <apex:repeat value="{!allItems}" var="r">
+      <tr>
+        <td>{!r.Name}</td>
+        <td>{!r.Organization__c}</td>
+        <td>{!r.Grant__r.Name}</td>
+        <td>
+          <apex:outputfield value="{!r.Status__c}" rendered="{!showStatus}" />
+        </td>
+        <td>
+          <apex:outputfield value="{!r.Start_Date__c}" />
+        </td>
+        <td>
+          <apex:outputfield value="{!r.End_Date__c}" />
+        </td>
+        <td>
+          <apex:outputfield value="{!r.Request_Date__c}" />
+        </td>
+        <td>
+          <apex:outputfield
+            value="{!r.Total_Requested_Amount__c}"
+            rendered="{!portalName == 'NPAL' || portalName == 'BBBS' || portalName == ''}"
+          />
+          <apex:outputfield
+            value="{!r.Total_Requested__c}"
+            rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != ''}"
+          />
+        </td>
+        <td>
+          <apex:outputfield
+            value="{!r.Total_Approved_Amount__c}"
+            rendered="{!showApprovedAmount}"
+          />
+        </td>
+        <td>
+          <apex:outputfield
+            value="{!r.Primary_Approver_Name__c}"
+            rendered="{!showPrimaryApprover}"
+          />
+        </td>
+      </tr>
+    </apex:repeat>
+  </table>
+</apex:page>

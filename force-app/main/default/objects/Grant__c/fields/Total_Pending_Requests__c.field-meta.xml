@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Pending_Requests__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Reimbursement Requests: Total Requested where Status = Pending First Approval, Pending Second Approval, Pending Third Approval, Pending Fourth Approval, or Pending Final Approval</inlineHelpText>
+    <label>Total Pending Requests ($)</label>
+    <summarizedField
+  >Reimbursement_Request__c.Total_Requested__c</summarizedField>
+    <summaryFilterItems>
+        <field>Reimbursement_Request__c.Status__c</field>
+        <operation>equals</operation>
+        <value
+    >Pending First Approval, Pending Second Approval, Pending Third Approval, Pending Fourth Approval, Pending Final Approval</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Reimbursement_Request__c.Grant__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

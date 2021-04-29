@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Month_Int__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(ISPICKVAL(Month__c, &apos;January&apos;), 1,
+IF(ISPICKVAL(Month__c, &apos;February&apos;), 2,
+IF(ISPICKVAL(Month__c, &apos;March&apos;), 3,
+IF(ISPICKVAL(Month__c, &apos;April&apos;), 4,
+IF(ISPICKVAL(Month__c, &apos;May&apos;), 5,
+IF(ISPICKVAL(Month__c, &apos;June&apos;), 6,
+IF(ISPICKVAL(Month__c, &apos;July&apos;), 7,
+IF(ISPICKVAL(Month__c, &apos;August&apos;), 8,
+IF(ISPICKVAL(Month__c, &apos;September&apos;), 9,
+IF(ISPICKVAL(Month__c, &apos;October&apos;), 10,
+IF(ISPICKVAL(Month__c, &apos;November&apos;), 11,
+IF(ISPICKVAL(Month__c, &apos;December&apos;), 12, 0
+))))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Month Int</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

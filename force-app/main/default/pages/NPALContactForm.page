@@ -1,0 +1,189 @@
+<apex:page
+  controller="ContactFormCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Contact Form</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="about"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>{!acct.Name}</h2>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Youth Information</div>
+          <div class="panel-body">
+            <div class="grid-pd-md">
+              <div class="row">
+                <div class="col-xs-6">
+                  First Name
+                  <apex:inputField value="{!youth.FirstName}" />
+                </div>
+                <div class="col-xs-6">
+                  Last Name
+                  <apex:inputField value="{!youth.LastName}" required="false" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-6 col-sm-4">
+                  Birthdate
+                  <apex:input
+                    type="date"
+                    value="{!birthdate}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                  Free/Reduced Lunch
+                  <apex:inputField
+                    value="{!youth.Free_Reduced_Lunch_Status__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-1">
+                  Referral
+                  <apex:inputField
+                    value="{!youth.Referral__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-5 col-sm-3">
+                  Referred By
+                  <apex:inputField value="{!youth.Referred_By__c}" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-6 col-sm-4">
+                  Gender
+                  <apex:inputField
+                    value="{!youth.Gender__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                  Race
+                  <apex:inputField
+                    value="{!youth.Race__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                  Ethnicity
+                  <apex:inputField
+                    value="{!youth.Ethnicity__c}"
+                    style="display: block"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <!--
+                                <div class="col-xs-6 col-sm-3">        
+                                    Peer Mentor
+                                    <apex:inputField value="{!youth.Peer_Mentor__c}" style="display: block;" />
+                                </div>
+                                -->
+                <div class="col-xs-6 col-sm-4">
+                  Peer Mentor in Current Grant
+                  <apex:inputField
+                    value="{!youth.Peer_Mentor_in_Current_Grant__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                  Special Ed/Disability
+                  <apex:inputField
+                    value="{!youth.Special_Education_Disability__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                  Previous PAL Member
+                  <apex:inputField
+                    value="{!youth.Previous_PAL_Member__c}"
+                    style="display: block"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-6 col-sm-4">
+                  Parent/Guardian Name
+                  <apex:inputField
+                    value="{!youth.Parent_Guardian_Name__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-4">
+                  Parent/Guardian is Active Military
+                  <apex:inputField
+                    value="{!youth.Parent_Guardian_is_Active_Military__c}"
+                    style="display: block"
+                  />
+                </div>
+                <!--
+                                <div class="col-xs-6 col-sm-4">
+                                    Parent is Currently Incarcerated
+                                    <apex:inputField value="{!youth.Parent_is_Currently_Incarcerated__c}" style="display: block;" />
+                                </div>
+                                -->
+              </div>
+              <!--
+                            <div class="row">
+                                <div class="col-xs-8 col-sm-4">  
+                                    Active Status
+                                    <apex:inputField value="{!youth.Active_Status__c}" style="display: block;" /> 
+                                </div>
+                                <div class="col-xs-4"> 
+                                    Active Date <br />
+                                    <apex:inputField value="{!youth.Active_Date__c}" styleClass="input-md" /> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4"> 
+                                    Exited Date <br />
+                                    <apex:inputField value="{!youth.Exited_Date__c}" styleClass="input-md" /> 
+                                </div>
+                                <div class="col-xs-6 col-sm-4">  
+                                    Exited Reason
+                                    <apex:inputField value="{!youth.Exited_Reason__c}" style="display: block;" /> 
+                                </div>
+                                <div class="col-xs-6 col-sm-4">  
+                                    Exited Reason Details
+                                    <apex:inputField value="{!youth.Exited_Reason_Details__c}" style="height: 25px;" /> 
+                                </div>
+                            </div>
+                            -->
+            </div>
+          </div>
+        </div>
+
+        <apex:commandButton
+          value="Cancel"
+          action="{!returnToAbout}"
+          immediate="true"
+        />
+        <apex:commandButton
+          value="Save"
+          action="{!save}"
+          styleClass="primary"
+          reRender="form"
+        />
+        <apex:commandButton
+          value="Save and Add Another"
+          action="{!saveAndAdd}"
+          reRender="form"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

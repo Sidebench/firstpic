@@ -1,0 +1,263 @@
+<apex:component allowDML="true">
+  <apex:attribute
+    type="String"
+    name="header"
+    description="header"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showNameCol"
+    description="showNameCol"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showGrantCol"
+    description="showGrantCol"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showPagination"
+    description="showPagination"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showAddBtn"
+    description="showAddBtn"
+    required="false"
+    default="false"
+  />
+  <apex:attribute
+    type="YouthDataCtrl"
+    name="ctrl"
+    description="YouthDataCtrl"
+    required="false"
+  />
+  <c:DateInput />
+
+  <apex:outputPanel id="paginatedList">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {!header}
+        <div class="pull-right">
+          <apex:commandButton
+            action="{!URLFOR($Site.Prefix+'/YouthForm?localOrgId='+ ctrl.localOrgId +'&siteId='+ ctrl.siteId +'&grantId='+ ctrl.grantId +'&year='+ ctrl.year)}"
+            value="Add Youth"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!showAddBtn}"
+          />
+        </div>
+      </div>
+      <div class="panel-body">
+        <apex:outputPanel rendered="{!ctrl.items.size > 0}">
+          <table width="100%">
+            <tr>
+              <th>Youth Id</th>
+              <th style="{!IF(showNameCol,'','width: 0;')}">
+                <apex:outputText value="Name" rendered="{!showNameCol}" />
+              </th>
+              <th
+                style="{!IF(ctrl.userAcctType == 'National Organization','','width: 0;')}"
+              >
+                <apex:outputText
+                  value="Organization"
+                  rendered="{!ctrl.userAcctType == 'National Organization'}"
+                />
+              </th>
+              <th style="{!IF(showGrantCol,'','width: 0;')}">
+                <apex:outputText value="Grant" rendered="{!showGrantCol}" />
+              </th>
+              <th>Year</th>
+              <th>Active Status</th>
+              <th>Active Date</th>
+              <th>Exited Date</th>
+              <th>Exited Reason</th>
+              <th>Exited Reason Details</th>
+              <th></th>
+              <th width="60px" class="text-center">Delete</th>
+            </tr>
+            <apex:repeat value="{!ctrl.items}" var="i">
+              <tr>
+                <td>{!i.Youth_Id__c}</td>
+                <td>
+                  <apex:commandLink
+                    action="{!URLFOR($Site.Prefix+'/YouthDetails?youthId='+i.Contact__c)}"
+                    rendered="{!showNameCol}"
+                  >
+                    {!i.Contact_Name__c}
+                  </apex:commandLink>
+                </td>
+                <td>
+                  <apex:outputText
+                    value="{!i.Org_Name__c}"
+                    rendered="{!ctrl.userAcctType == 'National Organization'}"
+                  />
+                </td>
+                <td>
+                  <apex:outputText
+                    value="{!i.Grant_Name__c}"
+                    rendered="{!showGrantCol}"
+                  />
+                </td>
+                <td>{!i.Grant_Year__c}</td>
+                <td>{!i.Active_Status__c}</td>
+                <td>
+                  <apex:outputField value="{!i.Active_Date__c}" />
+                </td>
+                <td>
+                  <apex:outputField value="{!i.Exited_Date__c}" />
+                </td>
+                <td>{!i.Exited_Reason__c}</td>
+                <td>{!i.Exited_Reason_Details__c}</td>
+                <td>
+                  <apex:commandLink
+                    value="Edit"
+                    action="{!ctrl.showEditYPRPopup}"
+                    reRender="editYPRPopup"
+                    rendered="{!i.Grant_Status__c != 'Closed'}"
+                  >
+                    <apex:param
+                      assignTo="{!ctrl.yprId}"
+                      name="yprId"
+                      value="{!i.Id}"
+                    />
+                  </apex:commandLink>
+                </td>
+                <td class="text-center">
+                  <apex:commandLink
+                    action="{!ctrl.showDeleteYPRPopup}"
+                    reRender="form"
+                    styleClass="text-danger"
+                    rendered="{!i.Grant_Status__c != 'Closed'}"
+                  >
+                    <span class="glyphicon glyphicon-remove"></span>
+                    <apex:param
+                      assignTo="{!ctrl.yprId}"
+                      name="yprId"
+                      value="{!i.Id}"
+                    />
+                  </apex:commandLink>
+                </td>
+              </tr>
+            </apex:repeat>
+          </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!ctrl.items.size == 0}">
+          No {!header} Found
+        </apex:outputPanel>
+      </div>
+
+      <c:Pagination
+        disablePrevious="{!ctrl.disablePrevious}"
+        disableNext="{!ctrl.disableNext}"
+        recordCount="{!ctrl.recordCount}"
+        first="{!ctrl.first}"
+        previous="{!ctrl.previous}"
+        next="{!ctrl.next}"
+        last="{!ctrl.last}"
+        rendered="{!showPagination}"
+      />
+    </div>
+  </apex:outputPanel>
+
+  <!-- BEGIN editYPRPopup -->
+  <apex:outputPanel id="editYPRPopup">
+    <apex:outputPanel
+      styleClass="popupBackground"
+      layout="block"
+      rendered="{!ctrl.displayEditYPRPopup}"
+    />
+    <apex:outputPanel
+      styleClass="custPopup"
+      layout="block"
+      rendered="{!ctrl.displayEditYPRPopup}"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">{!ctrl.ypr.Contact_Name__c}</h4>
+          </div>
+          <div class="modal-body grid-pd-sm">
+            <div class="row">
+              <div class="col-xs-4">
+                Active Date <br />
+                <apex:inputField value="{!ctrl.ypr.Active_Date__c}" />
+              </div>
+              <div class="col-xs-8">
+                Active Status <br />
+                <apex:inputField value="{!ctrl.ypr.Active_Status__c}" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                Exited Date <br />
+                <apex:inputField value="{!ctrl.ypr.Exited_Date__c}" />
+              </div>
+              <div class="col-xs-8">
+                Exited Reason <br />
+                <apex:inputField value="{!ctrl.ypr.Exited_Reason__c}" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                Exited Reason Details <br />
+                <apex:inputField value="{!ctrl.ypr.Exited_Reason_Details__c}" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <apex:commandButton
+              action="{!ctrl.hideEditYPRPopup}"
+              value="Cancel"
+              status="pageStatus"
+            >
+              <apex:param assignTo="{!ctrl.yprId}" name="yprId" value="" />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!ctrl.saveYPR}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+              reRender="form"
+            >
+              <apex:param assignTo="{!ctrl.yprId}" name="yprId" value="" />
+            </apex:commandButton>
+          </div>
+        </div>
+      </div>
+    </apex:outputPanel>
+  </apex:outputPanel>
+  <!-- END editYPRPopup -->
+
+  <!-- BEGIN deleteYPRPopup -->
+  <apex:outputPanel id="deleteYPRPopup">
+    <c:ConfirmationPopup
+      displayConfirmPopup="{!ctrl.displayDeleteYPRPopup}"
+      header="Delete Youth Data Record"
+      body="Are you sure you want to delete this Youth Data record for {!ctrl.ypr.Contact_Name__c}"
+    >
+      <apex:commandButton
+        action="{!ctrl.hideDeleteYPRPopup}"
+        value="Cancel"
+        status="pageStatus"
+        immediate="true"
+        reRender="form"
+      />
+      <apex:commandButton
+        action="{!ctrl.deleteYPR}"
+        value="Delete"
+        status="pageStatus"
+        styleClass="primary"
+        reRender="form"
+      />
+    </c:ConfirmationPopup>
+  </apex:outputPanel>
+  <!-- END deleteYPRPopup -->
+</apex:component>

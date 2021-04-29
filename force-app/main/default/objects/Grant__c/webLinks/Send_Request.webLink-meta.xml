@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Send_Request</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Send Request</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url
+  >location.replace(&apos;/email/author/emailauthor.jsp?p3_lkid={!Grant__c.AccountId__c}&amp;p2_lkid={!Grant__c.Primary_ContactId__c}&amp;template_id=00X36000000iJ5Q&apos;);</url>
+</WebLink>

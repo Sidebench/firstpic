@@ -1,0 +1,336 @@
+<apex:page
+  controller="RequestExpensesFormController"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Reimbursement Request</title>
+  </head>
+  <c:DMVHeader
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Balance: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!grant.Balance__c}" />
+              </apex:outputText>
+            </h2>
+          </div>
+        </div>
+
+        <apex:outputPanel id="requestForm">
+          <div class="row">
+            <div class="col-auto" style="font-weight: bold">
+              Reimbursement Date Range:
+            </div>
+            <div class="col-auto">
+              <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                <apex:param value="{!request.Start_Date__c}" />
+              </apex:outputText>
+              -
+              <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                <apex:param value="{!request.End_Date__c}" />
+              </apex:outputText>
+            </div>
+          </div>
+          <br />
+
+          <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+            <div class="panel panel-warning">
+              <div class="panel-heading">Notes</div>
+              <div class="panel-body">
+                <apex:outputField value="{!request.Request_Notes__c}" />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel id="lists">
+            <div class="panel panel-default">
+              <div class="panel-heading">Expenses</div>
+              <apex:repeat value="{!expense_map}" var="cat">
+                <div class="panel-heading sub-panel-heading">{!cat}</div>
+                <div class="panel-body">
+                  <table class="fixedTbl">
+                    <tr>
+                      <th>Name</th>
+                      <th>Rate</th>
+                      <th>Amount Allocated to Grant</th>
+                      <th class="text-center">Notes</th>
+                      <th>Attachments</th>
+                    </tr>
+                    <apex:repeat value="{!expense_map[cat]}" var="i">
+                      <tr>
+                        <td>{!i.Budget_Item__r.Name}</td>
+                        <td>
+                          <apex:inputField
+                            value="{!i.Rate__c}"
+                            styleClass="input-md"
+                          />
+                        </td>
+                        <td>
+                          <apex:outputField value="{!i.Requested_Amount__c}" />
+                        </td>
+                        <td class="text-center">
+                          <apex:commandLink
+                            action="{!expenseNotesPopup}"
+                            status="pageStatus"
+                            reRender="expensePopup"
+                          >
+                            <apex:outputText
+                              rendered="{!i.Item_Note__c != null || i.Response__c != null}"
+                            >
+                              <span class="glyphicon glyphicon-comment"></span>
+                            </apex:outputText>
+                            <apex:outputText
+                              rendered="{!i.Item_Note__c == null && i.Response__c == null}"
+                              >+</apex:outputText
+                            >
+                          </apex:commandLink>
+                          <apex:outputPanel id="expensePopup">
+                            <apex:outputPanel
+                              styleClass="popupBackground"
+                              layout="block"
+                              rendered="{!displayExpenseNotesPopup}"
+                            />
+                            <apex:outputPanel
+                              styleClass="custPopup"
+                              layout="block"
+                              rendered="{!displayExpenseNotesPopup}"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h4 class="modal-title">
+                                      Notes for&nbsp;<apex:outputText
+                                        value="{!i.Budget_Item__r.Name}"
+                                      />
+                                    </h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <apex:inputTextarea
+                                      value="{!i.Item_Note__c}"
+                                    />
+                                    <br />
+                                    <hr />
+                                    <apex:outputPanel
+                                      rendered="{!i.Response__c != null}"
+                                    >
+                                      <apex:outputText
+                                        value="{!i.Response__c}"
+                                      />
+                                    </apex:outputPanel>
+                                    <apex:outputPanel
+                                      rendered="{!i.Response__c == null}"
+                                    >
+                                      No Notes from National
+                                    </apex:outputPanel>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <apex:commandButton
+                                      action="{!expenseNotesPopup}"
+                                      value="Save and Close"
+                                      status="pageStatus"
+                                      styleClass="primary"
+                                      reRender="requestForm"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </apex:outputPanel>
+                          </apex:outputPanel>
+                        </td>
+                        <td>
+                          <apex:commandLink
+                            action="{!itemAttPopup}"
+                            status="pageStatus"
+                            reRender="itemAttPopup"
+                          >
+                            <span class="glyphicon glyphicon-upload"></span>
+                          </apex:commandLink>
+                          <apex:outputPanel id="itemAttPopup">
+                            <apex:outputPanel
+                              styleClass="popupBackground"
+                              layout="block"
+                              rendered="{!displayItemAttPopup}"
+                            />
+                            <apex:outputPanel
+                              styleClass="custPopup"
+                              layout="block"
+                              rendered="{!displayItemAttPopup}"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h4 class="modal-title">
+                                      Upload New Attachment
+                                    </h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <iframe
+                                      id="attachmentIFrame"
+                                      frameborder="0"
+                                      width="100%"
+                                      height="180px"
+                                      src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ i.id)}"
+                                    >
+                                    </iframe>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <apex:commandButton
+                                      action="{!itemAttPopup}"
+                                      value="Close"
+                                      status="pageStatus"
+                                      reRender="requestForm"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </apex:outputPanel>
+                          </apex:outputPanel>
+                          &nbsp;
+                          <apex:repeat value="{!itemAtt_list}" var="a">
+                            <apex:outputPanel rendered="{!a.ParentId == i.Id }">
+                              <apex:outputPanel rendered="{!a.Id != null}">
+                                &nbsp;&nbsp;
+                                <apex:outputLink
+                                  value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                                  target="_blank"
+                                  >{!a.Name}</apex:outputLink
+                                >
+                                <apex:commandLink
+                                  action="{!deleteItemAtt}"
+                                  status="pageStatus"
+                                  reRender="requestForm"
+                                  style="color: #999"
+                                  title="Delete Attachment"
+                                >
+                                  <span
+                                    class="glyphicon glyphicon-remove-circle"
+                                  ></span>
+                                  <apex:param
+                                    name="deleteItemAtt"
+                                    value="{!a.Id}"
+                                    assignTo="{!deleteItemAttId}"
+                                  ></apex:param>
+                                </apex:commandLink>
+                              </apex:outputPanel>
+                            </apex:outputPanel>
+                          </apex:repeat>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+              </apex:repeat>
+            </div>
+          </apex:outputPanel>
+
+          <c:Attachments
+            fileName="General Ledger"
+            filterByFileName="true"
+            parentId="{!request.Id}"
+            showUploadBtn="true"
+          />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Expense Notes</div>
+            <div class="panel-body">
+              <apex:inputTextarea value="{!request.Expense_Notes__c}" />
+            </div>
+          </div>
+
+          <apex:outputPanel rendered="{!grant.Use_Indirect_Rate__c == 'Yes'}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Modified Direct Cost</div>
+              <div class="panel-body grid-pd-sm">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Total Reqeusted for Personnel: </strong>
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!laborRequestedAmount}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Total Reqeusted for Expenses: </strong>
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!expenseRequestedAmount}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="row">
+            <div class="col-xs-8">
+              <apex:commandButton
+                action="{!previous}"
+                status="pageStatus"
+                value="Previous"
+              />
+              <apex:commandButton
+                action="{!updateAmounts}"
+                value="Update Amounts"
+                status="pageStatus"
+                reRender="requestForm"
+              />
+              <apex:commandButton
+                action="{!saveAndExit}"
+                value="Save and Exit"
+                status="pageStatus"
+                reRender="requestForm"
+              />
+              <apex:commandButton
+                action="{!submit}"
+                value="Submit"
+                status="pageStatus"
+                styleClass="primary"
+              />
+            </div>
+            <div class="col-xs-4 pull-right text-right">
+              <apex:outputPanel id="total">
+                <apex:outputPanel rendered="{!amountError}">
+                  <h4 style="padding-right: 10px; color: #b94a48">
+                    Total Requested Amount: &nbsp;
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!totalRequestedAmount}" />
+                    </apex:outputText>
+                  </h4>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(amountError)}">
+                  <h4 style="padding-right: 10px">
+                    Total Requested Amount: &nbsp;
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!totalRequestedAmount}" />
+                    </apex:outputText>
+                  </h4>
+                </apex:outputPanel>
+              </apex:outputPanel>
+            </div>
+          </div>
+          <br />
+          <h6>
+            Leaving a reimbursement request without saving or submitting will
+            result in the lose of information in this request.
+          </h6>
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,676 @@
+<apex:page
+  controller="GranteeReportController"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Grantee Report</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>{!grant.Name}</h2>
+        <table class="table">
+          <tr>
+            <td>
+              <strong>Report Date Range: &nbsp;</strong>
+              <apex:outputField
+                value="{!report.Start_Date__c}"
+                styleClass="input-sm"
+              />
+              -&nbsp;<apex:outputField
+                value="{!report.End_Date__c}"
+                styleClass="input-sm"
+              />
+            </td>
+            <td>
+              <strong>Status: &nbsp;</strong>
+              {!report.Report_Status__c}
+            </td>
+            <td>
+              <strong>Submitted By: &nbsp;</strong>
+              {!report.Submitted_By__r.Name}
+            </td>
+          </tr>
+        </table>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Outputs</div>
+          <div class="panel-body" style="padding-top: 5px">
+            <table class="form-table">
+              <tr>
+                <td class="question">
+                  1. Increase in youth enrolled since the beginning of the
+                  reporting period
+                </td>
+                <td width="100px"></td>
+              </tr>
+              <tr>
+                <td>
+                  A. Number of youth enrolled at the beginning of the reporting
+                  period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Previous_Youth_Served__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. Number of NEW youth added during the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField value="{!report.New_Youth_Served__c}" />
+                </td>
+              </tr>
+              <tr>
+                <td>C. Total number of youth served</td>
+                <td class="text-right">
+                  <apex:outputField value="{!report.Total_Youth_Served__c}" />
+                </td>
+              </tr>
+
+              <tr>
+                <td colspan="2" class="question">
+                  2. Number and percent of program youth completing program
+                  requirements
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  A. Total number of youth who exited the program during the
+                  reporting period (either successfully or unsuccessfully)
+                </td>
+                <td class="text-right">
+                  <apex:outputField value="{!report.Youth_Exited_Program__c}" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. Number of program youth who exited the program having
+                  completed program requirements
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_Completed_Program__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">
+                  3. Number and percent of youth with whom an evidence-based
+                  program or practice was used
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  A. The number of youth served using an evidence-based program
+                  or practice
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_Served_via_Evidence_Based_Program__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">4. Youth Profile</td>
+              </tr>
+              <tr>
+                <td>
+                  A. Number of mentees who have one or more parents actively
+                  serving in the military.
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_with_Parents_Actively_Serving__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. Number of mentees who have one or more parents or gaurdians
+                  currently incarcerated.
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_with_Incarcerate_Parent__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>C. Number of mentees who identify as Native American.</td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_Identify_as_Native_American__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">
+                  5. Increase in Number of Program Mentors Recruited
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  A. Number of mentors carried over from the previous reporting
+                  period.
+                </td>
+                <td class="text-right">
+                  <apex:outputField value="{!report.Previous_Mentors__c}" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. The increase in number of program mentors recruited (ready
+                  for training) during the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField value="{!report.New_Mentors__c}" />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">
+                  6. Number and percent of program mentors successfully
+                  completing training
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  A. Total number of program mentors who began training during
+                  the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.New_Mentors_Began_Training__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. Number of program mentors successfully completing training
+                  during the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.New_Mentors_Completed_Training__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">
+                  7. Number and percent of trained program mentors with
+                  increased knowledge of the program area
+                </td>
+              </tr>
+              <tr>
+                <td>A. Number of trained program mentors</td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Total_Trained_Mentors__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. Number of trained program mentors demonstrating increased
+                  knowledge of the program during the reporting
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Mentors_with_Increased_Knowledge__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">8. Mentor Retention</td>
+              </tr>
+              <tr>
+                <td>
+                  A. The total number of mentors in the program during the
+                  reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField value="{!report.Total_Mentors__c}" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. The number of mentors who have left the program during the
+                  reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Mentors_Left_the_Program__c}"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Outcomes</div>
+          <div class="panel-body" style="padding-top: 5px">
+            <table class="form-table">
+              <tr>
+                <td class="question">
+                  1. Percent of Mentoring Programs with Active Partners
+                </td>
+                <td width="100px"></td>
+              </tr>
+              <tr>
+                <td>A. Number of mentoring programs</td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Mentoring_Programs_Operated__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>B. Number of mentoring programs with active partners</td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Programs_with_Active_Partners__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">
+                  2. Perception of social support (Short Term Outcome)
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  A. Total number of youth receiving services for target
+                  behavior during the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_with_Social_Support_Mentoring__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. Number of program youth served during the reporting period
+                  with the noted behavioral change
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_with_Increased_Social_Support__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">
+                  3. Number and percent of program youth who offend
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  A. Number of program youth tracked during the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Youth_Tracked_for_Juvenile_Offenses__c}"
+                  />
+                </td>
+              </tr>
+            </table>
+            <br />
+            <apex:outputPanel
+              rendered="{!report.Have_Youth_Offended__c == true}"
+            >
+              <table class="form-table">
+                <tr>
+                  <td>
+                    B. Number of program youth who had an arrest or delinquent
+                    offense during the reporting period
+                  </td>
+                  <td width="100px" class="text-right">
+                    <apex:outputField
+                      value="{!report.Youth_with_Delinquent_Offenses__c}"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    C. Number of program youth who were committed to a juvenile
+                    facility during the reporting period
+                  </td>
+                  <td class="text-right">
+                    <apex:outputField
+                      value="{!report.Youth_Recommitted_to_Juvenile_Facility__c}"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    D. Number of program youth who were sentenced to adult
+                    prison during the reporting period
+                  </td>
+                  <td class="text-right">
+                    <apex:outputField
+                      value="{!report.Youth_Sentenced_to_Adult_Prison__c}"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    E. Number of youth who received another sentence during the
+                    reporting period
+                  </td>
+                  <td class="text-right">
+                    <apex:outputField
+                      value="{!report.Youth_Received_Additional_Sentence__c}"
+                    />
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Match Details</div>
+          <div class="panel-body" style="padding-top: 5px">
+            <table class="form-table">
+              <tr>
+                <td class="question">
+                  1. Intended minimum length of the match in months is eight (8)
+                  months
+                </td>
+                <td width="100px"></td>
+              </tr>
+              <tr>
+                <td>
+                  A. Number of youth whose match met the intended minimum match
+                  length during the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Match_Met_Minimum_Match_Length__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  B. Number of youth whose match exceeded the intended minimum
+                  match length during the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Match_Exceeded_Minimum_Match_Length__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  C. Number of youth who had matches that closed early during
+                  the reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField value="{!report.Match_Closed_Early__c}" />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" class="question">
+                  2. Intended minimum hours per month that mentors and mentees
+                  were expected to meet (match meetings) is four hours.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  D. Number of youth whose mentor/mentee match meetings met for
+                  the minimum number of hours (four hours) during the reporting
+                  period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Match_Meetings_Met_Minimum_Hours__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  E. Number of youth whose mentor/mentee match meetings exceeded
+                  the minimum number of hours (four hours) during the reporting
+                  period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Match_Meetings_Exceeded_Hours__c}"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  F. Number of youth whose mentor/mentee match meetings did not
+                  meet the minimum number of hours (four hours) during the
+                  reporting period
+                </td>
+                <td class="text-right">
+                  <apex:outputField
+                    value="{!report.Match_Meetings_Not_Meet_Minimum_Hours__c}"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Narrative</div>
+          <div class="panel-body" style="padding-top: 5px">
+            <table class="form-table">
+              <tr>
+                <td class="question">
+                  1. What were your accomplishments within this reporting
+                  period?
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:outputField value="{!report.Accomplishments__c}" />
+                </td>
+              </tr>
+              <tr>
+                <td class="question">
+                  2. What problems/barriers did you encounter, if any, within
+                  the reporting period that prevented you from reaching your
+                  goals or milestones?
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:outputField value="{!report.Problems_Barriers__c }" />
+                </td>
+              </tr>
+              <tr>
+                <td class="question">
+                  3. Is there any assistance that the National PAL or FirstPic,
+                  Inc. can provide to address any problems/barriers identified
+                  in question #2 above?
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:outputField value="{!report.Assistance_Needed__c }" />
+                </td>
+              </tr>
+              <tr>
+                <td class="question">
+                  4. Are you on track to fiscally and programmatically complete
+                  your program as outlined in your grant application?
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:outputField value="{!report.Program_on_Track__c }" />
+                </td>
+              </tr>
+              <tr>
+                <td class="question">
+                  5. What major activities do you have planned for the next
+                  quarter?
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:outputField
+                    value="{!report.Major_Activities_Planned__c }"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="question">
+                  6. Based on your knowledge of youth mentoring and after-school
+                  programming, are there any innovative programs
+                  acccomplishments that you would like to share with the
+                  National Pal or FirstPic, Inc.?
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <apex:outputField
+                    value="{!report.Innovative_Programs_Accomplishments__c }"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Notes</div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!report.Notes__c != null}">
+              <strong>Notes from Affiliate: </strong><br />
+              <apex:outputField value="{!report.Notes__c}" />
+            </apex:outputPanel>
+            <apex:outputText
+              value="No notes from Affiliate"
+              style="font-weight: bold"
+              rendered="{!report.Notes__c == null}"
+            />
+            <br />
+            <hr />
+            <apex:outputPanel
+              rendered="{!report.Notes_from_National__c != null}"
+            >
+              <strong>Notes from National: </strong><br />
+              <apex:outputField value="{!report.Notes_from_National__c}" />
+            </apex:outputPanel>
+            <apex:outputText
+              value="No notes from National"
+              style="font-weight: bold"
+              rendered="{!report.Notes_from_National__c == null}"
+            />
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Modification History</div>
+            <div class="panel-body">
+              <apex:outputField value="{!report.Modification_History__c}" />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <!-- BEGIN Attachments -->
+        <apex:outputPanel id="attachments">
+          <div class="panel panel-default">
+            <div class="panel-heading">Attachments</div>
+            <div class="panel-body grid-pd-md">
+              <apex:repeat value="{!att_list}" var="a">
+                <div class="row">
+                  <div class="col-auto">
+                    <apex:outputPanel rendered="{!a.Id != null}">
+                      <apex:outputLink
+                        value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                        style="margin-right: 10px"
+                        target="_blank"
+                      >
+                        {!a.Name}
+                      </apex:outputLink>
+                      <apex:outputText rendered="{!a.Description != null}">
+                        ({!a.Description})
+                      </apex:outputText>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </apex:repeat>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Attachments -->
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && report.Report_Status__c == 'Submitted'}"
+        >
+          <div class="row">
+            <div class="col-xs-12">
+              <apex:commandButton
+                action="{!sendBackPopup}"
+                value="Send Back"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                value="Approve"
+                action="{!approveReport}"
+                status="pageStatus"
+                styleClass="primary"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displaySendBackPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displaySendBackPopup}"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Add a note</h4>
+              </div>
+              <div class="modal-body">
+                <apex:inputField value="{!report.Notes_from_National__c}" />
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!sendBackPopup}"
+                  value="Cancel"
+                  status="pageStatus"
+                />
+                <apex:commandButton
+                  value="Send Back Report"
+                  action="{!sendBack}"
+                  status="pageStatus"
+                  styleClass="primary"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,93 @@
+<apex:page
+  controller="TAPlansCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Technical Assistance Plans</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Technical Assistance Plans</h2>
+          </div>
+          <div class="col-auto pull-right">
+            Organization &nbsp;<apex:inputText
+              value="{!orgName}"
+              style="width: 240px"
+            />
+            &nbsp;&nbsp; Sort By: &nbsp;
+            <apex:selectList value="{!sortBy}" size="1">
+              <apex:selectOptions value="{!sortByOptions}" />
+            </apex:selectList>
+            &nbsp;
+            <apex:commandButton
+              action="{!getLists}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+          </div>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">Technical Assistance Plans</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!items.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>Organization</th>
+                    <th>Date Last Updated</th>
+                    <th>Compliance Score</th>
+                    <th>Finance Score</th>
+                    <th>Program Score</th>
+                  </tr>
+                  <apex:repeat value="{!items}" var="i">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.Organization_Name__c}"
+                          action="{!URLFOR($Site.Prefix+'/TAPlan?planId='+i.Id)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!i.LastModifiedDate}" />
+                      </td>
+                      <td>{!i.Compliance_Score__c}</td>
+                      <td>{!i.Finance_Score__c}</td>
+                      <td>{!i.Program_Score__c}</td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!items.size == 0}">
+                No TA Plans Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

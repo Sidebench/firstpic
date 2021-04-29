@@ -1,0 +1,551 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <c:AssessmentHeader assess="{!assess}" header="PROGRAM STANDARDS" />
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="6"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 14']}</div>
+          <div class="panel-body">
+            <h5>{!labels['Standard 14 Subheader']}</h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_Non_Exclusion__c'}"
+                >
+                  <c:AssessmentStandardHeader header="Volunteer" />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_Non_Exclusion__c}"
+                    label="{!labels['S14_Non_Exclusion__c']}"
+                    textField="{!assess.S14_Non_Exclusion_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_Demographics_of_the_Children__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_Demographics_of_the_Children__c}"
+                    label="{!labels['S14_Demographics_of_the_Children__c']}"
+                    textField="{!assess.S14_Demographics_of_the_Children_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_Eligibility_Criteria__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_Eligibility_Criteria__c}"
+                    label="{!labels['S14_Eligibility_Criteria__c']}"
+                    textField="{!assess.S14_Eligibility_Criteria_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_Review_Enrollment_Process__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_Review_Enrollment_Process__c}"
+                    label="{!labels['S14_Review_Enrollment_Process__c']}"
+                    textField="{!assess.S14_Review_Enrollment_Process_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_Description_Mission__c'}"
+                >
+                  <c:AssessmentStandardHeader header="Parent/Guardian" />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_Description_Mission__c}"
+                    label="{!labels['S14_Description_Mission__c']}"
+                    textField="{!assess.S14_Description_Mission_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_Child_Eligibility_Criteria__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_Child_Eligibility_Criteria__c}"
+                    label="{!labels['S14_Child_Eligibility_Criteria__c']}"
+                    textField="{!assess.S14_Child_Eligibility_Criteria_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_Review_Parent_Enrollment__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_Review_Parent_Enrollment__c}"
+                    label="{!labels['S14_Review_Parent_Enrollment__c']}"
+                    textField="{!assess.S14_Review_Parent_Enrollment_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_School_Site_Based_Mentoring__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_School_Site_Based_Mentoring__c}"
+                    label="{!labels['S14_School_Site_Based_Mentoring__c']}"
+                    textField="{!assess.S14_School_Site_Based_Mentoring_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 15']}</div>
+          <div class="panel-body">
+            <h5>{!labels['Standard 15 Subheader']}</h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S14_School_Site_Based_Mentoring_Text__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S14_School_Site_Based_Mentoring_Text__c}"
+                    label="{!labels['S14_School_Site_Based_Mentoring_Text__c']}"
+                    textField="{!assess.S15_Written_Eligibility_Reqs_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S15_Signed_Application__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S15_Signed_Application__c}"
+                    label="{!labels['S15_Signed_Application__c']}"
+                    textField="{!assess.S15_Signed_Application_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S15_In_Person_Interview__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S15_In_Person_Interview__c}"
+                    label="{!labels['S15_In_Person_Interview__c']}"
+                    textField="{!assess.S15_In_Person_Interview_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S15_Parent_Interview__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S15_Parent_Interview__c}"
+                    label="{!labels['S15_Parent_Interview__c']}"
+                    textField="{!assess.S15_Parent_Interview_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S15_Assessment_of_Home__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S15_Assessment_of_Home__c}"
+                    label="{!labels['S15_Assessment_of_Home__c']}"
+                    textField="{!assess.S15_Assessment_of_Home_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S15_Collateral_Information__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S15_Collateral_Information__c}"
+                    label="{!labels['S15_Collateral_Information__c']}"
+                    textField="{!assess.S15_Collateral_Information_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S15_Professional_Assessment__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S15_Professional_Assessment__c}"
+                    label="{!labels['S15_Professional_Assessment__c']}"
+                    textField="{!assess.S15_Professional_Assessment_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S15_Reassessment__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S15_Reassessment__c}"
+                    label="{!labels['S15_Reassessment__c']}"
+                    textField="{!assess.S15_Reassessment_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 16']}</div>
+          <div class="panel-body">
+            <h5>{!labels['Standard 16 Subheader']}</h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_Written_Eligibility_Reqs__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_Written_Eligibility_Reqs__c}"
+                    label="{!labels['S16_Written_Eligibility_Reqs__c']}"
+                    textField="{!assess.S16_Written_Eligibility_Reqs_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_Signed_Application__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_Signed_Application__c}"
+                    label="{!labels['S16_Signed_Application__c']}"
+                    textField="{!assess.S16_Signed_Application_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_References__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_References__c}"
+                    label="{!labels['S16_References__c']}"
+                    textField="{!assess.S16_References_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_Background_Checks__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_Background_Checks__c}"
+                    label="{!labels['S16_Background_Checks__c']}"
+                    textField="{!assess.S16_Background_Checks_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_In_Person_Interview__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_In_Person_Interview__c}"
+                    label="{!labels['S16_In_Person_Interview__c']}"
+                    textField="{!assess.S16_In_Person_Interview_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_Home_Environment_Assessment__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_Home_Environment_Assessment__c}"
+                    label="{!labels['S16_Home_Environment_Assessment__c']}"
+                    textField="{!assess.S16_Home_Environment_Assessment_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_Collateral_Information__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_Collateral_Information__c}"
+                    label="{!labels['S16_Collateral_Information__c']}"
+                    textField="{!assess.S16_Collateral_Information_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S16_Assessment__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S16_Assessment__c}"
+                    label="{!labels['S16_Assessment__c']}"
+                    textField="{!assess.S16_Assessment_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 17']}</div>
+          <div class="panel-body">
+            <h5>{!labels['Standard 17 Subheader']}</h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S17_Interactive__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S17_Interactive__c}"
+                    label="{!labels['S17_Interactive__c']}"
+                    textField="{!assess.S17_Interactive_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S17_Pre_Match_Volunteer__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S17_Pre_Match_Volunteer__c}"
+                    label="{!labels['S17_Pre_Match_Volunteer__c']}"
+                    textField="{!assess.S17_Pre_Match_Volunteer_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S17_Pre_Match_Parent_Guardian__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S17_Pre_Match_Parent_Guardian__c}"
+                    label="{!labels['S17_Pre_Match_Parent_Guardian__c']}"
+                    textField="{!assess.S17_Pre_Match_Parent_Guardian_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S17_Pre_Match_Children__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S17_Pre_Match_Children__c}"
+                    label="{!labels['S17_Pre_Match_Children__c']}"
+                    textField="{!assess.S17_Pre_Match_Children_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 18']}</div>
+          <div class="panel-body">
+            <h5>{!labels['Standard 18 Subheader']}</h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S18_Assess_All_Information__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S18_Assess_All_Information__c}"
+                    label="{!labels['S18_Assess_All_Information__c']}"
+                    textField="{!assess.S18_Assess_All_Information_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S18_Pre_Match_Presentation__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S18_Pre_Match_Presentation__c}"
+                    label="{!labels['S18_Pre_Match_Presentation__c']}"
+                    textField="{!assess.S18_Pre_Match_Presentation_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S18_Volunteer_Approval__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S18_Volunteer_Approval__c}"
+                    label="{!labels['S18_Volunteer_Approval__c']}"
+                    textField="{!assess.S18_Volunteer_Approval_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S18_Child_Approval__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S18_Child_Approval__c}"
+                    label="{!labels['S18_Child_Approval__c']}"
+                    textField="{!assess.S18_Child_Approval_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S18_Introduction_Meeting__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S18_Introduction_Meeting__c}"
+                    label="{!labels['S18_Introduction_Meeting__c']}"
+                    textField="{!assess.S18_Introduction_Meeting_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S18_Parent_Guardian_Involvement__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S18_Parent_Guardian_Involvement__c}"
+                    label="{!labels['S18_Parent_Guardian_Involvement__c']}"
+                    textField="{!assess.S18_Parent_Guardian_Involvement_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S18_Written_Documentation__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S18_Written_Documentation__c}"
+                    label="{!labels['S18_Written_Documentation__c']}"
+                    textField="{!assess.S18_Written_Documentation_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 19']}</div>
+          <div class="panel-body">
+            <h5>
+              <apex:outputText
+                value="{!labels['Standard 19 Subheader']}"
+                escape="false"
+              />
+            </h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S19_Written_YODP__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S19_Written_YODP__c}"
+                    label="{!labels['S19_Written_YODP__c']}"
+                    textField="{!assess.S19_Written_YODP_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <!--<apex:outputPanel rendered="{!i.Field_Name__c == 'S19_Parent_Volunteer_Review__c'}">
+                                    <c:AssessmentQuestion radioField="{!assess.S19_Parent_Volunteer_Review__c}" 
+                                                          label="{!labels['S19_Parent_Volunteer_Review__c']}" 
+                                                          textField="{!assess.S19_Parent_Volunteer_Review_Text__c}" 
+                                                          options="{!options}" userAcctType="{!userAcctType}" />
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!i.Field_Name__c == 'S19_YODP_Reviewed_Annually__c'}">
+                                    <c:AssessmentQuestion radioField="{!assess.S19_YODP_Reviewed_Annually__c}" 
+                                                          label="{!labels['S19_YODP_Reviewed_Annually__c']}" 
+                                                          textField="{!assess.S19_YODP_Reviewed_Annually_Text__c}" 
+                                                          options="{!options}" userAcctType="{!userAcctType}" />
+                                </apex:outputPanel>-->
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="6"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          year="{!assess.Year__c}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          parentId="{!parentId}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(7);
+    };
+  </script>
+</apex:page>

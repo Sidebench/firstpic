@@ -1,0 +1,141 @@
+<apex:component>
+  <apex:attribute
+    type="Boolean"
+    name="showOrgField"
+    description="showOrgField"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showGrantField"
+    description="showGrantField"
+    default="false"
+  />
+  <apex:attribute
+    type="YouthDataCtrl"
+    name="ctrl"
+    description="YouthDataCtrl"
+    required="true"
+  />
+  <c:DateInput />
+
+  <div class="row">
+    <apex:outputPanel rendered="{!showOrgField}">
+      <div class="col-xs-4">
+        <strong>
+          Organization <span class="text-danger">*</span> <br />
+        </strong>
+        <apex:selectList value="{!ctrl.localOrgId}" size="1">
+          <apex:selectOptions value="{!ctrl.localOrgOptions}" />
+          <apex:actionSupport
+            event="onchange"
+            action="{!ctrl.getGrantOptions}"
+            rerender="grantOptions"
+          />
+        </apex:selectList>
+      </div>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!showGrantField}">
+      <div class="col-xs-4">
+        <strong> Grant <span class="text-danger">*</span> <br /> </strong>
+        <apex:selectList value="{!ctrl.grantId}" size="1" id="grantOptions">
+          <apex:selectOptions value="{!ctrl.grantOptions}" />
+        </apex:selectList>
+      </div>
+    </apex:outputPanel>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <strong> Youth Id<br /> </strong>
+      <apex:inputField value="{!ctrl.youth.Youth_ID_Number__c}" />
+    </div>
+    <div class="col-xs-4">
+      <strong> First Name <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.FirstName}" />
+    </div>
+    <div class="col-xs-4">
+      <strong> Last Name <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.LastName}" required="false" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6 col-sm-4">
+      <strong> Birthdate <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.Birthdate}" style="display: block" />
+    </div>
+    <div class="col-xs-6 col-sm-4">
+      <strong>Free/Reduced Lunch</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Free_Reduced_Lunch_Status__c}"
+        style="display: block"
+      />
+    </div>
+    <div class="col-xs-1">
+      <strong>Referral</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Referral__c}"
+        style="display: block"
+      />
+    </div>
+    <div class="col-xs-5 col-sm-3">
+      <strong>Referred By</strong>
+      <apex:inputField value="{!ctrl.youth.Referred_By__c}" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6 col-sm-4">
+      <strong> Gender <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.Gender__c}" style="display: block" />
+    </div>
+    <div class="col-xs-6 col-sm-4">
+      <strong>Race</strong>
+      <apex:inputField value="{!ctrl.youth.Race__c}" style="display: block" />
+    </div>
+    <div class="col-xs-6 col-sm-4">
+      <strong>Ethnicity</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Ethnicity__c}"
+        style="display: block"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6 col-sm-4">
+      <strong>Peer Mentor in Current Grant</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Peer_Mentor_in_Current_Grant__c}"
+        style="display: block"
+      />
+    </div>
+    <div class="col-xs-6 col-sm-4">
+      <strong>Special Ed/Disability</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Special_Education_Disability__c}"
+        style="display: block"
+      />
+    </div>
+    <div class="col-xs-6 col-sm-4">
+      <strong>Previous PAL Member</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Previous_PAL_Member__c}"
+        style="display: block"
+      />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6 col-sm-4">
+      <strong>Parent/Guardian Name</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Parent_Guardian_Name__c}"
+        style="display: block"
+      />
+    </div>
+    <div class="col-xs-6 col-sm-4">
+      <strong>Parent/Guardian is Active Military</strong>
+      <apex:inputField
+        value="{!ctrl.youth.Parent_Guardian_is_Active_Military__c}"
+        style="display: block"
+      />
+    </div>
+  </div>
+</apex:component>

@@ -1,0 +1,160 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="portalName" description="Portal Name" />
+  <apex:attribute
+    type="String"
+    name="detailsLink"
+    description="Details link"
+    default="SubGrantDetails"
+  />
+  <apex:attribute
+    type="String"
+    name="listLink"
+    description="List link"
+    default="SubGrantList"
+  />
+  <apex:attribute type="Grant__c[]" name="grantList" description="Grant List" />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    description="Show More Link?"
+    default="false"
+  />
+  <apex:attribute type="String" name="listType" description="List Type" />
+  <apex:attribute
+    type="Boolean"
+    name="isDashboard"
+    description="isDashboard"
+    default="false"
+  />
+  <apex:attribute type="Id" name="grantId" description="Grant Id" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!grantList.size > 0}">
+        <table style="width: 100%">
+          <tr>
+            <th>Sub-Grant Name</th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">
+              <apex:outputText value="Awarded" rendered="{!NOT(isDashboard)}" />
+            </th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">
+              <apex:outputText
+                value="Total Budgeted"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">
+              <apex:outputText
+                value="Requested Amount"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">
+              <apex:outputText
+                value="Approved Amount"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF((isDashboard),'width: 0;','')}">
+              <apex:outputText value="Balance" rendered="{!NOT(isDashboard)}" />
+            </th>
+            <th>Status</th>
+            <th style="{!IF((isDashboard),'','width: 0;')}">
+              <apex:outputText
+                value="Last Modified"
+                rendered="{!isDashboard}"
+              />
+            </th>
+          </tr>
+          <apex:repeat value="{!grantList}" var="i">
+            <tr>
+              <td>
+                <apex:outputPanel rendered="{!portalName == 'NPAL'}">
+                  <a
+                    href="{!URLFOR($Site.Prefix+'/NPAL'+ detailsLink +'?GrantID='+ i.id)}"
+                  >
+                    {!i.Name}
+                  </a>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!portalName != 'NPAL'}">
+                  <a
+                    href="{!URLFOR($Site.Prefix+'/'+ detailsLink +'?GrantID='+ i.id)}"
+                  >
+                    {!i.Name}
+                  </a>
+                </apex:outputPanel>
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.Amount__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Total_Budgeted__c}"
+                  rendered="{!NOT(isDashboard) && (portalName == 'BBBS' || portalName == '')}"
+                />
+                <apex:outputField
+                  value="{!i.Total_Item_Budget__c}"
+                  rendered="{!NOT(isDashboard) && portalName != 'BBBS' && portalName != ''}"
+                />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.Reimbursement_Requested_Amount__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.Reimbursement_Approved_Amount__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.Balance__c}"
+                  rendered="{!NOT(isDashboard) && (portalName == 'BBBS' || portalName == '')}"
+                />
+                <apex:outputfield
+                  value="{!i.Total_Item_Balance__c}"
+                  rendered="{!NOT(isDashboard) && portalName != 'BBBS' && portalName != ''}"
+                />
+              </td>
+              <td>{!i.Grant_Status__c}</td>
+              <td>
+                <apex:outputfield
+                  value="{!i.LastModifiedDate}"
+                  rendered="{!isDashboard}"
+                />
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!grantList.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <apex:outputPanel rendered="{!portalName == 'NPAL'}">
+          <a
+            href="{!URLFOR($Site.Prefix+'/NPAL'+ listLink +'?type='+listType)}"
+          >
+            View All &raquo;
+          </a>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!portalName != 'NPAL'}">
+          <a
+            href="{!URLFOR($Site.Prefix+'/'+ listLink +'?type='+listType+'&grantId='+grantId)}"
+          >
+            View All &raquo;
+          </a>
+        </apex:outputPanel>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

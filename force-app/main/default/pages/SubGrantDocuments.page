@@ -1,0 +1,51 @@
+<apex:page
+  controller="SubGrantDetailsController"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Sub-Grant Documents</title>
+  </head>
+  <c:Header
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:BBBSSubGrantDetails
+          grant="{!grant}"
+          approverLevel="{!approverLevel}"
+          statusColor="{!statusColor}"
+          showAwardPopup="{!showAwardPopup}"
+        />
+
+        <c:Documents
+          header="Grant Specific Documents"
+          showStatus="true"
+          showDueDate="true"
+          showModHist="true"
+          showRequired="true"
+          enableDeleteAtt="{!CONTAINS(approverLevel, 'Admin')}"
+          showNotesForNational="{!userAcctType == 'National Organization'}"
+          showAccessMode="{!userAcctType == 'National Organization'}"
+          showUploadBtn="{!userAcctType == 'National Organization'}"
+          showAttPopupOnly="{!userAcctType == 'Local Organization'}"
+          emptyListText="No Sub-Grant Documents Found"
+        />
+
+        <a
+          class="btn"
+          href="{!URLFOR($Site.Prefix+'/SubGrantDetails?grantId=' + grant.Id)}"
+        >
+          View Sub-Grant Details
+        </a>
+
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

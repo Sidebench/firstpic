@@ -1,0 +1,333 @@
+<apex:page
+  controller="CohortDetailsCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Cohort Details</title>
+  </head>
+  <c:LEGOHeader
+    ActivePage="about"
+    acct="{!userAcct}"
+    SessionId="{!SessionId}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization'}"
+              >
+                <!--
+                                <a href="{!URLFOR($Site.Prefix+'/LEGOAbout?SessionId='+SessionId)}">
+                                    {!sessionName}
+                                </a>
+                                -->
+                {!sessionName}
+                <br />
+              </apex:outputPanel>
+              {!cohort.Name}
+            </h2>
+          </div>
+          <div class="col-auto pull-right" style="margin-top: 8px">
+            <span style="font-weight: bold"> Coaches: &nbsp; </span>
+            <apex:outputField value="{!cohort.Coaches__c}" /> &nbsp;
+            <apex:commandLink action="{!editCohortPopup}" reRender="form">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </apex:commandLink>
+          </div>
+        </div>
+
+        <!-- BEGIN Lesson List -->
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">Meetings</div>
+              <div class="panel-body">
+                <apex:outputPanel rendered="{!meeting_list.size > 0}">
+                  <apex:dataTable
+                    value="{!meeting_list}"
+                    var="i"
+                    cellpadding="4"
+                    style="width: 100%"
+                  >
+                    <apex:column headerValue="Lesson">
+                      <apex:outputText value="{!i.Name}" />
+                    </apex:column>
+                    <apex:column headerValue="Date">
+                      <apex:outputField value="{!i.Meeting_Date__c}" />
+                    </apex:column>
+                    <apex:column headerValue="Attendance">
+                      <apex:outputField value="{!i.Attendance__c}" />
+                    </apex:column>
+                    <apex:column headerValue="Notes">
+                      <apex:outputField value="{!i.Notes__c}" />
+                    </apex:column>
+                    <apex:column
+                      headerValue="Edit"
+                      headerClass="text-center"
+                      styleClass="text-center"
+                    >
+                      <apex:commandLink
+                        action="{!editMeetingPopup}"
+                        reRender="form"
+                      >
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        <apex:param
+                          assignTo="{!meetingId}"
+                          name="meetingId"
+                          value="{!i.Id}"
+                        />
+                        <apex:param
+                          assignTo="{!meetingAction}"
+                          name="meetingAction"
+                          value="edit"
+                        />
+                      </apex:commandLink>
+                    </apex:column>
+                    <apex:column
+                      headerValue="Delete"
+                      headerClass="text-center"
+                      styleClass="text-center"
+                    >
+                      <apex:commandLink
+                        action="{!editMeetingPopup}"
+                        reRender="form"
+                      >
+                        <span class="glyphicon glyphicon-trash"></span>
+                        <apex:param
+                          assignTo="{!meetingId}"
+                          name="meetingId"
+                          value="{!i.Id}"
+                        />
+                        <apex:param
+                          assignTo="{!meetingAction}"
+                          name="meetingAction"
+                          value="delete"
+                        />
+                      </apex:commandLink>
+                    </apex:column>
+                  </apex:dataTable>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!meeting_list.size == 0}">
+                  No Meetings Found
+                </apex:outputPanel>
+              </div>
+              <div class="panel-footer">
+                <apex:commandButton
+                  value="Add Meeting"
+                  action="{!addMeetingPopup}"
+                  reRender="form"
+                >
+                  <apex:param
+                    assignTo="{!meetingId}"
+                    name="meetingId"
+                    value=""
+                  />
+                  <apex:param
+                    assignTo="{!meetingAction}"
+                    name="meetingAction"
+                    value="add"
+                  />
+                </apex:commandButton>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END Meeeting List -->
+
+        <!-- BEGIN Edit Cohort Popup -->
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayEditCohortPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayEditCohortPopup}"
+        >
+          <div class="modal-dialog text-left">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">
+                  Edit &nbsp;<apex:outputText value="{!cohort.Name}" />
+                </h4>
+              </div>
+              <div class="modal-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12">
+                    Name
+                    <apex:inputField value="{!cohort.Name}" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    Coaches
+                    <apex:selectList
+                      value="{!cohort.Coaches__c}"
+                      size="4"
+                      multiselect="true"
+                      style="width: 100%"
+                    >
+                      <apex:selectOptions value="{!coaches}" />
+                    </apex:selectList>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!editCohortPopup}"
+                  value="Cancel"
+                  immediate="true"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  action="{!updateCohort}"
+                  value="Save and Close"
+                  styleClass="primary"
+                  reRender="form"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Edit Cohort Popup -->
+
+        <!-- BEGIN Meeting Popup -->
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayMeetingPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayMeetingPopup}"
+        >
+          <div class="modal-dialog text-left">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">
+                  <apex:outputText
+                    rendered="{!meetingId == null}"
+                    value="Add Meeting"
+                  />
+                  <apex:outputText
+                    rendered="{!meetingId != null}"
+                    value="Edit Meeting"
+                  />
+                </h4>
+              </div>
+              <div class="modal-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12">
+                    Lesson
+                    <apex:selectList
+                      value="{!meeting.Lesson__c}"
+                      size="1"
+                      style="width: 100%"
+                    >
+                      <apex:selectOptions value="{!lessons}" />
+                    </apex:selectList>
+                    <!--
+<apex:outputPanel rendered="{!meetingId != null}">
+<br /> {!lessonName} 
+</apex:outputPanel>
+-->
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    Meeting Date <br />
+                    <apex:input type="date" value="{!meetingDate}" />
+                  </div>
+                  <div class="col-xs-6">
+                    Attendance
+                    <apex:inputField value="{!meeting.Attendance__c}" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    Notes
+                    <apex:inputField value="{!meeting.Notes__c}" />
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!addMeetingPopup}"
+                  value="Cancel"
+                  immediate="true"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  action="{!addMeeting}"
+                  value="Save and Close"
+                  styleClass="primary"
+                  reRender="form"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Meeting Popup -->
+
+        <!-- BEGIN Delete Meeting Popup -->
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayDeleteMeetingPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayDeleteMeetingPopup}"
+        >
+          <div class="modal-dialog text-left">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Delete {!lessonName}</h4>
+              </div>
+              <div class="modal-body grid-pd-md">
+                Are you should you'd like to delete this meeting? This cannot be
+                undone.
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!deleteMeetingPopup}"
+                  value="Cancel"
+                  immediate="true"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  action="{!deleteMeeting}"
+                  value="Delete"
+                  styleClass="primary"
+                  reRender="form"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Delete Meeting Popup -->
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

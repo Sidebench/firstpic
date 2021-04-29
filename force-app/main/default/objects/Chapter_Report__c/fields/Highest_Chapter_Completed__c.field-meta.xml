@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Highest_Chapter_Completed__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Chapter_12_Complete__c, 12, 
+IF(Chapter_11_Complete__c, 11,
+IF(Chapter_10_Complete__c, 10,
+IF(Chapter_9_Complete__c, 9,
+IF(Chapter_8_Complete__c, 8,
+IF(Chapter_7_Complete__c, 7,
+IF(Chapter_6_Complete__c, 6,
+IF(Chapter_5_Complete__c, 5,
+IF(Chapter_4_Complete__c, 4,
+IF(Chapter_3_Complete__c, 3,
+IF(Chapter_2_Complete__c, 2,
+IF(Chapter_1_Complete__c, 1,
+0))))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Highest Chapter Completed</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

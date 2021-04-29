@@ -1,0 +1,222 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <c:AssessmentHeader assess="{!assess}" header="PROGRAM STANDARDS" />
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="4"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">{!labels['Standard 9']}</div>
+          <div class="panel-body">
+            <h5 style="margin-top: 10px">
+              <apex:outputText
+                value="Standard 9A: Policy on Obtaining Criminal History Record Check"
+                escape="false"
+              />
+            </h5>
+            <table class="grid-pd-sm">
+              <apex:repeat value="{!fields}" var="i">
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S8_Confidential_Personnel_Records__c'}"
+                >
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S8_Confidential_Personnel_Records__c}"
+                    label="{!labels['S8_Confidential_Personnel_Records__c']}"
+                    textField="{!assess.S8_Confidential_Personnel_Records_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9d_Transport_Safety_Requirements__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9B: Policy on Transporting Children"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9d_Transport_Safety_Requirements__c}"
+                    label="{!labels['S9d_Transport_Safety_Requirements__c']}"
+                    textField="{!assess.S9d_Transport_Safety_Requirements_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9e_Child_Safety_Training__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9C: Policy on Mandatory Training on Child Safety and Youth Protection for Volunteer Bigs, Parent/Guardians, Children, and all BBBS Agency Staff and Board Members"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9e_Child_Safety_Training__c}"
+                    label="{!labels['S9e_Child_Safety_Training__c']}"
+                    textField="{!assess.S9e_Child_Safety_Training_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9g_Accommodations__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9E: Policy on Overnight Visits"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9g_Accommodations__c}"
+                    label="{!labels['S9g_Accommodations__c']}"
+                    textField="{!assess.S9g_Accommodations_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9a_Potential_Volunteers__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9D: Policy on Children Visiting Volunteer Applicants' Home"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9a_Potential_Volunteers__c}"
+                    label="{!labels['S9a_Potential_Volunteers__c']}"
+                    textField="{!assess.S9a_Potential_Volunteers_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9h_Licensed_Permitted__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9F: Policy on Firearms and Weapons"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9h_Licensed_Permitted__c  }"
+                    label="{!labels['S9h_Licensed_Permitted__c']}"
+                    textField="{!assess.S9h_Licensed_Permitted_Text__c  }"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9i_Privacy__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9G: Policy on Digital Technology and Social Networking"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9i_Privacy__c  }"
+                    label="{!labels['S9i_Privacy__c']}"
+                    textField="{!assess.S9i_Privacy_Text__c  }"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9j_Incident_Reporting__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9H: Policy on Mandatory Child Abuse and Exploitation Reporting"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9j_Incident_Reporting__c  }"
+                    label="{!labels['S9j_Incident_Reporting__c']}"
+                    textField="{!assess.S9j_Incident_Reporting_Text__c  }"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9k_Staff_Serving_as_Volunteers__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9I: Policy on Board Members and Staff Serving as Volunteer Bigs"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9k_Staff_Serving_as_Volunteers__c}"
+                    label="{!labels['S9k_Staff_Serving_as_Volunteers__c']}"
+                    textField="{!assess.S9k_Staff_Serving_as_Volunteers_Text__c}"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!i.Field_API__c == 'S9i_Alcohol_Tobacco_and_Drug_Use__c'}"
+                >
+                  <c:AssessmentStandardHeader
+                    header="Standard 9J: Policy on Use of Alcohol, Tobacco Products, and Illicit and Legal Drugs or Substances"
+                  />
+                  <c:AssessmentQuestion
+                    radioField="{!assess.S9i_Alcohol_Tobacco_and_Drug_Use__c  }"
+                    label="{!labels['S9i_Alcohol_Tobacco_and_Drug_Use__c']}"
+                    textField="{!assess.S9i_Alcohol_Tobacco_and_Drug_Use_Text__c  }"
+                    options="{!options}"
+                    userAcctType="{!userAcctType}"
+                  />
+                </apex:outputPanel>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="4"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          year="{!assess.Year__c}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(5);
+    };
+  </script>
+</apex:page>

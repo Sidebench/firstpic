@@ -1,0 +1,394 @@
+<apex:page
+  controller="LEGOExpoReportCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Expo Report</title>
+  </head>
+  <c:LEGOHeader
+    ActivePage="reports"
+    acct="{!userAcct}"
+    SessionId="{!SessionId}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          {!session.Name}
+          <apex:outputPanel rendered="{!userAcctType == 'Site'}">
+            <div style="text-align: right; margin-bottom: 10px">
+              <apex:selectList value="{!SessionId}" size="1">
+                <apex:actionSupport event="onchange" action="{!init}" />
+                <apex:selectOptions value="{!options}" />
+              </apex:selectList>
+            </div>
+          </apex:outputPanel>
+        </h2>
+
+        <apex:outputPanel rendered="{!SessionId != '' && SessionId != null}">
+          <table class="table">
+            <tr>
+              <td>
+                <span style="font-weight: bold"> Type: &nbsp;&nbsp; </span>
+                <apex:outputField value="{!acct.Type}" />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  # of Cohorts: &nbsp;&nbsp;
+                </span>
+                <apex:outputText value="{!acct.Number_of_Cohorts__c}" />
+              </td>
+              <td>
+                <span style="font-weight: bold"> Team Size: &nbsp;&nbsp; </span>
+                <apex:outputText value="{!acct.Team_Size__c}" />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  Implementation Model: &nbsp;&nbsp;
+                </span>
+                <apex:outputField value="{!acct.Implementation_Model__c }" />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  Start Date: &nbsp;&nbsp;
+                </span>
+                <apex:outputField value="{!acct.Start_Date__c }" />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  Estimated Date of Expo: &nbsp;&nbsp;
+                </span>
+                <apex:outputField value="{!acct.Estimated_Date_of_Expo__c }" />
+              </td>
+            </tr>
+          </table>
+
+          <!-- BEGIN Coach List -->
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  Expo Report
+                  <span class="pull-right">
+                    Status:
+                    <span class="{!statusColor}"
+                      >{!session.Expo_Report_Status__c}</span
+                    >
+                  </span>
+                </div>
+                <div class="panel-body">
+                  <div class="grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >When did you host your Expo? &nbsp;&nbsp;</strong
+                        >
+                        <apex:input
+                          type="date"
+                          value="{!expoDate}"
+                          styleClass="input-md"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Date_of_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >Where did you host your Expo? &nbsp;&nbsp;</strong
+                        >
+                        <apex:inputField
+                          value="{!session.Location_of_Expo__c}"
+                          styleClass="input-md"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Location_of_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >How many youth participated in your Expo?
+                          &nbsp;&nbsp;</strong
+                        >
+                        <br />
+                        <apex:inputField
+                          value="{!session.Youth_Participated_in_Expo__c}"
+                          styleClass="input-md"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Youth_Participated_in_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >If not full number of youth enrolled, please
+                          explain.</strong
+                        >
+                        <br />
+                        <apex:inputField
+                          value="{!session.Youth_Participated_Explanation__c}"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Youth_Participated_Explanation__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >Did all of your coaches participate in the Expo?
+                          &nbsp;&nbsp;</strong
+                        >
+                        <apex:inputField
+                          value="{!session.Coaches_Participate_in_Expo__c}"
+                          styleClass="input-md"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Coaches_Participate_in_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <strong>If no, please explain.</strong>
+                        <br />
+                        <apex:inputField
+                          value="{!session.Coaches_Participate_Explanation__c}"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Coaches_Participate_Explanation__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >Did you recruit any volunteers to assist with running
+                          the Expo? &nbsp;&nbsp;</strong
+                        >
+                        <apex:inputField
+                          value="{!session.Volunteers_Recruited_for_Expo__c}"
+                          styleClass="input-md"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Volunteers_Recruited_for_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <strong>If yes, how many? &nbsp;&nbsp;</strong>
+                        <apex:inputField
+                          value="{!session.Number_of_Volunteers_Recruited__c}"
+                          styleClass="input-md"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Number_of_Volunteers_Recruited__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >What steps did you take to promote your Expo?
+                          (advertisements, invitations, etc.)</strong
+                        >
+                        <br />
+                        <apex:inputField
+                          value="{!session.Steps_to_Promote_Expo__c}"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Steps_to_Promote_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >Can you please share with us some accomplishments of
+                          your Expo?</strong
+                        >
+                        <br />
+                        <apex:inputField
+                          value="{!session.Accomplishments_of_Expo__c}"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Accomplishments_of_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >Can you please share with us any problems or barriers
+                          you encountered during your Expo?</strong
+                        >
+                        <br />
+                        <apex:inputField
+                          value="{!session.Problems_with_Expo__c}"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Problems_with_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                      <div class="col-xs-12 col-sm-6">
+                        <strong
+                          >Do you have any innovative accomplishments regarding
+                          the implementation of your Expo that you would like to
+                          share with FIRST?</strong
+                        >
+                        <br />
+                        <apex:inputField
+                          value="{!session.Implementation_of_Expo__c}"
+                          rendered="{!editMode}"
+                        />
+                        <apex:outputField
+                          value="{!session.Implementation_of_Expo__c}"
+                          rendered="{!NOT(editMode)}"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BEGIN Attachments -->
+          <apex:outputPanel id="attachments">
+            <div class="panel panel-default">
+              <div class="panel-heading">Photos of Expo</div>
+              <div class="panel-body grid-pd-md">
+                Please upload all attachments (including photos) in PDF format.
+                <apex:repeat value="{!att_list}" var="a">
+                  <div class="row">
+                    <div class="col-auto">
+                      <apex:outputPanel rendered="{!a.Id != null}">
+                        <apex:commandLink
+                          action="{!deleteAtt}"
+                          status="pageStatus"
+                          rerender="attachments"
+                        >
+                          <span
+                            class="glyphicon glyphicon-remove-circle"
+                          ></span>
+                          <apex:param
+                            name="deleteAtt"
+                            value="{!a.Id}"
+                            assignTo="{!deleteAttId}"
+                          ></apex:param>
+                        </apex:commandLink>
+                        <apex:outputLink
+                          value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                          style="margin-right: 10px"
+                          target="_blank"
+                        >
+                          {!a.Name}
+                        </apex:outputLink>
+                        <apex:outputText rendered="{!a.Description != null}">
+                          ({!a.Description})
+                        </apex:outputText>
+                      </apex:outputPanel>
+                    </div>
+                  </div>
+                </apex:repeat>
+              </div>
+              <apex:outputPanel rendered="{!editMode}">
+                <div class="panel-footer">
+                  <apex:commandButton
+                    action="{!attPopup}"
+                    value="Upload Attachments"
+                    status="pageStatus"
+                    reRender="attachments"
+                  />
+                </div>
+              </apex:outputPanel>
+            </div>
+            <apex:outputPanel
+              styleClass="popupBackground"
+              layout="block"
+              rendered="{!displayAttPopup}"
+            />
+            <apex:outputPanel
+              styleClass="custPopup"
+              layout="block"
+              rendered="{!displayAttPopup}"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Upload New Attachment</h4>
+                  </div>
+                  <div class="modal-body">
+                    <iframe
+                      id="attachmentIFrame"
+                      frameborder="0"
+                      width="100%"
+                      height="200px"
+                      src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ session.id +'&filename=Expo Photo')}"
+                    >
+                    </iframe>
+                  </div>
+                  <div class="modal-footer">
+                    <apex:commandButton
+                      action="{!closeAttPopup}"
+                      value="Close"
+                      status="pageStatus"
+                      reRender="form"
+                    />
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+          <!-- END Attachments -->
+
+          <apex:commandButton
+            action="{!save}"
+            value="Save"
+            status="pageStatus"
+            rendered="{!editMode}"
+            reRender="form"
+          />
+          <apex:commandButton
+            action="{!submit}"
+            value="Submit"
+            status="pageStatus"
+            styleClass="primary"
+            rendered="{!editMode}"
+            reRender="form"
+          />
+          <apex:commandButton
+            action="{!sendBack}"
+            value="Send Back"
+            status="pageStatus"
+            styleClass="primary"
+            rendered="{!userAcctType == 'National Organization'}"
+            reRender="form"
+          />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

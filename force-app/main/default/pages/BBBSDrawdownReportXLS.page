@@ -1,0 +1,35 @@
+<apex:page
+  controller="DrawdownReportCtrl"
+  action="{!getLists}"
+  contentType="application/vnd.ms-excel#DrawdownReport.xls"
+>
+  <h4>{!ReportId}</h4>
+  <table>
+    <tr>
+      <th>Request Id</th>
+      <th>Sub-Grant Name</th>
+      <th>Request Month</th>
+      <th>Total Requested Amount</th>
+    </tr>
+    <apex:repeat value="{!inReport_list}" var="i">
+      <tr>
+        <td>{!i.Name}</td>
+        <td>{!i.Grant__r.Name}</td>
+        <td>{!i.Request_Month__c}</td>
+        <td>{!i.Total_Requested_Amount__c}</td>
+      </tr>
+    </apex:repeat>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Total</th>
+      <th>{!reportTotal}</th>
+    </tr>
+  </table>
+</apex:page>

@@ -1,0 +1,825 @@
+<apex:page
+  controller="SiteDetailsCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>About</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="about"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!acct.Name}</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:commandButton
+              action="{!showEditOrgPopup}"
+              value="Edit Organization"
+              styleClass="btn-white"
+              status="pageStatus"
+              reRender="editOrgPopup"
+            />
+          </div>
+        </div>
+
+        <table class="table">
+          <tr>
+            <td>
+              <span style="font-weight: bold"> EIN: &nbsp;&nbsp; </span>
+              <apex:outputField value="{!acct.EIN__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                D.U.N.S. Number: &nbsp;&nbsp;
+              </span>
+              <apex:outputText value="{!acct.DUNS_Number__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                D.U.N.S. Expiration Date: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!acct.DUNS_Exp_Date__c}" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="pull-left" style="font-weight: bold">
+                Location: &nbsp;&nbsp;
+              </div>
+              <div class="pull-left">
+                <apex:outputPanel rendered="{!acct.BillingStreet != null}"
+                  >{!acct.BillingStreet} <br
+                /></apex:outputPanel>
+                <apex:outputPanel rendered="{!acct.BillingCity != null}"
+                  >{!acct.BillingCity},&nbsp;</apex:outputPanel
+                >
+                {!acct.BillingState}&nbsp; {!acct.BillingPostalCode}
+              </div>
+            </td>
+            <td>
+              <div class="pull-left" style="font-weight: bold">
+                Mailing Address: &nbsp;&nbsp;
+              </div>
+              <div class="pull-left">
+                <apex:outputPanel rendered="{!acct.ShippingStreet != null}"
+                  >{!acct.ShippingStreet} <br
+                /></apex:outputPanel>
+                <apex:outputPanel rendered="{!acct.ShippingCity != null}"
+                  >{!acct.ShippingCity},&nbsp;</apex:outputPanel
+                >
+                {!acct.ShippingState}&nbsp; {!acct.ShippingPostalCode}
+              </div>
+            </td>
+            <td>
+              <span style="font-weight: bold"> Phone: &nbsp;&nbsp; </span>
+              {!acct.Phone}
+            </td>
+          </tr>
+        </table>
+
+        <apex:outputPanel
+          rendered="{!CONTAINS(portalName, 'NCAI') && soi.Id != null && acct.RecordType.Name = 'Local Organization' && NOT(CONTAINS(userAcct.National_Grants__c, 'OVC'))}"
+        >
+          <div class="panel panel-default">
+            <div class="panel-heading">SOI Details</div>
+            <div class="panel-body grid-pd-sm">
+              <div class="row">
+                <div class="col-xs-4">
+                  <strong>Federal Debt:</strong> &nbsp;
+                  <apex:outputText
+                    value="{!IF(soi.Federal_Debt__c == true, 'Yes', 'No')}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <strong>Audit Fund:</strong> &nbsp;
+                  <apex:outputText
+                    value="{!IF(soi.Audit_Fund__c == true, 'Yes', 'No')}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <strong>Audit Finding:</strong> &nbsp;
+                  <apex:outputText
+                    value="{!IF(soi.Audit_Finding__c == true, 'Yes', 'No')}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <strong>Audit Notes:</strong> &nbsp; {!soi.Audit_Notes__c}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong>Review Notes:</strong> &nbsp; {!soi.Review_Notes__c}
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <!-- BEGIN Contacts -->
+        <apex:outputPanel id="contacts">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">Contacts</div>
+                <div class="panel-body">
+                  <apex:outputPanel rendered="{!contacts.size > 0}">
+                    <table style="width: 100%">
+                      <tr>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th>Role</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Site</th>
+                        <th class="text-center" style="width: 120px"></th>
+                      </tr>
+                      <apex:repeat value="{!contacts}" var="i">
+                        <tr>
+                          <td>{!i.Name}</td>
+                          <td>{!i.Title}</td>
+                          <td>{!i.Role__c}</td>
+                          <td>{!i.Email}</td>
+                          <td>{!i.Phone}&nbsp;&nbsp;{!i.Extension__c}</td>
+                          <td>
+                            <apex:outputText
+                              value="{!i.Account.Name}"
+                              rendered="{!i.Account.RecordType.Name == 'Site'}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:commandLink
+                              action="{!showEditRelatedContactPopup}"
+                              status="pageStatus"
+                              reRender="editContactPopup"
+                            >
+                              Edit
+                              <apex:param
+                                name="selectedContactId"
+                                value="{!i.Id}"
+                                assignTo="{!selectedContactId}"
+                              />
+                            </apex:commandLink>
+                            <!--
+                                                        <span class="text-muted">&nbsp;|&nbsp;</span>
+                                                        <apex:commandLink action="{!showDeleteContactPopup}" status="pageStatus" reRender="deleteContactPopup"> 
+                                                            Delete
+                                                            <apex:param name="selectedContactId" value="{!i.Id}" assignTo="{!selectedContactId}" />
+                                                        </apex:commandLink>
+                                                        -->
+                          </td>
+                        </tr>
+                      </apex:repeat>
+                    </table>
+                  </apex:outputPanel>
+                </div>
+                <div class="panel-footer">
+                  <apex:commandButton
+                    value="Add Contact"
+                    action="{!showEditRelatedContactPopup}"
+                    status="pageStatus"
+                    rerender="editContactPopup"
+                  >
+                    <apex:param
+                      name="selectedContactId"
+                      value=""
+                      assignTo="{!selectedContactId}"
+                    />
+                  </apex:commandButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Contacts -->
+
+        <!-- BEGIN Sites -->
+        <apex:outputPanel
+          id="sites"
+          rendered="{!userAcctType == 'National Organization' && siteId == null}"
+        >
+          <apex:outputPanel id="paginatedList">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <apex:outputText
+                  value="{!IF(portalName == 'Ripken', 'Sites', 'Local Organizations')}"
+                />
+                <div class="pull-right">
+                  Name: &nbsp;<apex:inputText
+                    value="{!siteName}"
+                    styleClass="input-md"
+                  />&nbsp;&nbsp;
+                  <apex:commandButton
+                    action="{!getRelatedAccountList}"
+                    value="Update"
+                    status="pageStatus"
+                    styleClass="btn-small primary"
+                    reRender="form"
+                  />
+                </div>
+              </div>
+              <div class="panel-body">
+                <apex:outputPanel rendered="{!sites.size > 0}">
+                  <table style="width: 100%" class="tblWithBorders">
+                    <tr>
+                      <th>Name</th>
+                      <th class="text-center" style="width: 120px"></th>
+                    </tr>
+                    <apex:repeat value="{!sites}" var="i">
+                      <tr>
+                        <td>
+                          <a
+                            href="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+i.Id)}"
+                          >
+                            {!i.Name}
+                          </a>
+                        </td>
+                        <td class="text-center">
+                          <apex:commandLink
+                            action="{!showSendApplicationPopup}"
+                            status="pageStatus"
+                            reRender="sendApplicationPopup"
+                            rendered="{!portalName != 'STEM'}"
+                          >
+                            Send Application
+                            <apex:param
+                              name="selectedSiteId"
+                              value="{!i.Id}"
+                              assignTo="{!selectedSiteId}"
+                            />
+                          </apex:commandLink>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+              </div>
+              <c:Pagination
+                disablePrevious="{!siteDisablePrevious}"
+                disableNext="{!siteDisableNext}"
+                recordCount="{!siteRecordCount}"
+                first="{!siteFirst}"
+                previous="{!sitePrevious}"
+                next="{!siteNext}"
+                last="{!siteLast}"
+              >
+                <apex:commandButton
+                  value="Send Application"
+                  action="{!showSendApplicationPopup}"
+                  status="pageStatus"
+                  rerender="sendApplicationPopup"
+                  rendered="{!portalName == 'Ripken'}"
+                >
+                  <apex:param
+                    name="selectedSiteId"
+                    value=""
+                    assignTo="{!selectedSiteId}"
+                  />
+                </apex:commandButton>
+              </c:Pagination>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Sites -->
+
+        <!-- BEGIN Youth List -->
+        <apex:outputPanel
+          id="paginatedYouthList"
+          rendered="{!(userAcctType != 'National Organization' || siteId != null) && NOT(CONTAINS(userAcct.National_Grants__c, 'OVC'))}"
+        >
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Youth
+              <div class="pull-right">
+                Name: &nbsp;<apex:inputText
+                  value="{!youthName}"
+                  styleClass="input-md"
+                />&nbsp;&nbsp;
+                <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+                  Site: &nbsp;<apex:selectList value="{!youthSiteId}" size="1">
+                    <apex:selectOptions
+                      value="{!siteOptions}"
+                    /> </apex:selectList
+                  >&nbsp;&nbsp;
+                </apex:outputPanel>
+                <apex:commandButton
+                  action="{!getRelatedYouthList}"
+                  value="Update"
+                  status="pageStatus"
+                  styleClass="btn-small primary"
+                  reRender="form"
+                />
+              </div>
+            </div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!youth.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>
+                      <apex:outputText value="Name" />
+                    </th>
+                    <th style="{!IF(userAcctType != 'Site','','width: 0;')}">
+                      <apex:outputText
+                        value="Site"
+                        rendered="{!userAcctType != 'Site'}"
+                      />
+                    </th>
+                    <th class="text-center">Highest Chapter Completed</th>
+                  </tr>
+                  <apex:repeat value="{!youth}" var="i">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          action="{!URLFOR($Site.Prefix+'/YouthDetails?youthId='+i.Id)}"
+                        >
+                          {!i.Name}
+                        </apex:commandLink>
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.Account.Name}"
+                          rendered="{!userAcctType != 'Site'}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        {!i.Highest_Chapter_Completed__c}
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!youth.size == 0}">
+                No Youth Found
+              </apex:outputPanel>
+            </div>
+
+            <c:Pagination
+              listId="paginatedYouthList"
+              disablePrevious="{!youthDisablePrevious}"
+              disableNext="{!youthDisableNext}"
+              recordCount="{!youthRecordCount}"
+              first="{!youthFirst}"
+              previous="{!youthPrevious}"
+              next="{!youthNext}"
+              last="{!youthLast}"
+            />
+          </div>
+        </apex:outputPanel>
+        <!-- END Youth List -->
+
+        <apex:outputPanel
+          rendered="{!CONTAINS(portalName, 'NCAI') && (userAcctType == 'Site' || siteId != null) && NOT(CONTAINS(acct.National_Grants__c, 'OVC'))}"
+        >
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Templates - Please use these downloadable templates to upload your
+              required documents below
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-4 text-left">
+                  <apex:outputLink
+                    value="{!$Resource.TRAIL_Implementation_Plan}"
+                    target="_blank"
+                  >
+                    T.R.A.I.L. Implementation Plan
+                  </apex:outputLink>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <c:Documents
+            header="All Required Documents"
+            enableDeleteAtt="false"
+            showAttPopupOnly="true"
+            showStatus="true"
+            showRequired="true"
+            showDueDate="true"
+            groupId="Organization Documents"
+          />
+          <!--<c:HoldStatus org="{!acct}" approverLevel="{!approverLevel}" displayUpdateBtn="false" />-->
+        </apex:outputPanel>
+
+        <c:TALogList
+          ctrl="{!TALogCtrl}"
+          siteId="{!siteId}"
+          rendered="{!CONTAINS(portalName, 'NCAI') && NOT(CONTAINS(portalName, 'TRAIL')) && userAcctType == 'National Organization' && siteId != null}"
+        />
+
+        <!-- BEGIN Edit Org Details Popup -->
+        <apex:outputPanel id="editOrgPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayEditOrgPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayEditOrgPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Edit Organization Information</h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <div class="row">
+                    <apex:outputPanel
+                      rendered="{!userAcctType == 'National Organization' && portalName == 'Ripken' && acct.RecordType.Name == 'Local Organization'}"
+                    >
+                      <div class="col-xs-6">
+                        Name: &nbsp;&nbsp;
+                        <apex:inputField value="{!acct.Name}" />
+                      </div>
+                    </apex:outputPanel>
+                    <div class="col-xs-6">
+                      EIN: &nbsp;&nbsp;
+                      <apex:inputField value="{!acct.EIN__c}" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      D.U.N.S. Number: &nbsp;&nbsp;
+                      <apex:inputField value="{!acct.DUNS__c}" />
+                    </div>
+                    <div class="col-xs-6">
+                      D.U.N.S. Expiration Date: &nbsp;&nbsp;
+                      <apex:inputField value="{!acct.DUNS_Exp_Date__c}" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      Address:
+                      <apex:inputText value="{!acct.BillingStreet}" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      City:
+                      <apex:inputField value="{!acct.BillingCity}" />
+                    </div>
+                    <div class="col-xs-2">
+                      State:
+                      <apex:inputField value="{!acct.BillingState}" />
+                    </div>
+                    <div class="col-xs-4">
+                      Zip:
+                      <apex:inputField value="{!acct.BillingPostalCode}" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      Phone: &nbsp;&nbsp;
+                      <apex:inputField value="{!acct.Phone}" />
+                    </div>
+                    <div class="col-xs-6">
+                      Website: &nbsp;&nbsp;
+                      <apex:inputField value="{!acct.Website}" />
+                    </div>
+                  </div>
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideEditOrgPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    reRender="editOrgPopup"
+                  />
+                  <apex:commandButton
+                    action="{!upsertOrg}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                    reRender="form"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Edit Org Details Popup -->
+
+        <!-- BEGIN Add/Edit Contact Popup -->
+        <apex:outputPanel id="editContactPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayEditContactPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayEditContactPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">
+                    Add/Edit &nbsp;<apex:outputText
+                      value="{!selectedContact.Name}"
+                    />
+                  </h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-6">
+                      First Name
+                      <apex:inputField value="{!selectedContact.FirstName}" />
+                    </div>
+                    <div class="col-xs-6">
+                      Last Name
+                      <apex:inputField
+                        value="{!selectedContact.LastName}"
+                        required="false"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-6">
+                      Title
+                      <apex:inputField value="{!selectedContact.Title}" />
+                    </div>
+                    <div class="col-xs-6">
+                      <span style="display: block">Role</span>
+                      <apex:inputField value="{!selectedContact.Role__c}" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-4">
+                      Phone
+                      <apex:inputField value="{!selectedContact.Phone}" />
+                    </div>
+                    <div class="col-xs-2">
+                      Extension
+                      <apex:inputField
+                        value="{!selectedContact.Extension__c}"
+                      />
+                    </div>
+                    <div class="col-xs-6">
+                      Email
+                      <apex:inputField
+                        value="{!selectedContact.Email}"
+                        required="false"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <apex:outputPanel
+                      rendered="{!userAcctType == 'Local Organization'}"
+                    >
+                      <div class="col-xs-6">
+                        Site
+                        <apex:selectList
+                          value="{!contactSiteId}"
+                          size="1"
+                          style="display: block"
+                        >
+                          <apex:selectOptions value="{!siteOptions}" />
+                        </apex:selectList>
+                      </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel
+                      rendered="{!currentUser.Contact.Role__c == 'CEO' || currentUser.Contact.Role__c == 'CFO'}"
+                    >
+                      <div class="col-xs-6">
+                        User Profile
+                        <apex:selectList
+                          value="{!selectedContact.User_Profile__c}"
+                          size="1"
+                          style="display: block"
+                        >
+                          <apex:selectOptions value="{!profileOptions}" />
+                        </apex:selectList>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideEditRelatedContactPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    immediate="true"
+                    reRender="editContactPopup"
+                  />
+                  <apex:commandButton
+                    action="{!upsertContact}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                    reRender="contacts, editContactPopup"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Add/Edit Contact Popup -->
+
+        <!-- BEGIN Delete Contact Popup -->
+        <apex:outputPanel id="deleteContactPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayDeleteContactPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayDeleteContactPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">
+                    Delete &nbsp;<apex:outputText
+                      value="{!selectedContact.Name}"
+                    />
+                  </h4>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete this contact? This can't be
+                  undone.
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideDeleteContactPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    rerender="deleteContactPopup"
+                  />
+                  <apex:commandButton
+                    action="{!deleteContact}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Delete Contact Popup -->
+
+        <!-- BEGIN Send Application Popup -->
+        <apex:outputPanel id="sendApplicationPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displaySendApplicationPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displaySendApplicationPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Send Application</h4>
+                </div>
+                <div class="modal-body grid-pd-sm">
+                  <apex:outputPanel rendered="{!portalName == 'Ripken'}">
+                    <div class="row">
+                      <div class="col-xs-4">
+                        Site Name <br />
+                        <apex:inputField
+                          value="{!app.Organization_Name__c}"
+                          rendered="{!app.Organization__c == null}"
+                        />
+                        <apex:outputField
+                          value="{!app.Organization_Name__c}"
+                          rendered="{!app.Organization__c != null}"
+                        />
+                      </div>
+                      <div class="col-xs-4">
+                        Applicant Name
+                        <apex:inputField value="{!app.Applicant_Name__c}" />
+                      </div>
+                      <div class="col-xs-4">
+                        Applicant Email
+                        <apex:inputField value="{!app.Applicant_Email__c}" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-4">
+                        Award Amount
+                        <apex:inputField value="{!app.Awarded_Amount__c}" />
+                      </div>
+                      <div class="col-xs-4">
+                        Application Type
+                        <apex:selectList
+                          value="{!appType}"
+                          size="1"
+                          style="display: block"
+                        >
+                          <apex:selectOptions value="{!appTypeOptions}" />
+                        </apex:selectList>
+                      </div>
+                      <div class="col-xs-4">
+                        CC
+                        <apex:inputField value="{!app.CC__c}" />
+                      </div>
+                    </div>
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!CONTAINS(portalName, 'NCAI')}">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        Organization Name <br />
+                        <strong>{!app.Organization_Name__c}</strong>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-6">
+                        Previous Award Amount
+                        <apex:inputField
+                          value="{!app.Previous_Award_Amount__c}"
+                        />
+                      </div>
+                      <div class="col-xs-6">
+                        Award Amount
+                        <apex:inputField value="{!app.Awarded_Amount__c}" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-6">
+                        Applicant Name
+                        <apex:inputField value="{!app.Applicant_Name__c}" />
+                      </div>
+                      <div class="col-xs-6">
+                        Applicant Email
+                        <apex:inputField value="{!app.Applicant_Email__c}" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-6">
+                        CC
+                        <apex:inputField value="{!app.CC__c}" />
+                      </div>
+                      <div class="col-xs-6">
+                        Type <br />
+                        <apex:inputField value="{!app.Type__c}" />
+                      </div>
+                    </div>
+                  </apex:outputPanel>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      Note
+                      <apex:inputTextarea
+                        value="{!app.Notes__c}"
+                        richText="false"
+                      />
+                    </div>
+                  </div>
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideSendApplicationPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    rerender="sendApplicationPopup"
+                  />
+                  <apex:commandButton
+                    action="{!sendApplication}"
+                    value="Send Application"
+                    status="pageStatus"
+                    styleClass="primary"
+                    reRender="sendApplicationPopup"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Send Application Popup -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+        <apex:actionFunction
+          name="getLists"
+          action="{!getLists}"
+          status="pageStatus"
+          rerender="form"
+        />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

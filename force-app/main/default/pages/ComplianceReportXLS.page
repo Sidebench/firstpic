@@ -1,0 +1,81 @@
+<apex:page
+  controller="ComplianceCtrl"
+  action="{!getLists}"
+  contentType="application/vnd.ms-excel#ComplianceReport.xls"
+>
+  <h4>{!reportTitle} - {!year}</h4>
+  <table>
+    <tr>
+      <th>BBBS Id</th>
+      <th>Organization</th>
+      <apex:outputPanel rendered="{!reportType == '' || reportType == null}">
+        <th>Assessment Status</th>
+        <th>Compliance Status</th>
+        <th>AIM Fee Form Uploaded</th>
+        <th>Affiliation Fee Form Uploaded</th>
+      </apex:outputPanel>
+      <apex:outputPanel
+        rendered="{!reportType == '' || reportType == null || reportType == 'audit'}"
+      >
+        <th>Audit</th>
+        <th>Fiscal Year Ended</th>
+        <th>9 Months from Fiscal Year Ended</th>
+      </apex:outputPanel>
+      <apex:outputPanel
+        rendered="{!reportType == '' || reportType == null || reportType == 'ins'}"
+      >
+        <th>Insurance with Kirby</th>
+        <th>Insurance Provider</th>
+        <th>Insurance Expiration Date</th>
+        <th>Proof of Insurance Uploaded</th>
+      </apex:outputPanel>
+      <th>CEO</th>
+      <th>CEO Email</th>
+      <th>Finance Lead</th>
+      <th>Finance Lead Email</th>
+    </tr>
+    <apex:repeat value="{!item_list}" var="i">
+      <tr>
+        <td>{!i.bbbsId}</td>
+        <td>{!i.Name}</td>
+        <apex:outputPanel rendered="{!reportType == '' || reportType == null}">
+          <td>{!i.sa.Assessment_Status__c}</td>
+          <td>{!i.sa.Compliance_Status__c}</td>
+          <td>{!i.hasAIM}</td>
+          <td>{!i.hasFeeForm}</td>
+        </apex:outputPanel>
+        <apex:outputPanel
+          rendered="{!reportType == '' || reportType == null || reportType == 'audit'}"
+        >
+          <td>{!i.hasAudit}</td>
+          <td>
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!i.fiscal}" />
+            </apex:outputText>
+          </td>
+          <td>
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!i.afterFiscal}" />
+            </apex:outputText>
+          </td>
+        </apex:outputPanel>
+        <apex:outputPanel
+          rendered="{!reportType == '' || reportType == null || reportType == 'ins'}"
+        >
+          <td>{!i.insKirby}</td>
+          <td>{!i.insName}</td>
+          <td>
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!i.insDate}" />
+            </apex:outputText>
+          </td>
+          <td>{!i.hasIns}</td>
+        </apex:outputPanel>
+        <td>{!i.ceoName}</td>
+        <td>{!i.ceoEmail}</td>
+        <td>{!i.leadName}</td>
+        <td>{!i.leadEmail}</td>
+      </tr>
+    </apex:repeat>
+  </table>
+</apex:page>

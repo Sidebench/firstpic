@@ -1,0 +1,774 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>PROGRAM STANDARDS</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="8"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 20: Match Support &amp; Match Supervisory Schedule
+          </div>
+          <div class="panel-body">
+            <h5>
+              The Agency Staff ensures regular, ongoing contact with each match
+              by conducting private, one-to- one, interactive, match support
+              contacts. The intent of Match Support is to monitor, coach, and
+              guide the match in order to promote the development of the match
+              relationship, match longevity, child safety, and positive youth
+              development.
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S20_Contacts_Documented__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  All match support contacts must be documented in writing by
+                  Agency Staff. Match contacts may be in person, over the phone,
+                  or via written or electronic means (email / text /social
+                  media) provided:
+                  <ol type="a">
+                    <li>
+                      A contact involves two-way interactive discussion directly
+                      with match parties and an opportunity to coach.
+                      <ol>
+                        <li>
+                          An attempted contact, leaving a message, voice mail,
+                          or sending a contact request via electronic means does
+                          not count as a contact.
+                        </li>
+                        <li>
+                          In-person contacts can be counted to cover 60 days
+                          only in the first year of the match (for both
+                          Community and School/Site-based). Only two
+                          (non-consecutive) in-person contacts can be used
+                          towards two 30-day contacts.
+                        </li>
+                      </ol>
+                    </li>
+                    <li>
+                      Contacts via written or electronic means (email, text, and
+                      social media) with any match party are permissible, but
+                      may not be the exclusive form of match contact. Contact
+                      via written or electronic means must be two-way and show
+                      substantive interaction, follow-up, and coaching.
+                    </li>
+                    <li>
+                      The following focus areas must be addressed during each
+                      scheduled contact, with the exception of #6, which can be
+                      addressed every other contact:
+                      <ol>
+                        <li>Child safety;</li>
+                        <li>
+                          Match progress, including child / Volunteer Big
+                          relationship development;
+                        </li>
+                        <li>Child / youth development;</li>
+                        <li>Activities;</li>
+                        <li>
+                          Follow-up issues, including needs, concerns and life
+                          changes; and
+                        </li>
+                        <li>Agency affiliation.</li>
+                      </ol>
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S20_Contacts_Documented_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 21: Match Closure</div>
+          <div class="panel-body">
+            <h5>The match closure process must include, at a minimum:</h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S21_Attempts_to_Contact__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The match support record must show that reasonable attempts
+                  were made by Agency Staff to contact the parent/guardian,
+                  child, and the Volunteer Big, individually, to thoroughly
+                  explore the reasons for closure, safety levels, level of
+                  satisfaction, and youth outcomes associated with the match.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S21_Attempts_to_Contact_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S21_Final_Communication__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  When no child safety issues are present and parties are
+                  available and agree, every effort will be made and documented
+                  to have a facilitated final communication or visit with the
+                  Volunteer Big and with the child (preferably in-person) that
+                  provides for:
+                  <ol type="a">
+                    <li>
+                      An explanation for the reason(s) for match closure (as
+                      appropriate);
+                    </li>
+                    <li>
+                      An opportunity to reduce any adverse effects from the
+                      match closure for the child; and
+                    </li>
+                    <li>
+                      An assessment of the accomplishments of the match in
+                      delivering positive outcomes.
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S21_Final_Communication_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S21_Written_Assessment__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Agency Staff who had oversight of the match must provide a
+                  written assessment and recommendations of the appropriateness
+                  for rematch and re-engagement of the parent/guardian, child
+                  and/or Volunteer Big, either as a Volunteer Big, Little,
+                  donor, Board member or other volunteer, based on their
+                  successful past service; any need for additional support or
+                  training in future match consideration; and to determine
+                  further involvement and on-going communication with the
+                  Agency.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S21_Written_Assessment_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S21_Written_Notification__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Written notification of match closure to all parties,
+                  including, when necessary, clarification of the risks assumed
+                  by match parties in continuing a relationship outside of the
+                  Agency’s supervision.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S21_Written_Notification_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 22: Reassessment for Re-Match
+          </div>
+          <div class="panel-body">
+            <h5>
+              Agency Staff must thoroughly review documented reasons for match
+              closure, recommendations for re-match, and determine the
+              participant’s current needs and eligibility through a reassessment
+              process that will include, at a minimum:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S22_Comprehensive_Review__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Comprehensive review of the Agency's experience with the
+                  Volunteer Big, including the initial enrollment information
+                  (assessment, background check), experience, motivation,
+                  training &amp; support needs, adherence to BBBS's safety
+                  guidelines and reasons for previous match closures. Based on
+                  the review, determine whether additional collateral
+                  information must be sought.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S22_Comprehensive_Review_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S22_Professional_Assessment__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Documented professional assessment of need to obtain updated
+                  in-depth reference from spouse/spousal equivalent.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S22_Professional_Assessment_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S22_Background_Check__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  If the most recent background check was completed 3 years or
+                  more prior to reassessment for re-match, Agency Staff must
+                  complete an updated background check, including references and
+                  layered criminal record checks.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S22_Background_Check_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S22_Training__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  If the Volunteer Big is seeking re-match 1 year or more from
+                  the prior match closure, s/he must submit a new application
+                  and complete the enrollment process, including an in-person
+                  interview and new background check (references, criminal
+                  history, etc.).
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S22_Training_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S22_Re_match_After_Absence__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  If Volunteer Big is seeking reassessment for re-match after an
+                  absence from the Agency:
+                  <ol type="a">
+                    <li>
+                      Less than 1 year: must complete an update of interview
+                      information via phone or in-person.
+                    </li>
+                    <li>
+                      6 months or more: must complete an updated background
+                      check, including references, layered criminal record
+                      checks, etc.
+                    </li>
+                    <li>
+                      More than 1 year: must submit a new application and
+                      complete the enrollment process, including an in-person
+                      interview and a new background check including references,
+                      layered criminal history record check, etc.
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S22_Re_match_After_Absence_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S22_Completion_of_Updated_Form__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Completion of updated/current Agency forms &amp; orientation
+                  to any new Agency policies/ procedures, including Ground
+                  Rules.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S22_Completion_of_Updated_Form_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S22_Review_Match_Closure__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Training, per the recommendations made in the Match Closure
+                  interview (or for new assessments, from the assessment
+                  interview).
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S22_Review_Match_Closure_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 23: Program Staff Training</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S23_Complete_within_30_Day__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  All Agency Staff, including volunteers in Agency Staff roles
+                  and interns, are required to complete the BBBS online, child
+                  safety training within 30 days of hire or prior to carrying
+                  out work that requires independent professional
+                  decision-making in service delivery, such as interviewing or
+                  conducting match support. Annual recertification of the
+                  on-line child safety training is required.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S23_Complete_within_30_Day_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S23_Certification__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Agency Staff responsible for managing the program function
+                  and/or supervising program staff must complete BBBS’ Program
+                  Certification on-line courses within 1 year of hire.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S23_Certification_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Standard 24: Confidentiality and Document Retention
+          </div>
+          <div class="panel-body">
+            <h5>
+              The Agency develops policies and procedures for maintaining
+              confidentiality, security of program files, and security of
+              sensitive data in accordance with applicable state and federal
+              laws, including, at a minimum:
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S24_Location_Security__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Location and security of both written and electronic documents
+                  and devices, including flash drives, laptops, tablets (e.g.,
+                  iPads), smartphones (e.g., iPhones or Android phones), and
+                  pdas;
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S24_Location_Security_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S24_Removal_of_Files__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  A policy on removal of program files and confidential
+                  information from the office;
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S24_Removal_of_Files_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S24_Purging_Shredding__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Procedures for purging and shredding match file information;
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S24_Purging_Shredding_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S24_Confidentiality__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  A written Confidentiality policy that is shared with all match
+                  parties, allowing for open needs-to- know communication
+                  between Agencies and BBBSA, related to child safety issues and
+                  law enforcement upon subpoena; and
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S24_Confidentiality_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S24_Secured_Separation__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Procedures for ensuring that confidential information is
+                  secured from Agency Staff upon their separation from the
+                  Agency.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S24_Secured_Separation_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 25: Quality Assurance</div>
+          <div class="panel-body">
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S25_Reviews__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Agency must continuously monitor the quality of program
+                  staff work throughout the service delivery process. Trained
+                  professional supervisory Agency Staff must conduct periodic
+                  quality assurance reviews.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S25_Reviews_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S25_Feedback__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Staff must receive feedback on the quality of their work.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S25_Feedback_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S25_Standards__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  The Agency must have procedures for addressing Agency Staff
+                  work that does not meet quality standards.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S25_Standards_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="8"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(9);
+    };
+  </script>
+</apex:page>

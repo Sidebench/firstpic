@@ -1,0 +1,4299 @@
+<apex:page
+  controller="ApplicationCtrl"
+  action="{!getFields}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Grant Application</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="applications"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row" style="margin-bottom: 10px">
+          <div class="col-auto">
+            <h2>NCAI Fund’s Victim Services Micro-Grant Program</h2>
+            <div>
+              <span class="text-danger">* All Fields are Required</span> <br />
+              <h4>
+                This application is not editable once it is submitted. You can
+                access technical assistance resources
+                <a href="https://tribalvictimservices.org/technical-assistance/"
+                  >here</a
+                >.
+              </h4>
+            </div>
+          </div>
+          <div class="col-auto pull-right">
+            Status:&nbsp; {!app.Status__c}
+            <div style="display: block; margin: 10px 0">
+              <apex:commandLink
+                value="Statement of Interest"
+                action="{!URLFOR($Site.Prefix+'/NCAIStatementOfInterestPDF?appId='+app.Statement_of_Interest__c)}"
+                styleClass="btn"
+                target="_blank"
+                rendered="{!app.Grant_Type__c == 'OVC' && app.Grant_Year__c == '2020 - 2021'}"
+              />
+              <apex:commandLink
+                value="Export to PDF"
+                action="{!URLFOR($Site.Prefix+'/OVCApplicationPDF?appId='+app.Id+'&AttName=Applicant Org Type Documentation')}"
+                styleClass="btn"
+                target="_blank"
+                rendered="{!app.Grant_Type__c == 'OVC' && (app.Status__c == 'Submitted' || app.Status__c =='Awarded' || app.Status__c =='Reviewed' || app.Status__c =='Closed')}"
+              />
+              <apex:commandLink
+                value="Export to PDF + Review"
+                action="{!URLFOR($Site.Prefix+'/OVCReviewPDF?appId='+app.Id)}"
+                styleClass="btn"
+                target="_blank"
+                rendered="{!NOT(showSuccess) && app.Grant_Year__c == '2020 - 2021' && app.Grant_Type__c == 'OVC' && (app.Status__c == 'Submitted' || app.Status__c =='Awarded' || app.Status__c =='Reviewed' || app.Status__c =='Closed') && (canAward || canSeeReviews)}"
+              />
+              <apex:commandButton
+                value="Add Review"
+                action="{!createReview}"
+                status="pageStatus"
+                styleClass="primary"
+                rendered="{!NOT(editingReview) && canReview}"
+              />
+              <apex:outputPanel
+                rendered="{!userAcctType == 'Local Organization' && (app.Status__c == 'Sent to Applicant' || app.Status__c == 'Sent Back' || app.Status__c == 'In Progress')}"
+              >
+                <apex:commandButton
+                  value="Save"
+                  action="{!save}"
+                  status="pageStatus"
+                />
+                <apex:commandButton
+                  value="Submit"
+                  action="{!submit}"
+                  status="pageStatus"
+                  styleClass="btn primary"
+                />
+              </apex:outputPanel>
+            </div>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!showSuccess}">
+          <c:ErrorMessage
+            errorMessage="You have successfully submitted your application. You may return to this page to view your application at any time."
+            type="success"
+          />
+        </apex:outputPanel>
+
+        <!--BEGIN Application for 2020 - 2021 Cycle-->
+        <apex:outputPanel
+          rendered="{!NOT(showSuccess) && app.Grant_Year__c == '2020 - 2021'}"
+        >
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">About the Funding &amp; Eligibility</h1>
+            </div>
+            <div class="panel-body">
+              <p>
+                The NCAI Fund received an award from the U.S. Department of
+                Justice (DOJ) Office for Victims of Crime (OVC) to make
+                subgrants to eligible Indian tribes. The intent of this funding
+                is to support tribal nations who have not been able to access
+                the tribal set-aside funding from OVC previously.
+                <strong
+                  >Recipients of this funding will be required to comply with
+                  all applicable federal policies and regulations.</strong
+                >
+              </p>
+              <p>
+                <u>Use of Funds</u>
+                <br />
+                Funding can be used for a wide variety of activities related to
+                supporting victims of crime in your community.
+                <u
+                  >Please reference the chart of allowable and unallowable
+                  <a
+                    href="https://tribalvictimservices.org/wp-content/uploads/2020/05/Allowable_Costs_Overview.pdf"
+                    target="_blank"
+                    >costs</a
+                  ></u
+                >.
+              </p>
+              <p>With this funding, your tribal nation can:</p>
+              <ul>
+                <li>
+                  Assess the need for additional programming and services for
+                  victims of crime or develop a strategic plan to improve or
+                  expand existing victim services
+                </li>
+                <li>
+                  Purchase equipment and supplies necessary for victim services
+                  programming or victim services grant management.
+                </li>
+                <li>
+                  Implement program activities, including personnel costs, to
+                  support victims of crimes.
+                </li>
+              </ul>
+
+              <h6>
+                <sup>1</sup>This funding opportunity is currently limited to
+                those entities who have not received funding from OVC in FY 18
+                or FY 19. Entities who have applied to the OVC FY 2020 Tribal
+                Victim Services Set-Aside Program<strong> may apply</strong> for
+                this funding, as long as the proposed use of funding is for
+                different activities than the FY 2020 Tribal Victim Services
+                Set-Aside Program.
+              </h6>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                Applicant Tribe/Organization Information
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <h5>
+                Information on your organization’s statement of interest has
+                been auto-filled below. Please update any information that is no
+                longer current and complete all required fields.
+              </h5>
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">{!fields['Organization_Name__c']}</div>
+                  <apex:outputField value="{!app.Organization_Name__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['DUNS_Number__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.DUNS_Number__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Organization_Type__c']}
+                    <span class="text-danger"> *</span> &nbsp;
+                    <span
+                      class="badge"
+                      title="CONSORTIUM: Two or more eligible tribes who are interested in receiving funding as a consortium. DESIGNEE: An organization that has been designated by the tribal nation to apply on behalf of the tribe."
+                      >?</span
+                    >
+                  </div>
+                  <apex:inputField
+                    value="{!app.Organization_Type__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Organization_Type__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Address__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.Address__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Address__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['City__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.City__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.City__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['State__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.State__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.State__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Postal_Zip_Code__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.Postal_Zip_Code__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Postal_Zip_Code__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                Applicant Tribe/Organization Point of Contact
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <h5>Grant Admin</h5>
+              <p>
+                Grant Admin information cannot be edited via this application.
+                If you need to make changes please
+                <a href="mailto:support@firstpic.org">click here</a>.
+              </p>
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">First Name</div>
+                  <apex:outputField value="{!app.Grant_Admin_First_Name__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">Last Name</div>
+                  <apex:outputField value="{!app.Grant_Admin_Last_Name__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">Phone</div>
+                  <apex:outputField value="{!app.Grant_Admin_Phone__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">Email</div>
+                  <apex:outputField value="{!app.Grant_Admin_Email__c}" />
+                </div>
+              </div>
+              <hr />
+              <h5>Program Contact</h5>
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">First Name</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">Last Name</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">Phone</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">Email</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Authorization</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="{!fields['Authority_to_Apply__c']}"
+                    escape="false"
+                  />
+                </div>
+                <div class="col-xs-12">
+                  <apex:selectRadio
+                    disabled="{!readOnly}"
+                    value="{!app.Authority_to_Apply__c}"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                  </apex:selectRadio>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="{!fields['Tribe_Represented__c']}"
+                    escape="false"
+                  />
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!app.Tribe_Represented__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Tribe_Represented__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <c:Attachments
+            parentId="{!app.Id}"
+            fileName="Applicant Org Type Documentation"
+            infoText="If you are applying as a Consortium or Designee, you will be required to submit documentation showing that your organization has the authority to apply for this federal funding opportunity on the Tribe's behalf. If you have this authorization, please upload it below. If you do not have the required documentation, you will be required to submit it before receiving your Letter of Agreement."
+            showUploadBtn="{!NOT(readOnly)}"
+            enableDeleteAtt="false"
+          />
+
+          <apex:actionRegion>
+            <apex:outputPanel id="details20-21">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h1 class="panel-title">Request Details</h1>
+                </div>
+                <div class="panel-body grid-pd-md">
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="1. {!fields['Biggest_Issue_Organization_is_Facing__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputField
+                            value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField
+                            value="{!i.Biggest_Issue_Org_is_Facing_Score__c}"
+                          />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.Biggest_Issue_Org_is_Facing_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.Biggest_Issue_Org_is_Facing_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.Biggest_Issue_Org_is_Facing_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Biggest_Issue_Org_is_Facing_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.Biggest_Issue_Org_is_Facing_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Biggest_Issue_Org_is_Facing_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="2. {!fields['How_Funds_Utilized__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.How_Funds_Utilized__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputField
+                            value="{!app.How_Funds_Utilized__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField
+                            value="{!i.How_Funds_Utilized_Score__c}"
+                          />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.How_Funds_Utilized_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.How_Funds_Utilized_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.How_Funds_Utilized_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.How_Funds_Utilized_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.How_Funds_Utilized_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.How_Funds_Utilized_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                  <hr />
+                  <h5>
+                    This funding opportunity can be used to support a wide
+                    variety of programming and services for victims of crime in
+                    your community. Please select which activities your grant
+                    will include:<br />
+                  </h5>
+                  <h4>
+                    <strong
+                      ><u>Needs Assessment</u>
+                      <span class="text-danger"> *</span></strong
+                    >
+                  </h4>
+
+                  <br />
+                  <apex:selectRadio
+                    disabled="{!readOnly}"
+                    value="{!app.Has_Needs_Assessment__c}"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="details20-21"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel
+                    rendered="{!app.Has_Needs_Assessment__c == true}"
+                  >
+                    <div class="row">
+                      <div class="col-xs-12 semibold">
+                        <apex:outputText
+                          value="3a. {!fields['Previous_Experiences__c']}"
+                          escape="false"
+                        />
+                        <span class="text-danger"> *</span>
+                      </div>
+                      <div class="col-xs-12">
+                        <apex:inputField
+                          value="{!app.Previous_Experiences__c}"
+                          rendered="{!NOT(readOnly)}"
+                        />
+                        <apex:outputField
+                          value="{!app.Previous_Experiences__c}"
+                          rendered="{!readOnly}"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div
+                        class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                      >
+                        <div class="row">
+                          <div class="col-xs-12 semibold">
+                            <apex:outputText
+                              value="3b. {!fields['Needs_Assessment__c']}"
+                              escape="false"
+                            />
+                            <span class="text-danger"> *</span>
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!app.Needs_Assessment__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputField
+                              value="{!app.Needs_Assessment__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <apex:outputPanel
+                        rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                      >
+                        <div class="col-xs-4">
+                          <apex:repeat
+                            value="{!reviews}"
+                            var="i"
+                            rendered="{!canAward || canSeeReviews}"
+                          >
+                            <strong
+                              ><apex:outputText
+                                value="{!i.Reviewer__r.Name} "
+                              />
+                              Score:
+                            </strong>
+                            <apex:outputField
+                              value="{!i.Needs_Assessment_Score__c}"
+                            />
+                            <apex:commandLink
+                              action="{!showReviewNotesPopup}"
+                              status="pageStatus"
+                              reRender="reviewNotesPopup"
+                              rendered="{!i.Needs_Assessment_Notes__c != null}"
+                            >
+                              <apex:param
+                                assignTo="{!note}"
+                                name="note"
+                                value="{!i.Needs_Assessment_Notes__c}"
+                              />
+                              &nbsp;&nbsp;<span
+                                class="glyphicon glyphicon-comment"
+                              ></span
+                              >&nbsp;
+                            </apex:commandLink>
+                            <br />
+                          </apex:repeat>
+                          <apex:outputPanel
+                            rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                          >
+                            <strong>Score: </strong>
+                            <apex:inputField
+                              value="{!review.Needs_Assessment_Score__c}"
+                              rendered="{!editingReview}"
+                            />
+                            <apex:outputField
+                              value="{!review.Needs_Assessment_Score__c}"
+                              rendered="{!NOT(editingReview)}"
+                            />
+                            <br />
+                            <strong>Comments: </strong>
+                            <apex:inputField
+                              value="{!review.Needs_Assessment_Notes__c}"
+                              rendered="{!editingReview}"
+                            />
+                            <apex:outputField
+                              value="{!review.Needs_Assessment_Notes__c}"
+                              rendered="{!NOT(editingReview)}"
+                            />
+                          </apex:outputPanel>
+                        </div>
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                  <br />
+                  <h4>
+                    <strong
+                      ><u>Strategic Planning</u>
+                      <span class="text-danger"> *</span></strong
+                    >
+                  </h4>
+                  <br />
+                  <apex:selectRadio
+                    disabled="{!readOnly}"
+                    value="{!app.Has_Strategic_Plan__c}"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="details20-21"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel
+                    rendered="{!app.Has_Strategic_Plan__c == true}"
+                  >
+                    <div class="row">
+                      <div
+                        class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                      >
+                        <div class="row">
+                          <div class="col-xs-12 semibold">
+                            <apex:outputText
+                              value="4a. {!fields['Strategic_Plan__c']}"
+                              escape="false"
+                            />
+                            <span class="text-danger"> *</span>
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!app.Strategic_Plan__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputField
+                              value="{!app.Strategic_Plan__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12 semibold">
+                            <apex:outputText
+                              value="4b. {!fields['Additional_Resources_for_Strategic_Plan__c']}"
+                              escape="false"
+                            />
+                            <span class="text-danger"> *</span>
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!app.Additional_Resources_for_Strategic_Plan__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputField
+                              value="{!app.Additional_Resources_for_Strategic_Plan__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <apex:outputPanel
+                        rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                      >
+                        <div class="col-xs-4">
+                          <apex:repeat
+                            value="{!reviews}"
+                            var="i"
+                            rendered="{!canAward || canSeeReviews}"
+                          >
+                            <strong
+                              ><apex:outputText
+                                value="{!i.Reviewer__r.Name} "
+                              />
+                              Score:
+                            </strong>
+                            <apex:outputField
+                              value="{!i.Strategic_Plan_Score__c}"
+                            />
+                            <apex:commandLink
+                              action="{!showReviewNotesPopup}"
+                              status="pageStatus"
+                              reRender="reviewNotesPopup"
+                              rendered="{!i.Strategic_Plan_Notes__c != null}"
+                            >
+                              <apex:param
+                                assignTo="{!note}"
+                                name="note"
+                                value="{!i.Strategic_Plan_Notes__c}"
+                              />
+                              &nbsp;&nbsp;<span
+                                class="glyphicon glyphicon-comment"
+                              ></span
+                              >&nbsp;
+                            </apex:commandLink>
+                            <br />
+                          </apex:repeat>
+                          <apex:outputPanel
+                            rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                          >
+                            <strong>Score: </strong>
+                            <apex:inputField
+                              value="{!review.Strategic_Plan_Score__c}"
+                              rendered="{!editingReview}"
+                            />
+                            <apex:outputField
+                              value="{!review.Strategic_Plan_Score__c}"
+                              rendered="{!NOT(editingReview)}"
+                            />
+                            <br />
+                            <strong>Comments: </strong>
+                            <apex:inputField
+                              value="{!review.Strategic_Plan_Notes__c}"
+                              rendered="{!editingReview}"
+                            />
+                            <apex:outputField
+                              value="{!review.Strategic_Plan_Notes__c}"
+                              rendered="{!NOT(editingReview)}"
+                            />
+                          </apex:outputPanel>
+                        </div>
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                  <br />
+                  <h4>
+                    <strong><u>Support for Victim Services</u></strong>
+                    <span class="text-danger"> *</span>
+                  </h4>
+                  <div class="row">
+                    <div class="col-xs-12 semibold">
+                      <apex:outputText
+                        value="5a. {!fields['Areas_of_Service__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:selectCheckboxes
+                        disabled="{!readOnly}"
+                        layout="pageDirection"
+                        value="{!services}"
+                      >
+                        <apex:selectOptions value="{!serviceOptions}" />
+                        <apex:actionSupport
+                          event="onchange"
+                          reRender="details20-21"
+                          status="pageStatus"
+                        />
+                      </apex:selectCheckboxes>
+                      <apex:outputField
+                        value="{!app.Areas_of_Service__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!app.Areas_of_Service_Explaination__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Areas_of_Service_Explaination__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="5b. {!fields['Current_Program_Description__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Current_Program_Description__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputField
+                            value="{!app.Current_Program_Description__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField
+                            value="{!i.Current_Program_Score__c}"
+                          />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.Current_Program_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.Current_Program_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.Current_Program_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Current_Program_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.Current_Program_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Current_Program_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                  <br />
+                  <h4>
+                    <strong
+                      ><u>Equipment and Supplies</u>
+                      <span class="text-danger"> *</span></strong
+                    >
+                  </h4>
+                  <apex:selectRadio
+                    disabled="{!readOnly}"
+                    value="{!app.Has_Equipment_and_Supplies__c}"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="details20-21"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel
+                    rendered="{!app.Has_Equipment_and_Supplies__c == true}"
+                  >
+                    <div class="row">
+                      <div
+                        class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                      >
+                        <div class="row">
+                          <div class="col-xs-12 semibold">
+                            <apex:outputText
+                              value="6. {!fields['Equipment_and_Supplies__c']}"
+                              escape="false"
+                            /><span class="text-danger"> *</span>
+                          </div>
+                          <div class="col-xs-12">
+                            <apex:inputField
+                              value="{!app.Equipment_and_Supplies__c}"
+                              rendered="{!NOT(readOnly)}"
+                            />
+                            <apex:outputField
+                              value="{!app.Equipment_and_Supplies__c}"
+                              rendered="{!readOnly}"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <apex:outputPanel
+                        rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                      >
+                        <div class="col-xs-4">
+                          <apex:repeat
+                            value="{!reviews}"
+                            var="i"
+                            rendered="{!canAward || canSeeReviews}"
+                          >
+                            <strong
+                              ><apex:outputText
+                                value="{!i.Reviewer__r.Name} "
+                              />
+                              Score:
+                            </strong>
+                            <apex:outputField
+                              value="{!i.Equipment_and_Supplies_Score__c}"
+                            />
+                            <apex:commandLink
+                              action="{!showReviewNotesPopup}"
+                              status="pageStatus"
+                              reRender="reviewNotesPopup"
+                              rendered="{!i.Equipment_and_Supplies_Notes__c != null}"
+                            >
+                              <apex:param
+                                assignTo="{!note}"
+                                name="note"
+                                value="{!i.Equipment_and_Supplies_Notes__c}"
+                              />
+                              &nbsp;&nbsp;<span
+                                class="glyphicon glyphicon-comment"
+                              ></span
+                              >&nbsp;
+                            </apex:commandLink>
+                            <br />
+                          </apex:repeat>
+                          <apex:outputPanel
+                            rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                          >
+                            <strong>Score: </strong>
+                            <apex:inputField
+                              value="{!review.Equipment_and_Supplies_Score__c}"
+                              rendered="{!editingReview}"
+                            />
+                            <apex:outputField
+                              value="{!review.Equipment_and_Supplies_Score__c}"
+                              rendered="{!NOT(editingReview)}"
+                            />
+                            <br />
+                            <strong>Comments: </strong>
+                            <apex:inputField
+                              value="{!review.Equipment_and_Supplies_Notes__c}"
+                              rendered="{!editingReview}"
+                            />
+                            <apex:outputField
+                              value="{!review.Equipment_and_Supplies_Notes__c}"
+                              rendered="{!NOT(editingReview)}"
+                            />
+                          </apex:outputPanel>
+                        </div>
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                  <br />
+                  <h4>
+                    <strong><u>Capabilities and Competencies</u></strong>
+                  </h4>
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="7. {!fields['Responsibilities__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Responsibilities__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputField
+                            value="{!app.Responsibilities__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField
+                            value="{!i.Responsibilities_Score__c}"
+                          />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.Responsibilities_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.Responsibilities_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.Responsibilities_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Responsibilities_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.Responsibilities_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Responsibilities_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="8. {!fields['Able_to_Recruit__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Able_to_Recruit__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputField
+                            value="{!app.Able_to_Recruit__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField
+                            value="{!i.Able_to_Recruit_Score__c}"
+                          />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.Able_to_Recruit_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.Able_to_Recruit_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.Able_to_Recruit_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Able_to_Recruit_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.Able_to_Recruit_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Able_to_Recruit_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="9. {!fields['Other_Challenges__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Other_Challenges__c}"
+                            rendered="{!NOT(readOnly)}"
+                          />
+                          <apex:outputField
+                            value="{!app.Other_Challenges__c}"
+                            rendered="{!readOnly}"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField
+                            value="{!i.Other_Challenges_Score__c}"
+                          />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.Other_Challenges_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.Other_Challenges_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.Other_Challenges_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Other_Challenges_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.Other_Challenges_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Other_Challenges_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:actionRegion>
+
+          <apex:outputPanel id="budget20-21">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Summary Budget</h1>
+              </div>
+              <div class="panel-body">
+                <p>
+                  Indicate the amount of funding you are requesting under each
+                  budget category and include a brief description of how these
+                  funds will be spent. We anticipate that most awards will be
+                  between $25,000-$250,000. If you anticipate your project’s
+                  actual need to be more than $250,000 for your project, please
+                  explain in the space provided. In no case will an award exceed
+                  $350,000. If funded, you will work with the NCAI Fund
+                  technical assistance team to complete a detailed budget for
+                  your program.
+                  <br />
+                  Please note that all summary budget fields require a value.
+                  Enter $0 or N/A for any amount or description field that does
+                  not apply
+                </p>
+                <table class="table">
+                  <tr>
+                    <th width="220px">Category</th>
+                    <th width="180px">Amount</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>Personnel<span class="text-danger"> *</span></td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Personnel_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Personnel_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Personnel_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Personnel_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Fringe Benefits<span class="text-danger"> *</span></td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Fringe_Benefits_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Fringe_Benefits_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Fringe_Benefits_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Fringe_Benefits_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Travel<span class="text-danger"> *</span></td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Travel_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Travel_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Travel_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Travel_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Equipment/Supplies<span class="text-danger"> *</span>
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Supplies_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Supplies_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Supplies_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Supplies_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Contracts and Consultants<span class="text-danger">
+                        *</span
+                      >
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Contracts_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Contracts_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Contracts_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Contracts_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Consultant/Contractor Travel<span class="text-danger">
+                        *</span
+                      >
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Contractor_Travel_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Contractor_Travel_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Contractor_Travel_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Contractor_Travel_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Other Costs<span class="text-danger"> *</span></td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Other_Costs_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Other_Costs_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Other_Costs_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Other_Costs_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Indirect Costs<span class="text-danger"> *</span></td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Indirect_Costs_Budget__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Indirect_Costs_Budget__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                    <td>
+                      <apex:inputField
+                        value="{!app.Indirect_Costs_Description__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Indirect_Costs_Description__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Total</strong></td>
+                    <td>
+                      <strong
+                        ><apex:outputField
+                          value="{!app.Total_Amount_Requested__c}"
+                      /></strong>
+                    </td>
+                    <td>
+                      <apex:commandButton
+                        value="Calculate Total"
+                        action="{!getTotal}"
+                        status="pageStatus"
+                        reRender="budget20-21"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </td>
+                  </tr>
+                </table>
+                <apex:outputPanel
+                  rendered="{!IF(app.Total_Amount_Requested__c == null || app.Total_Amount_Requested__c < 250000, false, true)}"
+                >
+                  <hr />
+                  <apex:outputText
+                    value="Please provide an additional justification for any funding requested over $250K."
+                  />
+                  <br />
+                  <apex:inputField
+                    value="{!app.Budget_Details__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Budget_Details__c}"
+                    rendered="{!readOnly}"
+                  />
+                </apex:outputPanel>
+                <apex:outputPanel
+                  rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                >
+                  <br />
+                  <apex:repeat
+                    value="{!reviews}"
+                    var="i"
+                    rendered="{!canAward || canSeeReviews}"
+                  >
+                    <strong
+                      ><apex:outputText value="{!i.Reviewer__r.Name} " /> Score:
+                    </strong>
+                    <apex:outputField value="{!i.Budget_Details_Score__c}" />
+                    <apex:commandLink
+                      action="{!showReviewNotesPopup}"
+                      status="pageStatus"
+                      reRender="reviewNotesPopup"
+                      rendered="{!i.Budget_Details_Notes__c != null}"
+                    >
+                      <apex:param
+                        assignTo="{!note}"
+                        name="note"
+                        value="{!i.Budget_Details_Notes__c}"
+                      />
+                      &nbsp;&nbsp;<span
+                        class="glyphicon glyphicon-comment"
+                      ></span
+                      >&nbsp;
+                    </apex:commandLink>
+                    <br />
+                  </apex:repeat>
+                  <apex:outputPanel
+                    rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                  >
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.Budget_Details_Score__c}"
+                      rendered="{!editingReview}"
+                    />
+                    <apex:outputField
+                      value="{!review.Budget_Details_Score__c}"
+                      rendered="{!NOT(editingReview)}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.Budget_Details_Notes__c}"
+                      rendered="{!editingReview}"
+                    />
+                    <apex:outputField
+                      value="{!review.Budget_Details_Notes__c}"
+                      rendered="{!NOT(editingReview)}"
+                    />
+                  </apex:outputPanel>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="row">
+            <div class="col-xs-12 semibold">
+              <apex:outputField value="{!app.Organization_Name__c}" />
+              acknowledges that if awarded, &nbsp;
+              <apex:outputField value="{!app.Organization_Name__c}" /> will be
+              required to comply with all applicable federal financial
+              management policies and regulations.
+              <span class="text-danger"> *</span>
+            </div>
+            <div class="col-xs-12">
+              <apex:selectRadio
+                disabled="{!readOnly}"
+                value="{!app.Terms_Acknowledged__c}"
+              >
+                <apex:selectOption itemValue="true" itemLabel="Yes" />
+                <apex:selectOption itemValue="false" itemLabel="No" />
+              </apex:selectRadio>
+            </div>
+          </div>
+          <br />
+
+          <div class="row">
+            <div class="col-xs-12 semibold">
+              Please note that if awarded an NCAI Fund Victim Services
+              Micro-grant, you will be prompted to sign the Letter of Agreement
+              electronically, using Sertifi. Please provide the name and contact
+              information for the person who will sign the Letter of Agreement.
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-xs-4">
+              <strong
+                >Signatory Title <span class="text-danger"> *</span></strong
+              >
+            </div>
+            <div class="col-xs-4">
+              <strong
+                >Signatory Name <span class="text-danger"> *</span></strong
+              >
+            </div>
+            <div class="col-xs-4">
+              <strong
+                >Signatory Email <span class="text-danger"> *</span></strong
+              >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <apex:inputField
+                value="{!app.Signatory_Title__c}"
+                rendered="{!NOT(readOnly)}"
+                style="display: inline"
+              />
+              <apex:outputField
+                value="{!app.Signatory_Title__c}"
+                rendered="{!readOnly}"
+              />
+            </div>
+            <div class="col-xs-4">
+              <apex:inputField
+                value="{!app.Signatory_Name__c}"
+                rendered="{!NOT(readOnly)}"
+                style="display: inline"
+              />
+              <apex:outputField
+                value="{!app.Signatory_Name__c}"
+                rendered="{!readOnly}"
+              />
+            </div>
+            <div class="col-xs-4">
+              <apex:inputField
+                value="{!app.Signatory_Email__c}"
+                rendered="{!NOT(readOnly)}"
+                style="display: inline"
+              />
+              <apex:outputField
+                value="{!app.Signatory_Email__c}"
+                rendered="{!readOnly}"
+              />
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-xs-12 semibold">
+              <apex:inputField
+                value="{!app.Alternate_Signing_Method__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.Alternate_Signing_Method__c}"
+                rendered="{!readOnly}"
+              />
+              Please click here to request an alternate method of signing the
+              letter of agreement.
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-xs-12">
+              This application is not editable once it is submitted. If you need
+              to edit your application after submission please contact <a
+                href="mailto:microgrants@ncai.org"
+                >microgrants@ncai.org</a
+              >.
+            </div>
+          </div>
+          <br />
+
+          <apex:outputPanel
+            rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Review Summary</h1>
+              </div>
+              <div class="panel-body">
+                <strong
+                  >Do you think this organization should receive funding?:
+                </strong>
+                <apex:repeat
+                  value="{!reviews}"
+                  var="i"
+                  rendered="{!canAward || canSeeReviews}"
+                >
+                  <br />
+                  <strong>{!i.Reviewer__r.Name}: </strong>
+                  <apex:outputField value="{!i.Should_Award__c}" />
+                </apex:repeat>
+                <apex:outputPanel
+                  rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                >
+                  <apex:inputField
+                    value="{!review.Should_Award__c}"
+                    styleClass="input-md"
+                    rendered="{!editingReview}"
+                  /><br /><br />
+                  <apex:outputField
+                    value="{!review.Should_Award__c}"
+                    rendered="{!NOT(editingReview)}"
+                  />
+                </apex:outputPanel>
+                <br /><br />
+                <strong>General Review Notes: </strong>
+                <apex:repeat
+                  value="{!reviews}"
+                  var="i"
+                  rendered="{!canAward || canSeeReviews}"
+                >
+                  <br />
+                  <strong>{!i.Reviewer__r.Name}: </strong>
+                  <apex:outputField value="{!i.Notes__c}" />
+                </apex:repeat>
+                <apex:outputPanel
+                  rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                >
+                  <apex:inputField
+                    value="{!review.Notes__c}"
+                    type="text"
+                    styleclass="input-md"
+                    rendered="{!editingReview}"
+                  />
+                  <apex:outputField
+                    value="{!review.Notes__c}"
+                    styleclass="input-md"
+                    rendered="{!NOT(editingReview)}"
+                  />
+                </apex:outputPanel>
+                <br /><br />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!(approverLevel == 'Level Three' || approverLevel == 'Level Four') && (app.Status__c == 'Submitted' || app.Status__c == 'Reviewed' || app.Status__c == 'Awarded')}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Award Notes</h1>
+              </div>
+              <div class="panel-body">
+                <apex:inputField
+                  value="{!app.Notes_for_National__c}"
+                  rendered="{!approverLevel == 'Level Four'}"
+                />
+                <apex:outputField
+                  value="{!app.Notes_for_National__c}"
+                  rendered="{!approverLevel == 'Level Three'}"
+                />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:commandLink
+            value="Export to PDF"
+            action="{!URLFOR($Site.Prefix+'/OVCApplicationPDF?appId='+app.Id)}"
+            styleClass="btn"
+            target="_blank"
+            rendered="{!app.Grant_Type__c == 'OVC' && (app.Status__c == 'Submitted' || app.Status__c =='Awarded' || app.Status__c =='Reviewed' || app.Status__c =='Closed')}"
+          />
+          <apex:commandLink
+            value="Export to PDF + Review"
+            action="{!URLFOR($Site.Prefix+'/OVCReviewPDF?appId='+app.Id)}"
+            styleClass="btn"
+            target="_blank"
+            rendered="{!app.Grant_Type__c == 'OVC' && (app.Status__c == 'Submitted' || app.Status__c =='Awarded' || app.Status__c =='Reviewed' || app.Status__c =='Closed') && (canAward || canSeeReviews)}"
+          />
+          <apex:outputPanel
+            rendered="{!userAcctType == 'Local Organization' && (app.Status__c == 'Sent to Applicant' || app.Status__c == 'Sent Back' || app.Status__c == 'In Progress')}"
+          >
+            <apex:commandButton
+              value="Save"
+              action="{!save}"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              value="Submit"
+              action="{!submit}"
+              status="pageStatus"
+              styleClass="btn primary"
+            />
+          </apex:outputPanel>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <!--                    <apex:commandButton value="Send Back" action="{!showSendBackPopup}" status="pageStatus" styleClass="btn" rendered="{!app.Status__c == 'Submitted' || app.Status__c == 'Reviewed' && NOT(approverLevel == 'Level Three' && portalName == 'NCAI - OVC')}" /> -->
+            <apex:commandButton
+              value="Save Score"
+              action="{!saveScore}"
+              status="pageStatus"
+              rendered="{!editingReview && NOT(canAward)}"
+            />
+            <apex:commandButton
+              value="Save"
+              action="{!save}"
+              status="pageStatus"
+              rendered="{!canAward && NOT(approverLevel == 'Level Three' && portalName == 'NCAI - OVC')}"
+            />
+            <apex:commandButton
+              value="Score"
+              action="{!score}"
+              status="pageStatus"
+              styleClass="primary"
+              rendered="{!editingReview && NOT(canAward)}"
+            />
+            <apex:commandButton
+              value="Award"
+              action="{!awardPopup}"
+              styleClass="btn primary"
+              rendered="{!canAward && app.Status__c != 'Awarded' && NOT(approverLevel == 'Level Three' && portalName == 'NCAI - OVC')}"
+            />
+          </apex:outputPanel>
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages />
+        </apex:outputPanel>
+        <!--END Application for 2020 - 2021 Cycle-->
+
+        <!--BEGIN Application for 2021 - 2022 Cycle-->
+        <apex:outputPanel
+          rendered="{!NOT(showSuccess) && app.Grant_Year__c == '2021 - 2022'}"
+        >
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">About the Funding &amp; Eligibility</h1>
+            </div>
+            <div class="panel-body">
+              <p>
+                The NCAI Fund received an award from the U.S. Department of
+                Justice (DOJ) Office for Victims of Crime (OVC) to make
+                subgrants to eligible Indian tribes. This funding opportunity is
+                available to federally recognized tribal nations who did not
+                receive victim services funding from NCAI Fund in 2020.
+                <strong
+                  >Recipients of this funding will be required to comply with
+                  all applicable federal policies and regulations.</strong
+                >
+              </p>
+              <p>
+                <u>Use of Funds</u>
+                <br />
+                Funding can be used for a wide variety of activities related to
+                supporting victims of crime in your community.
+                <u
+                  ><a
+                    href="https://tribalvictimservices.org/PDF/2021_Examples_of_Allowable_and_Unallowable_Costs.pdf "
+                    target="_blank"
+                    >Please reference the chart of allowable and unallowable
+                    costs</a
+                  ></u
+                >.
+              </p>
+              <p>With this funding, your tribal nation can:</p>
+              <ul>
+                <li>
+                  Assess the need for additional programming and services for
+                  victims of crime or develop a strategic plan to improve or
+                  expand existing victim services.
+                </li>
+                <li>
+                  Purchase equipment and supplies necessary for victim services
+                  programming or victim services grant management.
+                </li>
+                <li>
+                  Implement program activities, including personnel costs, to
+                  support victims of crimes.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                1. Applicant Tribal Nation/Organization Information
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Organization_Name__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.Organization_Name__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['DUNS_Number__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.DUNS_Number__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Organization_Type__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.Organization_Type__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-2', 'col-xs-3')}"
+                >
+                  <div class="semibold">
+                    {!fields['Address__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.Address__c}" />
+                </div>
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-2', 'col-xs-3')}"
+                >
+                  <div class="semibold">
+                    {!fields['City__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.City__c}" />
+                </div>
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-2', 'col-xs-3')}"
+                >
+                  <div class="semibold">
+                    {!fields['State__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.State__c}" />
+                </div>
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-2', 'col-xs-3')}"
+                >
+                  <div class="semibold">
+                    {!fields['Postal_Zip_Code__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.Postal_Zip_Code__c}" />
+                </div>
+                <apex:outputPanel
+                  rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                >
+                  <div class="col-xs-4">
+                    <apex:repeat
+                      value="{!reviews}"
+                      var="i"
+                      rendered="{!canAward || canSeeReviews}"
+                    >
+                      <strong
+                        ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                        Score:
+                      </strong>
+                      <apex:outputField value="{!i.State__c}" />
+                      <br />
+                    </apex:repeat>
+                    <apex:outputPanel
+                      rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                    >
+                      <strong>Score: </strong>
+                      <apex:inputField
+                        value="{!review.State__c}"
+                        rendered="{!editingReview}"
+                      />
+                      <apex:outputField
+                        value="{!review.State__c}"
+                        rendered="{!NOT(editingReview)}"
+                      />
+                    </apex:outputPanel>
+                  </div>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                2. Applicant Tribal National/Organization Point of Contact
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact First Name<span class="text-danger">
+                      *</span
+                    >
+                  </div>
+                  <apex:outputField value="{!app.Grant_Admin_First_Name__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact Last Name<span class="text-danger">
+                      *</span
+                    >
+                  </div>
+                  <apex:outputField value="{!app.Grant_Admin_Last_Name__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact Email<span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.Grant_Admin_Email__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact Phone<span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField value="{!app.Grant_Admin_Phone__c}" />
+                </div>
+              </div>
+              <hr />
+              <h5>
+                <div class="semibold">
+                  {!fields['Point_of_Contact__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+              </h5>
+              <apex:selectRadio
+                value="{!app.POC_Can_Receive_Communication__c}"
+                disabled="true"
+              >
+                <apex:selectOption itemValue="true" itemLabel="Yes" />
+                <apex:selectOption itemValue="false" itemLabel="No" />
+              </apex:selectRadio>
+              <br />
+              <h5>
+                <div class="semibold">
+                  {!fields['Alt_Point_of_Contact__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+              </h5>
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">First Name</div>
+                  <apex:outputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">Last Name</div>
+                  <apex:outputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">Email</div>
+                  <apex:outputField value="{!app.Program_Contact_Email__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">Phone</div>
+                  <apex:outputField value="{!app.Program_Contact_Phone__c}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Authorization</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="5. {!fields['Authority_to_Apply__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-12">
+                  <apex:selectRadio
+                    value="{!app.Authority_to_Apply__c}"
+                    disabled="true"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                  </apex:selectRadio>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="6a. {!fields['Tribe_Represented__c']}"
+                    escape="false"
+                  />
+                </div>
+                <div class="col-xs-12">
+                  <apex:outputField value="{!app.Tribe_Represented__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="{!fields['Required_Documentation__c']}"
+                    escape="false"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Previous Funding</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-6 semibold')}"
+                >
+                  {!fields['Previously_Applied__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-6')}"
+                >
+                  <apex:selectRadio
+                    value="{!app.Previously_Applied__c}"
+                    disabled="true"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                  </apex:selectRadio>
+                </div>
+                <apex:outputPanel
+                  rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                >
+                  <div class="col-xs-4">
+                    <apex:repeat
+                      value="{!reviews}"
+                      var="i"
+                      rendered="{!canAward || canSeeReviews}"
+                    >
+                      <strong
+                        ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                        Score:
+                      </strong>
+                      <apex:commandLink
+                        action="{!showReviewNotesPopup}"
+                        status="pageStatus"
+                        reRender="reviewNotesPopup"
+                        rendered="{!i.Previous_Funding_Comments__c != null}"
+                      >
+                        <apex:param
+                          assignTo="{!note}"
+                          name="note"
+                          value="{!i.Previous_Funding_Comments__c}"
+                        />
+                        &nbsp;&nbsp;<span
+                          class="glyphicon glyphicon-comment"
+                        ></span
+                        >&nbsp;
+                      </apex:commandLink>
+                      <br />
+                    </apex:repeat>
+                    <apex:outputPanel
+                      rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                    >
+                      <strong>Comments: </strong>
+                      <apex:inputField
+                        value="{!review.Previous_Funding_Comments__c}"
+                        rendered="{!editingReview}"
+                      />
+                      <apex:outputField
+                        value="{!review.Previous_Funding_Comments__c}"
+                        rendered="{!NOT(editingReview)}"
+                      />
+                    </apex:outputPanel>
+                  </div>
+                </apex:outputPanel>
+              </div>
+              <br />
+              <div class="row">
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                >
+                  {!fields['Previous_Support_Received__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+                <div
+                  class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12')}"
+                >
+                  <apex:selectRadio
+                    value="{!app.Previous_Support_Received__c}"
+                    disabled="true"
+                  >
+                    <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                    <apex:selectOption itemValue="No" itemLabel="No" />
+                  </apex:selectRadio>
+                </div>
+                <apex:outputPanel
+                  rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                >
+                  <div class="col-xs-4">
+                    <apex:repeat
+                      value="{!reviews}"
+                      var="i"
+                      rendered="{!canAward || canSeeReviews}"
+                    >
+                      <strong
+                        ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                        Score:
+                      </strong>
+                      <apex:outputField value="{!i.Other_Support__c}" />
+                      <apex:commandLink
+                        action="{!showReviewNotesPopup}"
+                        status="pageStatus"
+                        reRender="reviewNotesPopup"
+                        rendered="{!i.Other_Support_Comments__c != null}"
+                      >
+                        <apex:param
+                          assignTo="{!note}"
+                          name="note"
+                          value="{!i.Other_Support_Comments__c}"
+                        />
+                        &nbsp;&nbsp;<span
+                          class="glyphicon glyphicon-comment"
+                        ></span
+                        >&nbsp;
+                      </apex:commandLink>
+                      <br />
+                    </apex:repeat>
+                    <apex:outputPanel
+                      rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                    >
+                      <strong>Score: </strong>
+                      <apex:inputField
+                        value="{!review.Other_Support__c}"
+                        rendered="{!editingReview}"
+                      />
+                      <apex:outputField
+                        value="{!review.Other_Support__c}"
+                        rendered="{!NOT(editingReview)}"
+                      />
+                      <br />
+                      <strong>Comments: </strong>
+                      <apex:inputField
+                        value="{!review.Other_Support_Comments__c}"
+                        rendered="{!editingReview}"
+                      />
+                      <apex:outputField
+                        value="{!review.Other_Support_Comments__c}"
+                        rendered="{!NOT(editingReview)}"
+                      />
+                    </apex:outputPanel>
+                  </div>
+                </apex:outputPanel>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12 semibold">If yes, please explain.</div>
+                <div class="col-xs-12">
+                  <apex:outputField
+                    value="{!app.Previous_Funding_Received__c}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <apex:outputPanel id="details">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Proposed Use of Funds</h1>
+              </div>
+              <div class="panel-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['New_or_Existing__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:outputField
+                      value="{!app.New_or_Existing__c}"
+                      style="width: auto"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    <apex:outputText
+                      value="{!fields['Existing_Services__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField value="{!app.Existing_Services__c}" />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score:
+                        </strong>
+                        <apex:outputField
+                          value="{!i.New_or_Existing_Score__c}"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.New_or_Existing_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.New_or_Existing_Notes__c}"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.New_or_Existing_Score__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.New_or_Existing_Score__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.New_or_Existing_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.New_or_Existing_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <br />
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    <apex:outputText
+                      value="{!fields['Biggest_Issue_Organization_is_Facing__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField
+                      value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+                    />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score: </strong
+                        ><br />
+                        <apex:outputField
+                          value="{!i.Biggest_Issue_Org_is_Facing_Score__c }"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.Biggest_Issue_Org_is_Facing_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.Biggest_Issue_Org_is_Facing_Notes__c }"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.Biggest_Issue_Org_is_Facing_Score__c }"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Biggest_Issue_Org_is_Facing_Score__c }"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.Biggest_Issue_Org_is_Facing_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Biggest_Issue_Org_is_Facing_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <br />
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    <apex:outputText
+                      value="{!fields['How_Funds_Utilized__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField value="{!app.How_Funds_Utilized__c}" />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score:
+                        </strong>
+                        <apex:outputField
+                          value="{!i.How_Funds_Utilized_Score__c}"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.How_Funds_Utilized_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.How_Funds_Utilized_Notes__c}"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.How_Funds_Utilized_Score__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.How_Funds_Utilized_Score__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.How_Funds_Utilized_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.How_Funds_Utilized_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <hr />
+
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Activities__c']}"
+                      escape="false"
+                    />
+                  </div>
+                </div>
+                <br />
+                <apex:actionRegion>
+                  <u>Needs Assessment</u> <span class="text-danger"> *</span>
+                  <br />
+                  <apex:selectRadio
+                    value="{!app.Has_Needs_Assessment__c}"
+                    disabled="true"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="needs"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel id="needs">
+                    <apex:outputPanel
+                      rendered="{!app.Has_Needs_Assessment__c == true}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="{!fields['Previous_Experiences__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:outputField
+                            value="{!app.Previous_Experiences__c}"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                        >
+                          <apex:outputText
+                            value="{!fields['Needs_Assessment__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                        >
+                          <apex:outputField
+                            value="{!app.Needs_Assessment__c}"
+                          />
+                        </div>
+                        <apex:outputPanel
+                          rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                        >
+                          <div class="col-xs-4">
+                            <apex:repeat
+                              value="{!reviews}"
+                              var="i"
+                              rendered="{!canAward || canSeeReviews}"
+                            >
+                              <strong
+                                ><apex:outputText
+                                  value="{!i.Reviewer__r.Name} "
+                                />
+                                Score:
+                              </strong>
+                              <apex:outputField
+                                value="{!i.Needs_Assessment_Score__c}"
+                              />
+                              <apex:commandLink
+                                action="{!showReviewNotesPopup}"
+                                status="pageStatus"
+                                reRender="reviewNotesPopup"
+                                rendered="{!i.Needs_Assessment_Notes__c != null}"
+                              >
+                                <apex:param
+                                  assignTo="{!note}"
+                                  name="note"
+                                  value="{!i.Needs_Assessment_Notes__c}"
+                                />
+                                &nbsp;&nbsp;<span
+                                  class="glyphicon glyphicon-comment"
+                                ></span
+                                >&nbsp;
+                              </apex:commandLink>
+                              <br />
+                            </apex:repeat>
+                            <apex:outputPanel
+                              rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                            >
+                              <strong>Score: </strong>
+                              <apex:inputField
+                                value="{!review.Needs_Assessment_Score__c}"
+                                rendered="{!editingReview}"
+                              />
+                              <apex:outputField
+                                value="{!review.Needs_Assessment_Score__c}"
+                                rendered="{!NOT(editingReview)}"
+                              />
+                              <br />
+                              <strong>Comments: </strong>
+                              <apex:inputField
+                                value="{!review.Needs_Assessment_Notes__c}"
+                                rendered="{!editingReview}"
+                              />
+                              <apex:outputField
+                                value="{!review.Needs_Assessment_Notes__c}"
+                                rendered="{!NOT(editingReview)}"
+                              />
+                            </apex:outputPanel>
+                          </div>
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                </apex:actionRegion>
+                <br />
+                <apex:actionRegion>
+                  <u>Strategic Planning</u> <span class="text-danger"> *</span>
+                  <br />
+                  <apex:selectRadio
+                    value="{!app.Has_Strategic_Plan__c}"
+                    disabled="true"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="strategic"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel id="strategic">
+                    <apex:outputPanel
+                      rendered="{!app.Has_Strategic_Plan__c == true}"
+                    >
+                      <div class="row">
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                        >
+                          <apex:outputText
+                            value="{!fields['Strategic_Plan__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                        >
+                          <apex:outputField value="{!app.Strategic_Plan__c}" />
+                        </div>
+                        <apex:outputPanel
+                          rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                        >
+                          <div class="col-xs-4">
+                            <apex:repeat
+                              value="{!reviews}"
+                              var="i"
+                              rendered="{!canAward || canSeeReviews}"
+                            >
+                              <strong
+                                ><apex:outputText
+                                  value="{!i.Reviewer__r.Name} "
+                                />
+                                Score:
+                              </strong>
+                              <apex:outputField
+                                value="{!i.Strategic_Plan_Score__c}"
+                              />
+                              <apex:commandLink
+                                action="{!showReviewNotesPopup}"
+                                status="pageStatus"
+                                reRender="reviewNotesPopup"
+                                rendered="{!i.Strategic_Plan_Notes__c != null}"
+                              >
+                                <apex:param
+                                  assignTo="{!note}"
+                                  name="note"
+                                  value="{!i.Strategic_Plan_Notes__c}"
+                                />
+                                &nbsp;&nbsp;<span
+                                  class="glyphicon glyphicon-comment"
+                                ></span
+                                >&nbsp;
+                              </apex:commandLink>
+                              <br />
+                            </apex:repeat>
+                            <apex:outputPanel
+                              rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                            >
+                              <strong>Score: </strong>
+                              <apex:inputField
+                                value="{!review.Strategic_Plan_Score__c}"
+                                rendered="{!editingReview}"
+                              />
+                              <apex:outputField
+                                value="{!review.Strategic_Plan_Score__c}"
+                                rendered="{!NOT(editingReview)}"
+                              />
+                              <br />
+                              <strong>Comments: </strong>
+                              <apex:inputField
+                                value="{!review.Strategic_Plan_Notes__c}"
+                                rendered="{!editingReview}"
+                              />
+                              <apex:outputField
+                                value="{!review.Strategic_Plan_Notes__c}"
+                                rendered="{!NOT(editingReview)}"
+                              />
+                            </apex:outputPanel>
+                          </div>
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                </apex:actionRegion>
+                <br />
+                <u>Support for Victim Services</u
+                ><span class="text-danger"> *</span>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Areas_of_Service__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectCheckboxes
+                      layout="pageDirection"
+                      value="{!services}"
+                      disabled="true"
+                    >
+                      <apex:selectOptions value="{!serviceOptions}" />
+                      <apex:actionSupport
+                        event="onchange"
+                        reRender="details"
+                        status="pageStatus"
+                      />
+                    </apex:selectCheckboxes>
+                    <apex:outputField
+                      value="{!app.Areas_of_Service_Explaination__c}"
+                    />
+                  </div>
+                </div>
+                <br />
+                <apex:actionRegion>
+                  <u>Equipment and Supplies</u>
+                  <span class="text-danger"> *</span>
+                  <apex:selectRadio
+                    value="{!app.Has_Equipment_and_Supplies__c}"
+                    disabled="true"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="equipment"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel id="equipment">
+                    <apex:outputPanel
+                      rendered="{!app.Has_Equipment_and_Supplies__c == true}"
+                    >
+                      <div class="row">
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                        >
+                          <apex:outputText
+                            value="{!fields['Equipment_and_Supplies__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                        >
+                          <apex:outputField
+                            value="{!app.Equipment_and_Supplies__c}"
+                          />
+                        </div>
+                        <apex:outputPanel
+                          rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                        >
+                          <div class="col-xs-4">
+                            <apex:repeat
+                              value="{!reviews}"
+                              var="i"
+                              rendered="{!canAward || canSeeReviews}"
+                            >
+                              <strong
+                                ><apex:outputText
+                                  value="{!i.Reviewer__r.Name} "
+                                />
+                                Score:
+                              </strong>
+                              <apex:outputField
+                                value="{!i.Equipment_and_Supplies_Score__c}"
+                              />
+                              <apex:commandLink
+                                action="{!showReviewNotesPopup}"
+                                status="pageStatus"
+                                reRender="reviewNotesPopup"
+                                rendered="{!i.Equipment_and_Supplies_Notes__c != null}"
+                              >
+                                <apex:param
+                                  assignTo="{!note}"
+                                  name="note"
+                                  value="{!i.Equipment_and_Supplies_Notes__c}"
+                                />
+                                &nbsp;&nbsp;<span
+                                  class="glyphicon glyphicon-comment"
+                                ></span
+                                >&nbsp;
+                              </apex:commandLink>
+                              <br />
+                            </apex:repeat>
+                            <apex:outputPanel
+                              rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                            >
+                              <strong>Score: </strong>
+                              <apex:inputField
+                                value="{!review.Equipment_and_Supplies_Score__c}"
+                                rendered="{!editingReview}"
+                              />
+                              <apex:outputField
+                                value="{!review.Equipment_and_Supplies_Score__c}"
+                                rendered="{!NOT(editingReview)}"
+                              />
+                              <br />
+                              <strong>Comments: </strong>
+                              <apex:inputField
+                                value="{!review.Equipment_and_Supplies_Notes__c}"
+                                rendered="{!editingReview}"
+                              />
+                              <apex:outputField
+                                value="{!review.Equipment_and_Supplies_Notes__c}"
+                                rendered="{!NOT(editingReview)}"
+                              />
+                            </apex:outputPanel>
+                          </div>
+                        </apex:outputPanel>
+                      </div>
+                      <br />
+                      <div class="row">
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                        >
+                          <apex:outputText
+                            value="{!fields['Funding_to_Purchase_Vehicle__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div
+                          class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                        >
+                          <apex:selectRadio
+                            value="{!app.Funding_to_Purchase_Vehicle__c}"
+                            disabled="true"
+                          >
+                            <apex:selectOption
+                              itemValue="true"
+                              itemLabel="Yes"
+                            />
+                            <apex:selectOption
+                              itemValue="false"
+                              itemLabel="No"
+                            />
+                          </apex:selectRadio>
+                        </div>
+                        <apex:outputPanel
+                          rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                        >
+                          <div class="col-xs-4">
+                            <apex:repeat
+                              value="{!reviews}"
+                              var="i"
+                              rendered="{!canAward || canSeeReviews}"
+                            >
+                              <strong
+                                ><apex:outputText
+                                  value="{!i.Reviewer__r.Name} "
+                              /></strong>
+                              <apex:commandLink
+                                action="{!showReviewNotesPopup}"
+                                status="pageStatus"
+                                reRender="reviewNotesPopup"
+                                rendered="{!i.Vehicle_Purchase_Notes__c != null}"
+                              >
+                                <apex:param
+                                  assignTo="{!note}"
+                                  name="note"
+                                  value="{!i.Vehicle_Purchase_Notes__c}"
+                                />
+                                &nbsp;&nbsp;<span
+                                  class="glyphicon glyphicon-comment"
+                                ></span
+                                >&nbsp;
+                              </apex:commandLink>
+                              <br />
+                            </apex:repeat>
+                            <apex:outputPanel
+                              rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                            >
+                              <strong>Comments: </strong>
+                              <apex:inputField
+                                value="{!review.Vehicle_Purchase_Notes__c}"
+                                rendered="{!editingReview}"
+                              />
+                              <apex:outputField
+                                value="{!review.Vehicle_Purchase_Notes__c}"
+                                rendered="{!NOT(editingReview)}"
+                              />
+                            </apex:outputPanel>
+                          </div>
+                        </apex:outputPanel>
+                      </div>
+                      <br />
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <strong
+                            >Please note that purchases must be made pursuant to
+                            your internal procurement policy that complies with
+                            federal law. If you do not have a procurement
+                            policy, technical assistance will be provided to
+                            help you develop one.</strong
+                          >
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                </apex:actionRegion>
+              </div>
+            </div>
+          </apex:outputPanel>
+          <apex:outputPanel id="management">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Grant Management</h1>
+              </div>
+              <div class="panel-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <h4>
+                      If awarded, you will be required to comply with all
+                      applicable federal policies and regulations.
+                    </h4>
+                  </div>
+                </div>
+                <br />
+                <strong>13. Capabilities and Competencies</strong><br />
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    <apex:outputText
+                      value="{!fields['Responsibilities__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField value="{!app.Responsibilities__c}" />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score:
+                        </strong>
+                        <apex:outputField
+                          value="{!i.Responsibilities_Score__c}"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.Responsibilities_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.Responsibilities_Notes__c}"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.Responsibilities_Score__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Responsibilities_Score__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.Responsibilities_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Responsibilities_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <br />
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    <apex:outputText
+                      value="{!fields['Management_Procurement__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField
+                      value="{!app.Management_Procurement__c}"
+                    />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score:
+                        </strong>
+                        <apex:outputField
+                          value="{!i.Management_Procurement_Score__c}"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.Management_Procurement_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.Management_Procurement_Notes__c}"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.Management_Procurement_Score__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Management_Procurement_Score__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.Management_Procurement_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Management_Procurement_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <br />
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    <apex:outputText
+                      value="{!fields['Responsible_Reporting__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField value="{!app.Responsible_Reporting__c}" />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score:
+                        </strong>
+                        <apex:outputField
+                          value="{!i.Responsible_Reporting_Score__c}"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.Responsible_Reporting_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.Responsible_Reporting_Notes__c}"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.Responsible_Reporting_Score__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Responsible_Reporting_Score__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.Responsible_Reporting_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Responsible_Reporting_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <br />
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    <apex:outputText
+                      value="{!fields['Able_to_Recruit__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField value="{!app.Able_to_Recruit__c}" />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score:
+                        </strong>
+                        <apex:outputField
+                          value="{!i.Able_to_Recruit_Score__c}"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.Able_to_Recruit_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.Able_to_Recruit_Notes__c}"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.Able_to_Recruit_Score__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Able_to_Recruit_Score__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.Able_to_Recruit_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Able_to_Recruit_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Other_Challenges__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectRadio
+                      value="{!app.Has_Competencies__c}"
+                      disabled="true"
+                    >
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                </div>
+                <div class="row">
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                  >
+                    If yes, please explain.
+                  </div>
+                  <div
+                    class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                  >
+                    <apex:outputField value="{!app.Other_Challenges__c}" />
+                  </div>
+                  <apex:outputPanel
+                    rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                  >
+                    <div class="col-xs-4">
+                      <apex:repeat
+                        value="{!reviews}"
+                        var="i"
+                        rendered="{!canAward || canSeeReviews}"
+                      >
+                        <strong
+                          ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                          Score:
+                        </strong>
+                        <apex:outputField
+                          value="{!i.Other_Challenges_Score__c}"
+                        />
+                        <apex:commandLink
+                          action="{!showReviewNotesPopup}"
+                          status="pageStatus"
+                          reRender="reviewNotesPopup"
+                          rendered="{!i.Other_Challenges_Notes__c != null}"
+                        >
+                          <apex:param
+                            assignTo="{!note}"
+                            name="note"
+                            value="{!i.Other_Challenges_Notes__c}"
+                          />
+                          &nbsp;&nbsp;<span
+                            class="glyphicon glyphicon-comment"
+                          ></span
+                          >&nbsp;
+                        </apex:commandLink>
+                        <br />
+                      </apex:repeat>
+                      <apex:outputPanel
+                        rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                      >
+                        <strong>Score: </strong>
+                        <apex:inputField
+                          value="{!review.Other_Challenges_Score__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Other_Challenges_Score__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                        <br />
+                        <strong>Comments: </strong>
+                        <apex:inputField
+                          value="{!review.Other_Challenges_Notes__c}"
+                          rendered="{!editingReview}"
+                        />
+                        <apex:outputField
+                          value="{!review.Other_Challenges_Notes__c}"
+                          rendered="{!NOT(editingReview)}"
+                        />
+                      </apex:outputPanel>
+                    </div>
+                  </apex:outputPanel>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:actionRegion>
+            <apex:outputPanel id="budget">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h1 class="panel-title">Summary Budget</h1>
+                </div>
+                <div class="panel-body">
+                  <p>
+                    <apex:outputText
+                      value="{!fields['Summary_Budget__c']}"
+                      escape="false"
+                    />
+                  </p>
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-8', 'col-xs-12')}"
+                    >
+                      <table class="table">
+                        <tr>
+                          <th width="220px">Category</th>
+                          <th width="180px">Amount</th>
+                          <th>Description</th>
+                        </tr>
+                        <tr>
+                          <td>Personnel<span class="text-danger"> *</span></td>
+                          <td>
+                            <apex:outputField
+                              id="personnel"
+                              value="{!app.Personnel_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Personnel_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Fringe Benefits<span class="text-danger"> *</span>
+                          </td>
+                          <td>
+                            <apex:outputField
+                              id="fringe"
+                              value="{!app.Fringe_Benefits_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Fringe_Benefits_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Travel<span class="text-danger"> *</span></td>
+                          <td>
+                            <apex:outputField
+                              id="travel"
+                              value="{!app.Travel_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Travel_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Equipment/Supplies<span class="text-danger">
+                              *</span
+                            >
+                          </td>
+                          <td>
+                            <apex:outputField
+                              id="supplies"
+                              value="{!app.Supplies_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Supplies_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Contracts and Consultants<span class="text-danger">
+                              *</span
+                            >
+                          </td>
+                          <td>
+                            <apex:outputField
+                              id="contracts"
+                              value="{!app.Contracts_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Contracts_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Consultant/Contractor Travel<span
+                              class="text-danger"
+                            >
+                              *</span
+                            >
+                          </td>
+                          <td>
+                            <apex:outputField
+                              id="contractorTravel"
+                              value="{!app.Contractor_Travel_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Contractor_Travel_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Other Costs<span class="text-danger"> *</span>
+                          </td>
+                          <td>
+                            <apex:outputField
+                              id="other"
+                              value="{!app.Other_Costs_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Other_Costs_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Indirect Costs<span class="text-danger"> *</span>
+                          </td>
+                          <td>
+                            <apex:outputField
+                              id="indirect"
+                              value="{!app.Indirect_Costs_Budget__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!app.Indirect_Costs_Description__c}"
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><strong>Total</strong></td>
+                          <td>
+                            <strong
+                              ><apex:outputField
+                                value="{!app.Summary_Budget_Total__c}"
+                            /></strong>
+                            <!--<strong><div id="total"></div></strong>-->
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField value="{!i.Budget_Score__c}" />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.Budget_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.Budget_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.Budget_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Budget_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.Budget_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Budget_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                  <hr />
+                  <div class="row">
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4 semibold', 'col-xs-12 semibold')}"
+                    >
+                      <apex:outputText value="{!fields['Justification__c']}" />
+                    </div>
+                    <div
+                      class="{!IF(canAward || canSeeReviews || editingReview || review.Id != null, 'col-xs-4', 'col-xs-12')}"
+                    >
+                      <apex:outputField value="{!app.Budget_Details__c}" />
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+                    >
+                      <div class="col-xs-4">
+                        <apex:repeat
+                          value="{!reviews}"
+                          var="i"
+                          rendered="{!canAward || canSeeReviews}"
+                        >
+                          <strong
+                            ><apex:outputText value="{!i.Reviewer__r.Name} " />
+                            Score:
+                          </strong>
+                          <apex:outputField
+                            value="{!i.Budget_Details_Score__c}"
+                          />
+                          <apex:commandLink
+                            action="{!showReviewNotesPopup}"
+                            status="pageStatus"
+                            reRender="reviewNotesPopup"
+                            rendered="{!i.Budget_Details_Notes__c != null}"
+                          >
+                            <apex:param
+                              assignTo="{!note}"
+                              name="note"
+                              value="{!i.Budget_Details_Notes__c}"
+                            />
+                            &nbsp;&nbsp;<span
+                              class="glyphicon glyphicon-comment"
+                            ></span
+                            >&nbsp;
+                          </apex:commandLink>
+                          <br />
+                        </apex:repeat>
+                        <apex:outputPanel
+                          rendered="{!NOT(canAward) && NOT(canSeeReviews)}"
+                        >
+                          <strong>Score: </strong>
+                          <apex:inputField
+                            value="{!review.Budget_Details_Score__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Budget_Details_Score__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                          <br />
+                          <strong>Comments: </strong>
+                          <apex:inputField
+                            value="{!review.Budget_Details_Notes__c}"
+                            rendered="{!editingReview}"
+                          />
+                          <apex:outputField
+                            value="{!review.Budget_Details_Notes__c}"
+                            rendered="{!NOT(editingReview)}"
+                          />
+                        </apex:outputPanel>
+                      </div>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:actionRegion>
+
+          <apex:outputPanel id="final">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Acknowledgement</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Terms_Acknowledged__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectRadio
+                      value="{!app.Terms_Acknowledged__c}"
+                      disabled="true"
+                    >
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Signatory</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Signature__c']}"
+                      escape="false"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-4 semibold">
+                    Signatory Title <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-4 semibold">
+                    Signatory Name <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-4 semibold">
+                    Signatory Email <span class="text-danger"> *</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">
+                    <apex:outputField
+                      value="{!app.Signatory_Title__c}"
+                      style="display: inline"
+                    />
+                  </div>
+                  <div class="col-xs-4">
+                    <apex:outputField
+                      value="{!app.Signatory_Name__c}"
+                      style="display: inline"
+                    />
+                  </div>
+                  <div class="col-xs-4">
+                    <apex:outputField
+                      value="{!app.Signatory_Email__c}"
+                      style="display: inline"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputField
+                      value="{!app.Alternate_Signing_Method__c}"
+                    />
+                    <apex:outputText
+                      value="{!fields['Alternate_Signature__c']}"
+                      escape="false"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!canAward || canSeeReviews || editingReview || review.Id != null}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Review Summary</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-6">
+                    <strong>
+                      Viability of the Proposal - Score:<br /> (Ability to
+                      accomplish program goals within 12 months.)<br />
+                    </strong>
+                    <apex:repeat
+                      value="{!reviews}"
+                      var="i"
+                      rendered="{!canAward || canSeeReviews}"
+                    >
+                      <br />
+                      <strong>{!i.Reviewer__r.Name}: </strong>
+                      <apex:outputField value="{!i.Viability_Score__c}" />
+                    </apex:repeat>
+                    <apex:outputPanel
+                      rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                    >
+                      <apex:inputField
+                        value="{!review.Viability_Score__c}"
+                        styleClass="input-md"
+                        rendered="{!editingReview}"
+                      /><br /><br />
+                      <apex:outputField
+                        value="{!review.Viability_Score__c}"
+                        rendered="{!NOT(editingReview)}"
+                      />
+                    </apex:outputPanel>
+                  </div>
+                  <div class="col-xs-6">
+                    <strong>
+                      Viability of the Proposal - Comments:<br /> (Ability to
+                      accomplish program goals within 12 months.)<br />
+                    </strong>
+                    <apex:repeat
+                      value="{!reviews}"
+                      var="i"
+                      rendered="{!canAward || canSeeReviews}"
+                    >
+                      <br />
+                      <strong>{!i.Reviewer__r.Name}: </strong>
+                      <apex:outputField value="{!i.Viability_Notes__c}" />
+                    </apex:repeat>
+                    <apex:outputPanel
+                      rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                    >
+                      <apex:inputField
+                        value="{!review.Viability_Notes__c}"
+                        styleClass="input-md"
+                        rendered="{!editingReview}"
+                      /><br /><br />
+                      <apex:outputField
+                        value="{!review.Viability_Notes__c}"
+                        rendered="{!NOT(editingReview)}"
+                      />
+                    </apex:outputPanel>
+                  </div>
+                </div>
+                <br /><br />
+                <strong
+                  >Do you think this organization should receive funding?:
+                </strong>
+                <apex:repeat
+                  value="{!reviews}"
+                  var="i"
+                  rendered="{!canAward || canSeeReviews}"
+                >
+                  <br />
+                  <strong>{!i.Reviewer__r.Name}: </strong>
+                  <apex:outputField value="{!i.Should_Award__c}" />
+                </apex:repeat>
+                <apex:outputPanel
+                  rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                >
+                  <apex:inputField
+                    value="{!review.Should_Award__c}"
+                    styleClass="input-md"
+                    rendered="{!editingReview}"
+                  /><br /><br />
+                  <apex:outputField
+                    value="{!review.Should_Award__c}"
+                    rendered="{!NOT(editingReview)}"
+                  />
+                </apex:outputPanel>
+                <br /><br />
+                <strong>General Review Notes: </strong>
+                <apex:repeat
+                  value="{!reviews}"
+                  var="i"
+                  rendered="{!canAward || canSeeReviews}"
+                >
+                  <br />
+                  <strong>{!i.Reviewer__r.Name}: </strong>
+                  <apex:outputField value="{!i.Notes__c}" />
+                </apex:repeat>
+                <apex:outputPanel
+                  rendered="{!NOT(canAward)  && NOT(canSeeReviews)}"
+                >
+                  <apex:inputField
+                    value="{!review.Notes__c}"
+                    type="text"
+                    styleclass="input-md"
+                    rendered="{!editingReview}"
+                  />
+                  <apex:outputField
+                    value="{!review.Notes__c}"
+                    styleclass="input-md"
+                    rendered="{!NOT(editingReview)}"
+                  />
+                </apex:outputPanel>
+                <br />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization' && (approverLevel == 'Level Three' || approverLevel == 'Level Four')}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Request Details</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-9">
+                    Did this tribe apply for the FY 2021 Office for Victims of
+                    Crime Tribal Victim Services Set-Aside Program? This
+                    solicitation was released on April 1, with a full
+                    application due date June 15,2020. GMS Funding Opportunity
+                    #OVC-2020-18455? &nbsp;
+                    <apex:selectRadio
+                      value="{!app.Applied_for_Set_Aside_Program__c}"
+                    >
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                  <div class="col-xs-3">
+                    SAM Exp:
+                    <apex:inputField value="{!app.DUNS_Exp_Date__c}" />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-3">
+                    Program Involves Interaction with Minors:
+                    <apex:selectRadio
+                      value="{!app.Program_Involves_Interaction_with_Minors__c}"
+                    >
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                  <div class="col-xs-3">
+                    Eligible for Round One Funding:
+                    <apex:selectRadio
+                      value="{!app.Eligible_for_Round_One_Funding__c}"
+                    >
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                  <div class="col-xs-3">
+                    Excluded Parties List:
+                    <apex:selectRadio value="{!app.Excluded_Parties_List__c}">
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-3">
+                    Federal Debt:
+                    <apex:selectRadio value="{!app.Federal_Debt__c}">
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                  <div class="col-xs-3">
+                    Audit Found:
+                    <apex:selectRadio value="{!app.Audit_Fund__c}">
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                  <div class="col-xs-3">
+                    Audit Finding:
+                    <apex:selectRadio value="{!app.Audit_Finding__c}">
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                  <div class="col-xs-3">
+                    Audit Notes:
+                    <apex:inputTextarea
+                      value="{!app.Audit_Notes__c}"
+                      rows="2"
+                    />
+                  </div>
+                </div>
+                <hr />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong
+                      >Have you developed a proposal for the full application?
+                    </strong>
+                    <br />• Or are you still developing? <br />• How can we be
+                    of any assistance for ideas, or questions? <br />• Do you
+                    have an existing victim program? Please explain.
+                    <apex:inputField value="{!app.Proposal__c}" />
+                    For outreach purposes: please establish and clarify if the
+                    applicant is requesting funds outside of victim services or
+                    tribal justice programs i.e. substance use disorder, child
+                    protection, or social services how it is focused on victim
+                    services
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>If you do not have an existing program: </strong>
+                    <br />• How is your program proposal victim centered?
+                    <br />• Would implementing a community needs assessment or
+                    engaging a strategic plan assist you in developing a
+                    program?
+                    <apex:inputField value="{!app.Program_Development__c}" />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong
+                      >Are you working with a tribal justice team? i.e. LE,
+                      victim services, tribal court, prosecutors, probation,
+                      hospital staff</strong
+                    >
+                    <apex:inputField value="{!app.Justice_Team__c}" />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>What is the majority of your budget?</strong>
+                    <apex:inputField value="{!app.Majority_of_Budget__c}" />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong
+                      >Are there any concerns you have in applying? Have you
+                      experienced any challenges in applying for OVC funding in
+                      the past?</strong
+                    >
+                    <apex:inputField value="{!app.Other_Challenges__c}" />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong
+                      >Can you tell us about your FY2020 Set Aside application
+                      and how your NCAI Fund proposal is different or
+                      complimentary?</strong
+                    >
+                    <apex:inputField
+                      value="{!app.How_Proposal_is_Different__c}"
+                    />
+                  </div>
+                </div>
+                <br />
+                <hr />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Review Notes</strong>
+                    <apex:inputField value="{!app.Review_Notes__c}" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:commandButton
+            value="Save"
+            action="{!save}"
+            status="pageStatus"
+            styleClass="btn primary"
+            rendered="{!app.Id == null}"
+          />
+
+          <apex:commandLink
+            value="Export to PDF"
+            action="{!URLFOR($Site.Prefix+'/OVCApplicationPDF?appId='+app.Id)}"
+            styleClass="btn"
+            target="_blank"
+            rendered="{!app.Grant_Type__c == 'OVC' && (app.Status__c == 'Submitted' || app.Status__c =='Awarded' || app.Status__c =='Reviewed' || app.Status__c =='Closed')}"
+          />
+          <apex:commandLink
+            value="Export to PDF + Review"
+            action="{!URLFOR($Site.Prefix+'/OVCReviewPDF?appId='+app.Id)}"
+            styleClass="btn"
+            target="_blank"
+            rendered="{!NOT(showSuccess) && app.Grant_Year__c == '2020 - 2021' && app.Grant_Type__c == 'OVC' && (app.Status__c == 'Submitted' || app.Status__c =='Awarded' || app.Status__c =='Reviewed' || app.Status__c =='Closed') && (canAward || canSeeReviews)}"
+          />
+          <apex:outputPanel
+            rendered="{!userAcctType == 'Local Organization' && (app.Status__c == 'Sent to Applicant' || app.Status__c == 'Sent Back' || app.Status__c == 'In Progress')}"
+          >
+            <apex:commandButton
+              value="Save"
+              action="{!save}"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              value="Submit"
+              action="{!submit}"
+              status="pageStatus"
+              styleClass="btn primary"
+            />
+          </apex:outputPanel>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <!--                    <apex:commandButton value="Send Back" action="{!showSendBackPopup}" status="pageStatus" styleClass="btn" rendered="{!app.Status__c == 'Submitted' || app.Status__c == 'Reviewed' && NOT(approverLevel == 'Level Three' && portalName == 'NCAI - OVC')}" /> -->
+            <apex:commandButton
+              value="Save Score"
+              action="{!saveScore}"
+              status="pageStatus"
+              rendered="{!editingReview && NOT(canAward)}"
+            />
+            <!--                    <apex:commandButton value="Save" action="{!save}" status="pageStatus" rendered="{!canAward && NOT(approverLevel == 'Level Three' && portalName == 'NCAI - OVC')}" />-->
+            <apex:commandButton
+              value="Save"
+              action="{!save}"
+              status="pageStatus"
+              rendered="{!(canAward || canReview) && NOT(editingReview)}"
+            />
+            <apex:commandButton
+              value="Score"
+              action="{!score}"
+              status="pageStatus"
+              styleClass="primary"
+              rendered="{!editingReview && NOT(canAward)}"
+            />
+            <apex:commandButton
+              value="Award"
+              action="{!awardPopup}"
+              styleClass="btn primary"
+              rendered="{!canAward && app.Status__c != 'Awarded' && NOT(approverLevel == 'Level Three' && portalName == 'NCAI - OVC')}"
+            />
+          </apex:outputPanel>
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages />
+        </apex:outputPanel>
+        <!--END Application for 2021 - 2022 Cycle-->
+
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            header="{!IF(notesPopupType == 'sendBack', 'Send Back', 'Not Eligible')}"
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            displayLocalNote="false"
+            displayNationalNotePrivate="true"
+            nationalNote="{!app.Sent_Back_Reason__c}"
+            nationalNotePrivate="{!app.Notes_for_National__c}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+              immediate="true"
+            />
+            <apex:commandButton
+              value="Send Back"
+              action="{!sendBack}"
+              status="pageStatus"
+              styleClass="btn primary"
+              rendered="{!notesPopupType == 'sendBack'}"
+            />
+            <apex:commandButton
+              value="Not Eligible"
+              action="{!notEligible}"
+              status="pageStatus"
+              styleClass="btn primary"
+              rendered="{!notesPopupType == 'notEligible'}"
+            />
+            <apex:pageMessages />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="reviewNotesPopup">
+          <c:ConfirmationPopup
+            header="Review Notes"
+            body="{!note}"
+            displayConfirmPopup="{!displayReviewNotesPopup}"
+          >
+            <apex:commandButton
+              value="Close"
+              action="{!hideReviewNotesPopup}"
+              reRender="reviewNotesPopup"
+            />
+          </c:ConfirmationPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="awardPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAwardPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAwardPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Award Application</h4>
+                </div>
+                <div class="modal-body">
+                  <strong>Award Amount: </strong>
+                  $ &nbsp;<apex:input
+                    value="{!awardAmount}"
+                    styleClass="input-md"
+                  />
+                  <br /><br />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!awardPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                  />
+                  <apex:commandButton
+                    action="{!awardOVC}"
+                    value="Award"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <br /><br />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

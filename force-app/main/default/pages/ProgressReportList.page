@@ -1,0 +1,63 @@
+<apex:page
+  controller="ProgressReportListCtrl"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Progress Reports</title>
+  </head>
+  <c:TRAILHeader
+    ActivePage="progress"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:ProgressReportList
+          header="Incomplete Progress Reports"
+          report_list="{!incomplete_reports}"
+          showSiteCol="{!userAcctType != 'Site'}"
+          showMore="{!more_incomplete_reports}"
+          listType="incomplete"
+          rendered="{!listType == null || listType == 'incomplete'}"
+        />
+
+        <c:ProgressReportList
+          header="Progress Reports Pending Approval"
+          report_list="{!submitted_reports}"
+          showSiteCol="{!userAcctType != 'Site'}"
+          showMore="{!more_submitted_reports}"
+          listType="pending"
+          rendered="{!listType == null || listType == 'pending'}"
+        />
+
+        <c:ProgressReportList
+          header="Completed Progress Reports"
+          report_list="{!approved_reports}"
+          showSiteCol="{!userAcctType != 'Site'}"
+          showMore="{!more_approved_reports}"
+          listType="approved"
+          rendered="{!listType == null || listType == 'approved'}"
+        />
+      </div>
+    </div>
+
+    <apex:pageMessages></apex:pageMessages>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    var $j = jQuery.noConflict();
+    $j(document).ready(function () {
+      getLists();
+    });
+  </script>
+</apex:page>

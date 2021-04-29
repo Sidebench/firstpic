@@ -1,0 +1,53 @@
+<apex:page controller="SubGrantListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Sub-Grant List</title>
+  </head>
+  <c:Header
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2 style="display: inline">Sub-Grants</h2>
+        <span class="col-auto pull-right">
+          Name or BBBS Id: &nbsp;<apex:inputText
+            value="{!keyword}"
+            styleClass="input-md"
+          />&nbsp; &nbsp;&nbsp; Sort By: &nbsp;
+          <apex:selectList value="{!sortBy}" size="1">
+            <apex:selectOptions value="{!sortByOptions}" />
+          </apex:selectList>
+          &nbsp;
+          <apex:commandButton
+            action="{!getLists}"
+            value="Update"
+            status="pageStatus"
+            styleClass="btn-small primary"
+            reRender="form"
+          />
+        </span>
+        <br /><br />
+
+        <c:GrantList header="Active Sub-Grants" grantList="{!grant_list}" />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

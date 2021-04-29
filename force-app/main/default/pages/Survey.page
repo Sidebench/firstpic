@@ -1,0 +1,466 @@
+<apex:page
+  controller="YouthDataCtrl"
+  action="{!getSurvey}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Survey</title>
+    <style>
+      input,
+      select {
+        margin-bottom: 4px !important;
+      }
+    </style>
+  </head>
+  <c:TRAILHeader
+    ActivePage="{!IF(userAcctType == 'Site', 'reports', 'program')}"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!survey.Contact_Name__c}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h5>Status: {!survey.Status__c}</h5>
+            <h5>Date: <apex:outputField value="{!survey.Date__c}" /></h5>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <apex:outputText
+              value="{!survey.Title__c}"
+              rendered="{!survey.Title__c != null}"
+            />
+            <apex:outputText
+              value="{!survey.Type__c}"
+              rendered="{!survey.Title__c == null}"
+            />
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-auto semibold">
+                1. What is an example of being physically healthy?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Example_of_Being_Physically_Healthy__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Example_of_Being_Physically_Healthy__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                2. What is an example of being emotionally healthy?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Example_of_Being_Emotionally_Healthy__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Example_of_Being_Emotionally_Healthy__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                3. Type 2 diabetes is a disease:
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Type_2_Diabetes__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Type_2_Diabetes__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                4. What is the most important drink we can put in our bodies?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Most_Important_Drink__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Most_Important_Drink__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                5. What are some ways a person can prevent type 2 diabetes?
+                (Hint: There is only one correct answer).
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Ways_to_Prevent_Type_2_Diabetes__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Ways_to_Prevent_Type_2_Diabetes__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                6. A person should eat at least ____ fruits and vegetables each
+                day.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Fruits_and_Vegetables_per_Day__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Fruits_and_Vegetables_per_Day__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                7. What is the minimum number of minutes of physical activity
+                you should get every day?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Minimum_Minutes_of_Physical_Activity__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Minimum_Minutes_of_Physical_Activity__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                8. How many food groups are there?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Number_of_Food_Groups__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Number_of_Food_Groups__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                9. Processed foods are found packed in boxes, cans, or bags and
+                are not found in nature.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Processed_Foods_Found_in_Boxes__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Processed_Foods_Found_in_Boxes__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                10. French fries come from an animal.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.French_Fries_Come_From_an_Animal__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.French_Fries_Come_From_an_Animal__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                11. An advertisement, or ad, is something that tells people
+                about a product and tries to get them to buy it.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.An_Ad_Tells_People_About_a_Product__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.An_Ad_Tells_People_About_a_Product__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                12. Which of the following are names of food groups?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Names_of_Food_Groups__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Names_of_Food_Groups__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                13. Which of the following are healthy ways to handle stress?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!survey.Healthy_Ways_to_Handle_Stress__c}"
+                  rendered="{!NOT(surveyReadOnly)}"
+                />
+                <apex:outputField
+                  value="{!survey.Healthy_Ways_to_Handle_Stress__c}"
+                  rendered="{!surveyReadOnly}"
+                />
+              </div>
+            </div>
+            <div style="padding: 10px 0">
+              Questions 15 and 16 do not have a right or wrong answer. Choose
+              the answer that best describes how you feel or what you are able
+              to do.
+            </div>
+            <div class="row">
+              <div class="col-sm-12 semibold">
+                14. After each sentence, choose the answer that best describes
+                how you feel or what you can do.
+              </div>
+            </div>
+            <div style="margin-left: 20px">
+              <div class="row">
+                <div class="col-auto semibold">
+                  a. I can play hard during most of recess.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Play_Hard_During_Recess__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Play_Hard_During_Recess__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  b. I can play hard during most of physical education class.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Play_Hard_During_PE_Class__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Play_Hard_During_PE_Class__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  c. I can play hard every day when I have the chance during my
+                  free time.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Play_Hard_During_Free_Time__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Play_Hard_During_Free_Time__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  d. At the store, I can ask for fresh fruit instead of ice
+                  cream.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Fresh_Fruit_Instead_of_Ice_Cream__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Fresh_Fruit_Instead_of_Ice_Cream__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  e. At the store, I can ask for nuts or sunflower kernels
+                  instead of potato chips.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Nuts_Instead_of_Chips__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Nuts_Instead_of_Chips__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  f. I can choose to drink water instead of soda pop.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Water_Instead_of_Soda__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Water_Instead_of_Soda__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  g. I can ask for cheese pizza instead of pepperoni pizza.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Cheese_Pizza_Instead_of_Pepperoni__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Cheese_Pizza_Instead_of_Pepperoni__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 semibold">
+                <br />15. After each sentence, choose the answer that best
+                describes how you feel or what you can do.
+              </div>
+            </div>
+            <div style="margin-left: 20px">
+              <div class="row">
+                <div class="col-auto semibold">
+                  a. I like to be physically active every day.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Physically_Active_Every_Day__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Physically_Active_Every_Day__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  b. I like to eat a piece of fruit every day.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Eat_a_Piece_of_Fruit_Every_Day__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Eat_a_Piece_of_Fruit_Every_Day__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  c. I like to eat a vegetable every day.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Eat_a_Vegetable_Every_Day__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Eat_a_Vegetable_Every_Day__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-auto semibold">
+                  d. The adults in my house eat fruits and vegetables.
+                </div>
+                <div class="col-auto pull-right">
+                  <apex:inputField
+                    value="{!survey.Adults_in_House_Eat_Fruits_Vegetables__c}"
+                    rendered="{!NOT(surveyReadOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!survey.Adults_in_House_Eat_Fruits_Vegetables__c}"
+                    rendered="{!surveyReadOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <apex:outputPanel rendered="{!ypr.Grant_Status__c != 'Closed'}">
+          <apex:commandButton
+            action="{!URLFOR($Site.Prefix+'/YouthData?localOrgId='+localOrgId+'&siteId='+siteId+'&grantId='+grantId+'&year='+year)}"
+            value="Back"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!saveSurvey}"
+            value="Save"
+            status="pageStatus"
+            rendered="{!userAcctType != 'Site' || (userAcctType == 'Site' && NOT(surveyReadOnly))}"
+          />
+          <apex:commandButton
+            action="{!submitSurvey}"
+            value="Submit"
+            status="pageStatus"
+            styleClass="primary"
+            rendered="{!NOT(surveyReadOnly)}"
+          />
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

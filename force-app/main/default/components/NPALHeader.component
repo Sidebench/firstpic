@@ -1,0 +1,193 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="ActivePage"
+    description="Name of active nav item"
+  />
+  <apex:attribute type="Account" name="acct" description="Account" />
+  <apex:attribute
+    type="String"
+    name="profile"
+    description="Current User profile name"
+  />
+
+  <apex:stylesheet
+    value="{!URLFOR($Resource.styles, 'css/bootstrap.min.css')}"
+  />
+  <apex:stylesheet value="{!URLFOR($Resource.styles, 'css/style.css')}" />
+  <style>
+    a,
+    .primary {
+      color: #099ad6;
+    }
+    a:hover {
+      color: #066b95;
+    }
+    input[type="submit"].btn.primary,
+    .btn.primary {
+      background: #099ad6;
+      background-image: -webkit-linear-gradient(top, #099ad6, #066b95);
+      background-image: -moz-linear-gradient(top, #099ad6, #066b95);
+      background-image: -ms-linear-gradient(top, #099ad6, #066b95);
+      background-image: -o-linear-gradient(top, #099ad6, #066b95);
+      background-image: linear-gradient(to bottom, #099ad6, #066b95);
+      color: #fff;
+    }
+    input[type="submit"].primary:hover,
+    .btn.primary:hover {
+      background: #066b95;
+      text-decoration: none;
+    }
+  </style>
+
+  <c:AdditionalStyles />
+  <c:Spinner />
+
+  <apex:includeScript
+    value="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+  />
+  <apex:includeScript
+    value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+  />
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle"
+          data-toggle="collapse"
+          data-target=".navbar-collapse"
+        >
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="navbar-brand">
+          <apex:image url="{!$Resource.NPAL_logo}" height="44" />
+          <span class="title"> National PAL </span>
+          <apex:outputPanel
+            rendered="{!acct.RecordType.Name == 'Local Organization'}"
+            styleClass="subtitle"
+          >
+            {!acct.Name}
+          </apex:outputPanel>
+        </span>
+      </div>
+      <apex:outputPanel rendered="{!acct == null}">
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="login">
+              <a href="{!URLFOR($Site.Prefix+'/login')}"> Login </a>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+
+      <apex:outputPanel rendered="{!acct != null}">
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="dashboard">
+              <a href="{!URLFOR($Site.Prefix+'/NPALDashboard')}"> Dashboard </a>
+            </li>
+            <li class="{!IF((activePage == 'about'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/NPALAbout')}"> About </a>
+            </li>
+            <li class="{!IF((activePage == 'grants'),'active','')}">
+              <apex:outputPanel
+                rendered="{!acct.RecordType.Name == 'National Organization' && NOT(CONTAINS(profile, 'Program'))}"
+              >
+                <a href="{!URLFOR($Site.Prefix+'/GrantList')}"> Grants </a>
+              </apex:outputPanel>
+            </li>
+            <li class="{!IF((activePage == 'subgrants'),'active','')}">
+              <apex:outputPanel rendered="{!NOT(CONTAINS(profile, 'Program'))}">
+                <a href="{!URLFOR($Site.Prefix+'/SubGrants')}"> Sub-Grants </a>
+              </apex:outputPanel>
+            </li>
+            <li class="{!IF((activePage == 'reimbursements'),'active','')}">
+              <apex:outputPanel rendered="{!NOT(CONTAINS(profile, 'Program'))}">
+                <a href="{!URLFOR($Site.Prefix+'/Reimbursements')}">
+                  Reimbursements
+                </a>
+              </apex:outputPanel>
+            </li>
+            <li
+              class="{!IF((activePage == 'approverAssignments'),'dropdown active','dropdown')}"
+            >
+              <apex:outputPanel
+                rendered="{!acct.RecordType.Name == 'National Organization'}"
+              >
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Approver Assignments <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="{!URLFOR($Site.Prefix+'/ApproverAssignments')}">
+                      Manage Assignments
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{!URLFOR($Site.Prefix+'/ApproverReimbursements')}">
+                      Reimbursement Dashboard
+                    </a>
+                  </li>
+                </ul>
+              </apex:outputPanel>
+            </li>
+            <li
+              class="{!IF((activePage == 'program'),'active dropdown','dropdown')}"
+            >
+              <a
+                href="#"
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Program <span class="caret"></span
+              ></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="{!$Site.Prefix+'/MonthlyProgressReports'}">
+                    Monthly Progress Reports
+                  </a>
+                </li>
+                <li>
+                  <apex:outputPanel
+                    rendered="{!acct.RecordType.Name == 'National Organization'}"
+                  >
+                    <a href="{!URLFOR($Site.Prefix+'/NPALReportList')}">
+                      Grantee Reports
+                    </a>
+                  </apex:outputPanel>
+                </li>
+                <li>
+                  <a href="{!$Site.Prefix+'/YouthData'}"> Youth Data </a>
+                </li>
+              </ul>
+            </li>
+            <li class="{!IF((activePage == 'help'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/NPALHelp')}"> Resources </a>
+            </li>
+            <li id="logout">
+              <apex:outputLink
+                value="{!$Site.Prefix}/secur/logout.jsp"
+                rendered="{!NOT(ISPICKVAL($User.UserType,'Guest'))}"
+              >
+                {!$Label.site.logout}
+              </apex:outputLink>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+    </div>
+  </nav>
+</apex:component>

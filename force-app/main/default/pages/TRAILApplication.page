@@ -1,0 +1,1329 @@
+<apex:page
+  controller="ApplicationCtrl"
+  action="{!getFields}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Grant Application</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="applications"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row" style="margin-bottom: 10px">
+          <div class="col-auto">
+            <h2>{!title} Grant Application</h2>
+            <div class="text-danger">* All Fields are Required</div>
+          </div>
+          <div class="col-auto pull-right">
+            Status:&nbsp;
+            <apex:outputText
+              value="Requested"
+              rendered="{!userAcctType == 'Local Organization' && app.Status__c == 'Sent to Applicant'}"
+            />
+            <apex:outputText
+              value="Submitted"
+              rendered="{!userAcctType == 'Local Organization' && app.Status__c == 'Reviewed'}"
+            />
+            <apex:outputText
+              value="Revision Needed"
+              rendered="{!userAcctType == 'Local Organization' && app.Status__c == 'Sent Back'}"
+            />
+            <apex:outputText
+              value="{!app.Status__c}"
+              rendered="{!userAcctType == 'Local Organization' && app.Status__c != 'Sent to Applicant' && app.Status__c != 'Reviewed' && app.Status__c != 'Sent Back'}"
+            />
+            <apex:outputText
+              value="{!app.Status__c}"
+              rendered="{!userAcctType == 'National Organization'}"
+            />
+
+            <div style="display: block; margin: 10px 0">
+              <apex:commandLink
+                value="Export to PDF"
+                action="{!URLFOR($Site.Prefix+'/TRAILApplicationPDF?appId='+app.Id)}"
+                styleClass="btn"
+                target="_blank"
+                rendered="{!userAcctType == 'National Organization'}"
+              />
+              <apex:outputPanel
+                rendered="{!userAcctType == 'Local Organization' && (app.Status__c == 'Sent to Applicant' || app.Status__c == 'Sent Back' || app.Status__c == 'In Progress')}"
+              >
+                <apex:commandButton
+                  value="Save"
+                  action="{!save}"
+                  status="pageStatus"
+                />
+                <apex:commandButton
+                  value="Submit"
+                  action="{!submit}"
+                  status="pageStatus"
+                  styleClass="btn primary"
+                />
+              </apex:outputPanel>
+            </div>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!showSuccess}">
+          <c:ErrorMessage
+            errorMessage="You have successfully submitted your application."
+            type="success"
+          />
+        </apex:outputPanel>
+
+        <c:ErrorMessage
+          errorMessage="You have successfully saved your application."
+          type="success"
+          rendered="{!showSaveSuccess}"
+        />
+
+        <apex:outputPanel rendered="{!NOT(showSuccess)}">
+          <c:ErrorMessage
+            errorMessage="Data will not be saved unless you hit the Save button. Please do not navigate away from this screen until you hit the Save or Submit button."
+          />
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Implementing the T.R.A.I.L. Program</h1>
+            </div>
+            <div class="panel-body">
+              The T.R.A.I.L. Program designed a curriculum for Native youth ages
+              7–11 to promote the understanding of type 2 diabetes, reinforce
+              healthy lifestyles, and encourage increased nutritional knowledge
+              and best practices. The T.R.A.I.L. Program’s long-term goal is to
+              prevent and reduce the onset of type 2 diabetes. T.R.A.I.L. is an
+              interactive, educational, and physical activity-based program.
+              <br /><br />
+              To successfully complete T.R.A.I.L. award requirements, staff
+              implement the curriculum chapters, track at least 60 minutes of
+              club-wide Daily Physical Activity, implement Physical Activity
+              Challenges, and facilitate a youth-led Community Education
+              Project. The curriculum chapters are divided into four parts, each
+              with an individual theme:
+              <br /><br /> Part 1: About Me, My Health, &amp; Being a Part of a
+              Team<br /> Part 2: Healthy Eating<br /> Part 3: Making Smart Food
+              Choices<br />
+              Part 4: My Healthy Community
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Part A: General Applicant Information</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <apex:outputPanel rendered="{!app.Type__c == 'Existing'}">
+                <strong
+                  >All pre-populated information came from the information that
+                  has been entered into the reporting site during your current
+                  year of implementation. Please update any of this information
+                  if necessary.</strong
+                >
+                <br /><br />
+              </apex:outputPanel>
+              <h5>Organization Information</h5>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['Organization_Name__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.Organization_Name__c}"
+                    rendered="{!app.Organization_Name__c == null}"
+                  />
+                  <apex:outputField
+                    value="{!app.Organization_Name__c}"
+                    rendered="{!app.Organization_Name__c != null}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['Address__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.Address__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Address__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['City__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.City__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.City__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['State__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.State__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.State__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['Postal_Zip_Code__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.Postal_Zip_Code__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Postal_Zip_Code__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['DUNS_Number__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.DUNS_Number__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.DUNS_Number__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['Access_to_Computers__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.Access_to_Computers__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Access_to_Computers__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!fields['Adequate_Space__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!app.Adequate_Space__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Adequate_Space__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <br />
+              <h5>
+                Applicant Contact Information
+                <span
+                  class="badge"
+                  title="Please list the following information for the person we should contact if we have questions about this Application (typically this will be the person completing the application)."
+                  >?</span
+                >
+              </h5>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    {!fields['Applicant_Name__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Applicant_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Applicant_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Applicant_Title__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Applicant_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Applicant_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['Applicant_Phone_Number__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Applicant_Phone_Number__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Applicant_Phone_Number__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Applicant_Email__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Applicant_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Applicant_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <hr />
+              <h5>
+                Organization Chief Executive Officer (CEO) or Executive Director
+                Contact Information
+              </h5>
+              <div class="row">
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['CEO_First_Name__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['CEO_Last_Name__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">{!fields['CEO_Title__c']}: &nbsp;</div>
+                  <apex:inputField
+                    value="{!app.CEO_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">{!fields['CEO_Phone__c']}: &nbsp;</div>
+                  <apex:inputField
+                    value="{!app.CEO_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">{!fields['CEO_Email__c']}: &nbsp;</div>
+                  <apex:inputField
+                    value="{!app.CEO_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <hr />
+              <h5>
+                Main Financial Contact
+                <span
+                  class="badge"
+                  title="This is the person who will be submitting reimbursement requests for all funded sites."
+                  >?</span
+                >
+              </h5>
+              <div class="row">
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['Finance_Admin_First_Name__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['Finance_Admin_Last_Name__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Finance_Admin_Title__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['Finance_Admin_Phone__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Finance_Admin_Email__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:inputCheckbox
+                value="{!app.FA_Same_as_CEO__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.FA_Same_as_CEO__c}"
+                rendered="{!readOnly}"
+              />
+              &nbsp;Same as CEO?
+              <hr />
+              <h5>
+                Main Programmatic Contact
+                <span
+                  class="badge"
+                  title="This is the person who will be submitting program reporting for all funded sites."
+                  >?</span
+                >
+              </h5>
+              <div class="row">
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['Program_Contact_First_Name__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['Program_Contact_Last_Name__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Program_Contact_Title__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    {!fields['Program_Contact_Phone__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Program_Contact_Email__c']}: &nbsp;
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:inputCheckbox
+                value="{!app.PC_Same_as_CEO__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.PC_Same_as_CEO__c}"
+                rendered="{!readOnly}"
+              />
+              &nbsp; Same as CEO? <br />
+              <apex:inputCheckbox
+                value="{!app.PC_Same_as_FA__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.PC_Same_as_FA__c}"
+                rendered="{!readOnly}"
+              />
+              &nbsp; Same as Financial Contact?
+              <hr />
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!fields['Previous_Funding_Received__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!app.Previous_Funding_Received__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Previous_Funding_Received__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <strong>Note RE: Club Financial Information</strong>
+              If your Organization is awarded funding, you may be required to
+              provide a copy of the most recent audit.
+            </div>
+          </div>
+
+          <apex:outputPanel id="sites">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">
+                  Part B: Project Location Details and Communities Served
+                </h1>
+              </div>
+              <div style="padding: 20px">
+                <strong
+                  >Please enter information specific to all sites for which you
+                  are applying to implement the T.R.A.I.L. program.</strong
+                >
+                <br />
+                <apex:outputText
+                  value="Please indicate if you will be implementing the upcoming T.R.A.I.L. program at the same sites that you implemented the T.R.A.I.L. program at for the most recent grant year."
+                  rendered="{!app.Type__c == 'Existing'}"
+                />
+                <apex:outputText
+                  value="Please submit information for each unit at your organization where you would like to run the T.R.A.I.L. program. Please keep in mind your ability to meet grant requirements and successfully implement the T.R.A.I.L. program at these individual sites."
+                  rendered="{!app.Type__c == 'New'}"
+                />
+                <br />
+              </div>
+              <c:ApplicationSites
+                ctrl="{!ApplicationCtrl}"
+                sites="{!activeSites}"
+                header="Currently Active Sites"
+                rendered="{!activeSites.size > 0}"
+              />
+              <c:ApplicationSites
+                ctrl="{!ApplicationCtrl}"
+                sites="{!inactiveSites}"
+                header="Currently Inactive Sites"
+                rendered="{!showInactiveSites && inactiveSites.size > 0}"
+              />
+              <c:ApplicationSites
+                ctrl="{!ApplicationCtrl}"
+                sites="{!newSites}"
+                header="New Sites"
+                rendered="{!newSites.size > 0}"
+              />
+              <apex:outputPanel rendered="{!NOT(readOnly)}">
+                <div class="panel-footer">
+                  <apex:commandButton
+                    action="{!addSite}"
+                    value="Add Site"
+                    status="pageStatus"
+                    styleClass="btn-small primary"
+                    reRender="sites"
+                  />
+                  <apex:commandButton
+                    value="Show Inactive Sites"
+                    status="pageStatus"
+                    styleClass="btn-small btn-white"
+                    reRender="sites"
+                    rendered="{!showInactiveSites == false && inactiveSites.size > 0}"
+                  >
+                    <apex:param
+                      assignTo="{!showInactiveSites}"
+                      name="showInactiveSites"
+                      value="true"
+                    />
+                  </apex:commandButton>
+                  <apex:commandButton
+                    value="Hide Inactive Sites"
+                    status="pageStatus"
+                    styleClass="btn-small btn-white"
+                    reRender="sites"
+                    rendered="{!showInactiveSites == true}"
+                  >
+                    <apex:param
+                      assignTo="{!showInactiveSites}"
+                      name="showInactiveSites"
+                      value="false"
+                    />
+                  </apex:commandButton>
+                  <apex:commandButton
+                    action="{!deleteSites}"
+                    value="Delete Sites"
+                    status="pageStatus"
+                    styleClass="btn-small btn-white"
+                    reRender="sites"
+                    rendered="{!showDeleteSitesBtn == true}"
+                  />
+                  <apex:outputText
+                    value="The Delete Sites option is only available for new sites that you've added to the application."
+                    rendered="{!showDeleteSitesBtn == true}"
+                  />
+                </div>
+              </apex:outputPanel>
+            </div>
+          </apex:outputPanel>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Part C: Application Narrative</h1>
+            </div>
+            <div class="panel-body">
+              <strong>
+                Recruitment and Retention of Youth, Caretakers, and Community
+                Members for the T.R.A.I.L. Program.
+                <br /><br />
+              </strong>
+              <apex:outputPanel rendered="{!app.Type__c == 'Existing'}">
+                The T.R.A.I.L. program provides Native youth with a
+                comprehensive understanding of healthy lifestyles with the
+                long-term goal of preventing and/or reducing the onset of type 2
+                diabetes in Native youth ages 7–11. Through sequenced learning
+                modules, the program requires Native youth to participate in a
+                number of activities including, but not limited to,
+                curriculum-based lessons, physical activity sessions, and an
+                education project to the community. To facilitate the
+                aforementioned events and activities, the Organization and
+                Program Coordinator are to construct partnerships, as well as
+                working relationships with parents/guardians, community members,
+                and community organizations.
+                <br /><br />
+                Please read each section description and instruction carefully
+                before answering. Provide as much detail as you can and assume
+                the reviewer of your application does not know anything about
+                your Organization. Responses should be in narrative form with
+                complete sentences and without the use of acronyms. Spelling and
+                grammar should be correct.
+                <br /><br /><br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    {!fields['Previous_Challenges_with_Recruitment__c']}
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Previous_Challenges_with_Recruitment__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Previous_Challenges_with_Recruitment__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!userAcctType == 'National Organization'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-2">
+                      <div class="semibold">FirstPic Score</div>
+                      <apex:inputField
+                        value="{!app.Previous_Challenges_Recruitment_Score__c}"
+                        rendered="{!NOT(score1ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Previous_Challenges_Recruitment_Score__c}"
+                        rendered="{!score1ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-2">
+                      <div class="semibold">NCAI Score</div>
+                      <apex:inputField
+                        value="{!app.Previous_Challenges_Recruitment_Score_2__c}"
+                        rendered="{!NOT(score2ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Previous_Challenges_Recruitment_Score_2__c}"
+                        rendered="{!score2ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-8">
+                      <div class="semibold">Notes</div>
+                      <apex:inputField
+                        value="{!app.Previous_Challenges_Recruitment_Notes__c}"
+                        style="height: 28px"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <hr />
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!app.Type__c == 'New'}">
+                The T.R.A.I.L. program provides youth with a comprehensive
+                understanding of healthy lifestyles with the long-term goal of
+                preventing and/or reducing the onset of type 2 diabetes in
+                Native youth ages 7–11. Through sequenced learning modules, the
+                program requires Native youth to participate in a number of
+                activities including, but not limited to, curriculum-based
+                lessons, physical activity sessions, and a service project to
+                the community. To facilitate the aforementioned events and
+                activities, the Organization and Program Coordinator is to
+                construct partnerships, as well as working relationships with
+                parents/guardians, community members, and community
+                organizations. Below, read each section description and
+                instruction carefully. Assume the reviewer of your application
+                does not know anything about your Organization. Responses should
+                be in narrative form with complete sentences and without the use
+                of acronyms. Spelling and grammar should be correct.
+                <br /><br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    {!fields['How_Youth_in_Community_Informed__c']}
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.How_Youth_in_Community_Informed__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.How_Youth_in_Community_Informed__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!userAcctType == 'National Organization'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-2">
+                      <div class="semibold">FirstPic Score</div>
+                      <apex:inputField
+                        value="{!app.How_Youth_in_Community_Informed_Score__c}"
+                        rendered="{!NOT(score1ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.How_Youth_in_Community_Informed_Score__c}"
+                        rendered="{!score1ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-2">
+                      <div class="semibold">NCAI Score</div>
+                      <apex:inputField
+                        value="{!app.How_Youth_in_Community_Informed_Score_2__c}"
+                        rendered="{!NOT(score2ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.How_Youth_in_Community_Informed_Score_2__c}"
+                        rendered="{!score2ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-8">
+                      <div class="semibold">Notes</div>
+                      <apex:inputField
+                        value="{!app.How_Youth_in_Community_Informed_Notes__c}"
+                        style="height: 28px"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <hr />
+
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    {!fields['How_Existing_Members_Recruited__c']}
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.How_Existing_Members_Recruited__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.How_Existing_Members_Recruited__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!userAcctType == 'National Organization'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-2">
+                      <div class="semibold">FirstPic Score</div>
+                      <apex:inputField
+                        value="{!app.How_Existing_Members_Recruited_Score__c}"
+                        rendered="{!NOT(score1ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.How_Existing_Members_Recruited_Score__c}"
+                        rendered="{!score1ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-2">
+                      <div class="semibold">NCAI Score</div>
+                      <apex:inputField
+                        value="{!app.How_Existing_Members_Recruited_Score_2__c}"
+                        rendered="{!NOT(score2ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.How_Existing_Members_Recruited_Score_2__c}"
+                        rendered="{!score2ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-8">
+                      <div class="semibold">Notes</div>
+                      <apex:inputField
+                        value="{!app.How_Existing_Members_Recruited_Notes__c}"
+                        style="height: 28px"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <hr />
+              </apex:outputPanel>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!fields['Retention_Efforts_for_Youth__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!app.Retention_Efforts_for_Youth__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Retention_Efforts_for_Youth__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization'}"
+              >
+                <div class="row">
+                  <div class="col-xs-2">
+                    <div class="semibold">FirstPic Score</div>
+                    <apex:inputField
+                      value="{!app.Retention_Efforts_for_Youth_Score__c}"
+                      rendered="{!NOT(score1ReadOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Retention_Efforts_for_Youth_Score__c}"
+                      rendered="{!score1ReadOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-2">
+                    <div class="semibold">NCAI Score</div>
+                    <apex:inputField
+                      value="{!app.Retention_Efforts_for_Youth_Score_2__c}"
+                      rendered="{!NOT(score2ReadOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Retention_Efforts_for_Youth_Score_2__c}"
+                      rendered="{!score2ReadOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-8">
+                    <div class="semibold">Notes</div>
+                    <apex:inputField
+                      value="{!app.Retention_Efforts_for_Youth_Notes__c}"
+                      style="height: 28px"
+                    />
+                  </div>
+                </div>
+              </apex:outputPanel>
+              <hr />
+
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!fields['Caretaker_Involvement__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!app.Caretaker_Involvement__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Caretaker_Involvement__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization'}"
+              >
+                <div class="row">
+                  <div class="col-xs-2">
+                    <div class="semibold">FirstPic Score</div>
+                    <apex:inputField
+                      value="{!app.Caretaker_Involvement_Score__c}"
+                      rendered="{!NOT(score1ReadOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Caretaker_Involvement_Score__c}"
+                      rendered="{!score1ReadOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-2">
+                    <div class="semibold">NCAI Score</div>
+                    <apex:inputField
+                      value="{!app.Caretaker_Involvement_Score_2__c}"
+                      rendered="{!NOT(score2ReadOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Caretaker_Involvement_Score_2__c}"
+                      rendered="{!score2ReadOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-8">
+                    <div class="semibold">Notes</div>
+                    <apex:inputField
+                      value="{!app.Caretaker_Involvement_Notes__c}"
+                      style="height: 28px"
+                    />
+                  </div>
+                </div>
+              </apex:outputPanel>
+              <hr />
+
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!fields['Community_Health_Partnership__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!app.Community_Health_Partnership__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Community_Health_Partnership__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:outputPanel
+                rendered="{!userAcctType == 'National Organization'}"
+              >
+                <div class="row">
+                  <div class="col-xs-2">
+                    <div class="semibold">FirstPic Score</div>
+                    <apex:inputField
+                      value="{!app.Community_Health_Partnership_Score__c}"
+                      rendered="{!NOT(score1ReadOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Community_Health_Partnership_Score__c}"
+                      rendered="{!score1ReadOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-2">
+                    <div class="semibold">NCAI Score</div>
+                    <apex:inputField
+                      value="{!app.Community_Health_Partnership_Score_2__c}"
+                      rendered="{!NOT(score2ReadOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Community_Health_Partnership_Score_2__c}"
+                      rendered="{!score2ReadOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-8">
+                    <div class="semibold">Notes</div>
+                    <apex:inputField
+                      value="{!app.Community_Health_Partnership_Notes__c}"
+                      style="height: 28px"
+                    />
+                  </div>
+                </div>
+              </apex:outputPanel>
+              <hr />
+
+              <apex:outputPanel rendered="{!app.Type__c == 'Existing'}">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    {!fields['Other_Challenges__c']}
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Other_Challenges__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Other_Challenges__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!userAcctType == 'National Organization'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-2">
+                      <div class="semibold">FirstPic Score</div>
+                      <apex:inputField
+                        value="{!app.Other_Challenges_Score__c}"
+                        rendered="{!NOT(score1ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Other_Challenges_Score__c}"
+                        rendered="{!score1ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-2">
+                      <div class="semibold">NCAI Score</div>
+                      <apex:inputField
+                        value="{!app.Other_Challenges_Score_2__c}"
+                        rendered="{!NOT(score2ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Other_Challenges_Score_2__c}"
+                        rendered="{!score2ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-8">
+                      <div class="semibold">Notes</div>
+                      <apex:inputField
+                        value="{!app.Other_Challenges_Notes__c}"
+                        style="height: 28px"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <hr />
+
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    {!fields['Other_Successes__c']}
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Other_Successes__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Other_Successes__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!userAcctType == 'National Organization'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-2">
+                      <div class="semibold">FirstPic Score</div>
+                      <apex:inputField
+                        value="{!app.Other_Successes_Score__c}"
+                        rendered="{!NOT(score1ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Other_Successes_Score__c}"
+                        rendered="{!score1ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-2">
+                      <div class="semibold">NCAI Score</div>
+                      <apex:inputField
+                        value="{!app.Other_Successes_Score_2__c}"
+                        rendered="{!NOT(score2ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Other_Successes_Score_2__c}"
+                        rendered="{!score2ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-8">
+                      <div class="semibold">Notes</div>
+                      <apex:inputField
+                        value="{!app.Other_Successes_Notes__c}"
+                        style="height: 28px"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <hr />
+
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    {!fields['Opportunity_for_Expansion__c']}
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Opportunity_for_Expansion__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Opportunity_for_Expansion__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!userAcctType == 'National Organization'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-2">
+                      <div class="semibold">FirstPic Score</div>
+                      <apex:inputField
+                        value="{!app.Opportunity_for_Expansion_Score__c}"
+                        rendered="{!NOT(score1ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Opportunity_for_Expansion_Score__c}"
+                        rendered="{!score1ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-2">
+                      <div class="semibold">NCAI Score</div>
+                      <apex:inputField
+                        value="{!app.Opportunity_for_Expansion_Score_2__c}"
+                        rendered="{!NOT(score2ReadOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Opportunity_for_Expansion_Score_2__c}"
+                        rendered="{!score2ReadOnly}"
+                      />
+                    </div>
+                    <div class="col-xs-8">
+                      <div class="semibold">Notes</div>
+                      <apex:inputField
+                        value="{!app.Opportunity_for_Expansion_Notes__c}"
+                        style="height: 28px"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+              </apex:outputPanel>
+            </div>
+          </div>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">Notes</div>
+              <div class="panel-body">
+                <strong>Reviewer Notes:</strong><br />
+                <apex:outputText
+                  value="{!app.Reviewer_Notes__c}"
+                  escape="false"
+                />
+                <br />
+                <strong>Notes for National:</strong><br />
+                <apex:outputText
+                  value="{!app.Notes_for_National__c}"
+                  escape="false"
+                />
+                <br />
+                <div class="row">
+                  <div class="col-xs-6">
+                    <span class="semibold">FirstPic Total Score:</span>
+                    &nbsp;{!score1Total}
+                  </div>
+                  <div class="col-xs-6">
+                    <span class="semibold">NCAI Total Score:</span>
+                    &nbsp;{!score2Total}
+                  </div>
+                </div>
+              </div>
+              <div class="panel-footer">
+                <apex:commandButton
+                  value="Update Scores"
+                  action="{!getScoreTotals}"
+                  styleClass="btn-small btn-white"
+                />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel id="notesPopup">
+            <c:NotesPopup
+              header="{!IF(notesPopupType == 'sendBack', 'Send Back', 'Not Eligible')}"
+              displayNotesPopup="{!displayNotesPopup}"
+              userAcctType="{!userAcctType}"
+              displayLocalNote="false"
+              displayNationalNotePrivate="true"
+              nationalNote="{!app.Sent_Back_Reason__c}"
+              nationalNotePrivate="{!app.Notes_for_National__c}"
+            >
+              <apex:commandButton
+                action="{!hideNotesPopup}"
+                value="Close"
+                status="pageStatus"
+                immediate="true"
+                reRender="notesPopup"
+              />
+              <apex:commandButton
+                value="Send Back"
+                action="{!sendBack}"
+                status="pageStatus"
+                styleClass="btn primary"
+                rendered="{!notesPopupType == 'sendBack'}"
+              />
+              <apex:commandButton
+                value="Not Eligible"
+                action="{!notEligible}"
+                status="pageStatus"
+                styleClass="btn primary"
+                rendered="{!notesPopupType == 'notEligible'}"
+              />
+              <apex:pageMessages />
+            </c:NotesPopup>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'Local Organization' && (app.Status__c == 'Sent to Applicant' || app.Status__c == 'Sent Back' || app.Status__c == 'In Progress')}"
+          >
+            <apex:commandButton
+              value="Save"
+              action="{!save}"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              value="Submit"
+              action="{!submit}"
+              status="pageStatus"
+              styleClass="btn primary"
+              reRender="form"
+            />
+          </apex:outputPanel>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <apex:commandButton
+              value="Not Eligible"
+              action="{!showNotEligiblePopup}"
+              status="pageStatus"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              value="Send Back"
+              action="{!showSendBackPopup}"
+              status="pageStatus"
+              styleClass="btn"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              value="Save"
+              action="{!saveScore}"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              value="Score"
+              action="{!score}"
+              status="pageStatus"
+              styleClass="primary"
+            />
+            <apex:commandButton
+              value="Award"
+              action="{!URLFOR($Site.Prefix+'/TRAILAwardApplication?appId='+app.Id)}"
+              styleClass="btn primary"
+              rendered="{!app.Status__c == 'Reviewed'}"
+            />
+          </apex:outputPanel>
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages />
+        </apex:outputPanel>
+        <br /><br />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

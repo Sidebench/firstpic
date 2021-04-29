@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Under_Armour</fullName>
+    <columns>NAME</columns>
+    <columns>Account__c</columns>
+    <columns>National_Grant__c</columns>
+    <columns>Grant_Status__c</columns>
+    <columns>Amount__c</columns>
+    <columns>Balance__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>FirstPic_National_Org_Code__c</field>
+        <operation>equals</operation>
+        <value>UA</value>
+    </filters>
+    <label>Under Armour</label>
+    <sharedTo>
+        <allInternalUsers />
+    </sharedTo>
+</ListView>

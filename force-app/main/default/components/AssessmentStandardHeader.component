@@ -1,0 +1,13 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="subheader" description="subheader" />
+
+  <tr>
+    <td colspan="3">
+      <h5 style="margin-top: 10px">
+        <apex:outputText value="{!header}" escape="false" />
+      </h5>
+      <apex:outputText value="{!subheader}" escape="false" />
+    </td>
+  </tr>
+</apex:component>

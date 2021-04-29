@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Special_Classification__c</fullName>
+    <externalId>false</externalId>
+    <label>Special Classification</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Deaf/Hard-of-Hearing</fullName>
+                <default>false</default>
+                <label>Deaf/Hard-of-Hearing</label>
+            </value>
+            <value>
+                <fullName>Homeless</fullName>
+                <default>false</default>
+                <label>Homeless</label>
+            </value>
+            <value>
+                <fullName>Immigrants/Refugees/Asylum Seekers</fullName>
+                <default>false</default>
+                <label>Immigrants/Refugees/Asylum Seekers</label>
+            </value>
+            <value>
+                <fullName>LGBTQ</fullName>
+                <default>false</default>
+                <label>LGBTQ</label>
+            </value>
+            <value>
+                <fullName>Veterans</fullName>
+                <default>false</default>
+                <label>Veterans</label>
+            </value>
+            <value>
+                <fullName
+        >Victims with Disabilities: Cognitive/Physical/Mental</fullName>
+                <default>false</default>
+                <label
+        >Victims with Disabilities: Cognitive/Physical/Mental</label>
+            </value>
+            <value>
+                <fullName>Victims with Limited English Proficiency</fullName>
+                <default>false</default>
+                <label>Victims with Limited English Proficiency</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

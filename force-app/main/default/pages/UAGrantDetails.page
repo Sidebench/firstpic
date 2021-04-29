@@ -1,0 +1,100 @@
+<apex:page
+  controller="GrantDetailsController"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Grant Details</title>
+  </head>
+  <c:UAHeader ActivePage="grants" acct="{!userAcct}" />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!grant.Amount__c}" />
+              </apex:outputText>
+            </h2>
+          </div>
+        </div>
+
+        <table class="table fixedTbl">
+          <tr>
+            <td><strong>Organization: </strong> {!grant.Account__r.Name}</td>
+            <td>
+              <strong>Application: </strong>
+              <a
+                href="{!URLFOR($Site.Prefix+'/UAApplicationDetails?AppId='+grant.Application__r.Id)}"
+              >
+                {!grant.Application__r.Name}
+              </a>
+            </td>
+            <td>
+              <strong>Status: </strong>
+              {!grant.Grant_Status__c}
+            </td>
+            <td>
+              <strong>MOU Status: </strong>
+              {!mou.Sertifi2_0__Status__c} &nbsp;
+              <apex:outputLink
+                value="{!mou.Sertifi2_0__SignedLink__c}"
+                target="_blank"
+              >
+                <span class="glyphicon glyphicon-eye-open"></span>
+              </apex:outputLink>
+              <!--
+                            <apex:outputLink value="{!URLFOR($Action.Attachment.Download, mouAtt.Id)}" target="_blank">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </apex:outputLink>
+-->
+            </td>
+          </tr>
+        </table>
+
+        <apex:outputPanel rendered="{!grant.Report_Submitted_Date__c != null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Grantee Report
+              <span class="pull-right">
+                Submitted date:
+                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                  <apex:param value="{!grant.Report_Submitted_Date__c}" />
+                </apex:outputText>
+              </span>
+            </div>
+            <div class="panel-body">
+              <strong
+                >Overview of the outcomes achieved by program/project.</strong
+              >
+              <br /> {!grant.Overview_of_Outcomes_Achieved__c} <br /><br />
+              <strong
+                >Successes and/or challenges experienced with the
+                program/project that was supported by UA.</strong
+              >
+              <br /> {!grant.Successes_Challenges_Experiencesd__c} <br /><br />
+              <strong>Opportunities provided by funding.</strong>
+              <br /> {!grant.Opportunities_Provided_by_Funding__c} <br /><br />
+              <strong>Breakdown of expenses.</strong>
+              <br /> {!grant.Breakdown_of_Expenses__c} <br /><br />
+              <strong
+                >Unmet needs organization currently has and/or the unmet needs
+                of the target population organization serves.</strong
+              >
+              <br /> {!grant.Unmet_Needs_Description__c}
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

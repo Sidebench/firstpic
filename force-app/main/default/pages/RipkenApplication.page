@@ -1,0 +1,2080 @@
+<apex:page
+  controller="ApplicationCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <link
+    href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    rel="stylesheet"
+    media="screen"
+  />
+  <c:RipkenHeader
+    ActivePage="applications"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!userAcctType == 'National Organization'}"
+  />
+  <head>
+    <title>Grant Application</title>
+    <style>
+      h2,
+      .h2 {
+        font-size: 24px;
+        margin: 6px 0 18px;
+        text-transform: uppercase;
+        font-family: trebuchet ms;
+        color: #555;
+      }
+      h5,
+      .h5 {
+        font-size: 16px;
+        border-bottom: 1px solid #ccc;
+      }
+      h6,
+      .h6 {
+        font-size: 12px;
+        color: #777;
+        display: block;
+        margin: 2px 0 4px;
+        font-weight: normal;
+      }
+      input[type="text"],
+      select,
+      textarea {
+        display: block;
+        width: 100%;
+      }
+      .input-sm,
+      .datePicker select {
+        display: inline !important;
+        width: auto !important;
+      }
+      .row {
+        padding: 6px 0 10px;
+      }
+      .grid-pd [class*="col-"] {
+        padding-bottom: 10px;
+      }
+
+      a,
+      .primary {
+        color: #f67c1c;
+      }
+      a:hover,
+      a:focus {
+        color: #ef6f09 !important;
+      }
+      input[type="submit"].btn.primary,
+      .btn.primary {
+        background: #f47f38;
+        background-image: -webkit-linear-gradient(top, #f67c1c, #ef6f09);
+        background-image: -moz-linear-gradient(top, #f67c1c, #ef6f09);
+        background-image: -ms-linear-gradient(top, #f67c1c, #ef6f09);
+        background-image: -o-linear-gradient(top, #f67c1c, #ef6f09);
+        background-image: linear-gradient(to bottom, #f67c1c, #ef6f09);
+        color: #fff;
+        padding: 4px 12px;
+      }
+      input[type="submit"].primary:hover,
+      .btn.primary:hover {
+        background: #ef6f09 !important;
+        text-decoration: none;
+      }
+      .col-auto {
+        float: left;
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+      }
+      .custPopup {
+        z-index: 999;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .custPopup .modal-dialog,
+      .custPopup .modal-content {
+        height: 80%;
+      }
+      .custPopup .modal-body {
+        max-height: 400px;
+        overflow-y: scroll;
+      }
+      .popupBackground {
+        background-color: black;
+        opacity: 0.2;
+        filter: alpha(opacity = 20);
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 99;
+      }
+    </style>
+  </head>
+
+  <apex:form id="form" style="padding: 0 20px">
+    <div class="main-panel">
+      <div class="content">
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <div class="row">
+            <div class="col-auto">
+              <h2>{!title} Grant Application</h2>
+            </div>
+            <div
+              class="col-auto pull-right"
+              style="font-size: 1.2em; padding-top: 10px"
+            >
+              Status: {!app.Status__c}
+            </div>
+          </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!userAcctType != 'National Organization'}">
+          <h3 style="display: block; text-align: center; margin: 15px 0">
+            {!title} Grant Application
+          </h3>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!showSuccess}">
+          <div
+            class="alert alert-success"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            You have successfully submitted your application.
+          </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!NOT(showSuccess)}">
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <div class="text-danger">* Required Fields</div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Organizational Information</h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-8">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Legal Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Organization_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Organization_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    EIN Number:
+                  </div>
+                  <apex:inputField
+                    value="{!app.EIN__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.EIN__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Website URL:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Website__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Website__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Telephone:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Fax:</div>
+                  <apex:inputField
+                    value="{!app.Fax__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Fax__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Physical Address:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Address__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Address__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    City:
+                  </div>
+                  <apex:inputField
+                    value="{!app.City__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.City__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    State:
+                  </div>
+                  <apex:inputField
+                    value="{!app.State__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.City__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    ZipCode:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Postal_Zip_Code__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Postal_Zip_Code__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">Mailing Address:</div>
+                  <apex:inputField
+                    value="{!app.Mailing_Address__c}"
+                    style="display: block"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Mailing_Address__c}"
+                    style="display: block"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">City:</div>
+                  <apex:inputField
+                    value="{!app.Mailing_City__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Mailing_City__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-2">
+                  <div class="semibold">State:</div>
+                  <apex:inputField
+                    value="{!app.Mailing_State__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Mailing_State__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">ZipCode:</div>
+                  <apex:inputField
+                    value="{!app.Mailing_Postal_Code__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Mailing_Postal_Code__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputCheckbox
+                    value="{!app.Mailing_Address_Same_as_Physical_Address__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Mailing_Address_Same_as_Physical_Address__c}"
+                    rendered="{!readOnly}"
+                  />
+                  Same as Physical Address?
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Organization Background</h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-6">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Annual Budget ($):
+                  </div>
+                  <apex:inputField
+                    value="{!app.Total_Budget__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Total_Budget__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-6">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    No. of Sites Organization represents:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Number_of_Sites__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Number_of_Sites__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <h5 style="border-bottom: 1px solid #ccc">
+                <span class="text-danger">*</span>Community Setting
+              </h5>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">% Urban:</div>
+                  <apex:inputField
+                    value="{!app.Urban__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Urban__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">% Suburban:</div>
+                  <apex:inputField
+                    value="{!app.Suburban__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Suburban__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">% Rural:</div>
+                  <apex:inputField
+                    value="{!app.Rural__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Rural__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-6">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Organization Type:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Type__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Type__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-6">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Additional Org Classification:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Additional_Org_Classification__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Additional_Org_Classification__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Mission Statement &amp; Organization Background:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Mission_Statement__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Mission_Statement__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Organization Overall Demographics</h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Number of Youth Served per Year:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Number_of_Youth_Served_per_Year__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Number_of_Youth_Served_per_Year__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Min Age of Youth:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Min_Age_of_Youth__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Min_Age_of_Youth__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Max Age of Youth:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Max_Age_of_Youth__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Max_Age_of_Youth__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Male:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Percent_Male__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Male__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Female:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Percent_Female__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Female__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">% American Indian/Alaska Native:</div>
+                  <apex:inputField
+                    value="{!app.Percent_American_Indian_Alaska_Native__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_American_Indian_Alaska_Native__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">% Asian:</div>
+                  <apex:inputField
+                    value="{!app.Percent_Asian__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Asian__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">% Black or African American:</div>
+                  <apex:inputField
+                    value="{!app.Percent_Black_or_African_American__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Black_or_African_American__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">% Hispanic or Latino:</div>
+                  <apex:inputField
+                    value="{!app.Percent_Hispanic_or_Latino__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Hispanic_or_Latino__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    % Native Hawaiian/Other Pacific Islander:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Percent_Native_Hawaiian_Pacific_Islander__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Native_Hawaiian_Pacific_Islander__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">% White:</div>
+                  <apex:inputField
+                    value="{!app.Percent_White__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_White__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">% More than One Race:</div>
+                  <apex:inputField
+                    value="{!app.Percent_More_than_One_Race__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_More_than_One_Race__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">% Race Not Indicated:</div>
+                  <apex:inputField
+                    value="{!app.Percent_Race_Not_Indicated__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Race_Not_Indicated__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Youth eligible for free/reduced-price lunch:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Percent_Eligible_Free_Reduced_Lunch__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Eligible_Free_Reduced_Lunch__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Youth in Single-Parent Homes:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Percent_Youth_in_Single_Parent_Homes__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Percent_Youth_in_Single_Parent_Homes__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Youth living at/below poverty level:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Youth_Living_at_or_below_Poverty_Level__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Youth_Living_at_or_below_Poverty_Level__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Application &amp; Program Contacts</h1>
+            </div>
+            <div class="panel-body">
+              <h5>Chief Professional Officer, Executive Director, President</h5>
+              <h6>Contact who oversees organizational operations.</h6>
+              <div class="row">
+                <div class="col-sm-1">
+                  <div class="semibold">Prefix:</div>
+                  <apex:inputField
+                    value="{!app.CEO_Prefix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Prefix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    First Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Last Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-sm-1">
+                  <div class="semibold">Suffix:</div>
+                  <apex:inputField
+                    value="{!app.CEO_Suffix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Suffix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Position Title:
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Role in Program:
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_Role__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Role__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Email:
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Day Phone Number:
+                  </div>
+                  <apex:inputField
+                    value="{!app.CEO_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Extension:</div>
+                  <apex:inputField
+                    value="{!app.CEO_Ext__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Ext__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Cell Phone Number:</div>
+                  <apex:inputField
+                    value="{!app.CEO_Mobile__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.CEO_Mobile__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <hr />
+
+              <h5>Application Contact, Grant Administration Primary Contact</h5>
+              <h6>
+                Contact who will be responsible for grant applications and
+                program applications.
+              </h6>
+              <div class="row">
+                <div class="col-sm-1">
+                  <div class="semibold">Prefix:</div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Prefix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Prefix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    First Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Last Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-sm-1">
+                  <div class="semibold">Suffix:</div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Suffix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Suffix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Position Title:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Role in Program:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Role__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Role__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Email:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Day Phone Number:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Extension:</div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Ext__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Ext__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Cell Phone Number:</div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Mobile__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Grant_Admin_Mobile__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:inputCheckbox
+                value="{!app.GA_Same_as_CEO__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.GA_Same_as_CEO__c}"
+                rendered="{!readOnly}"
+              />
+              Same as CEO?
+              <hr />
+
+              <h5>Financial Contact</h5>
+              <h6>Contact who oversees organizational operations.</h6>
+              <div class="row">
+                <div class="col-sm-1">
+                  <div class="semibold">Prefix:</div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Prefix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Prefix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    First Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Last Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-sm-1">
+                  <div class="semibold">Suffix:</div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Suffix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Suffix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Position Title:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Role in Program:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Role__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Role__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Email:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Day Phone Number:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Extension:</div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Ext__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Ext__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Cell Phone Number:</div>
+                  <apex:inputField
+                    value="{!app.Finance_Admin_Mobile__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Finance_Admin_Mobile__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:inputCheckbox
+                value="{!app.FA_Same_as_CEO__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.FA_Same_as_CEO__c}"
+                rendered="{!readOnly}"
+              />
+              Same as CEO? &nbsp;&nbsp;&nbsp;&nbsp;
+              <apex:inputCheckbox
+                value="{!app.FA_Same_as_GA__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.FA_Same_as_GA__c}"
+                rendered="{!readOnly}"
+              />
+              Same as Grant Administration?
+              <hr />
+
+              <h5>Direct Service Contact, Primary Program Coordinator</h5>
+              <h6>
+                Contact responsible for curriculum integration and daily
+                programs.
+              </h6>
+              <div class="row">
+                <div class="col-sm-1">
+                  <div class="semibold">Prefix:</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Prefix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Prefix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    First Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Last Name:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-sm-1">
+                  <div class="semibold">Suffix:</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Suffix__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Suffix__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Position Title:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Title__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Title__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Role in Program:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Role__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Role__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Email:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Email__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Email__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Day Phone Number:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Phone__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Phone__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Extension:</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Ext__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Ext__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">Cell Phone Number:</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Mobile__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Contact_Mobile__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <apex:inputCheckbox
+                value="{!app.PC_Same_as_CEO__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.PC_Same_as_CEO__c}"
+                rendered="{!readOnly}"
+              />
+              Same as CEO? &nbsp;&nbsp;&nbsp;&nbsp;
+              <apex:inputCheckbox
+                value="{!app.PC_Same_as_GA__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!app.PC_Same_as_GA__c}"
+                rendered="{!readOnly}"
+              />
+              Same as Grant Administration?
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Grant/Program Specific Demographics</h1>
+            </div>
+            <div class="panel-body">
+              <h5>Program Specific Demographics</h5>
+              <apex:outputPanel rendered="{!appType != 'special'}">
+                <h6>
+                  Please provide the demographics for youth you anticipate
+                  serving through this award.
+                </h6>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!appType == 'special'}">
+                <h6>
+                  Please indicate the number of youth you will be serving
+                  through this award and the number of staff that will be
+                  instructing. This will help CRSF determine the amount of
+                  instructional manuals and activity scorebooks to provide based
+                  on inventory. Additional CRSF program materials are available
+                  for download under the materials section of the CRSF Portal,
+                  www.ripkenfoundation.org/resource-portal.
+                </h6>
+              </apex:outputPanel>
+              <div class="row">
+                <div class="col-xs-6">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Estimated number of&nbsp;
+                    <apex:outputText
+                      value="youth "
+                      rendered="{!appType != 'great'}"
+                    />
+                    <apex:outputText
+                      value="girls "
+                      rendered="{!appType == 'great'}"
+                    />
+                    to participate in CRSF program:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Number_of_Youth_Served__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Number_of_Youth_Served__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Min Age of Youth this award will serve:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Min_Age_of_Youth__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Min_Age_of_Youth__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Max Age of Youth this award will serve:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Max_Age_of_Youth__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Max_Age_of_Youth__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Gender- % Male this award will serve:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Percent_Male__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Percent_Male__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Gender- % Female this award will serve:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Percent_Female__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Percent_Female__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-6">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Number of Sites/Units:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Number_of_Sites__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Number_of_Sites__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-6">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    Number of youth with a parent in the military:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Number_of_Parent_in_Military__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Number_of_Parent_in_Military__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Youth eligible for free/reduced-price lunch:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Percent_Eligible_Reduced_Lunch__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Percent_Eligible_Reduced_Lunch__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Youth in Single-Parent Homes:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Percent_Youth_Single_Parent_Home__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Percent_Youth_Single_Parent_Home__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  <div class="semibold">
+                    <span class="text-danger">*</span>
+                    % Youth living at/below poverty level:
+                  </div>
+                  <apex:inputField
+                    value="{!app.Program_Percent_at_below_Poverty_Level__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!app.Program_Percent_at_below_Poverty_Level__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <apex:outputPanel rendered="{!appType == 'special'}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Application Narrative</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-6">
+                    <span class="semibold"
+                      ><span class="text-danger">*</span>
+                      Proposed Program Start Date: &nbsp;
+                    </span>
+                    <apex:inputField
+                      value="{!app.Grant_Start_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Grant_Start_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-6">
+                    <span class="semibold"
+                      ><span class="text-danger">*</span>
+                      Proposed Program End Date: &nbsp;
+                    </span>
+                    <apex:inputField
+                      value="{!app.Grant_End_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Grant_End_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      Please describe how you will use assistance from CRSF to
+                      connect youth with adult mentors. Please include any
+                      community partners, local law enforcement, and volunteers
+                      that you have partnered or plan on partnering with and if
+                      you do or do not plan to implement the CRSF programs
+                      (Badges for Baseball, Healthy Choices, Healthy Children,
+                      I'm GREAT, Healthy Lifestyles) as part of your program.
+                    </div>
+                    <apex:inputField
+                      value="{!app.Plan_to_Connect_Youth_with_Adult_Mentors__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Plan_to_Connect_Youth_with_Adult_Mentors__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      Please provide a timeline that outlines your plans for
+                      implementing programming using CRSF funds, from recruiting
+                      participants and mentors through completing CRSF programs,
+                      if applicable, by the end of the year. The timeline can be
+                      approximate, but do include how frequently you will
+                      implement your program using CRSF funds and how many youth
+                      you anticipate serving over the course of the program.
+                    </div>
+                    <apex:inputField
+                      value="{!app.Timeline_for_Plans__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Timeline_for_Plans__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      Please describe your previous experience/s with mentoring
+                      programs. What were some of your successes/challenges?
+                      Also, please describe any mentoring programs you are
+                      currently implementing.
+                    </div>
+                    <apex:inputField
+                      value="{!app.Previous_Experiences__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Previous_Experiences__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!LEFT(TEXT(app.CreatedDate),4) == '2020' || LEFT(TEXT(app.CreatedDate),4) == '2021'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="semibold">
+                        <span class="text-danger">*</span>
+                        Please list applicable social media tags/usernames for
+                        your organization (Facebook, Twitter, Instagram).
+                      </div>
+                      <apex:inputField
+                        value="{!app.Social_Media_Usernames__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Social_Media_Usernames__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!appType == 'baseball' || appType == 'healthy' || appType == 'great'}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Application Narrative</h1>
+              </div>
+              <div class="panel-body">
+                <apex:outputPanel
+                  rendered="{!appType == 'baseball' || appType == 'healthy'}"
+                >
+                  <h5>
+                    <apex:outputText
+                      rendered="{!appType == 'baseball'}"
+                      value="Badges for Baseball "
+                    />
+                    <apex:outputText
+                      rendered="{!appType == 'healthy'}"
+                      value="Healthy Lifestyles "
+                    />
+                    Curriculum Package
+                  </h5>
+                  <h6>
+                    Please indicate the number of youth you will be serving
+                    through this award and the number of staff that will be
+                    instructing. This will help CRSF determine the amount of
+                    instructional manuals and activity scorebooks to provide
+                    based on inventory.
+                    <apex:outputText
+                      value=" Additional Badges for Baseball materials are available for download under the materials section of the CRSF Portal, www.ripkenfoundation.org/resource-portal."
+                      rendered="{!appType == 'baseball'}"
+                    />
+                    <apex:outputText
+                      value=" Additional Healthy Lifestyles materials are available for download under the materials section of the CRSF Portal www.ripkenfoundation.org/resource-portal."
+                      rendered="{!appType == 'healthy'}"
+                    />
+                  </h6>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!appType == 'great'}">
+                  <h5>I’m GREAT Curriculum Package</h5>
+                  <h6>
+                    Indicate the number of youth you will serve through this
+                    award and the number of staff that will serve as mentors.
+                    This will help CRSF determine the amount of instructional
+                    manuals and activity workbooks to provide based on
+                    inventory. Additional I’m GREAT materials are available for
+                    download under the Resource Portal section of the Foundation
+                    website: www.ripkenfoundation.org/resource-portal.
+                  </h6>
+                </apex:outputPanel>
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      <apex:outputText
+                        value="No. of youth to participate in Healthy Lifestyles sessions: "
+                        rendered="{!appType == 'healthy'}"
+                      />
+                      <apex:outputText
+                        value="No. of youth to participate in Badges for Baseball sessions: "
+                        rendered="{!appType == 'baseball'}"
+                      />
+                      <apex:outputText
+                        value="No. of girls to participate in I’m GREAT sessions: "
+                        rendered="{!appType == 'great'}"
+                      />
+                    </div>
+                    <apex:inputField
+                      value="{!app.Number_Participating_in_HCHC_Sessions__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Number_Participating_in_HCHC_Sessions__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-6">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      <apex:outputText
+                        value="No. of Staff instructors:"
+                        rendered="{!appType != 'great'}"
+                      />
+                      <apex:outputText
+                        value="No. of female mentors:"
+                        rendered="{!appType == 'great'}"
+                      />
+                    </div>
+                    <apex:inputField
+                      value="{!app.Number_of_Staff_Instructors__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Number_of_Staff_Instructors__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      <apex:outputPanel rendered="{!appType == 'baseball'}">
+                        Please describe your organization’s plan for
+                        implementing the Badges for Baseball program. Include
+                        details on how you will incorporate the lessons with
+                        current academic and/or athletic programming, how law
+                        enforcement and other mentors will be involved, and what
+                        each session will look like.
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!appType == 'healthy'}">
+                        Please describe your organization’s plan for
+                        implementing the Healthy Lifestyles program. Include
+                        details on how you will incorporate the lessons with
+                        current academic and/or athletic programming, how law
+                        enforcement and other mentors will be involved, and what
+                        each session will look like.
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!appType == 'great'}">
+                        Describe your organization’s plans for implementing the
+                        I’m GREAT character development element of the program.
+                        Include details on how you will incorporate the lessons
+                        with current programming, how female mentors will be
+                        involved, and what each session will look like.
+                      </apex:outputPanel>
+                    </div>
+                    <apex:inputField
+                      value="{!app.Healthy_Choices_Implementation_Plan__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Healthy_Choices_Implementation_Plan__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      <apex:outputPanel rendered="{!appType == 'baseball'}">
+                        Please provide a timeline that outlines your plans for
+                        running CRSF programming over the course of the entire
+                        year, from recruiting participants and mentors through
+                        completing the Badges for Baseball curriculum by the end
+                        of the year. The timeline can be approximate, but do
+                        include how frequently you will implement the CRSF
+                        program and how many youth you anticipate serving over
+                        the course of the program.
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!appType == 'healthy'}">
+                        Please provide a timeline that outlines your plans for
+                        running CRSF programming over the course of the entire
+                        year, from recruiting participants and mentors through
+                        completing the HCHC curriculum by the end of the year.
+                        The timeline can be approximate, but do include how
+                        frequently you will implement the CRSF program and how
+                        many youth you anticipate serving over the course of the
+                        program.
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!appType == 'great'}">
+                        Provide a timeline that outlines your plans for running
+                        the I’m GREAT program over the course of the entire
+                        grant, from recruiting participants and mentors through
+                        completing the I’m GREAT curriculum by the end of the
+                        grant. The timeline can be approximate, but do include
+                        how frequently you will implement the I’m GREAT program
+                        and how many youth you anticipate serving over the
+                        course of the program.
+                      </apex:outputPanel>
+                    </div>
+                    <apex:inputField
+                      value="{!app.Timeline_for_Plans__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Timeline_for_Plans__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <apex:outputPanel
+                  rendered="{!appType == 'baseball' || appType == 'healthy'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputPanel rendered="{!appType == 'baseball'}">
+                        <div class="semibold">
+                          <span class="text-danger">*</span>
+                          Please describe your organization’s plans for
+                          implementing team sports
+                          (baseball/softball/Quickball/other activities)
+                          elements of the program. Include the following: What
+                          sports or activities will you use? Competitive league
+                          or recreations? Do you have access to a field?
+                        </div>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!appType == 'healthy'}">
+                        <div class="semibold">
+                          <span class="text-danger">*</span>
+                          What sports, if any, do you plan to incorporate into
+                          your Healthy Lifestyles program? This could include
+                          training for specific sports with specific sports
+                          teams or just incorporating sport activities into your
+                          general fitness program.
+                        </div>
+                      </apex:outputPanel>
+                      <apex:inputField
+                        value="{!app.Team_Sports_Implementation_Plan__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Team_Sports_Implementation_Plan__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      <apex:outputText
+                        value="Please list school opening and closing dates within your current area."
+                        rendered="{!appType == 'baseball' || appType == 'healthy'}"
+                      />
+                      <apex:outputText
+                        value="List school opening and closing dates for youth who attend your organization."
+                        rendered="{!appType == 'great'}"
+                      />
+                    </div>
+                    <apex:inputField
+                      value="{!app.School_Opening_and_Closing_Dates__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.School_Opening_and_Closing_Dates__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="row">
+                  <div class="col-xs-6">
+                    <span class="semibold"
+                      ><span class="text-danger">*</span>
+                      Proposed Program Start Date: &nbsp;
+                    </span>
+                    <apex:inputField
+                      value="{!app.Grant_Start_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Grant_Start_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                  <div class="col-xs-6">
+                    <span class="semibold"
+                      ><span class="text-danger">*</span>
+                      Proposed Program End Date: &nbsp;
+                    </span>
+                    <apex:inputField
+                      value="{!app.Grant_End_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Grant_End_Date__c}"
+                      styleClass="input-sm"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      <apex:outputPanel
+                        rendered="{!appType == 'baseball' || appType == 'healthy'}"
+                      >
+                        Please describe how your organization’s capacity to
+                        recruit and engage community partners, including law
+                        enforcement professionals and volunteers, has affected
+                        the program. Please detail any current relationships
+                        your organization has with local law enforcement
+                        agencies, community service groups,
+                        universities/colleges, local business, etc.
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!appType == 'great'}">
+                        Describe your organization’s capacity to recruit and
+                        engage community partners. Detail any current
+                        relationships that your organization has with local
+                        community service groups, universities/colleges,
+                        businesses, etc.
+                      </apex:outputPanel>
+                    </div>
+                    <apex:inputField
+                      value="{!app.Plan_to_Connect_Youth_with_Adult_Mentors__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Plan_to_Connect_Youth_with_Adult_Mentors__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      Please describe your organization’s knowledge of, or
+                      relationship with, local military and/or youth with a
+                      parent in the military.
+                    </div>
+                    <apex:inputField
+                      value="{!app.Orgs_Knowledge_of_Military__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Orgs_Knowledge_of_Military__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="semibold">
+                      <span class="text-danger">*</span>
+                      Please include any additional information you would like
+                      to know about the service CRSF will provide along with
+                      this award, or questions you may have about the
+                      implementation of the program.
+                    </div>
+                    <apex:inputField
+                      value="{!app.Additional_Information__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!app.Additional_Information__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!LEFT(TEXT(app.CreatedDate),4) == '2020' || LEFT(TEXT(app.CreatedDate),4) == '2021'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="semibold">
+                        <span class="text-danger">*</span>
+                        Please list applicable social media tags/usernames for
+                        your organization (Facebook, Twitter, Instagram).
+                      </div>
+                      <apex:inputField
+                        value="{!app.Social_Media_Usernames__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!app.Social_Media_Usernames__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <c:Attachments
+            parentId="{!app.Id}"
+            fileName="Tax Status,Other"
+            showUploadBtn="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+            requiredText="(Tax Document Required)"
+          />
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'Local Organization' && NOT(readOnly)}"
+          >
+            <div class="alert alert-warning" role="alert">
+              Please attach your organizations 501c3 tax document. If not
+              applicable, please reach out to your Cal Ripken, Sr. Foundation
+              Program Coordinator for clarification.
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel id="notesPopup">
+            <c:NotesPopup
+              header="Send Back"
+              displayNotesPopup="{!displayNotesPopup}"
+              userAcctType="{!userAcctType}"
+              displayLocalNote="false"
+              nationalNote="{!app.Sent_Back_Reason__c}"
+            >
+              <apex:commandButton
+                action="{!hideNotesPopup}"
+                value="Close"
+                status="pageStatus"
+                immediate="true"
+                reRender="notesPopup"
+              />
+              <apex:commandButton
+                value="Send Back"
+                action="{!sendBack}"
+                styleClass="btn primary"
+              />
+              <apex:pageMessages />
+            </c:NotesPopup>
+          </apex:outputPanel>
+
+          <apex:commandButton
+            value="Submit"
+            action="{!submit}"
+            styleClass="btn primary"
+            rendered="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+          />
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization' && 
+                                                (app.Status__c == 'Submitted' || app.Status__c == 'Awarded') && 
+                                                (app.Organization__c == null || app.Organization__r.Primary_Approver__c == currentUser.ContactId  || app.Organization__r.Secondary_Approver__c == currentUser.ContactId|| approverLevel == 'Finance Admin')}"
+          >
+            <apex:commandButton
+              value="Send Back"
+              action="{!showSendBackPopup}"
+              styleClass="btn"
+              rendered="{!app.Status__c != 'Awarded'}"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              value="Award"
+              action="{!URLFOR($Site.Prefix+'/AwardApplication?appId='+app.Id)}"
+              styleClass="btn primary"
+            />
+          </apex:outputPanel>
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages />
+        </apex:outputPanel>
+        <br />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

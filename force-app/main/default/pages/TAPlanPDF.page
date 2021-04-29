@@ -1,0 +1,85 @@
+<apex:page
+  controller="TAPlanCtrl"
+  showHeader="false"
+  sidebar="false"
+  renderAs="PDF"
+>
+  <head>
+    <title>Technical Assistance Plan</title>
+  </head>
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2 style="text-align: center">{!plan.Name}</h2>
+        <h3 style="text-align: center">{!plan.Organization_Name__c}</h3>
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <strong> Compliance TA Score: </strong>
+          <br />
+          <apex:outputField value="{!plan.Compliance_Score__c}" />
+          <br /><br />
+        </apex:outputPanel>
+
+        <strong> Compliance TA Plans from National: </strong>
+        <br />
+        <apex:outputField
+          value="{!plan.Compliance_TA_Plans_from_National__c}"
+        />
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <br />
+          <strong> Compliance TA Plans Internal Notes: </strong>
+          <br />
+          <apex:outputField
+            value="{!plan.Compliance_TA_Plans_Internal_Notes__c}"
+          />
+        </apex:outputPanel>
+
+        <hr />
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <strong> Finance TA Score: </strong>
+          <br />
+          <apex:outputField value="{!plan.Finance_Score__c}" />
+          <br /><br />
+        </apex:outputPanel>
+
+        <strong> Finance TA Plans from National: </strong>
+        <br />
+        <apex:outputField value="{!plan.Finance_TA_Plans_from_National__c}" />
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <br />
+          <strong> Finance TA Plans Internal Notes: </strong>
+          <br />
+          <apex:outputField
+            value="{!plan.Finance_TA_Plans_Internal_Notes__c}"
+          />
+        </apex:outputPanel>
+
+        <hr />
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <strong> Program TA Score: </strong>
+          <br />
+          <apex:outputField value="{!plan.Program_Score__c}" />
+          <br /><br />
+        </apex:outputPanel>
+
+        <strong> Program TA Plans from National: </strong>
+        <br />
+        <apex:outputField value="{!plan.Program_TA_Plans_from_National__c}" />
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <br />
+          <strong> Program TA Plans Internal Notes: </strong>
+          <br />
+          <apex:outputField
+            value="{!plan.Program_TA_Plans_Internal_Notes__c}"
+          />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

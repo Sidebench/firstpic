@@ -1,0 +1,793 @@
+<apex:page controller="DCTATReportCtrl" showHeader="false" sidebar="false">
+  <c:STEMHeader
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!report.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h5>
+              <apex:outputPanel rendered="{!userAcctType == 'Site'}">
+                Grant: {!report.Grant_Name__c}
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+                Site: {!report.Organization_Name__c}
+              </apex:outputPanel>
+            </h5>
+            <h5>
+              Date:&nbsp;<apex:outputField
+                value="{!report.Quarter__c}"
+              />,&nbsp;<apex:outputField value="{!report.Year__c}" />
+            </h5>
+          </div>
+        </div>
+
+        <h5 class="text-danger">
+          <apex:outputText
+            value="* All fields are required."
+            rendered="{!NOT(readOnly)}"
+          />
+        </h5>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+
+        <apex:outputPanel rendered="{!reportId != null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Quantitative Questions</div>
+            <div class="panel-body grid-pd-md">
+              <strong>Youth Served</strong><br /><br />
+              Please select all that apply for the youth served in your program.
+              If none apply, please select ‘Youth Population Not Directly
+              Served’.
+              <br /><br />
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!labels['Race_Ethnicity__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Race_Ethnicity__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Race_Ethnicity__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">{!labels['Justice__c']}</div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Justice__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Justice__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">{!labels['Gender__c']}</div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Gender__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Gender__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!labels['Age__c']}
+                  <div class="col-xs-12"></div>
+                  <apex:inputField
+                    value="{!report.Age__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Age__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">{!labels['Geography__c']}</div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Geography__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Geography__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">{!labels['Other__c']}</div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Other__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Other__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Previous_Youth_Served__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Previous_Youth_Served__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Previous_Youth_Served__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['New_Youth_Served__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.New_Youth_Served__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.New_Youth_Served__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_with_Parents_Actively_Serving__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_with_Parents_Actively_Serving__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_with_Parents_Actively_Serving__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  As per OJJDP requirements, all sites receiving federal funding
+                  must track youth for perception of social support and juvenile
+                  offenses.
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_with_Increased_Social_Support__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_with_Increased_Social_Support__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_with_Increased_Social_Support__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_with_Delinquent_Offenses__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_with_Delinquent_Offenses__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_with_Delinquent_Offenses__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Recommitted_to_Juvenile_Facility__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Recommitted_to_Juvenile_Facility__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Recommitted_to_Juvenile_Facility__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Sentenced_to_Adult_Prison__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Sentenced_to_Adult_Prison__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Sentenced_to_Adult_Prison__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Received_Additional_Sentence__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Received_Additional_Sentence__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Received_Additional_Sentence__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Completed_20_or_More_Sessions__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Completed_20_or_More_Sessions__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Completed_20_or_More_Sessions__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Completed_Less_Than_20_Sessions__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Completed_Less_Than_20_Sessions__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Completed_Less_Than_20_Sessions__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Exited_Program__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Exited_Program__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Exited_Program__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Participated_More_Than_6_Months__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Participated_More_Than_6_Months__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Participated_More_Than_6_Months__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Participated_Fewer_Than_6_Months__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Participated_Fewer_Than_6_Months__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Participated_Fewer_Than_6_Months__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Participated_More_Than_4_Hours_per_Month__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Participated_More_Than_4_Hours_per_Month__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Participated_More_Than_4_Hours_per_Month__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Participated_Less_Than_4_Hours_per_Month__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Participated_Less_Than_4_Hours_per_Month__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Participated_Less_Than_4_Hours_per_Month__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <p>
+                Due to updated reporting requirements from OJJDP, we are
+                required to ask the following questions. We understand that
+                these may not apply to the youth population served in your
+                program. Please answer as best you can based on the information
+                you have available.
+              </p>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Experienced_Violent_Victimization__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Experienced_Violent_Victimization__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Experienced_Violent_Victimization__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Experienced_Non_Violent_Victim__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Experienced_Non_Violent_Victim__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Experienced_Non_Violent_Victim__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Identified_Sex_Trafficking_Victim__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Identified_Sex_Trafficking_Victim__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Identified_Sex_Trafficking_Victim__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['New_Youth_Identified_Sex_Trafficking__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.New_Youth_Identified_Sex_Trafficking__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.New_Youth_Identified_Sex_Trafficking__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Identified_Labor_Trafficking__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Identified_Labor_Trafficking__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Identified_Labor_Trafficking__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['New_Youth_Identified_Labor_Trafficking__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.New_Youth_Identified_Labor_Trafficking__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.New_Youth_Identified_Labor_Trafficking__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Youth_Identified_Both_Labor_Sex_Traffic__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Youth_Identified_Both_Labor_Sex_Traffic__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Youth_Identified_Both_Labor_Sex_Traffic__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['New_Youth_Identified_Both_Labor_Sex__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.New_Youth_Identified_Both_Labor_Sex__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.New_Youth_Identified_Both_Labor_Sex__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <hr />
+              <strong>Mentors</strong>
+              <br /><br />
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Previous_Mentors__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Previous_Mentors__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Previous_Mentors__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['New_Mentors_Began_Training__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.New_Mentors_Began_Training__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.New_Mentors_Began_Training__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['New_Mentors__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.New_Mentors__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.New_Mentors__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['New_Mentors_Completed_Training__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.New_Mentors_Completed_Training__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.New_Mentors_Completed_Training__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Mentors_with_Increased_Knowledge__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Mentors_with_Increased_Knowledge__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Mentors_with_Increased_Knowledge__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Mentors_Left_the_Program__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Mentors_Left_the_Program__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Mentors_Left_the_Program__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9 col-xs-12 semibold">
+                  {!labels['Programs_with_Active_Partners__c']}
+                </div>
+                <div class="col-sm-3 col-xs-12 pull-right">
+                  <apex:inputField
+                    value="{!report.Programs_with_Active_Partners__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Programs_with_Active_Partners__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Qualitative Questions</div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!labels['Accomplishments__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Accomplishments__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Accomplishments__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!labels['Describe_How_Plan_Was_Implemented__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Describe_How_Plan_Was_Implemented__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Describe_How_Plan_Was_Implemented__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!labels['Problems_Barriers__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Problems_Barriers__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Problems_Barriers__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!labels['Program_on_Track__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Program_on_Track__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Program_on_Track__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!labels['Major_Activities_Planned__c']}
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!report.Major_Activities_Planned__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                  <apex:outputField
+                    value="{!report.Major_Activities_Planned__c}"
+                    rendered="{!readOnly}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <c:Attachments
+            parentId="{!report.Id}"
+            showUploadBtn="{!NOT(readOnly)}"
+            infoText="Please upload all mentoring match tracking sheets here. They must be uploaded in a PDF format. Please send all program photos to the STEM Mentoring 2018 Google Drive folder."
+          />
+
+          <!-- BEGIN Notes -->
+          <c:NotesPanel
+            userAcctType="{!userAcctType}"
+            header="Notes"
+            displayLocalNote="false"
+            readOnly="true"
+            nationalNote="{!report.Notes_from_National__c}"
+          />
+
+          <c:CollapsiblePanel
+            header="Modification History"
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <apex:outputField value="{!report.Modification_History__c}" />
+          </c:CollapsiblePanel>
+          <!-- END Notes -->
+
+          <!-- BEGIN Popups -->
+          <apex:outputPanel id="sendBackPopup">
+            <c:NotesPopup
+              displayNotesPopup="{!displaySendBackPopup}"
+              userAcctType="{!userAcctType}"
+              header="Send Back"
+              richText="true"
+              nationalNote="{!report.Notes_from_National__c}"
+              displayLocalNote="false"
+              displayNationalNote="true"
+            >
+              <apex:commandButton
+                action="{!hideSendBackPopup}"
+                value="Cancel"
+              />
+              <apex:commandButton
+                action="{!sendBack}"
+                value="Send Back"
+                styleClass="primary"
+              />
+            </c:NotesPopup>
+          </apex:outputPanel>
+
+          <apex:outputPanel id="approvePopup">
+            <c:NotesPopup
+              displayNotesPopup="{!displayApprovePopup}"
+              userAcctType="{!userAcctType}"
+              header="Approve"
+              richText="true"
+              nationalNote="{!report.Notes_from_National__c}"
+              displayLocalNote="false"
+              displayNationalNote="true"
+            >
+              <apex:commandButton action="{!hideApprovePopup}" value="Cancel" />
+              <apex:commandButton
+                action="{!approve}"
+                value="Approve"
+                styleClass="primary"
+              />
+            </c:NotesPopup>
+          </apex:outputPanel>
+          <!-- END Popups -->
+
+          <!-- BEGIN Page Actions -->
+          <apex:commandButton
+            action="{!URLFOR($Site.Prefix+'/QuarterlyProgressReports')}"
+            value="Back"
+            status="pageStatus"
+          />
+          <apex:outputPanel
+            rendered="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+          >
+            <apex:commandButton
+              action="{!save}"
+              value="Save"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!submit}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </apex:outputPanel>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization' && report.Report_Status__c == 'Submitted'}"
+          >
+            <apex:commandButton
+              action="{!showSendBackPopup}"
+              value="Send Back"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!showApprovePopup}"
+              value="Approve"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </apex:outputPanel>
+          <!-- END Page Actions -->
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

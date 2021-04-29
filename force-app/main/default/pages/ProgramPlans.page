@@ -1,0 +1,95 @@
+<apex:page
+  controller="ProgramPlansCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Program Plans</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Program Plans</h2>
+          </div>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="col-auto pull-right">
+              Organization &nbsp;<apex:inputText
+                value="{!orgName}"
+                style="width: 240px"
+              />
+              &nbsp;&nbsp; Sort By: &nbsp;
+              <apex:selectList value="{!sortBy}" size="1">
+                <apex:selectOptions value="{!sortByOptions}" />
+              </apex:selectList>
+              &nbsp;
+              <apex:commandButton
+                action="{!getLists}"
+                value="Update"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                reRender="form"
+              />
+            </div>
+          </apex:outputPanel>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">Program Plans</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!items.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>Plan Id</th>
+                    <th>Organization</th>
+                    <th>Status</th>
+                    <th>Submitted Date</th>
+                  </tr>
+                  <apex:repeat value="{!items}" var="i">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.Name}"
+                          action="{!URLFOR($Site.Prefix+'/ProgramPlan?planId='+i.Id)}"
+                        />
+                      </td>
+                      <td>{!i.Organization_Name__c}</td>
+                      <td>{!i.Status__c}</td>
+                      <td>
+                        <apex:outputField value="{!i.Submitted_Date__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!items.size == 0}">
+                No Program Plans Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

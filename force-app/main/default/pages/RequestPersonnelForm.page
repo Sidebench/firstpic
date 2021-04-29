@@ -1,0 +1,567 @@
+<apex:page
+  controller="RequestPersonnelFormController"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Reimbursement Request</title>
+  </head>
+  <c:Header
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Balance: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!grant.Balance__c}" />
+              </apex:outputText>
+            </h2>
+          </div>
+        </div>
+
+        <apex:outputPanel id="requestForm">
+          <table class="table">
+            <tr>
+              <td>
+                <div class="row">
+                  <div class="col-auto" style="font-weight: bold">
+                    Reimbursement Date Range:
+                  </div>
+                  <div class="col-auto">
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!request.Start_Date__c}" />
+                    </apex:outputText>
+                    -
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!request.End_Date__c}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  Total FTE at affiliate during this month: &nbsp;&nbsp;
+                </span>
+                <apex:outputField
+                  value="{!request.Total_FTE_at_Affiliate__c}"
+                />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  Full Time Effort: &nbsp;&nbsp;
+                </span>
+                <apex:outputText value="{0, number, ###,###,###,##0.000}">
+                  <apex:param value="{!FTE}" /> </apex:outputText
+                >%
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span style="font-weight: bold">
+                  Number of youth served during the month: &nbsp;&nbsp;
+                </span>
+                <apex:outputText value="{!request.Youth_Served__c}" />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  Number of youth served with grant funding this month:
+                  &nbsp;&nbsp;
+                </span>
+                <apex:outputText
+                  value="{!request.Youth_Served_with_Grant_Funding__c}"
+                />
+              </td>
+              <td>
+                <span style="font-weight: bold">
+                  % Children Served: &nbsp;&nbsp;
+                </span>
+                <apex:outputText value="{0, number, ###,###,###,##0.000}">
+                  <apex:param
+                    value="{!request.Youth_Served_Percent__c}"
+                  /> </apex:outputText
+                >%
+              </td>
+            </tr>
+          </table>
+
+          <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+            <div class="panel panel-warning">
+              <div class="panel-heading">Notes</div>
+              <div class="panel-body">
+                <apex:outputField value="{!request.Request_Notes__c}" />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <apex:outputPanel id="lists">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <apex:outputText value="Personnel" />
+              </div>
+              <div class="panel-body">
+                <apex:variable value="{!0}" var="laborItemIndex" />
+                <table style="width: 100%">
+                  <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th class="text-center">Hours this Month</th>
+                    <th class="text-center">Hours on Grant</th>
+                    <th class="text-center">Hourly Rate</th>
+                    <th class="text-center">Total Monthly Salary/Payroll</th>
+                    <th class="text-center">% Monthly Time on Grant</th>
+                    <th class="text-center">Requested Total</th>
+                  </tr>
+                  <apex:repeat value="{!labor_list}" var="i">
+                    <tr>
+                      <td>
+                        <apex:outputText
+                          value="{!i.reimItem.Budget_Item__r.Name}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.reimItem.Budget_Item__r.Title__c}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Quantity__c}"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Quantity_Towards_Grant__c }"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Rate__c }"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        $<apex:outputText value="{!i.monthlyTotal}" />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputText
+                          value="{0, number, ###,###,###,##0.000}"
+                        >
+                          <apex:param
+                            value="{!i.reimItem.Percent_Towards_Grant__c}"
+                          /> </apex:outputText
+                        >%
+                      </td>
+                      <td class="text-center">
+                        $<apex:outputText
+                          value="{!i.reimItem.Requested_Salary__c}"
+                        />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                  <tr>
+                    <td colspan="7"></td>
+                    <td>
+                      <span class="subtotal text-center"> ${!requestSub} </span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <apex:outputText value="Fringe Benefits" />
+              </div>
+              <div class="panel-body">
+                <table style="width: 100%">
+                  <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th class="text-center">FICA</th>
+                    <th class="text-center">Medical</th>
+                    <th class="text-center">Dental</th>
+                    <th class="text-center">Short Term <br /> Disability</th>
+                    <th class="text-center">Long Term <br /> Disability</th>
+                    <th class="text-center">Life</th>
+                    <th class="text-center">Other</th>
+                    <th class="text-center">
+                      Total Benefits <br /> this Month
+                    </th>
+                    <th class="text-center">% Monthly <br /> Time on Grant</th>
+                    <th class="text-center">Total Requested Benefits</th>
+                    <th class="text-center">Notes</th>
+                  </tr>
+                  <apex:repeat value="{!labor_list}" var="i">
+                    <tr>
+                      <td>
+                        <apex:outputText
+                          value="{!i.reimItem.Budget_Item__r.Name}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.reimItem.Budget_Item__r.Title__c}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.FICA__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Medical__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Dental__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Short_Term_Disability__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Long_Term_Disability__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Life__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.reimItem.Other_Benefits__c}"
+                          styleClass="input-sm"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputField
+                          value="{!i.reimItem.Fringe_Benefit__c}"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputText
+                          value="{0, number, ###,###,###,##0.000}"
+                        >
+                          <apex:param
+                            value="{!i.reimItem.Percent_Towards_Grant__c}"
+                          /> </apex:outputText
+                        >%
+                      </td>
+                      <td class="text-center">
+                        $<apex:outputText
+                          value="{!i.reimItem.Requested_Benefits__c}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:commandLink
+                          action="{!laborNotesPopup}"
+                          status="pageStatus"
+                          reRender="laborNotesPopup"
+                        >
+                          <apex:outputText
+                            rendered="{!i.itemNote != null || i.reimItem.Response__c != null}"
+                          >
+                            <span class="glyphicon glyphicon-comment"></span>
+                          </apex:outputText>
+                          <apex:outputText
+                            rendered="{!i.itemNote == null && i.reimItem.Response__c == null}"
+                            >+</apex:outputText
+                          >
+                          <apex:param
+                            name="selelectedLabor"
+                            value="{!i.itemIndex}"
+                            assignTo="{!selectedLabor}"
+                          />
+                        </apex:commandLink>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                  <tr>
+                    <td colspan="2"></td>
+                    <td>
+                      <span class="subtotal text-center"> ${!ficaSub} </span>
+                    </td>
+                    <td>
+                      <span class="subtotal text-center"> ${!medicalSub} </span>
+                    </td>
+                    <td>
+                      <span class="subtotal text-center"> ${!dentalSub} </span>
+                    </td>
+                    <td>
+                      <span class="subtotal text-center">
+                        ${!shortTermSub}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="subtotal text-center">
+                        ${!longTermSub}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="subtotal text-center"> ${!lifeSub} </span>
+                    </td>
+                    <td>
+                      <span class="subtotal text-center"> ${!otherSub} </span>
+                    </td>
+                    <td>
+                      <span class="subtotal text-center">
+                        ${!benefitsSub}
+                      </span>
+                    </td>
+                    <td></td>
+                    <td>
+                      <span class="subtotal text-center">
+                        ${!requstedBenefitsSub}
+                      </span>
+                    </td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <!-- BEGIN Attachments -->
+          <apex:outputPanel id="attachments">
+            <div class="panel panel-default">
+              <div class="panel-heading">Attachments</div>
+              <div class="panel-body grid-pd-md">
+                <apex:repeat value="{!att_list}" var="a">
+                  <div class="row">
+                    <div class="col-auto">
+                      <apex:outputPanel rendered="{!a.Id != null}">
+                        <apex:commandLink
+                          action="{!deleteAtt}"
+                          status="pageStatus"
+                          rerender="attachments"
+                        >
+                          <span
+                            class="glyphicon glyphicon-remove-circle"
+                          ></span>
+                          <apex:param
+                            name="deleteAtt"
+                            value="{!a.Id}"
+                            assignTo="{!deleteAttId}"
+                          ></apex:param>
+                        </apex:commandLink>
+                        <apex:outputLink
+                          value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                          style="margin-right: 10px"
+                          target="_blank"
+                        >
+                          {!a.Name}
+                        </apex:outputLink>
+                        <apex:outputText rendered="{!a.Description != null}">
+                          ({!a.Description})
+                        </apex:outputText>
+                      </apex:outputPanel>
+                    </div>
+                  </div>
+                </apex:repeat>
+              </div>
+              <div class="panel-footer">
+                <apex:commandButton
+                  action="{!attPopup}"
+                  value="Upload Attachments"
+                  status="pageStatus"
+                  reRender="attachments"
+                />
+              </div>
+            </div>
+            <apex:outputPanel
+              styleClass="popupBackground"
+              layout="block"
+              rendered="{!displayAttPopup}"
+            />
+            <apex:outputPanel
+              styleClass="custPopup"
+              layout="block"
+              rendered="{!displayAttPopup}"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Upload New Attachment</h4>
+                  </div>
+                  <div class="modal-body">
+                    <iframe
+                      id="attachmentIFrame"
+                      frameborder="0"
+                      width="100%"
+                      height="200px"
+                      src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ request.id +'&filename=Payroll,Timesheet,Benefits,Other Personnel Documentation')}"
+                    >
+                    </iframe>
+                  </div>
+                  <div class="modal-footer">
+                    <apex:commandButton
+                      action="{!attPopup}"
+                      value="Close"
+                      status="pageStatus"
+                      reRender="requestForm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+          <!-- END Attachments -->
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Personnel &amp; Fringe Notes</div>
+            <div class="panel-body">
+              <apex:inputTextarea value="{!request.Labor_Notes__c}" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-6">
+              <apex:commandButton
+                action="{!previous}"
+                value="Previous"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                action="{!updateAmounts}"
+                value="Update Amounts"
+                status="pageStatus"
+                reRender="requestForm"
+              />
+              <apex:commandButton
+                action="{!saveAndExit}"
+                value="Save and Exit"
+                status="pageStatus"
+                reRender="requestForm"
+              />
+              <apex:commandButton
+                action="{!saveAndContinue}"
+                value="Next"
+                status="pageStatus"
+                styleClass="primary"
+              />
+            </div>
+            <div class="col-xs-6 pull-right text-right">
+              <apex:outputPanel id="total">
+                <apex:outputPanel rendered="{!amountError}">
+                  <h4 style="padding-right: 10px; color: #b94a48">
+                    Total Requested Amount: &nbsp;
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!totalRequestedAmount}" />
+                    </apex:outputText>
+                  </h4>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(amountError)}">
+                  <h4 style="padding-right: 10px">
+                    Total Requested Amount: &nbsp;
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!totalRequestedAmount}" />
+                    </apex:outputText>
+                  </h4>
+                </apex:outputPanel>
+              </apex:outputPanel>
+            </div>
+          </div>
+          <br />
+          <h6>
+            Leaving a reimbursement request without saving or submitting will
+            result in the lose of information in this request.
+          </h6>
+
+          <apex:outputPanel id="laborNotesPopup">
+            <apex:outputPanel
+              styleClass="popupBackground"
+              layout="block"
+              rendered="{!displayLaborNotesPopup}"
+            />
+            <apex:outputPanel
+              styleClass="custPopup"
+              layout="block"
+              rendered="{!displayLaborNotesPopup}"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">
+                      Notes for &nbsp;<apex:outputText
+                        value="{!labor_list[selectedLabor].itemName}"
+                      />
+                    </h4>
+                  </div>
+                  <div class="modal-body">
+                    <apex:inputTextarea
+                      value="{!labor_list[selectedLabor].itemNote}"
+                    />
+                    <br />
+                    <hr />
+                    <apex:outputPanel
+                      rendered="{!labor_list[selectedLabor].reimItem.Response__c != null}"
+                    >
+                      <apex:outputText
+                        value="{!labor_list[selectedLabor].reimItem.Response__c}"
+                      />
+                    </apex:outputPanel>
+                    <apex:outputPanel
+                      rendered="{!labor_list[selectedLabor].reimItem.Response__c == null}"
+                    >
+                      No Notes from National
+                    </apex:outputPanel>
+                  </div>
+                  <div class="modal-footer">
+                    <apex:commandButton
+                      action="{!laborNotesPopup}"
+                      value="Save and Close"
+                      status="pageStatus"
+                      styleClass="primary"
+                      reRender="laborNotesPopup, requestForm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+        </apex:outputPanel>
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="lists, total"
+    />
+  </apex:form>
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

@@ -1,0 +1,29 @@
+<apex:page showHeader="false" sidebar="false">
+  <head>
+    <title>Dashboard</title>
+  </head>
+
+  <apex:stylesheet
+    value="{!URLFOR($Resource.styles, 'css/bootstrap.min.css')}"
+  />
+  <apex:stylesheet value="{!URLFOR($Resource.styles, 'css/style.css')}" />
+
+  <div class="main-panel">
+    <div class="content">
+      <div class="row">
+        <div class="col-sm-3"></div>
+        <a href="https://firstpic.force.com/ncai">
+          <div class="col-sm-6" style="margin: auto">
+            <div class="panel panel-danger">
+              <div class="panel-heading">We've moved to a new location!</div>
+              <div class="panel-body" style="font-weight: bold; color: #333">
+                Please click here to continue.
+              </div>
+            </div>
+          </div>
+        </a>
+        <div class="col-sm-3"></div>
+      </div>
+    </div>
+  </div>
+</apex:page>

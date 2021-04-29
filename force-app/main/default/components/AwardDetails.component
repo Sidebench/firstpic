@@ -1,0 +1,63 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+  />
+  <apex:attribute
+    type="String"
+    name="approverLevel"
+    description="approverLevel"
+  />
+  <apex:attribute
+    type="Grant__c"
+    name="grant"
+    description="grant"
+    required="true"
+  />
+
+  <table class="table">
+    <tr>
+      <td>
+        <span style="font-weight: bold"> Grant Type: &nbsp;&nbsp; </span>
+        {!grant.Grant_Type__c}
+      </td>
+      <td>
+        <span style="font-weight: bold">
+          Account QuickBooks: &nbsp;&nbsp;
+        </span>
+        <apex:outputField value="{!grant.Account_QuickBooks__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Class QuickBooks: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Class_QuickBooks__c}" />
+      </td>
+      <td>
+        <a
+          href="{!URLFOR($Site.Prefix+'/RipkenApplication?appId='+grant.Application__c)}"
+          >View Application</a
+        >
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <span style="font-weight: bold"> State: &nbsp;&nbsp; </span>
+        {!grant.State__c}
+      </td>
+      <td>
+        <span style="font-weight: bold"> Year: &nbsp;&nbsp; </span>
+        {!grant.Year__c}&nbsp;&nbsp;
+      </td>
+      <td>
+        <span style="font-weight: bold">
+          Youth Development Park: &nbsp;&nbsp;
+        </span>
+        <apex:outputField value="{!grant.Youth_Development_Park__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> STEM Program: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Is_STEM_Program__c}" />
+      </td>
+    </tr>
+  </table>
+</apex:component>

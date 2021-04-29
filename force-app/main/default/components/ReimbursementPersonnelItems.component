@@ -1,0 +1,149 @@
+<apex:component>
+  <apex:attribute
+    type="ReimbursementCtrl"
+    name="ctrl"
+    description="ReimbursementCtrl"
+    required="true"
+  />
+  <apex:attribute type="Decimal" name="payPeriod" description="payPeriod" />
+  <apex:attribute
+    type="Boolean"
+    name="isEditMode"
+    description="isEditMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isReviewMode"
+    description="isReviewMode"
+    default="false"
+  />
+
+  <div class="panel-body">
+    <table style="width: 100%">
+      <tr>
+        <th>Title</th>
+        <th>Hours this Pay Period</th>
+        <th>Hours on Grant</th>
+        <th class="text-center">Hourly/Salary</th>
+        <th>
+          Rate
+          <span
+            class="badge"
+            title="Total pay this pay period if salaried or hourly rate if hourly"
+            >?</span
+          >
+        </th>
+        <th class="text-center">% Time on Grant this Pay Period</th>
+        <th class="text-center">Total Pay Requested</th>
+        <th
+          class="text-center"
+          style="{!IF(ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization','','width: 0;')}"
+        >
+          <apex:outputText
+            value="Total Pay Approved"
+            rendered="{!ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization'}"
+          />
+        </th>
+        <th class="text-center">Notes</th>
+      </tr>
+      <apex:repeat value="{!ctrl.personnel_list}" var="i">
+        <apex:outputPanel rendered="{!i.Pay_Period__c == payPeriod}">
+          <tr>
+            <td>{!i.Budget_Item__r.Name}</td>
+            <td>
+              <apex:inputField
+                value="{!i.Quantity__c}"
+                rendered="{!isEditMode}"
+              />
+              <apex:outputField
+                value="{!i.Quantity__c}"
+                rendered="{!NOT(isEditMode)}"
+              />
+            </td>
+            <td>
+              <apex:inputField
+                value="{!i.Quantity_Towards_Grant__c}"
+                rendered="{!isEditMode}"
+              />
+              <apex:outputField
+                value="{!i.Quantity_Towards_Grant__c}"
+                rendered="{!NOT(isEditMode)}"
+              />
+            </td>
+            <td class="text-center">
+              <apex:outputText
+                value="Hourly"
+                rendered="{!NOT(isEditMode) && i.Is_Hourly__c}"
+              />
+              <apex:outputText
+                value="Salary"
+                rendered="{!NOT(isEditMode) && NOT(i.Is_Hourly__c)}"
+              />
+              <apex:selectList
+                value="{!i.Is_Hourly__c}"
+                size="1"
+                rendered="{!isEditMode}"
+              >
+                <apex:selectOption itemValue="true" itemLabel="Hourly" />
+                <apex:selectOption itemValue="false" itemLabel="Salary" />
+              </apex:selectList>
+            </td>
+            <td>
+              <apex:inputField value="{!i.Rate__c }" rendered="{!isEditMode}" />
+              <apex:outputField
+                value="{!i.Rate__c}"
+                rendered="{!NOT(isEditMode)}"
+              />
+            </td>
+            <td class="text-center">
+              <apex:outputField value="{!i.Percent_Towards_Grant__c}" />
+            </td>
+            <td class="text-center">
+              <apex:outputField value="{!i.Requested_Salary__c}" />
+            </td>
+            <td class="text-center">
+              <apex:outputPanel
+                rendered="{!ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization'}"
+              >
+                <apex:inputField
+                  value="{!i.Approved_Salary__c}"
+                  rendered="{!isReviewMode}"
+                />
+                <apex:outputField
+                  value="{!i.Approved_Salary__c}"
+                  rendered="{!NOT(isReviewMode)}"
+                />
+              </apex:outputPanel>
+            </td>
+            <td class="text-center">
+              <apex:commandLink
+                action="{!ctrl.showNotesPopup}"
+                status="pageStatus"
+                reRender="notesPopup"
+              >
+                <apex:param
+                  assignTo="{!ctrl.selectedItemId}"
+                  name="selectedItemId"
+                  value="{!i.Id}"
+                />
+                <apex:param
+                  assignTo="{!ctrl.selectedItemType}"
+                  name="selectedItemType"
+                  value="personnel"
+                />
+                <apex:outputText rendered="{!i.Has_Notes__c == true}">
+                  <span class="glyphicon glyphicon-comment"></span>
+                </apex:outputText>
+                <apex:outputText
+                  value="+"
+                  rendered="{!i.Has_Notes__c == false}"
+                />
+              </apex:commandLink>
+            </td>
+          </tr>
+        </apex:outputPanel>
+      </apex:repeat>
+    </table>
+  </div>
+</apex:component>

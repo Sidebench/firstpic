@@ -1,0 +1,561 @@
+<apex:page
+  controller="ReimbursementCtrl"
+  action="{!getRequestItems}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Reimbursement</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    grantId="{!request.National_Grant_Id__c}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:ReimbursementDetails
+          userAcctType="{!userAcctType}"
+          displayYear="{!portalName == 'STEM'}"
+          request="{!request}"
+          awarded="{!awarded}"
+          budgeted="{!request.Grant_Budgeted_Amount__c}"
+          balance="{!balance}"
+        />
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'Local Organization' && request.Grant_Status__c != 'Closed' && (request.Status__c == 'Incomplete' || request.Status__c == 'Revisions Needed' || request.Status__c == 'Revision in Progress') && errorMessage == ''}"
+        >
+          <div
+            class="alert alert-warning"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            NOTE: This reimbursement has not yet been submitted. Please review
+            and click submit.
+            <apex:commandButton
+              action="{!submit}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="btn primary pull-right"
+              style="margin-top: -7px"
+            />
+          </div>
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <apex:outputPanel id="lists">
+          <!-- BEGIN Personnel -->
+          <apex:outputPanel
+            rendered="{!personnel_list != null && personnel_list.size > 0}"
+          >
+            <apex:repeat value="{!payPeriods}" var="pay">
+              <div class="panel panel-default">
+                <div class="panel-heading">Personnel Pay Period: {!pay}</div>
+                <c:ReimbursementPersonnelItems
+                  ctrl="{!ReimbursementCtrl}"
+                  payPeriod="{!pay}"
+                  isEditMode="false"
+                  isReviewMode="{!isReviewMode}"
+                />
+                <br />
+                <c:ReimbursementDocs
+                  header="Attachments"
+                  headerClass="panel-heading sub-panel-heading"
+                  docs="{!docs}"
+                  atts="{!atts}"
+                  groupId="{!'Pay Period: ' + TEXT(pay)}"
+                />
+              </div>
+            </apex:repeat>
+
+            <h4 style="text-align: right">
+              Total Personnel Requested: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!personnelRequested}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total Personnel requested within this request"
+                >?</span
+              >
+            </h4>
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization' || (userAcctType == 'Local Organization' && request.Status__c == 'Approved')}"
+            >
+              <h4 style="text-align: right">
+                Personnel Approved: &nbsp;
+                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                  <apex:param value="{!personnelApproved}" />
+                </apex:outputText>
+                <span
+                  class="badge"
+                  title="Total Personnel approved within this request"
+                  >?</span
+                >
+              </h4>
+            </apex:outputPanel>
+            <h4 style="text-align: right">
+              Submitted Personnel Balance: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!personnelSubmittedBalance}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total budgeted minus all submitted personnel amounts"
+                >?</span
+              >
+            </h4>
+            <h4 style="text-align: right">
+              Personnel Balance: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!request.Salary_Balance__c}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total budgeted minus all approved Personnel amounts"
+                >?</span
+              >
+            </h4>
+            <h4 style="text-align: right">
+              Personnel Budgeted: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!request.Budgeted_Personnel__c}" />
+              </apex:outputText>
+              <span class="badge" title="Total Personnel Budgeted">?</span>
+            </h4>
+            <br />
+          </apex:outputPanel>
+          <!-- END Personnel -->
+
+          <!-- BEGIN Fringe -->
+          <apex:outputPanel rendered="{!fringe_list.size > 0}">
+            <c:FringeItems
+              type="request"
+              requestCtrl="{!ReimbursementCtrl}"
+              isEditMode="false"
+              isReviewMode="{!isReviewMode}"
+            />
+            <div class="panel panel-default">
+              <c:ReimbursementDocs
+                header="Fringe Attachments"
+                headerClass="panel-heading"
+                docs="{!docs}"
+                atts="{!atts}"
+                groupId="Fringe"
+              />
+            </div>
+            <h4 style="text-align: right">
+              Total Fringe Requested: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!fringeRequested}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total Fringe requested within this request"
+                >?</span
+              >
+            </h4>
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization' || (userAcctType == 'Local Organization' && request.Status__c == 'Approved')}"
+            >
+              <h4 style="text-align: right">
+                Fringe Approved: &nbsp;
+                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                  <apex:param value="{!fringeApproved}" />
+                </apex:outputText>
+                <span
+                  class="badge"
+                  title="Total Fringe approved within this request"
+                  >?</span
+                >
+              </h4>
+            </apex:outputPanel>
+            <h4 style="text-align: right">
+              Submitted Fringe Balance: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!fringeSubmittedBalance}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total budgeted minus all submitted fringe amounts"
+                >?</span
+              >
+            </h4>
+            <h4 style="text-align: right">
+              Fringe Balance: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!request.Benefits_Balance__c}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total budgeted minus all approved Fringe amounts"
+                >?</span
+              >
+            </h4>
+            <h4 style="text-align: right">
+              Fringe Budgeted: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!request.Budgeted_Fringe__c}" />
+              </apex:outputText>
+              <span class="badge" title="Total Fringe Budgeted">?</span>
+            </h4>
+            <br />
+          </apex:outputPanel>
+          <!-- END Fringe -->
+
+          <!-- BEGIN Expenses -->
+          <apex:outputPanel
+            rendered="{!expense_list != null && expense_list.size > 0}"
+          >
+            <c:ReimbursementExpenseItems
+              ctrl="{!ReimbursementCtrl}"
+              isEditMode="false"
+              isReviewMode="{!isReviewMode}"
+            />
+            <div class="panel panel-default">
+              <c:ReimbursementDocs
+                header="Expense Attachments"
+                headerClass="panel-heading"
+                docs="{!docs}"
+                atts="{!atts}"
+                groupId="Expenses"
+              />
+            </div>
+            <h4 style="text-align: right">
+              Total Expense Requested: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!expensesRequested}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total Expenses requested within this request"
+                >?</span
+              >
+            </h4>
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization' || (userAcctType == 'Local Organization' && request.Status__c == 'Approved')}"
+            >
+              <h4 style="text-align: right">
+                Expense Approved: &nbsp;
+                <apex:outputText value="${0,number,###,###,###,##0.00}">
+                  <apex:param value="{!expensesApproved}" />
+                </apex:outputText>
+                <span
+                  class="badge"
+                  title="Total Expenses approved within this request"
+                  >?</span
+                >
+              </h4>
+            </apex:outputPanel>
+            <h4 style="text-align: right">
+              Submitted Expense Balance: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!expenseSubmittedBalance}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total budgeted minus all submitted expense amounts"
+                >?</span
+              >
+            </h4>
+            <h4 style="text-align: right">
+              Expense Balance: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!request.Expense_Balance__c}" />
+              </apex:outputText>
+              <span
+                class="badge"
+                title="Total budgeted minus all approved Expense amounts"
+                >?</span
+              >
+            </h4>
+            <br />
+          </apex:outputPanel>
+          <!-- END Expenses -->
+        </apex:outputPanel>
+
+        <c:CollapsiblePanel
+          header="Modification History"
+          rendered="{!userAcctType == 'National Organization'}"
+        >
+          <apex:outputField value="{!request.Modification_History__c}" />
+        </c:CollapsiblePanel>
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="General Notes from National"
+          displayLocalNote="false"
+          displayNationalNotePrivate="true"
+          richText="true"
+          nationalNote="{!request.Request_Notes__c}"
+          nationalNotePrivate="{!request.Notes_for_National__c}"
+          readOnly="{!userAcctType == 'Local Organization'}"
+        />
+
+        <!-- BEGIN Popups  -->
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            itemName="{!selectedItem.Budget_Item__r.Name}"
+            localNote="{!selectedItem.Item_Note__c}"
+            nationalNote="{!selectedItem.Response__c}"
+            displayLocalNote="true"
+            displayNationalNote="true"
+            readOnly="{!userAcctType == 'Local Organization'}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              action="{!upsertItem}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="sendBackPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displaySendBackPopup}"
+            userAcctType="{!userAcctType}"
+            header="Send Back"
+            nationalNote="{!request.Request_Notes__c}"
+            nationalNotePrivate="{!request.Notes_for_National__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+            displayNationalNotePrivate="true"
+            richText="true"
+          >
+            <apex:commandButton action="{!hideSendBackPopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Affiliate"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!request.Status__c == 'Pending First Approval' || (request.Status__c == 'Pending Second Approval' && request.Prevent_Skip_Reimbursement_Approvals__c == false)}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="affiliate"
+              />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Level One"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!request.Status__c == 'Pending Second Approval'}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="levelone"
+              />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Level Two"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!(approverLevel == 'Level Three' || approverLevel == 'Level Four') && (request.Status__c == 'Pending Third Approval' || (request.Status__c == 'Pending Fourth Approval' && request.Prevent_Skip_Reimbursement_Approvals__c == false))}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="leveltwo"
+              />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send to Level Three"
+              styleClass="primary"
+              reRender="form"
+              rendered="{!request.Status__c == 'Pending Fourth Approval'}"
+            >
+              <apex:param
+                assignTo="{!sendBackTo}"
+                name="sendBackTo"
+                value="levelthree"
+              />
+            </apex:commandButton>
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="approvePopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayApprovePopup}"
+            userAcctType="{!userAcctType}"
+            header="Approve"
+            nationalNote="{!request.Request_Notes__c}"
+            nationalNotePrivate="{!request.Notes_for_National__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+            displayNationalNotePrivate="true"
+            richText="true"
+          >
+            <apex:commandButton action="{!hideApprovePopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!approve}"
+              value="Approve"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="denyPopup">
+          <c:ConfirmationPopup
+            displayConfirmPopup="{!displayDenyPopup}"
+            header="Deny Reimbursement Request"
+            body="Are you sure you want to deny this reimbursement request? This cannot be undone."
+          >
+            <apex:commandButton
+              action="{!hideDenyPopup}"
+              value="Cancel"
+              reRender="denyPopup"
+            />
+            <apex:commandButton
+              action="{!deny}"
+              value="Deny"
+              styleClass="primary"
+            />
+          </c:ConfirmationPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="deletePopup">
+          <c:ConfirmationPopup
+            displayConfirmPopup="{!displayDeletePopup}"
+            header="Delete Reimbursement Request"
+            body="Are you sure you want to delete this reimbursement request? This cannot be undone."
+          >
+            <apex:commandButton
+              action="{!hideDeletePopup}"
+              value="Cancel"
+              reRender="deletePopup"
+            />
+            <apex:commandButton
+              action="{!deleteReimbursement}"
+              value="Delete"
+              styleClass="primary"
+            />
+          </c:ConfirmationPopup>
+        </apex:outputPanel>
+        <!-- END Popups  -->
+
+        <!-- BEGIN Actions -->
+        <apex:outputPanel
+          rendered="{!userAcctType == 'Local Organization' && request.Grant_Status__c != 'Closed' && (request.Status__c == 'Incomplete' || request.Status__c == 'Revisions Needed' || request.Status__c == 'Revision in Progress')}"
+        >
+          <a
+            class="btn"
+            href="{!URLFOR($Site.Prefix+'/ReimbursementForm?requestId='+request.Id)}"
+          >
+            Edit
+          </a>
+          <apex:commandButton
+            action="{!showDeletePopup}"
+            value="Delete"
+            status="pageStatus"
+            reRender="deletePopup"
+          />
+          <apex:commandButton
+            action="{!submit}"
+            value="Submit"
+            status="pageStatus"
+            styleClass="btn primary"
+            rendered="{!errorMessage == ''}"
+          />
+        </apex:outputPanel>
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && isReviewMode}"
+        >
+          <apex:commandButton
+            action="{!getTotals}"
+            value="Update Amounts"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!saveAll}"
+            value="Save"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!showSendBackPopup}"
+            value="Send Back"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!showDenyPopup}"
+            value="Deny"
+            status="pageStatus"
+            rendered="{!portalName == 'Ripken'}"
+          />
+          <apex:commandButton
+            action="{!showApprovePopup}"
+            value="Approve"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+        <!-- END Actions -->
+
+        <!-- BEGIN Totals -->
+        <apex:outputPanel id="totals" styleClass="pull-right">
+          <apex:outputPanel
+            rendered="{!request.Indirect_Rate_Amount__c != null && request.Indirect_Rate_Amount__c > 0}"
+          >
+            <h4 style="text-align: right">
+              Indirect Costs: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!request.Indirect_Rate_Amount__c}" />
+              </apex:outputText>
+            </h4>
+          </apex:outputPanel>
+          <apex:outputPanel
+            rendered="{!request.Requested_Indirect_Costs__c != null && request.Requested_Indirect_Costs__c > 0}"
+          >
+            <h4>
+              Total Indirect Costs Requested: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!request.Requested_Indirect_Costs__c}" />
+              </apex:outputText>
+            </h4>
+          </apex:outputPanel>
+          <h4>
+            Total Requested Amount: &nbsp;
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!totalRequested}" />
+            </apex:outputText>
+          </h4>
+          <h4>
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization' || (userAcctType == 'Local Organization' && request.Status__c == 'Approved')}"
+            >
+              Total Approved Amount: &nbsp;
+              <apex:outputText value="${0,number,###,###,###,##0.00}">
+                <apex:param value="{!totalApproved}" />
+              </apex:outputText>
+            </apex:outputPanel>
+          </h4>
+          <br />
+        </apex:outputPanel>
+        <!-- END Totals -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages />
+        <br /><br />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

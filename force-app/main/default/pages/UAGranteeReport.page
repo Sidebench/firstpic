@@ -1,0 +1,131 @@
+<apex:page
+  controller="GranteeReportCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <link
+    href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    rel="stylesheet"
+    media="screen"
+  />
+
+  <head>
+    <title>Grantee Report</title>
+    <style>
+      a,
+      .primary {
+        color: #e71b24;
+      }
+      a:hover {
+        color: #a11219;
+      }
+      input[type="submit"].btn.primary,
+      .btn.primary {
+        background: #e71b24;
+        background-image: -webkit-linear-gradient(top, #e71b24, #a11219);
+        background-image: -moz-linear-gradient(top, #e71b24, #a11219);
+        background-image: -ms-linear-gradient(top, #e71b24, #a11219);
+        background-image: -o-linear-gradient(top, #e71b24, #a11219);
+        background-image: linear-gradient(to bottom, #e71b24, #a11219);
+        color: #fff;
+      }
+      input[type="submit"].primary:hover,
+      .btn.primary:hover {
+        background: #a11219;
+        text-decoration: none;
+      }
+      input[type="text"],
+      select,
+      textarea {
+        display: block;
+        width: 100%;
+      }
+      .grid-pd [class*="col-"] {
+        padding-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <apex:form style="padding: 40px">
+    <div class="main-panel">
+      <div class="content">
+        <apex:outputPanel rendered="{!showSuccess}">
+          <div
+            class="alert alert-success"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            You have successfully submitted your Grantee Report.
+          </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!grant == null}">
+          <div class="alert alert-danger" role="alert" style="margin-top: 20px">
+            The link you are trying to get to doesn't exist. Please check that
+            you have the correct URL and contact
+            <a href="mailto:support@firstpic.org">support@firstpic.org</a> if
+            you need further assistance.
+          </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!NOT(showSuccess) && grant != null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Grantee Report for {!grant.Account__r.Name},
+              {!grant.Project_Name__c}
+            </div>
+            <div class="panel-body">
+              1. Please provide an overview of the outcomes achieved by your
+              program/project. For example, how many youth were reached,
+              sessions conducted, players recruited, etc?
+              <br />
+              <apex:inputField
+                value="{!grant.Overview_of_Outcomes_Achieved__c}"
+              />
+              <br />
+              2. Please provide a brief narrative of the successes and/or
+              challenges you experienced with the program/project that was
+              supported by UA.
+              <br />
+              <apex:inputField
+                value="{!grant.Successes_Challenges_Experiencesd__c}"
+              />
+              <br />
+              3. Did this funding provide opportunities to recruit new partners
+              or funders?  If so, please provide a brief narrative describing
+              how your program/project was affected.
+              <br />
+              <apex:inputField
+                value="{!grant.Opportunities_Provided_by_Funding__c}"
+              />
+              <br />
+              4. Please provide a breakdown of expenses. Specifically, how was
+              UA funding utilized?
+              <br />
+              <apex:inputField value="{!grant.Breakdown_of_Expenses__c}" />
+              <br />
+              5. “Unmet needs” can take on many forms. In a brief narrative,
+              please tell us more about the unmet needs your organization
+              currently has and/or the unmet needs of the target population your
+              organization serves.
+              <br />
+              <apex:inputField value="{!grant.Unmet_Needs_Description__c}" />
+            </div>
+          </div>
+
+          <apex:commandButton
+            value="Submit"
+            action="{!save}"
+            styleClass="primary"
+          />
+
+          <h6 style="display: block; margin-top: 20px; text-align: center">
+            For technical assistance with this application, please contact
+            <a href="mailto:uasupport@firstpic.org">uasupport@firstpic.org</a>.
+          </h6>
+
+          <apex:pageMessages></apex:pageMessages>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

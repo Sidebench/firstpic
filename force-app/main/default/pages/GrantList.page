@@ -1,0 +1,123 @@
+<apex:page controller="GrantListController" showHeader="false" sidebar="false">
+  <head>
+    <title>Grant List</title>
+  </head>
+  <c:Header
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'BBBS' || portalName == ''}"
+  />
+  <c:NPALHeader
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+
+  <apex:form>
+    <div class="main-panel">
+      <div class="content">
+        <div class="panel panel-default">
+          <div class="panel-heading">Active Grants</div>
+          <div class="panel-body">
+            <table style="width: 100%">
+              <tr>
+                <th>Grant Name</th>
+                <th>Budget</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+              <apex:repeat value="{!grant_list}" var="g">
+                <tr>
+                  <td>
+                    <apex:commandLink value="{!g.Name}" action="{!goToGrant}">
+                      <apex:param
+                        name="GrantID"
+                        value="{!g.ID}"
+                        assignTo="{!GrantID}"
+                      />
+                    </apex:commandLink>
+                  </td>
+                  <td>
+                    <apex:outputfield value="{!g.Amount__c}" />
+                  </td>
+                  <td>
+                    <apex:outputfield value="{!g.Start_Date__c}" />
+                  </td>
+                  <td>
+                    <apex:outputfield value="{!g.End_Date__c}" />
+                  </td>
+                  <td>{!g.Grant_Status__c}</td>
+                  <td class="text-right">
+                    <apex:outputPanel
+                      rendered="{!NOT(CONTAINS(currentUser.Profile.Name, 'Accounts Payable'))}"
+                    >
+                      <apex:commandLink
+                        value="View Sub-Grants"
+                        action="{!URLFOR($Site.Prefix+'/SubGrants?grantId='+g.Id)}"
+                      />
+                    </apex:outputPanel>
+                  </td>
+                </tr>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <apex:outputPanel
+          rendered="{!approverLevel == 'Level Two Admin' || approverLevel == 'Level Three'}"
+        >
+          <div class="panel panel-default">
+            <div class="panel-heading">Active Sub-Grants</div>
+            <div class="panel-body">
+              <table style="width: 100%">
+                <tr>
+                  <th>Sub-Grant Name</th>
+                  <th>Budget</th>
+                  <th>Requested Amount</th>
+                  <th>Approved Amount</th>
+                  <th>Balance</th>
+                </tr>
+                <apex:repeat value="{!subgrant_list}" var="g">
+                  <tr>
+                    <td>
+                      <apex:commandLink
+                        value="{!g.Name}"
+                        action="{!goToSubGrant}"
+                      >
+                        <apex:param
+                          name="GrantID"
+                          value="{!g.ID}"
+                          assignTo="{!GrantID}"
+                        />
+                      </apex:commandLink>
+                    </td>
+                    <td>
+                      <apex:outputfield value="{!g.Amount__c}" />
+                    </td>
+                    <td>
+                      <apex:outputfield
+                        value="{!g.Total_Requested_Amount__c}"
+                      />
+                    </td>
+                    <td>
+                      <apex:outputfield value="{!g.Total_Approved_Amount__c}" />
+                    </td>
+                    <td>
+                      <apex:outputfield value="{!g.Balance__c}" />
+                    </td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

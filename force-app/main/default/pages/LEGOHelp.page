@@ -1,0 +1,125 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Help</title>
+  </head>
+  <c:LEGOHeader ActivePage="help" acct="{!userAcct}" />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <a
+        href="{!URLFOR($Site.Prefix+'/LEGOFAQ')}"
+        target="_blank"
+        class="btn primary pull-right"
+        style="margin-top: -15px"
+        >Need Help?</a
+      >
+      <h4>Help Video and Documents</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://youtu.be/AFB7GS8i-1A"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Introduction to the Reporting Site
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://youtu.be/qreLKJsl1GM"
+              target="_blank"
+            >
+              <div class="panel-body text-center">How to Run a Great Expo</div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://youtu.be/R55xWrmhT64"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Wrapping Up Your FLL Jr Program
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.LEGO_Youth_Data_Batch_Upload_Instructions}"
+            >
+              <div class="panel-body text-center">
+                Youth Data Batch Upload Instructions
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <a
+              href="https://www.dropbox.com/s/8b02n960fcpmhh9/Youth%20Data%20Batch%20Upload%20template.xlsx?dl=0"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Youth Data Batch Upload Template
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <a
+              href="https://www.anymeeting.com/xcragnoxgx/E957D88781483C"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Mission Moon Introductory Webinar
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.LEGO_Getting_Your_Program_Started}"
+            >
+              <div class="panel-body text-center">
+                Getting Your FLLJr Program Started
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.LEGO_Activity_Ideas}">
+              <div class="panel-body text-center">
+                Activity Ideas to Supplement Your FLLJr Program
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.LEGO_Implementation_Guideline}">
+              <div class="panel-body text-center">Implementation Guideline</div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

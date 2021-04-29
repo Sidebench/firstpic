@@ -1,0 +1,20 @@
+<apex:component controller="AccountListViewController">
+  <apex:attribute
+    name="listViewName"
+    type="String"
+    required="true"
+    description="The name of the listview."
+    assignTo="{!listName}"
+  />
+  <apex:enhancedList
+    height="800"
+    rowsPerPage="25"
+    id="AccountList"
+    listId="{!listId}"
+    rendered="{!listId != null}"
+  />
+  <apex:outputText
+    rendered="{!listId == null}"
+    value="Could not find requewed ListView: '{!listName}'. Please contact your administrator."
+  />
+</apex:component>

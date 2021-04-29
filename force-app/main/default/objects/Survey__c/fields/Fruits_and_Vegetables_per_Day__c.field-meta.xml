@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fruits_and_Vegetables_per_Day__c</fullName>
+    <externalId>false</externalId>
+    <label>Fruits and Vegetables per Day</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>a. 3</fullName>
+                <default>false</default>
+                <label>a. 3</label>
+            </value>
+            <value>
+                <fullName>b. 5</fullName>
+                <default>false</default>
+                <label>b. 5</label>
+            </value>
+            <value>
+                <fullName>c. 1</fullName>
+                <default>false</default>
+                <label>c. 1</label>
+            </value>
+            <value>
+                <fullName>d. 0</fullName>
+                <default>false</default>
+                <label>d. 0</label>
+            </value>
+            <value>
+                <fullName>No Response</fullName>
+                <default>false</default>
+                <label>No Response</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

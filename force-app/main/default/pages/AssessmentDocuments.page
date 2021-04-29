@@ -1,0 +1,112 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!getOldAttList}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Documents</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>Documents</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="11"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save=""
+        />
+
+        <c:Documents
+          showStatus="true"
+          showModHist="true"
+          showUploadBtn="true"
+          enableDeleteAtt="true"
+          showRequired="true"
+        />
+
+        <!-- BEGIN Notes -->
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Notes"
+          displayLocalNote="false"
+          displayNationalNotePrivate="true"
+          richText="true"
+          nationalNote="{!assess.Reviewer_Notes__c}"
+          nationalNotePrivate="{!assess.Notes_for_National__c}"
+        />
+        <!-- END Notes -->
+
+        <apex:outputPanel rendered="{!oldAtt_list.size > 0}">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Read Only Attachments
+              <a
+                data-toggle="collapse"
+                href="#collapse1"
+                class="toggle pull-right collapsed"
+              ></a>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse out">
+              <div class="panel-body">
+                <table style="width: 100%">
+                  <tr>
+                    <th>Name</th>
+                  </tr>
+                  <apex:repeat value="{!oldAtt_list}" var="a">
+                    <tr>
+                      <td>
+                        <apex:outputLink
+                          value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                          target="_blank"
+                          >{!a.Name}</apex:outputLink
+                        >
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <a class="btn" href="{!URLFOR($Site.Prefix+'/Compliance')}"> Exit </a
+        >&nbsp;
+        <apex:commandButton
+          value="Save"
+          action="{!upsertAssessment}"
+          status="pageStatus"
+        />&nbsp;
+        <apex:commandButton
+          value="{!IF(assess.Reviewed__c == 'Yes', 'Reviewed by BBBSA', 'Mark as Reviewed')}"
+          action="{!markAsReviewed}"
+          status="pageStatus"
+          styleClass="primary"
+          disabled="{!assess.Reviewed__c == 'Yes'}"
+          rendered="{!assess.Attachment_Status__c == 'Submitted' || assess.Attachment_Status__c == 'Approved'}"
+        />
+      </div>
+    </div>
+    <apex:pageMessages></apex:pageMessages>
+  </apex:form>
+</apex:page>

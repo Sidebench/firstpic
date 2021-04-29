@@ -1,0 +1,92 @@
+<apex:page
+  controller="GranteeReportListController"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Grantee Report List</title>
+  </head>
+  <c:Header
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="panel panel-default">
+          <div class="panel-heading">Grantee Reports</div>
+          <div class="panel-body">
+            <apex:dataTable
+              value="{!report_list}"
+              var="r"
+              cellpadding="4"
+              style="width: 100%"
+            >
+              <apex:column headerValue="Grant Name">
+                <apex:commandLink
+                  value="{!r.Grant__r.Name}"
+                  action="{!ViewGrant}"
+                >
+                  <apex:param
+                    name="SubGrantID"
+                    value="{!r.Grant__c}"
+                    assignTo="{!SubGrantID}"
+                  />
+                </apex:commandLink>
+              </apex:column>
+              <apex:column headerValue="Submitted Date">
+                <apex:outputfield value="{!r.Submitted_Date__c}" />
+              </apex:column>
+              <apex:column headerValue="Status">
+                <apex:outputfield value="{!r.Report_Status__c}" />
+              </apex:column>
+              <apex:column styleClass="text-right">
+                <apex:commandLink
+                  value="View Details"
+                  action="{!viewDetails}"
+                  rendered="{!r.Report_Status__c != 'In Progress'}"
+                >
+                  <apex:param
+                    name="ReportID"
+                    value="{!r.ID}"
+                    assignTo="{!ReportID}"
+                  />
+                </apex:commandLink>
+                <apex:outputPanel
+                  rendered="{!r.Report_Status__c == 'In Progress'}"
+                >
+                  <apex:commandLink value="Edit Report" action="{!editReport}">
+                    <apex:param
+                      name="ReportID"
+                      value="{!r.ID}"
+                      assignTo="{!ReportID}"
+                    />
+                  </apex:commandLink>
+                  &nbsp;| &nbsp;
+                  <apex:commandLink
+                    value="Delete Report"
+                    action="{!deleteReport}"
+                    reRender="form"
+                  >
+                    <apex:param
+                      name="ReportID"
+                      value="{!r.ID}"
+                      assignTo="{!ReportID}"
+                    />
+                  </apex:commandLink>
+                </apex:outputPanel>
+              </apex:column>
+            </apex:dataTable>
+          </div>
+        </div>
+        <apex:outputPanel id="errorMessage">
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+        </apex:outputPanel>
+      </div>
+      <!-- END content -->
+    </div>
+    <!-- END main-panel -->
+  </apex:form>
+</apex:page>

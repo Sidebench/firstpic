@@ -1,0 +1,279 @@
+<apex:page
+  controller="BBBSDashboardCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <style>
+    .slds [hidden],
+    .slds template {
+      display: block;
+    }
+  </style>
+  <c:Header
+    ActivePage="dashboard"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div class="content">
+      <h2>
+        Hello&nbsp;{!currentUser.Contact.FirstName}
+        {!currentUser.Contact.LastName}.
+      </h2>
+
+      <div class="alert alert-danger">
+        As of March 3, 2021, the identified bug within the FirstPic portal from
+        last week has been resolved. Click
+        <u
+          ><a href="{!$Resource.BBBS_SelfAssessment_Extension}" target="_blank"
+            >here</a
+          ></u
+        >
+        for further details.
+      </div>
+
+      <apex:outputPanel rendered="{!showDUNSAlert}">
+        <div class="alert alert-danger">
+          {!DUNSAlert}
+          <a
+            href="https://sam.gov"
+            target="_blank"
+            style="display: block; color: #333"
+            >Please update your SAM.gov registration here.</a
+          >
+        </div>
+      </apex:outputPanel>
+
+      <div class="row">
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && userProfile != 'BBBS Program User'}"
+        >
+          <div class="col-sm-12 col-md-6">
+            <div class="slds">
+              <div class="slds-grid">
+                <div class="slds-col--padded">
+                  <apex:chart
+                    data="{!requestsByStatus}"
+                    width="100%"
+                    height="350"
+                    animate="true"
+                  >
+                    <apex:axis
+                      type="Numeric"
+                      position="bottom"
+                      fields="requestCount"
+                      title="# of Requests"
+                      steps="1"
+                    />
+                    <apex:axis
+                      type="Category"
+                      position="left"
+                      fields="Status__c"
+                      title="Request Status"
+                    />
+                    <apex:barSeries
+                      orientation="horizontal"
+                      axis="bottom"
+                      xField="requestCount"
+                      yField="Status__c"
+                    />
+                  </apex:chart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!userProfile != 'BBBS Accounts Payable' && NOT(CONTAINS(userProfile, 'BBBS Program'))}"
+        >
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-warning">
+              <div class="panel-heading">Completed Requests</div>
+              <div class="panel-body">
+                <apex:outputText styleClass="h5" rendered="{!rId != null}">
+                  Reimbursement request {!rId} was {!rStatus} on
+                  <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                    <apex:param value="{!rDate}" /> </apex:outputText
+                  >.
+                </apex:outputText>
+                <apex:outputText styleClass="h5" rendered="{!rId == null}">
+                  You have {!rCount} completed reimbursement requests.
+                </apex:outputText>
+                <br />
+                <a
+                  href="{!URLFOR($Site.Prefix+'/Reimbursements?status=completed')}"
+                  style="color: #000; font-weight: bold"
+                >
+                  View All &raquo;
+                </a>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!missingDocs.size > 0}">
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-danger">
+              <div class="panel-heading">Missing Federal Grant Documents</div>
+              <div class="panel-body" style="color: #000">
+                <table width="100%">
+                  <tr>
+                    <th>Document</th>
+                    <th>Due Date</th>
+                    <th>Grant</th>
+                  </tr>
+                  <apex:repeat value="{!missingDocs}" var="i">
+                    <tr>
+                      <td>{!i.Name}</td>
+                      <td
+                        class="{!IF(i.Due_Date__c < TODAY(), 'text-danger', '')}"
+                      >
+                        <apex:outputField value="{!i.Due_Date__c}" />
+                      </td>
+                      <td>
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/SubGrantDocuments?grantId='+i.Grant__c)}"
+                          >{!i.Grant__r.Name}</a
+                        >
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && onHold.size > 0}"
+        >
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-danger">
+              <div class="panel-heading">Agencies on Reimbursement Hold</div>
+              <div class="panel-body" style="color: #000">
+                <table width="100%">
+                  <tr>
+                    <th>Agency ID</th>
+                    <th>Name</th>
+                    <th>Hold Date</th>
+                  </tr>
+                  <apex:repeat value="{!onHold}" var="i">
+                    <tr>
+                      <td>{!i.BBBS_ID__c}</td>
+                      <td>{!i.Name}</td>
+                      <td>
+                        <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                          <apex:param value="{!i.Hold_Date__c}" />
+                        </apex:outputText>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+
+      <apex:form id="form">
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && NOT(CONTAINS(userProfile, 'BBBS Program')) && userProfile != 'BBBS Accounts Payable'}"
+        >
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <c:GrantDashboardList
+                header="Budget Forms Sent Back"
+                grantList="{!sentBack_grant_list}"
+                showMore="{!more_sentBack_grant}"
+                listType="sentback"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:GrantDashboardList
+                header="Budget Forms Pending Approval"
+                grantList="{!pending_grant_list}"
+                showMore="{!more_pending_grant}"
+                listType="pending"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Requests Pending Approval"
+                requestList="{!todo_request_list}"
+                showMore="{!more_todo_request}"
+                listType="Pending {!approverLevelURL} Approval"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Requests in Approval Process"
+                requestList="{!pending_request_list}"
+                showMore="{!more_pending_request}"
+                listType="Pending Approval"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'Local Organization' && userProfile != 'BBBS Program User'}"
+        >
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <c:GrantDashboardList
+                header="Budget Forms Sent Back"
+                grantList="{!sentBack_grant_list}"
+                showMore="{!more_sentBack_grant}"
+                listType="sentback"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Requests Sent Back"
+                requestList="{!todo_request_list}"
+                showMore="{!more_todo_request}"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Incomplete Requests"
+                requestList="{!incomplete_request_list}"
+                showMore="{!more_incomplete_request}"
+                listType="Incomplete"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:actionFunction
+          name="getLists"
+          action="{!getLists}"
+          status="pageStatus"
+          rerender="form"
+        />
+      </apex:form>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

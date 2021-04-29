@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Requested_Amount__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary for Reimbursement Items: Requested Amount</inlineHelpText>
+    <label>Requested Amount</label>
+    <summarizedField>Reimbursement_Item__c.Requested_Amount__c</summarizedField>
+    <summaryForeignKey
+  >Reimbursement_Item__c.Reimbursement_Request__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

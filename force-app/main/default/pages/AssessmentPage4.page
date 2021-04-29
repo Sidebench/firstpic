@@ -1,0 +1,359 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>PROGRAM STANDARDS</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="4"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Standard 8: Human Resources</div>
+          <div class="panel-body">
+            <h5>
+              <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                The Agency must have written, documented talent management
+                philosophy and system that describes its values and processes
+                related to attracting talent, hiring and retention, assessing
+                talent, managing performance, and professional development,
+                including, at a minimum:
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                The Sponsoring Organization must have a written, documented
+                talent management philosophy and system that describes its
+                values and processes related to attracting talent, hiring and
+                retention, assessing talent, managing performance, and
+                professional development, including, at a minimum:
+              </apex:outputPanel>
+            </h5>
+            <table class="grid-pd-sm">
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S8_Employee_Handbook__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  A Board-approved, written Employee Handbook that should
+                  include a description of the terms and conditions of
+                  employment, the policies and procedures of the organization,
+                  and, information pertaining to all applicable federal, state
+                  and local employment laws, including, but not limited to,
+                  nondiscrimination and commitment to diversity and inclusion;
+                  sexual harassment; Americans with Disabilities Act (ADA)
+                  compliance; Whistleblower procedures; and conflict of interest
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!assess.S8_Employee_Handbook_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S8_Declaration_No_Excluded__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  A declaration that no individual is excluded from
+                  consideration for employment on the basis of race, age, color,
+                  religion, national origin, gender, marital status, sexual
+                  orientation, veteran status, disability or any other federal,
+                  state or local protected class.
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S8_Declaration_No_Excluded_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S8_Intentionality_Plan__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  A written Board-approved Intentionality Plan, reviewed
+                  annually, to improve diversity and inclusion such that the
+                  Agency Staff composition reflects the communities the Agency
+                  serves, including, at a minimum:
+                  <ol type="a">
+                    <li>
+                      Requiring all Agency Staff to take the BBBSA online
+                      cultural competency training, or a course with the same
+                      objectives, within one year of hire or placement with the
+                      agency, and documenting that training to the personnel
+                      file. Employees responsible for hiring and managing Agency
+                      Staff must take the training within 60 days of hire
+                    </li>
+                    <li>
+                      A documented process that strives to ensure that when
+                      there are job openings, there are qualified diverse
+                      candidates reflective of the community served
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S8_Intentionality_Plan_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S8_Written_Compensation_Philosophy__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    A written compensation philosophy. including written,
+                    Board-approved competitive salary ranges for all paid Agency
+                    Staff based on regional/ local and industry ranges for
+                    compensation and benefits of comparable positions.
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    A written compensation philosophy, including written,
+                    Board-approved competitive salary ranges for all paid BBBS
+                    Program Staff based on regional/ local and industry ranges
+                    for compensation and benefits of comparable positions.
+                  </apex:outputPanel>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S8_Written_Compensation_Philosophy_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S8_Job_Descriptions__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  Job descriptions that clearly state employee duties,
+                  qualifications, essential job functions, physical
+                  requirements, competencies and FLSA (Fair Labor Standards Act)
+                  status and include the following requirement:
+                  <ol type="a">
+                    <li>
+                      <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                        The Executive and professional program Agency
+                        Staff/program supervisors/managers, working in the
+                        enrollment/matching and /or match support role(s) must
+                        have a documented bachelor’s degree from an accredited
+                        college or university as determined by the Agency to be
+                        appropriate for the positions.
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                        The Executive and professional BBBS Program Staff/BBBS
+                        Program supervisors/managers, working in the
+                        enrollment/matching and /or match support role(s) must
+                        have a documented bachelor’s degree from an accredited
+                        college or university as determined by the Sponsoring
+                        Organization to be appropriate for the positions.
+                      </apex:outputPanel>
+                    </li>
+                    <li>
+                      <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                        A written onboarding, oversight, and quality assurance
+                        supervision plan for all Agency Staff, which includes at
+                        a minimum overview of local agency policies and
+                        procedures upon hire.
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                        A written onboarding, oversight, and quality assurance
+                        supervision plan for all BBBS Program Staff, which
+                        includes at a minimum, an overview of local Sponsoring
+                        Organization policies and procedures upon hire.
+                      </apex:outputPanel>
+                    </li>
+                  </ol>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S8_Job_Descriptions_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S8_Written_Annual_Evaluations__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    A provision that all paid Agency Staff have a written,
+                    annual evaluation of their performance on goals, objectives,
+                    and core competencies
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    A provision that all paid BBBS Program Staff have a written,
+                    annual evaluation of their performance on goals, objectives,
+                    and core competencies.
+                  </apex:outputPanel>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S8_Written_Annual_Evaluations_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td class="radioBtnTbl" style="width: 80px">
+                  <apex:selectRadio
+                    disabled="{!userAcctType == 'National Organization'}"
+                    value="{!assess.S8_Confidential_Personnel_Records__c}"
+                  >
+                    <apex:selectOptions value="{!options}" />
+                  </apex:selectRadio>
+                </td>
+                <td>
+                  <apex:outputPanel rendered="{!acct.Type != 'Sponsored'}">
+                    The Agency must maintain, in a secured location,
+                    confidential personnel records and I-9 forms on each
+                    employee, in accordance with all federal, state and local
+                    laws. Agency ensures that any and all medical information
+                    (including records related to FMLA, ADA, HIPAA requests,
+                    etc.) is maintained separate and secure from personnel files
+                    and the information therein kept confidential. All
+                    applicable federal, state and local laws regulating the use
+                    of criminal history records should be followed.
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!acct.Type == 'Sponsored'}">
+                    The Sponsoring Organization must maintain, in a secured
+                    location, confidential personnel records and I-9 forms on
+                    each employee, in accordance with all federal, state and
+                    local laws. Sponsoring Organization ensures that any and all
+                    medical information (including records related to FMLA, ADA,
+                    HIPAA requests, etc.) is maintained separate and secure from
+                    personnel files and the information therein kept
+                    confidential. All applicable federal, state and local laws
+                    regulating the use of criminal history records should be
+                    followed.
+                  </apex:outputPanel>
+                </td>
+                <td
+                  class="pull-right"
+                  style="min-width: 100px; font-weight: bold"
+                >
+                  <apex:inputField
+                    value="{!assess.S8_Confidential_Personnel_Records_Text__c}"
+                    styleClass="input-sm"
+                  />
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="4"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+      </div>
+    </div>
+
+    <apex:outputPanel id="placeholder"></apex:outputPanel>
+    <apex:actionFunction
+      action="{!setParams}"
+      name="setParams"
+      reRender="placeholder"
+    >
+      <apex:param name="nextTabId" assignTo="{!nextTabId}" value="" />
+    </apex:actionFunction>
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      setParams(5);
+    };
+  </script>
+</apex:page>

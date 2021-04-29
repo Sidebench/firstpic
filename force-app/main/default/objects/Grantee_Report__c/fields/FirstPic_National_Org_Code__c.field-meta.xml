@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FirstPic_National_Org_Code__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >IF(Grant__r.FirstPic_National_Org_Code__c != null, Grant__r.FirstPic_National_Org_Code__c,  
+IF(Organization__r.FirstPic_National_Org_Code__c != null, Organization__r.FirstPic_National_Org_Code__c, 
+Organization__r.FirstPic_Org_Code__c))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>FirstPic National Org Code</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

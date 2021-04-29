@@ -1,0 +1,115 @@
+<apex:page
+  controller="PALogCtrl"
+  action="{!getDropdowns}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Monthly PA Logs</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="{!IF(userAcctType == 'Site', 'logs', 'program')}"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Monthly PA Logs</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+              Site: &nbsp;<apex:inputText
+                value="{!site}"
+                style="width: 200px"
+              />&nbsp;
+            </apex:outputPanel>
+            &nbsp;&nbsp; Month: &nbsp;
+            <apex:selectList value="{!month}" size="1">
+              <apex:selectOptions value="{!months}" />
+            </apex:selectList>
+            &nbsp;&nbsp; Year: &nbsp;
+            <apex:selectList value="{!year}" size="1">
+              <apex:selectOptions value="{!years}" />
+            </apex:selectList>
+            <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+              <div style="margin: 5px"></div>
+              Status: &nbsp;
+              <apex:selectList value="{!status}" size="1">
+                <apex:selectOptions value="{!statusOptions}" />
+              </apex:selectList>
+              &nbsp;&nbsp; Sort By: &nbsp;
+              <apex:selectList value="{!sortBy}" size="1">
+                <apex:selectOptions value="{!sortByOptions}" />
+              </apex:selectList>
+            </apex:outputPanel>
+            &nbsp;
+            <apex:commandButton
+              action="{!getReportLists}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+            <apex:commandButton
+              action="{!getReportLists}"
+              value="Clear"
+              status="pageStatus"
+              styleClass="btn-small"
+              reRender="form"
+            >
+              <apex:param assignTo="{!site}" name="site" value="" />
+              <apex:param assignTo="{!month}" name="month" value="" />
+            </apex:commandButton>
+            <div style="margin: 5px"></div>
+          </div>
+        </div>
+
+        <table class="table text-center">
+          <tr>
+            <td>
+              <div style="font-weight: bold">PA Log Count</div>
+              {!paLogCount}
+            </td>
+            <td>
+              <div style="font-weight: bold">Days Reported Open</div>
+              {!daysReportedOpen}
+            </td>
+            <td>
+              <div style="font-weight: bold">
+                Minutes Reported / Average per Day
+              </div>
+              {!minutes} / {!miutesAverage}
+            </td>
+            <td>
+              <div style="font-weight: bold">
+                Boys Reported / Average per Day
+              </div>
+              {!boys} / {!boysAverage}
+            </td>
+            <td>
+              <div style="font-weight: bold">
+                Girls Reported / Average per Day
+              </div>
+              {!girls} / {!girlsAverage}
+            </td>
+          </tr>
+        </table>
+
+        <c:MonthlyPALogsList
+          userAcctType="{!userAcctType}"
+          header="Reports"
+          report_list="{!report_list}"
+          showSiteCol="{!userAcctType != 'Site'}"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage errorMessage="{!sizeErrorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

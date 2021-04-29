@@ -1,0 +1,196 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="header"
+    description="header"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showNameCol"
+    description="showNameCol"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showSiteCol"
+    description="showSiteCol"
+    required="false"
+    default="true"
+  />
+  <!--<apex:attribute type="Boolean" name="showGrantCol" description="showGrantCol" required="false" default="false" />-->
+  <apex:attribute
+    type="Boolean"
+    name="showAddBtn"
+    description="showAddBtn"
+    required="false"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showPagination"
+    description="showPagination"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="YouthDataCtrl"
+    name="ctrl"
+    description="YouthDataCtrl"
+    required="false"
+  />
+
+  <apex:outputPanel id="paginatedList">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {!header}
+        <div class="pull-right">
+          <apex:commandButton
+            action="{!URLFOR($Site.Prefix+'/YouthForm?localOrgId='+ ctrl.localOrgId +'&siteId='+ ctrl.siteId +'&grantId='+ ctrl.grantId +'&year='+ ctrl.year)}"
+            value="Add Youth"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!showAddBtn}"
+          />
+        </div>
+      </div>
+      <div class="panel-body">
+        <apex:outputPanel rendered="{!ctrl.items.size > 0}">
+          <table width="100%">
+            <tr>
+              <th style="{!IF(showNameCol,'','width: 0;')}">
+                <apex:outputText value="Name" rendered="{!showNameCol}" />
+              </th>
+              <th
+                style="{!IF(ctrl.userAcctType == 'National Organization','','width: 0;')}"
+              >
+                <apex:outputText
+                  value="Organization"
+                  rendered="{!ctrl.userAcctType == 'National Organization'}"
+                />
+              </th>
+              <th style="{!IF(showSiteCol,'','width: 0;')}">
+                <apex:outputText value="Site" rendered="{!showSiteCol}" />
+              </th>
+              <!--
+                            <th style="{!IF(showGrantCol,'','width: 0;')}">
+                                <apex:outputText value="Grant" rendered="{!showGrantCol}" />
+                            </th>
+                            -->
+              <th>Year</th>
+              <th>Pre-Test</th>
+              <th>PA Challenge</th>
+              <th>Post-Test</th>
+              <th class="text-center">Highest Chapter Completed</th>
+              <th width="60px" class="text-center">Delete</th>
+            </tr>
+            <apex:repeat value="{!ctrl.items}" var="i">
+              <tr>
+                <td>
+                  <apex:commandLink
+                    action="{!URLFOR($Site.Prefix+'/YouthDetails?youthId='+i.Contact__c)}"
+                    rendered="{!showNameCol}"
+                  >
+                    {!i.Contact_Name__c}
+                  </apex:commandLink>
+                </td>
+                <td>
+                  <apex:outputText
+                    value="{!i.Org_Name__c}"
+                    rendered="{!ctrl.userAcctType == 'National Organization'}"
+                  />
+                </td>
+                <td>
+                  <apex:outputText
+                    value="{!i.Site_Name__c}"
+                    rendered="{!showSiteCol}"
+                  />
+                </td>
+                <!--
+                                <td>
+                                    <apex:outputText value="{!i.Grant_Name__c}" rendered="{!showGrantCol}" />
+                                </td>
+                                -->
+                <td>{!i.Grant_Year__c}</td>
+                <td>
+                  <apex:commandLink
+                    value="{!i.Pre_Test_Status__c}"
+                    action="{!URLFOR($Site.Prefix+'/Survey?surveyId='+i.Pre_Test__c+'&localOrgId='+ ctrl.localOrgId +'&siteId='+ ctrl.siteId +'&grantId='+ ctrl.grantId +'&year='+ ctrl.year)}"
+                  />
+                </td>
+                <td>
+                  <apex:commandLink
+                    value="{!i.PA_Challenge_Status__c}"
+                    action="{!URLFOR($Site.Prefix+'/PAChallenges?yprId='+i.Id+'&localOrgId='+ ctrl.localOrgId +'&siteId='+ ctrl.siteId +'&grantId='+ ctrl.grantId +'&year='+ ctrl.year)}"
+                  />
+                </td>
+                <td>
+                  <apex:commandLink
+                    value="{!i.Post_Test_Status__c}"
+                    action="{!URLFOR($Site.Prefix+'/Survey?surveyId='+i.Post_Test__c+'&localOrgId='+ ctrl.localOrgId +'&siteId='+ ctrl.siteId +'&grantId='+ ctrl.grantId +'&year='+ ctrl.year)}"
+                  />
+                </td>
+                <td class="text-center">{!i.Highest_Chapter_Completed__c}</td>
+                <td class="text-center">
+                  <apex:commandLink
+                    action="{!ctrl.showDeleteYPRPopup}"
+                    reRender="form"
+                    styleClass="text-danger"
+                    rendered="{!i.Grant_Status__c != 'Closed'}"
+                  >
+                    <span class="glyphicon glyphicon-remove"></span>
+                    <apex:param
+                      assignTo="{!ctrl.yprId}"
+                      name="yprId"
+                      value="{!i.Id}"
+                    />
+                  </apex:commandLink>
+                </td>
+              </tr>
+            </apex:repeat>
+          </table>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!ctrl.items.size == 0}">
+          No {!header} Found
+        </apex:outputPanel>
+      </div>
+
+      <c:Pagination
+        disablePrevious="{!ctrl.disablePrevious}"
+        disableNext="{!ctrl.disableNext}"
+        recordCount="{!ctrl.recordCount}"
+        first="{!ctrl.first}"
+        previous="{!ctrl.previous}"
+        next="{!ctrl.next}"
+        last="{!ctrl.last}"
+        rendered="{!showPagination}"
+      />
+    </div>
+
+    <!-- BEGIN deleteYPRPopup -->
+    <apex:outputPanel id="deleteYPRPopup">
+      <c:ConfirmationPopup
+        displayConfirmPopup="{!ctrl.displayDeleteYPRPopup}"
+        header="Delete Youth Data Record"
+        body="Are you sure you want to delete this Youth Data record for {!ctrl.ypr.Contact_Name__c}"
+      >
+        <apex:commandButton
+          action="{!ctrl.hideDeleteYPRPopup}"
+          value="Cancel"
+          status="pageStatus"
+          immediate="true"
+          reRender="form"
+        />
+        <apex:commandButton
+          action="{!ctrl.deleteYPR}"
+          value="Delete"
+          status="pageStatus"
+          styleClass="primary"
+          reRender="form"
+        />
+      </c:ConfirmationPopup>
+    </apex:outputPanel>
+    <!-- END deleteYPRPopup -->
+  </apex:outputPanel>
+</apex:component>

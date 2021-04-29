@@ -1,0 +1,342 @@
+<apex:page
+  controller="ContactFormCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Contact Form</title>
+  </head>
+  <c:LEGOHeader
+    ActivePage="about"
+    acct="{!userAcct}"
+    SessionId="{!SessionId}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          <apex:outputText
+            value="{!acct.Name}"
+            rendered="{!cohortName == null}"
+          />
+          <apex:outputText
+            value="{!cohortName}"
+            rendered="{!cohortName != null}"
+          />
+        </h2>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Youth Information</div>
+          <div class="panel-body">
+            <div class="grid-pd-md">
+              <div class="row">
+                <div class="col-xs-4">
+                  First Name
+                  <apex:inputField value="{!youth.FirstName}" />
+                </div>
+                <div class="col-xs-4">
+                  Last Name
+                  <apex:inputField value="{!youth.LastName}" required="false" />
+                </div>
+                <div class="col-xs-4">
+                  Birthdate
+                  <apex:input
+                    type="date"
+                    value="{!birthdate}"
+                    style="width: 100%"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  Gender
+                  <apex:inputField
+                    value="{!youth.Gender__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  Race
+                  <apex:inputField
+                    value="{!youth.Race__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  Ethnicity
+                  <apex:inputField
+                    value="{!youth.Ethnicity__c}"
+                    style="display: block"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  Grade
+                  <apex:inputField
+                    value="{!youth.Grade_Level__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  School
+                  <apex:inputField
+                    value="{!youth.School_Name__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  Free/Reduced Lunch
+                  <apex:inputField
+                    value="{!youth.Free_Reduced_Lunch_Status__c}"
+                    style="display: block"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-4">
+                  Prior FLL Jr Experience
+                  <apex:inputField
+                    value="{!youth.Prior_FLL_Jr_Experience__c}"
+                    style="display: block"
+                  />
+                </div>
+                <div class="col-xs-4">
+                  ELL
+                  <apex:inputField
+                    value="{!youth.ELL__c}"
+                    style="display: block"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer">
+            <apex:commandButton
+              value="Assign To Cohort"
+              action="{!cohortPopup}"
+              reRender="cohortPopup"
+            />
+            {!youth.Cohort__r.Name}
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Parent Information</div>
+          <div class="panel-body">
+            <div class="grid-pd-md">
+              <div class="row">
+                <div class="col-xs-3">
+                  <span style="font-weight: bold"> Name: &nbsp;&nbsp; </span>
+                  <apex:inputField value="{!youth.Parent_Guardian_Name__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <span style="font-weight: bold"> Email: &nbsp;&nbsp; </span>
+                  <apex:inputField value="{!youth.Parent_Guardian_Email__c}" />
+                </div>
+                <div class="col-xs-3">
+                  <span style="font-weight: bold"> Phone: &nbsp;&nbsp; </span>
+                  <apex:inputField value="{!youth.Parent_Guardian_Phone__c}" />
+                </div>
+              </div>
+              <!--
+                            <apex:outputPanel rendered="{!parent.Id == null}">
+                                No Parent/Guardian Information Found. 
+                            </apex:outputPanel>
+							-->
+            </div>
+          </div>
+          <!--
+                    <div class="panel-footer">
+                        <apex:commandButton value="Edit" action="{!contactPopup}" rendered="{!parent.Id != null}" reRender="contactPopup">
+                            <apex:param assignTo="{!searchMode}" name="searchMode" value="false" />
+                        </apex:commandButton>
+                        <apex:commandButton value="Add Parent/Guardian" action="{!contactPopup}" rendered="{!parent.Id == null}" reRender="contactPopup">
+                            <apex:param assignTo="{!searchMode}" name="searchMode" value="true" />
+                        </apex:commandButton>
+                    </div>
+					-->
+        </div>
+
+        <apex:commandButton
+          value="Cancel"
+          action="{!returnToAbout}"
+          immediate="true"
+        />
+        <apex:commandButton
+          value="Save"
+          action="{!save}"
+          styleClass="primary"
+          reRender="form"
+        />
+        <apex:commandButton
+          value="Save and Add Another"
+          action="{!saveAndAdd}"
+          reRender="form"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <!--
+                <apex:outputPanel id="contactPopup">
+                    <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayContactPopup}"/>
+                    <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayContactPopup}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <apex:outputPanel rendered="{!searchMode}">
+                                        <h4 class="modal-title">Search for Parent/Guardian</h4>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!NOT(searchMode)}">
+                                        <h4 class="modal-title">Edit Parent/Guardian Information</h4>
+                                    </apex:outputPanel>
+                                </div>
+                                <apex:outputPanel rendered="{!searchMode}">
+                                    <div class="modal-body grid-pd-md"> 
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <span style="font-weight: bold;">
+                                                    Last Name: &nbsp;&nbsp;
+                                                    <apex:inputText value="{!lastName}" />
+                                                </span>  
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <span style="font-weight: bold;">
+                                                    Email: &nbsp;&nbsp;
+                                                    <apex:inputText value="{!email}" />
+                                                </span> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <apex:commandButton value="Search" action="{!contactSearch}" reRender="contactPopup" />
+                                            </div>
+                                        </div>
+                                        <apex:dataTable value="{!contact_list}" var="i" cellpadding="4" style="width: 100%;" rendered="{!contact_list.size > 0}">
+                                            <apex:column headerClass="text-center col-sm"  styleClass="text-center">
+                                                <apex:commandLink action="{!selectContact}" reRender="form"> 
+                                                    <span class="glyphicon glyphicon-unchecked"></span>
+                                                    <apex:param assignTo="{!ParentId}" name="ParentId" value="{!i.Id}" />
+                                                </apex:commandLink>
+                                            </apex:column>
+                                            <apex:column headerValue="Name">
+                                                <apex:outputField value="{!i.Name}" />
+                                            </apex:column> 
+                                            <apex:column headerValue="Email">
+                                                <apex:outputField value="{!i.Email}" />
+                                            </apex:column> 
+                                        </apex:dataTable>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <apex:commandButton action="{!contactPopup}" value="Cancel" immediate="true" reRender="form" />
+                                        <apex:commandButton value="Create New Parent/Guardian" styleClass="primary" reRender="contactPopup">
+                                            <apex:param assignTo="{!searchMode}" name="searchMode" value="false" />
+                                        </apex:commandButton>
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!NOT(searchMode)}">
+                                    <div class="modal-body grid-pd-md"> 
+                                        <div class="row">
+                                            <div class="col-xs-6">                 
+                                                First Name
+                                                <apex:inputField value="{!parent.FirstName}" />
+                                            </div>
+                                            <div class="col-xs-6">                 
+                                                Last Name
+                                                <apex:inputField value="{!parent.LastName}" required="true" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-6">                 
+                                                Email
+                                                <apex:inputField value="{!parent.Email}" rendered="true" />
+                                            </div>
+                                            <div class="col-xs-6">                 
+                                                Phone
+                                                <apex:inputField value="{!parent.Phone}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <apex:commandButton action="{!contactPopup}" value="Cancel" immediate="true" reRender="contactPopup" />
+                                        <apex:commandButton value="Save" action="{!upsertParent}" styleClass="primary" reRender="form" />
+                                    </div>
+                                </apex:outputPanel>
+                        	</div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                -->
+
+        <apex:outputPanel id="cohortPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayCohortPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayCohortPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Select a Cohort</h4>
+                </div>
+                <div class="modal-body">
+                  <apex:dataTable
+                    value="{!cohort_map}"
+                    var="i"
+                    cellpadding="4"
+                    styleClass="fixedTbl"
+                  >
+                    <apex:column
+                      headerClass="text-center col-sm"
+                      styleClass="text-center"
+                    >
+                      <apex:commandLink
+                        action="{!selectCohort}"
+                        reRender="form"
+                      >
+                        <apex:outputPanel rendered="{!i != youth.Cohort__c}">
+                          <span class="glyphicon glyphicon-unchecked"></span>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!i == youth.Cohort__c}">
+                          <span class="glyphicon glyphicon-check"></span>
+                        </apex:outputPanel>
+                        <apex:param
+                          assignTo="{!CohortId}"
+                          name="CohortId"
+                          value="{!i}"
+                        />
+                        <apex:param
+                          assignTo="{!cohortName}"
+                          name="cohortName"
+                          value="{!cohort_map[i]}"
+                        />
+                      </apex:commandLink>
+                    </apex:column>
+                    <apex:column headerValue="Name">
+                      {!cohort_map[i]}
+                    </apex:column>
+                  </apex:dataTable>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!cohortPopup}"
+                    value="Cancel"
+                    immediate="true"
+                    reRender="cohortPopup"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Organization_Name__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(Organization__c != null, Organization__r.Name, 
+IF(Assessment__c != null,  Assessment__r.Organization_Name__c, 
+IF(Grant__c != null, Grant__r.Organization_Name__c, 
+IF(Reimbursement__c != null, Reimbursement__r.Organization__c, 
+IF(Session_Report__c != null, Session_Report__r.Site_Name__c, 
+&apos;&apos;)))))</formula>
+    <label>Organization Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Source_Type_Options__c</fullName>
+    <externalId>false</externalId>
+    <label>Source Type Options</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Baltimore Gas &amp; Electric</fullName>
+                <default>false</default>
+                <label>Baltimore Gas &amp; Electric</label>
+            </value>
+            <value>
+                <fullName>Bauer Foundation</fullName>
+                <default>false</default>
+                <label>Bauer Foundation</label>
+            </value>
+            <value>
+                <fullName>CareFirst</fullName>
+                <default>false</default>
+                <label>CareFirst</label>
+            </value>
+            <value>
+                <fullName>Charles Crane Foundation</fullName>
+                <default>false</default>
+                <label>Charles Crane Foundation</label>
+            </value>
+            <value>
+                <fullName>Charles T. Bauer Charitable Fdn</fullName>
+                <default>false</default>
+                <label>Charles T. Bauer Charitable Fdn</label>
+            </value>
+            <value>
+                <fullName>COPS</fullName>
+                <default>false</default>
+                <label>COPS</label>
+            </value>
+            <value>
+                <fullName>CRSF</fullName>
+                <default>false</default>
+                <label>CRSF</label>
+            </value>
+            <value>
+                <fullName>Fund II</fullName>
+                <default>false</default>
+                <label>Fund II</label>
+            </value>
+            <value>
+                <fullName>GEICO</fullName>
+                <default>false</default>
+                <label>GEICO</label>
+            </value>
+            <value>
+                <fullName>Healthy Lifestyles (HL)</fullName>
+                <default>false</default>
+                <label>Healthy Lifestyles (HL)</label>
+            </value>
+            <value>
+                <fullName>Herb Block Foundation</fullName>
+                <default>false</default>
+                <label>Herb Block Foundation</label>
+            </value>
+            <value>
+                <fullName>JeepChrysler</fullName>
+                <default>false</default>
+                <label>JeepChrysler</label>
+            </value>
+            <value>
+                <fullName>Marriott Foundation</fullName>
+                <default>false</default>
+                <label>Marriott Foundation</label>
+            </value>
+            <value>
+                <fullName>Mississippi Department of Human Services</fullName>
+                <default>false</default>
+                <label>Mississippi Department of Human Services</label>
+            </value>
+            <value>
+                <fullName>Naples Children &amp; Education Foundation</fullName>
+                <default>false</default>
+                <label>Naples Children &amp; Education Foundation</label>
+            </value>
+            <value>
+                <fullName>Niagara Cares Hurricane Relief Foundation</fullName>
+                <default>false</default>
+                <label>Niagara Cares Hurricane Relief Foundation</label>
+            </value>
+            <value>
+                <fullName>Niagara Cares	Niagara Cares</fullName>
+                <default>false</default>
+                <label>Niagara Cares	Niagara Cares</label>
+            </value>
+            <value>
+                <fullName>North Carolina Department of Justice</fullName>
+                <default>false</default>
+                <label>North Carolina Department of Justice</label>
+            </value>
+            <value>
+                <fullName
+        >Office of Juvenile Justice &amp; Delinquency Prevention</fullName>
+                <default>false</default>
+                <label
+        >Office of Juvenile Justice &amp; Delinquency Prevention</label>
+            </value>
+            <value>
+                <fullName>Ohio Office of the Attorney General</fullName>
+                <default>false</default>
+                <label>Ohio Office of the Attorney General</label>
+            </value>
+            <value>
+                <fullName>Perdue &amp; Henson Foundation</fullName>
+                <default>false</default>
+                <label>Perdue &amp; Henson Foundation</label>
+            </value>
+            <value>
+                <fullName>PNC Fdn</fullName>
+                <default>false</default>
+                <label>PNC Fdn</label>
+            </value>
+            <value>
+                <fullName>Prince William HIDTA</fullName>
+                <default>false</default>
+                <label>Prince William HIDTA</label>
+            </value>
+            <value>
+                <fullName>Private Grants</fullName>
+                <default>false</default>
+                <label>Private Grants</label>
+            </value>
+            <value>
+                <fullName>Roanoke HIDTA</fullName>
+                <default>false</default>
+                <label>Roanoke HIDTA</label>
+            </value>
+            <value>
+                <fullName>Sherman Fairchild Fdn</fullName>
+                <default>false</default>
+                <label>Sherman Fairchild Fdn</label>
+            </value>
+            <value>
+                <fullName>SUEZ</fullName>
+                <default>false</default>
+                <label>SUEZ</label>
+            </value>
+            <value>
+                <fullName>Sun Trust Bank</fullName>
+                <default>false</default>
+                <label>Sun Trust Bank</label>
+            </value>
+            <value>
+                <fullName>Toledo Community Fdn</fullName>
+                <default>false</default>
+                <label>Toledo Community Fdn</label>
+            </value>
+            <value>
+                <fullName>TransAmerica</fullName>
+                <default>false</default>
+                <label>TransAmerica</label>
+            </value>
+            <value>
+                <fullName>Under Armour</fullName>
+                <default>false</default>
+                <label>Under Armour</label>
+            </value>
+            <value>
+                <fullName>United Health Care</fullName>
+                <default>false</default>
+                <label>United Health Care</label>
+            </value>
+            <value>
+                <fullName>US Department of State</fullName>
+                <default>false</default>
+                <label>US Department of State</label>
+            </value>
+            <value>
+                <fullName>Viragh Family Foundation</fullName>
+                <default>false</default>
+                <label>Viragh Family Foundation</label>
+            </value>
+            <value>
+                <fullName>Washington/Baltimore HIDTA</fullName>
+                <default>false</default>
+                <label>Washington/Baltimore HIDTA</label>
+            </value>
+            <value>
+                <fullName>Wisconsin Department of Justice</fullName>
+                <default>false</default>
+                <label>Wisconsin Department of Justice</label>
+            </value>
+            <value>
+                <fullName>YDP Growth Fund</fullName>
+                <default>false</default>
+                <label>YDP Growth Fund</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

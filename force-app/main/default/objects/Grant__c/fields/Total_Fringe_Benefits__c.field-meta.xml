@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Fringe_Benefits__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Budget Item: Fringe Benefits</inlineHelpText>
+    <label>Total Fringe Benefits</label>
+    <summarizedField>Budget_Item__c.Fringe_Benefits__c</summarizedField>
+    <summaryForeignKey>Budget_Item__c.Grant__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

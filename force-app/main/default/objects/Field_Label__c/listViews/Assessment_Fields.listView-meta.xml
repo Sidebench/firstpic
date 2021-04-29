@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Assessment_Fields</fullName>
+    <columns>NAME</columns>
+    <columns>Field_API__c</columns>
+    <columns>Field_Name__c</columns>
+    <columns>Order__c</columns>
+    <columns>Year__c</columns>
+    <columns>Label__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Object__c</field>
+        <operation>equals</operation>
+        <value>Assessment__c</value>
+    </filters>
+    <label>Assessment Fields</label>
+</ListView>

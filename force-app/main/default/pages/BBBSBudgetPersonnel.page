@@ -1,0 +1,879 @@
+<apex:page
+  controller="BudgetPersonnelCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Sub-Grant Budget Form</title>
+  </head>
+  <c:Header
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form>
+    <apex:outputPanel id="budgetForm">
+      <div class="main-panel">
+        <div class="content">
+          <div class="row">
+            <div class="col-xs-6">
+              <h2>{!grant.Name}</h2>
+            </div>
+            <div class="col-xs-6 pull-right text-right">
+              <h2>
+                Total: &nbsp;
+                <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                  <apex:param value="{!grant.Amount__c}" />
+                </apex:outputText>
+              </h2>
+            </div>
+          </div>
+
+          <div class="grid-pd-sm">
+            <div class="row">
+              <div class="col-xs-6">
+                <div class="row">
+                  <div class="col-auto">
+                    Projected # of children served during the Grant performance
+                    period: &nbsp;
+                    <apex:inputText
+                      value="{!grant.Youth_Served__c}"
+                      styleClass="input-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-auto">
+                    Projected # of children served with grant funding during the
+                    Grant performance period: &nbsp;
+                    <apex:inputText
+                      value="{!grant.Youth_Served_with_Grant_Funding__c}"
+                      styleClass="input-sm"
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-auto">
+                    Number of Full Time Equivalent staff at Affiliate: &nbsp;
+                    <apex:inputText
+                      value="{!grant.FTE_at_Affiliate__c}"
+                      styleClass="input-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xs-6">
+                <div class="row">
+                  <div class="col-auto pull-right">
+                    Sub-Grant Date Range: &nbsp;
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!grant.Grant_Start_Date__c}" />
+                    </apex:outputText>
+                    -
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!grant.Grant_End_Date__c}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-auto pull-right">
+                    Sub-Grant Duration: &nbsp; {!grant.Grant_Duration__c}
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-auto pull-right">
+                    <br />
+                    Please note: If calculations seem off by small amounts, it
+                    is because totals are calculated based on the number of days
+                    in the grant period.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info" role="alert">
+            <strong>
+              To zero out a line item in your budget, use the checkbox next to
+              the item and then click the button in the upper right that says
+              "Mark Inactive", rather than changing the Rate to zero.
+            </strong>
+          </div>
+
+          <apex:outputPanel id="lists">
+            <apex:outputPanel rendered="{!labor_list.size > 0}">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  Update Personnel Items
+                  <div class="pull-right">
+                    <apex:outputPanel rendered="{!NOT(hasReimbursements)}">
+                      <apex:selectList
+                        id="Actions"
+                        size="1"
+                        value="{!bulkAction}"
+                      >
+                        <apex:selectOptions value="{!options}" />
+                      </apex:selectList>
+                      &nbsp;
+                      <apex:commandButton
+                        action="{!updateSelected}"
+                        value="Update"
+                        status="pageStatus"
+                        styleClass="btn-small btn-white"
+                        rerender="budgetForm, errorMessage"
+                      />
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!hasReimbursements}">
+                      <apex:commandButton
+                        action="{!updateSelected}"
+                        value="Mark Inactive"
+                        status="pageStatus"
+                        styleClass="btn-small btn-white"
+                        rerender="budgetForm, errorMessage"
+                      >
+                        <apex:param
+                          assignTo="{!bulkAction}"
+                          id="bulkAction"
+                          value="disable"
+                        />
+                      </apex:commandButton>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+                <div class="panel-body">
+                  <apex:outputPanel id="laborItems">
+                    <table style="width: 100%">
+                      <tr>
+                        <th style="width: 20px"></th>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th class="text-center">
+                          Hourly
+                          <span class="badge" title="Hourly Employee">?</span>
+                        </th>
+                        <th class="text-center">
+                          Rate
+                          <span
+                            class="badge"
+                            title="Annual Salary / Hourly Rate"
+                            >?</span
+                          >
+                        </th>
+                        <th class="text-center">
+                          Total Hrs/Wk
+                          <span
+                            class="badge"
+                            title="Projected Hours per Week Total"
+                            >?</span
+                          >
+                        </th>
+                        <th class="text-center">
+                          Grant Hrs/Wk
+                          <span
+                            class="badge"
+                            title="Projected Hours per Week Towards Grant"
+                            >?</span
+                          >
+                        </th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>% Time on Grant</th>
+                        <th>Projected Total</th>
+                      </tr>
+                      <apex:repeat value="{!labor_list}" var="i">
+                        <tr>
+                          <td>
+                            <apex:inputCheckbox
+                              value="{!i.Selected__c}"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                          </td>
+                          <td>{!i.Name}</td>
+                          <td>
+                            <apex:inputText
+                              value="{!i.Title__c}"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputText
+                              value="{!i.Title__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputCheckbox
+                              value="{!i.Is_Hourly__c}"
+                              disabled="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.New_Rate__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Hourly_Rate__c}"
+                              rendered="{!NOT(i.Is_Active__c) && i.Is_Hourly__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Salary__c}"
+                              rendered="{!NOT(i.Is_Active__c) && NOT(i.Is_Hourly__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Projected_Hours_Per_Week__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Projected_Hours_Per_Week__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputField
+                              value="{!i.Start_Date__c}"
+                              rendered="{!i.Is_Active__c}"
+                              styleClass="input-md"
+                            />
+                            <apex:outputText
+                              value="{0, date, MM'/'dd'/'yyyy}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            >
+                              <apex:param value="{!i.Start_Date__c}" />
+                            </apex:outputText>
+                          </td>
+                          <td class="text-center">
+                            <apex:inputField
+                              value="{!i.End_Date__c}"
+                              rendered="{!i.Is_Active__c}"
+                              styleClass="input-md"
+                            />
+                            <apex:outputText
+                              value="{0, date, MM'/'dd'/'yyyy}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            >
+                              <apex:param value="{!i.End_Date__c}" />
+                            </apex:outputText>
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!i.Projected_Percent_Time_on_Grant__c}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputText
+                              value="${0, number, ###,###,###,##0.00}"
+                            >
+                              <apex:param value="{!i.New_Item_Budget__c}" />
+                            </apex:outputText>
+                          </td>
+                        </tr>
+                      </apex:repeat>
+                    </table>
+                  </apex:outputPanel>
+                </div>
+              </div>
+
+              <div class="panel panel-default">
+                <div class="panel-heading">Fringe Benefits</div>
+                <div class="panel-body">
+                  <h6>Please enter annual benefit rates per employee.</h6>
+                  <apex:outputPanel id="fringeItems">
+                    <table style="width: 100%">
+                      <tr>
+                        <th>Name</th>
+                        <th class="text-center">FICA (7.65%)</th>
+                        <th class="text-center">Medical</th>
+                        <th class="text-center">Dental</th>
+                        <th class="text-center">Short Term Disability</th>
+                        <th class="text-center">Long Term Disability</th>
+                        <th class="text-center">Life</th>
+                        <th class="text-center">Other</th>
+                        <th>Total Fringe Benefits</th>
+                        <th class="text-center">Notes</th>
+                      </tr>
+                      <apex:repeat value="{!labor_list}" var="i">
+                        <tr>
+                          <td>{!i.Name}</td>
+                          <td class="text-center">
+                            <apex:outputField value="{!i.FICA__c}" />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Medical__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Medical__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Dental__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Dental__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Short_Term_Disability__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Short_Term_Disability__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Long_Term_Disability__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Long_Term_Disability__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Life__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Life__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Other_Benefits__c}"
+                              styleClass="input-sm"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputField
+                              value="{!i.Other_Benefits__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputField
+                              value="{!i.New_Fringe_Benefits__c}"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:commandLink
+                              action="{!showLaborNotesPopup}"
+                              status="pageStatus"
+                              reRender="laborNotesPopup"
+                            >
+                              <apex:outputText
+                                rendered="{!i.Has_Notes__c == true || i.Item_Note__c != null || i.Response__c != null}"
+                              >
+                                <span
+                                  class="glyphicon glyphicon-comment"
+                                ></span>
+                              </apex:outputText>
+                              <apex:outputText
+                                value="+"
+                                rendered="{!i.Has_Notes__c == false && i.Item_Note__c == null && i.Response__c == null}"
+                              />
+                              <apex:param
+                                name="selectedItemId"
+                                value="{!i.Id}"
+                                assignTo="{!selectedItemId}"
+                              />
+                            </apex:commandLink>
+                          </td>
+                        </tr>
+                      </apex:repeat>
+                    </table>
+                  </apex:outputPanel>
+                </div>
+              </div>
+            </apex:outputPanel>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Add Personnel Items
+                <div class="pull-right">
+                  <apex:commandButton
+                    action="{!deleteItems}"
+                    value="Delete Items"
+                    status="pageStatus"
+                    styleClass="btn-small btn-white"
+                    rerender="budgetForm"
+                  />
+                </div>
+              </div>
+              <div id="collapse1" class="panel-collapse in">
+                <div class="panel-body grid-pd-sm">
+                  <apex:outputPanel id="newLaborItems">
+                    <table style="width: 100%">
+                      <tr>
+                        <th style="width: 20px"></th>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th class="text-center">
+                          Hourly
+                          <span class="badge" title="Hourly Employee">?</span>
+                        </th>
+                        <th class="text-center">
+                          Rate
+                          <span
+                            class="badge"
+                            title="Annual Salary / Hourly Rate"
+                            >?</span
+                          >
+                        </th>
+                        <th class="text-center">
+                          Total Hrs/Wk
+                          <span
+                            class="badge"
+                            title="Projected Hours per Week Total"
+                            >?</span
+                          >
+                        </th>
+                        <th class="text-center">
+                          Grant Hrs/Wk
+                          <span
+                            class="badge"
+                            title="Projected Hours per Week Towards Grant"
+                            >?</span
+                          >
+                        </th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>% Time on Grant</th>
+                        <th>Projected Total</th>
+                      </tr>
+                      <apex:repeat value="{!newLabor_list}" var="i">
+                        <tr>
+                          <td>
+                            <apex:inputCheckbox value="{!i.Selected__c}" />
+                          </td>
+                          <td>
+                            <apex:inputText value="{!i.Name}" />
+                          </td>
+                          <td>
+                            <apex:inputText value="{!i.Title__c}" />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputField value="{!i.Is_Hourly__c}" />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.New_Rate__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Projected_Hours_Per_Week__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputField
+                              value="{!i.Start_Date__c}"
+                              styleClass="input-md"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputField
+                              value="{!i.End_Date__c}"
+                              styleClass="input-md"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:outputText
+                              value="{!i.Projected_Percent_Time_on_Grant__c}"
+                            />%
+                          </td>
+                          <td>
+                            <apex:outputText
+                              value="${0, number, ###,###,###,##0.00}"
+                            >
+                              <apex:param value="{!i.New_Item_Budget__c}" />
+                            </apex:outputText>
+                          </td>
+                        </tr>
+                      </apex:repeat>
+                    </table>
+                    <hr />
+                    <table style="width: 100%">
+                      <tr>
+                        <th style="width: 30px"></th>
+                        <th>Name</th>
+                        <th class="text-center">FICA (7.65%)</th>
+                        <th class="text-center">Medical</th>
+                        <th class="text-center">Dental</th>
+                        <th class="text-center">S.T. Disability</th>
+                        <th class="text-center">L.T. Disability</th>
+                        <th class="text-center">Life</th>
+                        <th class="text-center">Other</th>
+                        <th>Total Fringe Benefits</th>
+                        <th class="text-center">Notes</th>
+                      </tr>
+                      <apex:repeat value="{!newLabor_list}" var="i">
+                        <tr>
+                          <td></td>
+                          <td>{!i.Name}</td>
+                          <td>
+                            <apex:outputText
+                              value="${0, number, ###,###,###,##0.00}"
+                            >
+                              <apex:param value="{!i.FICA__c}" />
+                            </apex:outputText>
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Medical__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Dental__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Short_Term_Disability__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Long_Term_Disability__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Life__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td class="text-center">
+                            <apex:inputText
+                              value="{!i.Other_Benefits__c}"
+                              styleClass="input-sm"
+                            />
+                          </td>
+                          <td>
+                            <apex:outputText
+                              value="${0, number, ###,###,###,##0.00}"
+                            >
+                              <apex:param value="{!i.New_Fringe_Benefits__c}" />
+                            </apex:outputText>
+                          </td>
+                          <td class="text-center">
+                            <apex:commandLink
+                              action="{!newLaborNotesPopup}"
+                              status="pageStatus"
+                              reRender="newLaborNotesPopup"
+                            >
+                              <apex:outputText
+                                rendered="{!i.Item_Note__c != null || i.Response__c != null}"
+                              >
+                                <span
+                                  class="glyphicon glyphicon-comment"
+                                ></span>
+                              </apex:outputText>
+                              <apex:outputText
+                                rendered="{!i.Item_Note__c == null && i.Response__c == null}"
+                                >+</apex:outputText
+                              >
+                            </apex:commandLink>
+                            <apex:outputPanel id="newLaborNotesPopup">
+                              <apex:outputPanel
+                                styleClass="popupBackground"
+                                layout="block"
+                                rendered="{!displayNewLaborNotesPopup}"
+                              />
+                              <apex:outputPanel
+                                styleClass="custPopup"
+                                layout="block"
+                                rendered="{!displayNewLaborNotesPopup}"
+                              >
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">
+                                        Notes for &nbsp;<apex:outputText
+                                          value="{!i.Name}"
+                                        />
+                                      </h4>
+                                    </div>
+                                    <div class="modal-body">
+                                      <apex:inputTextarea
+                                        value="{!i.Item_Note__c}"
+                                      />
+                                      <br />
+                                      <hr />
+                                      <apex:outputPanel
+                                        rendered="{!i.Response__c != null}"
+                                      >
+                                        <apex:outputText
+                                          value="{!i.Response__c}"
+                                        />
+                                      </apex:outputPanel>
+                                      <apex:outputPanel
+                                        rendered="{!i.Response__c == null}"
+                                      >
+                                        No Notes from National
+                                      </apex:outputPanel>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <apex:commandButton
+                                        action="{!newLaborNotesPopup}"
+                                        value="Save and Close"
+                                        status="pageStatus"
+                                        styleClass="primary"
+                                        reRender="newLaborNotesPopup, budgetForm"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </apex:outputPanel>
+                            </apex:outputPanel>
+                          </td>
+                        </tr>
+                      </apex:repeat>
+                    </table>
+                  </apex:outputPanel>
+                </div>
+                <div class="panel-footer">
+                  <apex:commandButton
+                    value="Add"
+                    action="{!addItem}"
+                    status="pageStatus"
+                    rerender="newLaborItems, errorMessage"
+                  >
+                    <apex:param assignTo="{!recordType}" value="labor" />
+                  </apex:commandButton>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <apex:outputText value="Personnel Notes" />
+            </div>
+            <div class="panel-body">
+              <apex:inputTextarea value="{!grant.Labor_Notes__c}" />
+              <hr />
+              <apex:outputText
+                value="No notes from National"
+                rendered="{!grant.Labor_Response__c == null}"
+              />
+              <apex:outputText
+                value="Notes from National: "
+                rendered="{!grant.Labor_Response__c != null}"
+              />
+              <apex:outputText value="{!grant.Labor_Response__c}" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-6">
+              <apex:commandButton
+                action="{!updateAmounts}"
+                value="Update Amounts"
+                status="pageStatus"
+                rerender="budgetForm"
+              />
+              <apex:commandButton
+                action="{!saveAndExit}"
+                value="Save and Exit"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                value="Next"
+                action="{!ratePopup}"
+                rendered="{!grant.Grant_Indirect_Rate_Allowed__c && grant.Grant_Status__c == 'Incomplete'}"
+                status="pageStatus"
+                styleClass="btn primary"
+                rerender="budgetForm"
+              />
+              <apex:commandButton
+                value="Next"
+                action="{!saveAndContinue}"
+                rendered="{!NOT(grant.Grant_Indirect_Rate_Allowed__c) || grant.Grant_Status__c != 'Incomplete'}"
+                status="pageStatus"
+                styleClass="btn primary"
+                rerender="budgetForm"
+              />
+            </div>
+            <div class="col-xs-6 pull-right text-right">
+              <apex:outputPanel id="totals">
+                <!--
+                                <div style="padding-bottom: 5px;">
+                                    Requested Personnel:  &nbsp;
+                                    <apex:outputText value="${0, number, ###,###,###,##0.00}">                   
+                                        <apex:param value="{!laborRequestedAmount}"/>               
+                                    </apex:outputText>
+                                    <br />
+                                    Requested Expenses:  &nbsp;
+                                    <apex:outputText value="${0, number, ###,###,###,##0.00}">                   
+                                        <apex:param value="{!expenseRequestedAmount}"/>               
+                                    </apex:outputText>
+                                </div>
+                                -->
+                <h4>
+                  Total Requested Amount: &nbsp;
+                  <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!totalRequestedAmount}" />
+                  </apex:outputText>
+                </h4>
+              </apex:outputPanel>
+            </div>
+          </div>
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages></apex:pageMessages>
+        </div>
+      </div>
+
+      <apex:outputPanel id="ratePopup">
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayRatePopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayRatePopup}"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Indirect Rate?</h4>
+              </div>
+              <div class="modal-body">
+                Use Indirect Rate? &nbsp;
+                <apex:inputField value="{!grant.Use_Indirect_Rate__c}" />
+                <br /><br />
+                Indirect Rate Amount: &nbsp;
+                <apex:inputField
+                  value="{!grant.Indirect_Rate__c}"
+                  styleClass="input-md"
+                />%
+                <apex:pageMessages></apex:pageMessages>
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  value="Cancel"
+                  action="{!ratePopup}"
+                  status="pageStatus"
+                  rerender="budgetForm"
+                />
+                <apex:commandButton
+                  action="{!saveAndContinue}"
+                  value="Save and Continue"
+                  status="pageStatus"
+                  styleClass="primary"
+                  rerender="budgetForm"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </apex:outputPanel>
+    </apex:outputPanel>
+
+    <apex:outputPanel id="laborNotesPopup">
+      <apex:outputPanel
+        styleClass="popupBackground"
+        layout="block"
+        rendered="{!displayLaborNotesPopup}"
+      />
+      <apex:outputPanel
+        styleClass="custPopup"
+        layout="block"
+        rendered="{!displayLaborNotesPopup}"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">
+                Notes for &nbsp;<apex:outputText value="{!selectedItem.Name}" />
+              </h4>
+            </div>
+            <div class="modal-body">
+              <apex:inputTextarea value="{!selectedItem.Item_Note__c}" />
+              <br />
+              <hr />
+              <apex:outputPanel rendered="{!selectedItem.Response__c != null}">
+                <apex:outputText value="{!selectedItem.Response__c}" />
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!selectedItem.Response__c == null}">
+                No Notes from National
+              </apex:outputPanel>
+            </div>
+            <div class="modal-footer">
+              <apex:commandButton
+                action="{!upsertItem}"
+                value="Save and Close"
+                status="pageStatus"
+                styleClass="primary"
+                reRender="laborNotesPopup, budgetForm"
+              />
+            </div>
+          </div>
+        </div>
+      </apex:outputPanel>
+    </apex:outputPanel>
+
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="lists, totals"
+    />
+  </apex:form>
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

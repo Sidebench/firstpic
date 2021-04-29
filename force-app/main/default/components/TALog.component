@@ -1,0 +1,54 @@
+<apex:component>
+  <apex:attribute type="TA_Log__c" name="log" description="log" />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="getTALog"
+    description="getTALog"
+  />
+
+  <div class="grid-pd-md">
+    <div class="row">
+      <div class="col-xs-3">
+        <strong>Organization:</strong> &nbsp;
+        <apex:outputField value="{!log.Organization_Name__c}" />
+      </div>
+      <div class="col-xs-3">
+        <strong>Date:</strong> &nbsp;
+        <apex:outputField value="{!log.Date__c}" />
+      </div>
+      <div class="col-xs-3">
+        <strong>Is Follow-Up:</strong> &nbsp;
+        <apex:outputField value="{!log.Is_Follow_Up__c}" />
+      </div>
+      <div class="col-xs-3">
+        <strong>Flagged for Follow-up:</strong> &nbsp;
+        <apex:outputField value="{!log.Flagged_for_Follow_Up__c}" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-3">
+        <strong>Topic:</strong> &nbsp;
+        <apex:outputField value="{!log.Topic__c}" />
+      </div>
+      <div class="col-xs-3">
+        <strong>TA By:</strong> &nbsp;
+        <apex:outputField value="{!log.TA_By_Name__c}" />
+      </div>
+      <div class="col-xs-3">
+        <strong>Additional TA Provider:</strong> &nbsp;
+        <apex:outputField value="{!log.Additional_TA_Provider__c}" />
+      </div>
+      <div class="col-xs-3">
+        <strong>Grantee Attendee:</strong> &nbsp;
+        <apex:outputField value="{!log.Grantee_Attendee__c}" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <strong>Notes:</strong> &nbsp;
+        <apex:outputField value="{!log.Notes__c}" />
+      </div>
+    </div>
+  </div>
+  <br />
+</apex:component>

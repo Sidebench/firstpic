@@ -1,0 +1,295 @@
+<apex:page controller="LEGODashboardCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <style>
+    .slds [hidden],
+    .slds template {
+      display: block;
+    }
+    svg {
+      overflow: visible !important;
+    }
+  </style>
+  <c:LEGOHeader
+    ActivePage="dashboard"
+    acct="{!userAcct}"
+    SessionId="{!SessionId}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          <apex:outputPanel rendered="{!SiteId == null || SiteId == ''}">
+            Hello &nbsp;
+            <apex:outputText
+              value="{!currentUser.Contact.FirstName + ' ' + currentUser.Contact.LastName}"
+            ></apex:outputText
+            >.
+            <span class="pull-right">
+              <apex:selectList value="{!SessionId}" size="1">
+                <apex:actionSupport event="onchange" action="{!getLists}" />
+                <apex:selectOptions value="{!options}" />
+              </apex:selectList>
+            </span>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!SiteId != null && SiteId != ''}">
+            {!site.Name}
+          </apex:outputPanel>
+        </h2>
+
+        <!--
+                <div class="alert alert-danger">
+                We are currently making updates to the system. If you encounter any errors, please refresh your browser or log-out and log back in.
+                </div>
+                -->
+
+        <div class="alert alert-danger">
+          <a
+            href="{!URLFOR($Site.Prefix+'/LEGOHelp')}"
+            style="color: #000; display: block"
+          >
+            An introductory webinar for Mission Moon is available under the Help
+            tab, please click here to access.
+          </a>
+        </div>
+
+        <apex:outputPanel rendered="{!SessionId != null}">
+          <div class="row" style="font-size: 16px">
+            <div class="col-xs-4 text-center">
+              <div class="alert alert-success" role="alert">
+                <span class="data-header"> {!totalYouth} </span>
+                Total # of Youth
+              </div>
+            </div>
+            <div class="col-xs-4 text-center">
+              <div class="alert alert-info" role="alert">
+                <span class="data-header"> {!percentGirls} </span>
+                % of Girls
+              </div>
+            </div>
+            <div class="col-xs-4 text-center">
+              <div class="alert alert-warning" role="alert">
+                <span class="data-header"> {!percentUnderserved} </span>
+                % that fall into other underserved groups
+              </div>
+            </div>
+          </div>
+
+          <apex:outputPanel rendered="{!userAcctType == 'Site'}">
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <div class="panel panel-warning">
+                  <div class="panel-heading">
+                    Outstanding Meeting Information
+                  </div>
+                  <div class="panel-body">
+                    <apex:outputText rendered="{!overdueCount > 0}">
+                      You have {!overdueCount} Cohorts that need meeting
+                      information updated.
+                      <br />
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/LEGOAbout')}"
+                        style="color: #222; font-weight: bold"
+                      >
+                        View All >>
+                      </a>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!overdueCount == 0}">
+                      You have no overdue Program Reports.
+                    </apex:outputText>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-12 col-md-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Reports</div>
+                  <div class="panel-body">
+                    <table style="width: 100%">
+                      <tr>
+                        <th>Report Type</th>
+                        <th>Status</th>
+                        <th></th>
+                      </tr>
+                      <tr>
+                        <td>Expo Report</td>
+                        <td>{!session.Expo_Report_Status__c}</td>
+                        <td>
+                          <a
+                            href="{!URLFOR($Site.Prefix+'/LEGOExpoReport?SessionId=' + session.Id)}"
+                          >
+                            <apex:outputText
+                              value="Edit"
+                              rendered="{!session.Expo_Report_Status__c != 'Submitted'}"
+                            />
+                            <apex:outputText
+                              value="View Details"
+                              rendered="{!session.Expo_Report_Status__c == 'Submitted'}"
+                            />
+                          </a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Program Report</td>
+                        <td>{!programReport.Status__c}</td>
+                        <td>
+                          <a
+                            href="{!URLFOR($Site.Prefix+'/LEGOProgramReport?ReportId=' + programReport.Id)}"
+                          >
+                            <apex:outputText
+                              value="Edit"
+                              rendered="{!programReport.Status__c != 'Submitted'}"
+                            />
+                            <apex:outputText
+                              value="View Details"
+                              rendered="{!programReport.Status__c == 'Submitted'}"
+                            />
+                          </a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Finance Report</td>
+                        <td>{!session.Site__r.Finance_Report_Status__c}</td>
+                        <td>
+                          <a
+                            href="{!URLFOR($Site.Prefix+'/LEGOFinanceReport?SiteId=' + session.Site__r.Id)}"
+                          >
+                            <apex:outputText
+                              value="Edit"
+                              rendered="{!session.Site__r.Finance_Report_Status__c != 'Submitted'}"
+                            />
+                            <apex:outputText
+                              value="View Details"
+                              rendered="{!session.Site__r.Finance_Report_Status__c == 'Submitted'}"
+                            />
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization' && (SiteId == null || SiteId == '')}"
+          >
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Outstanding Meeting Information
+                    <a
+                      data-toggle="collapse"
+                      href="#collapse1"
+                      class="toggle pull-right"
+                    ></a>
+                  </div>
+                  <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body">
+                      <apex:outputPanel rendered="{!overdue_list.size > 0}">
+                        <apex:dataTable
+                          value="{!overdue_list}"
+                          var="i"
+                          cellpadding="4"
+                          style="width: 100%"
+                        >
+                          <apex:column headerValue="Cohort">
+                            <a
+                              href="{!URLFOR($Site.Prefix+'/LEGOCohortDetails?CohortId='+i.Id)}"
+                            >
+                              {!i.Name}
+                            </a>
+                          </apex:column>
+                          <apex:column headerValue="Date">
+                            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                              <apex:param value="{!i.LastModifiedDate}" />
+                            </apex:outputText>
+                          </apex:column>
+                        </apex:dataTable>
+                      </apex:outputPanel>
+                      <apex:outputPanel rendered="{!overdue_list.size == 0}">
+                        No Outstanding Meeting Information Found
+                      </apex:outputPanel>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-12 col-md-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Sites
+                    <a
+                      data-toggle="collapse"
+                      href="#collapse2"
+                      class="toggle pull-right"
+                    ></a>
+                  </div>
+                  <div id="collapse2" class="panel-collapse collapse">
+                    <div class="panel-body">
+                      <table>
+                        <tr>
+                          <th>Site Name</th>
+                        </tr>
+                        <apex:repeat value="{!site_list}" var="i">
+                          <tr>
+                            <td>
+                              <a
+                                href="{!URLFOR($Site.Prefix+'/LEGODashboard?SessionId='+i.sessionId+'&SiteId='+i.siteId)}"
+                              >
+                                {!i.siteName}
+                              </a>
+                            </td>
+                          </tr>
+                        </apex:repeat>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--
+<div class="col-sm-12 col-md-6">
+<div class="panel panel-default">
+<div class="panel-heading">
+Insufficient Attendance 
+</div>
+<div class="panel-body">
+<apex:outputPanel rendered="{!insufficient_list.size > 0}">
+<apex:dataTable value="{!insufficient_list}" var="i" cellpadding="4" style="width: 100%;">
+<apex:column headerValue="Site">
+<a href="{!URLFOR($Site.Prefix+'/LEGOAbout?SiteId='+i.Cohort__r.Site__r.Id)}">
+{!i.Cohort__r.Site__r.Name}
+</a>
+</apex:column> 
+<apex:column headerValue="Cohort">
+<a href="{!URLFOR($Site.Prefix+'/LEGOCohortDetails?CohortId='+i.Cohort__r.Id)}">
+{!i.Cohort__r.Name}
+</a>
+</apex:column>  
+<apex:column headerValue="Meeting">
+{!i.Name}
+</apex:column>            
+<apex:column headerValue="Attendance">
+{!i.Attendance__c}
+</apex:column>            
+</apex:dataTable>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!insufficient_list.size == 0}">
+No Meetings with Insufficient Attendance Found
+</apex:outputPanel>
+</div>
+</div>
+</div>
+-->
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

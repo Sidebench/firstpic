@@ -1,0 +1,874 @@
+<apex:page
+  controller="SessionReportCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Progress Report</title>
+    <style>
+      .row {
+        margin-bottom: 8px;
+      }
+      textarea {
+        height: 50px;
+        margin-top: 5px;
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <c:NCAIHeader
+    ActivePage="progress"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <apex:outputPanel rendered="{!showForm == true}">
+          <div class="row">
+            <div class="col-auto">
+              <h2>
+                {!report.Name}
+                <apex:outputText
+                  value="{!': ' + tabTitle}"
+                  rendered="{!NOT(readOnly)}"
+                />
+              </h2>
+            </div>
+            <div class="col-auto pull-right">
+              <h5>
+                Site:
+                <a
+                  href="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+report.Site_Id__c)}"
+                  target="_blank"
+                  title="Click here to view contact information for this organization."
+                >
+                  {!report.Site_Name__c}
+                </a>
+              </h5>
+              <h5>
+                Status:
+                <span class="{!statusColor}">{!report.Status__c}</span>
+              </h5>
+            </div>
+          </div>
+
+          <h5 class="text-danger">
+            <apex:outputText
+              value="* All fields are required."
+              rendered="{!NOT(readOnly)}"
+            />
+          </h5>
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+          <apex:outputPanel>
+            <div class="alert alert-danger">
+              Please consult the
+              <apex:outputLink
+                value="{!$Resource.Progress_Reporting_Guide}"
+                target="_blank"
+              >
+                <u>T.R.A.I.L. Progress Reporting Guide</u></apex:outputLink
+              >
+              while completing this report.
+            </div>
+          </apex:outputPanel>
+
+          <c:ErrorMessage
+            type="warning"
+            errorMessage="{!report.Notes_from_National__c}"
+            rendered="{!(currentTab == 1 || currentTab == 2) && NOT(readOnly) && report.Notes_from_National__c != null}"
+          />
+
+          <apex:outputPanel id="tab1" rendered="{!currentTab == 1 || readOnly}">
+            <div class="panel panel-default">
+              <div class="panel-heading">Curriculum Implementation</div>
+              <div class="panel-body">
+                <apex:outputPanel rendered="{!not(isQ1)}">
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      1a. Total number of T.R.A.I.L. youth who participated in
+                      the T.R.A.I.L. curriculum lessons as of the end this
+                      quarter (including all previous quarters):
+                      <span
+                        class="badge"
+                        title="Please note that this number should never be greater than the number of youth your organization was awarded for the grant year. Additional youth served beyond the LOA should only be accounted for in question 1d."
+                        >?</span
+                      >
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Number_of_Youth_Participated__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Number_of_Youth_Participated__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <div class="text-muted" style="font-size: 0.8em">
+                        Numbers Only
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      1b. Of the number answered in 1a, how many youth have
+                      never participated in any T.R.A.I.L. programming in
+                      previous years?
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Number_of_Youth_Never_Participated__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Number_of_Youth_Never_Participated__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      1c. Are you serving more youth than required in your LOA?
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Serving_More_Youth_Than_Required__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Serving_More_Youth_Than_Required__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      1d. If so, how many Club youth in addition to the number
+                      required by the LOA participated in T.R.A.I.L. curriculum
+                      lessons as of the end of this quarter (including all
+                      previous quarters)?
+                      <span
+                        class="badge"
+                        title="Example: If you are required to serve 15 youth and 20 youth have been consistently attending T.R.A.I.L. lessons this grant year, your answer would be 5."
+                        >?</span
+                      >
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Number_of_Youth_in_Addition_to_Required__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Number_of_Youth_in_Addition_to_Required__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <div class="text-muted" style="font-size: 0.8em">
+                        Numbers Only
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      1e. How many T.R.A.I.L. participants have completed the
+                      pre-test (including all previous quarters)?
+                      <span
+                        class="badge"
+                        title="This answer should not be greater than 1a."
+                        >?</span
+                      >
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Number_Participants_Completed_Pre_Test__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Number_Participants_Completed_Pre_Test__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      1f. How many T.R.A.I.L. participants have completed the
+                      post-test (including all previous quarters)?
+                      <span
+                        class="badge"
+                        title="This answer should not be greater than 1a."
+                        >?</span
+                      >
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Number_Participants_Completed_Post_Test__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Number_Participants_Completed_Post_Test__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    1g. As of the end of this quarter, how many chapters and
+                    rounds of implementation have been completed?
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Number_of_Sessions_Completed__c}"
+                      styleClass="input-md"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Number_of_Sessions_Completed__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    1h. Describe the T.R.A.I.L. program activities that your
+                    Club accomplished, hosted and/or participated in during this
+                    reporting period including activities above and beyond LOA
+                    requirements.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Activities_Hosted_or_Participated__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Activities_Hosted_or_Participated__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    1i. Describe how your Club has adapted the T.R.A.I.L.
+                    curriculum to be locally and culturally relevant to the
+                    community.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.How_Curriculum_was_Adapted__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.How_Curriculum_was_Adapted__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    1j. Describe how your Club has implemented hands-on, healthy
+                    snack preparations or cooking demonstrations for T.R.A.I.L.
+                    participants. If you have not implemented your required
+                    amount of the hands-on, healthy snack demonstrations, what
+                    are your plans to accomplish this requirement?
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.How_Healthy_Food_Choices_Implemented__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.How_Healthy_Food_Choices_Implemented__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    1k. Describe how your Club has integrated elements of the
+                    T.R.A.I.L program into scheduled Club activities including
+                    healthy food and beverage choices for T.R.A.I.L.
+                    participants and other Club members.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Healthy_Snack_Preparation_Implemented__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Healthy_Snack_Preparation_Implemented__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <apex:outputPanel rendered="{!not(isQ1)}">
+              <div class="panel panel-default">
+                <div class="panel-heading">Physical Activity Challenges</div>
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      2a. Number of youth who participated in the T.R.A.I.L.
+                      Physical Activity Challenges as of the end this quarter:
+                      <span
+                        class="badge"
+                        title="This number should be the same or greater than the number provided in 1a."
+                        >?</span
+                      >
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Youth_Participated_in_Physical_Activity__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Youth_Participated_in_Physical_Activity__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9 col-xs-12 semibold">
+                      2b. How many PA Challenges did T.R.A.I.L. youth
+                      participate in this quarter?
+                      <span
+                        class="badge"
+                        title="This should directly correspond with your response for 1g as the Challenges should be implemented at the end of each chapter. Please consult the T.R.A.I.L. Progress Reporting Guide for more guidance."
+                        >?</span
+                      >
+                    </div>
+                    <div class="col-sm-3 col-xs-12 pull-right">
+                      <apex:inputField
+                        value="{!report.Number_of_Physical_Activity_Challenges__c}"
+                        styleClass="input-md"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                      <apex:outputField
+                        value="{!report.Number_of_Physical_Activity_Challenges__c}"
+                        rendered="{!readOnly}"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Daily Physical Activity</div>
+              <div class="panel-body">
+                <!--<div class="row">
+                                    <div class="col-sm-9 col-xs-12 semibold">
+                                        3a. Average number of youth who participated in Club-wide daily physical activity: 
+                                        <span class="badge" title="This is the approximate number of all Club members (not just TRAIL participants) who have participated in any type of physical activity or physical activity program at your Club during this reporting period.">?</span>
+                                    </div>
+                                    <div class="col-sm-3 col-xs-12 pull-right">
+                                        <apex:inputField value="{!report.Average_Club_Wide_Participation__c}" styleClass="input-md" rendered="{!NOT(readOnly)}" />
+                                        <apex:outputField value="{!report.Average_Club_Wide_Participation__c}" rendered="{!readOnly}" />
+                                    </div>
+                                </div>-->
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    3. Describe the type of Club-wide daily physical activity
+                    youth participated in.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Type_of_Club_Wide_Physical_Activit__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Type_of_Club_Wide_Physical_Activit__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">Caretaker Involvement</div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-9 col-xs-12 semibold">
+                    4a. Number of caretakers (parents/guardians) who volunteered
+                    with your T.R.A.I.L. program:
+                  </div>
+                  <div class="col-sm-3 col-xs-12 pull-right">
+                    <apex:inputField
+                      value="{!report.Parents_Guardians_Recruited_to_Volunteer__c}"
+                      styleClass="input-md"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Parents_Guardians_Recruited_to_Volunteer__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    4b. Describe how caretakers became involved as volunteers.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.How_Parents_Guardians_Recruited__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.How_Parents_Guardians_Recruited__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    4c. Describe what type of activities caretakers participated
+                    in.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Type_Activities_Guardians_Participated__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Type_Activities_Guardians_Participated__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Individual Volunteer Involvement</div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-9 col-xs-12 semibold">
+                    5a. Number of individual volunteers recruited to volunteer
+                    with your T.R.A.I.L. program:
+                  </div>
+                  <div class="col-sm-3 col-xs-12 pull-right">
+                    <apex:inputField
+                      value="{!report.Number_of_Volunteers_Recruited__c}"
+                      styleClass="input-md"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Number_of_Volunteers_Recruited__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    5b. Describe how individual volunteers were recruited to
+                    volunteer.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.How_Volunteers_Recruited__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.How_Volunteers_Recruited__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    5c. Describe what type of volunteer activities individual
+                    volunteers participated in.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Type_of_Volunteer_Activities__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Type_of_Volunteer_Activities__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Community Health Partner Involvement
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-9 col-xs-12 semibold">
+                    6a. Does your Club have a signed, active Memorandum of
+                    Agreement (MOA) with at least one Community Health Partner
+                    for the current grant year?
+                  </div>
+                  <div class="col-sm-3 col-xs-12 pull-right">
+                    <apex:inputField
+                      value="{!report.Has_Signed_Memorandum_of_Agreement__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Has_Signed_Memorandum_of_Agreement__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    6b. Name your Community Health Partner and describe what
+                    type of collaborative involvement they will have/has with
+                    your T.R.A.I.L. program.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Community_Health_Partner_Involvement__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Community_Health_Partner_Involvement__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Additional Community Partner Involvement
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-sm-9 col-xs-12 semibold">
+                    7a. Number of additional community partners recruited to
+                    support and/or volunteer with your T.R.A.I.L. program:
+                  </div>
+                  <div class="col-sm-3 col-xs-12 pull-right">
+                    <apex:inputField
+                      value="{!report.Additional_Community_Partners_Recruited__c}"
+                      styleClass="input-md"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Additional_Community_Partners_Recruited__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    7b. Describe how the additional community partners were
+                    recruited to support and/or volunteer with the T.R.A.I.L.
+                    program.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.How_Community_Partners_Recruited__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.How_Community_Partners_Recruited__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    7c. List the name of the community partner and what they are
+                    doing to support the program. Describe what type of support
+                    and/or volunteer activities additional community partners’
+                    participated in.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Type_of_Support_From_Community_Partners__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Type_of_Support_From_Community_Partners__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">Community Education Project</div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    8a. What is the status of your T.R.A.I.L. participants’
+                    Community Education Project? Describe what steps have been
+                    taken to plan and implement the Community Education Project.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Status_of_Community_Service_Project_Plan__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Status_of_Community_Service_Project_Plan__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    8b. Describe how your planned Community Education Project
+                    shares the central components of T.R.A.I.L. (i.e. healthy
+                    lifestyles, type 2 diabetes prevention, nutrition) with
+                    individuals outside of the program.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.How_Community_Service_Project_Supports__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.How_Community_Service_Project_Supports__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel id="tab2" rendered="{!currentTab == 2 || readOnly}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Additional Information and/or Comments
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    9a. What are participants, families, staff, volunteers, or
+                    community members saying about the T.R.A.I.L program?
+                    Describe any feedback you have received.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.What_are_People_Saying_About_Program__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.What_are_People_Saying_About_Program__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    9b. Describe the successes your T.R.A.I.L. program
+                    experienced.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Describe_Program_Successes__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Describe_Program_Successes__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    9c. Describe the challenges your T.R.A.I.L. program
+                    experienced.
+                    <span
+                      class="badge"
+                      title="Please use this section to contextualize areas in which you are behind on program requirements."
+                      >?</span
+                    >
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Describe_Program_Challenges__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Describe_Program_Challenges__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    9d. Share any feedback on the T.R.A.I.L. program curriculum.
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Feedback_on_Program_Curriculum__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Feedback_on_Program_Curriculum__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    9e. What are your plans for continuing the T.R.A.I.L.
+                    program into the next quarter?
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!report.Plans_for_Continuing_Program__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Plans_for_Continuing_Program__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel id="tab3" rendered="{!currentTab == 3 || readOnly}">
+            <c:Documents
+              enableEditDoc="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+              enableDeleteDoc="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+              enableDeleteAtt="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+              showUploadBtn="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+              showStatus="false"
+            />
+
+            <c:NotesPanel
+              userAcctType="{!userAcctType}"
+              header="Notes"
+              localNote="{!report.Notes__c}"
+              nationalNote="{!report.Notes_from_National__c}"
+              readOnly="{!(userAcctType == 'Local Organization' && readOnly)
+                                                || (userAcctType == 'National Organization' && report.Status__c != 'Submitted')}"
+            />
+          </apex:outputPanel>
+
+          <c:CollapsiblePanel
+            header="Modification History"
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <apex:outputField value="{!report.Modification_History__c}" />
+          </c:CollapsiblePanel>
+
+          <!-- BEGIN Popups -->
+          <c:NotesPopup
+            displayNotesPopup="{!displaySendBackPopup}"
+            header="Notes"
+            userAcctType="{!userAcctType}"
+            nationalNote="{!report.Notes_from_National__c}"
+            displayLocalNote="false"
+            richText="true"
+          >
+            <apex:commandButton
+              action="{!hideSendBackPopup}"
+              value="Close"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send Back"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+
+          <c:NotesPopup
+            displayNotesPopup="{!displayApprovePopup}"
+            header="Notes"
+            userAcctType="{!userAcctType}"
+            nationalNote="{!report.Notes_from_National__c}"
+            displayLocalNote="false"
+            richText="true"
+          >
+            <apex:commandButton
+              action="{!hideApprovePopup}"
+              value="Close"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!approve}"
+              value="Approve"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+          <!-- END Popups -->
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization' && report.Status__c == 'Submitted'}"
+          >
+            <apex:commandButton
+              action="{!showSendBackPopup}"
+              value="Send Back"
+              status="pageStatus"
+            >
+              <apex:param assignTo="{!action}" name="action" value="sendBack" />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!showApprovePopup}"
+              value="Approve"
+              status="pageStatus"
+              styleClass="primary"
+            >
+              <apex:param assignTo="{!action}" name="action" value="approve" />
+            </apex:commandButton>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType != 'National Organization' && NOT(readOnly)}"
+          >
+            <apex:commandButton
+              action="{!save}"
+              value="Save"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!previous}"
+              value="Previous"
+              status="pageStatus"
+              rendered="{!currentTab != 1}"
+            />
+            <apex:commandButton
+              action="{!next}"
+              value="Next"
+              status="pageStatus"
+              styleClass="primary"
+              rendered="{!currentTab != 3}"
+            />
+            <apex:commandButton
+              action="{!submit}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="primary"
+              rendered="{!currentTab == 3}"
+            />
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+      </div>
+    </div>
+    <apex:pageMessages></apex:pageMessages>
+  </apex:form>
+</apex:page>

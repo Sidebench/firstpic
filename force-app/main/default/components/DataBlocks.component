@@ -1,0 +1,45 @@
+<apex:component>
+  <apex:attribute
+    type="Integer"
+    name="numberOfBlocks"
+    description="numberOfBlocks"
+  />
+  <apex:attribute type="String" name="block1count" description="block1count" />
+  <apex:attribute type="String" name="block1text" description="block1text" />
+  <apex:attribute type="String" name="block2count" description="block2count" />
+  <apex:attribute type="String" name="block2text" description="block2text" />
+  <apex:attribute type="String" name="block3count" description="block3count" />
+  <apex:attribute type="String" name="block3text" description="block3text" />
+  <apex:attribute type="String" name="block4count" description="block4count" />
+  <apex:attribute type="String" name="block4text" description="block4text" />
+
+  <div class="row text-center" style="font-size: 16px">
+    <div class="{!IF(numberOfBlocks == 4,'col-xs-3','col-xs-4')}">
+      <div class="alert alert-success" role="alert" style="min-height: 125px">
+        <span class="data-header"> {!block1count} </span>
+        {!block1text}
+      </div>
+    </div>
+    <div class="{!IF(numberOfBlocks == 4,'col-xs-3','col-xs-4')}">
+      <div class="alert alert-info" role="alert" style="min-height: 125px">
+        <span class="data-header"> {!block2count} </span>
+        {!block2text}
+      </div>
+    </div>
+    <div class="{!IF(numberOfBlocks == 4,'col-xs-3','col-xs-4')}">
+      <div class="alert alert-warning" role="alert" style="min-height: 125px">
+        <span class="data-header"> {!block3count} </span>
+        {!block3text}
+      </div>
+    </div>
+    <div
+      class="{!IF(numberOfBlocks == 4,'col-xs-3','col-xs-4')}"
+      style="{!IF(numberOfBlocks < 4,'display: none','')}"
+    >
+      <div class="alert alert-danger" role="alert" style="min-height: 125px">
+        <span class="data-header"> {!block4count} </span>
+        {!block4text}
+      </div>
+    </div>
+  </div>
+</apex:component>

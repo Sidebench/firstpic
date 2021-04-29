@@ -1,0 +1,154 @@
+<apex:component>
+  <apex:attribute
+    type="TA_Log__c"
+    name="log"
+    description="log"
+    required="true"
+  />
+  <apex:attribute
+    type="SelectOption"
+    name="orgOptions"
+    description="orgOptions"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="hideTALogPopup"
+    description="hideTALogPopup"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="upsertTALog"
+    description="upsertTALog"
+  />
+
+  <apex:outputPanel styleClass="popupBackground" layout="block" />
+  <apex:outputPanel styleClass="custPopup" layout="block">
+    <div class="modal-dialog text-left">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">TA Log</h4>
+        </div>
+        <div class="modal-body grid-pd-md">
+          <apex:outputPanel rendered="{!orgOptions != null || log.Id != null}">
+            <div class="row">
+              <div class="col-xs-12">
+                <strong>Organization: </strong>
+                <apex:selectList
+                  value="{!log.Organization__c}"
+                  size="1"
+                  required="true"
+                  rendered="{!log.Id == null}"
+                >
+                  <apex:selectOptions value="{!orgOptions}" />
+                </apex:selectList>
+                <apex:outputText
+                  value="{!log.Organization_Name__c}"
+                  rendered="{!log.Id != null}"
+                />
+              </div>
+            </div>
+          </apex:outputPanel>
+          <div class="row">
+            <div class="col-xs-6">
+              <strong>Date: </strong>
+              <apex:inputField
+                value="{!log.Date__c}"
+                required="true"
+                rendered="{!log.Id == null}"
+              />
+              <apex:outputField
+                value="{!log.Date__c}"
+                style="display: block"
+                rendered="{!log.Id != null}"
+              />
+            </div>
+            <div class="col-xs-6">
+              <strong>Grantee Attendee: </strong>
+              <apex:inputField
+                value="{!log.Grantee_Attendee__c}"
+                required="true"
+                rendered="{!log.Id == null}"
+              />
+              <apex:outputField
+                value="{!log.Grantee_Attendee__c}"
+                style="display: block"
+                rendered="{!log.Id != null}"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <apex:outputPanel rendered="{!log.TA_By_Name__c != null}">
+              <div class="col-xs-6">
+                <strong>TA By: </strong>
+                <apex:outputField
+                  value="{!log.TA_By_Name__c}"
+                  style="display: block"
+                />
+              </div>
+            </apex:outputPanel>
+            <div class="col-xs-6">
+              <strong>Additional TA Provider: </strong>
+              <apex:inputField
+                value="{!log.Additional_TA_Provider__c}"
+                rendered="{!log.Id == null}"
+              />
+              <apex:outputField
+                value="{!log.Additional_TA_Provider__c}"
+                style="display: block"
+                rendered="{!log.Id != null}"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <strong>Topic: </strong>
+              <apex:inputField
+                value="{!log.Topic__c}"
+                rendered="{!NOT(log.Is_Follow_Up__c) && log.Id == null}"
+              />
+              <apex:outputField
+                value="{!log.Topic__c}"
+                style="display: block"
+                rendered="{!log.Is_Follow_Up__c || log.Id != null}"
+              />
+            </div>
+            <div class="col-xs-6">
+              <strong>Flagged for Follow-Up: </strong>
+              <apex:inputField
+                value="{!log.Flagged_for_Follow_Up__c}"
+                style="{!IF(log.Id == null, 'display: block; margin-top: 5px;','')}"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <strong>Notes: </strong>
+              <apex:inputField
+                value="{!log.Notes__c}"
+                rendered="{!log.Id == null}"
+              />
+              <apex:outputField
+                value="{!log.Notes__c}"
+                style="display: block"
+                rendered="{!log.Id != null}"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <apex:commandButton
+            action="{!hideTALogPopup}"
+            value="Cancel"
+            immediate="true"
+            html-formnovalidate="formnovalidate"
+          />
+          <apex:commandButton
+            action="{!upsertTALog}"
+            value="Save and Close"
+            styleClass="primary"
+          />
+        </div>
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>

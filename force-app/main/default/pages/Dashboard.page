@@ -1,0 +1,417 @@
+<apex:page
+  controller="DashboardCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="dashboard"
+    acct="{!userAcct}"
+    profile="{!profileName}"
+    grantId="{!grantId}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>
+              Hello {!currentUser.Contact.FirstName}
+              {!currentUser.Contact.LastName}.
+            </h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              styleClass="pull-right"
+              rendered="{!portalName == 'NCAI' && userAcctType == 'National Organization'}"
+            >
+              Grant: &nbsp;
+              <apex:selectList value="{!grantId}" size="1">
+                <apex:selectOptions value="{!grantOptions}" />
+                <apex:actionSupport
+                  action="{!getLists}"
+                  event="onchange"
+                  status="pageStatus"
+                />
+              </apex:selectList>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <apex:outputPanel
+          rendered="{!(CONTAINS(portalName, 'OVC') || CONTAINS(userAcct.National_Grants__c, 'OVC')) && appId != null}"
+        >
+          <div class="alert alert-danger">
+            To complete your Stage 2 application click
+            <a href="{!URLFOR($Site.Prefix+'/OVCApplication?appId='+appId)}"
+              >here</a
+            >.
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!(CONTAINS(portalName, 'OVC') || CONTAINS(userAcct.National_Grants__c, 'OVC')) && OVCPRId != null}"
+        >
+          <div class="alert alert-danger">
+            Quarter 1 program reports are available through the Program tab.
+            Quarter 1 reports are due January 8, 2021. Please refer to the help
+            document located&nbsp;
+            <apex:outputLink
+              target="_blank"
+              value="{!$Resource.NCAIProgramReportOVC}"
+              ><u>here</u></apex:outputLink
+            >
+            and short video
+            <a target="_blank" href="https://youtu.be/1I-WSxkrcr8"
+              ><u>here</u></a
+            >
+            for information on how to complete the report.
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!userAcct.National_Grants__c == 'OVC'}">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-info">
+                <div class="panel-heading">What's New/System Updates</div>
+                <div class="panel-body">
+                  <ul>
+                    <li>
+                      Introducing Technical Assistance (TA) Plans! Developed in
+                      conjunction with each grantee, TA Plans will identify and
+                      track grantee TA needs throughout the project period. To
+                      access your TA Plans, click on the “Program” Tab, and then
+                      select “Technical Assistance Plan".
+                    </li>
+                    <li>
+                      A Financial Management Capacity and Required
+                      Certifications form is available for download, completion
+                      and upload as required in your Letter of Agreement. This
+                      form will assist NCAI in assessing any technical
+                      assistance needs and is a required part of the compliance
+                      review. This document is due to be uploaded two weeks
+                      after you receive your LOA (due date listed here will be
+                      updated once your LOA is sent). Instructions for accessing
+                      and uploading the document can be found
+                      <apex:outputLink
+                        value="{!$Resource.OVCDocumentUploadInstructions}"
+                        target="_blank"
+                      >
+                        here</apex:outputLink
+                      >.
+                    </li>
+                    <li>
+                      Step-by-step instructions for submitting a reimbursement
+                      request can be found
+                      <apex:outputLink
+                        value="{!$Resource.OVCReimbursementStepByStep}"
+                      >
+                        here</apex:outputLink
+                      >.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!CONTAINS(portalName, 'NCAI') && missingDocs.size > 0}"
+        >
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="panel panel-danger">
+                <div class="panel-heading">Missing Required Documents</div>
+                <div class="panel-body" style="color: #000">
+                  <table width="100%">
+                    <tr>
+                      <th>Document</th>
+                      <th>Due Date</th>
+                      <th></th>
+                    </tr>
+                    <apex:repeat value="{!missingDocs}" var="i">
+                      <tr>
+                        <td>{!i.Name}</td>
+                        <td
+                          class="{!IF(i.Due_Date__c < TODAY(), 'text-danger', '')}"
+                        >
+                          <apex:outputField value="{!i.Due_Date__c}" />
+                        </td>
+                        <td>
+                          <apex:outputLink
+                            value="{!URLFOR($Site.Prefix+'/BudgetDocuments?grantId='+i.Grant__c)}"
+                            rendered="{!userAcct.National_Grants__c == 'OVC'}"
+                          >
+                            View
+                          </apex:outputLink>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                  <apex:outputPanel
+                    styleClass="view-more-link"
+                    rendered="{!NOT(userAcct.National_Grants__c == 'OVC')}"
+                  >
+                    <hr />
+                    <apex:outputLink
+                      value="{!URLFOR($Site.Prefix+'/DocumentRepository?orgId='+userAcct.Id)}"
+                      rendered="{!userAcctType != 'Site'}"
+                    >
+                      View All &raquo;
+                    </apex:outputLink>
+                    <apex:outputLink
+                      value="{!URLFOR($Site.Prefix+'/SiteDetails?orgId='+userAcct.Id)}"
+                      rendered="{!userAcctType == 'Site'}"
+                    >
+                      View All &raquo;
+                    </apex:outputLink>
+                  </apex:outputPanel>
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!CONTAINS(portalName, 'NCAI') && NOT(CONTAINS(portalName, 'OVC')) && userAcctType == 'National Organization'}"
+        >
+          <div class="row">
+            <apex:outputPanel rendered="{!onHold.size > 0}">
+              <div class="col-sm-12 col-md-6">
+                <div class="panel panel-danger">
+                  <div class="panel-heading">
+                    Agencies on Reimbursement Hold
+                  </div>
+                  <div class="panel-body" style="color: #000">
+                    <table width="100%">
+                      <tr>
+                        <th>Name</th>
+                        <th>Hold Date</th>
+                        <th>Hold Reason</th>
+                      </tr>
+                      <apex:repeat value="{!onHold}" var="i">
+                        <tr>
+                          <td>{!i.Name}</td>
+                          <td>
+                            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                              <apex:param value="{!i.Hold_Date__c}" />
+                            </apex:outputText>
+                          </td>
+                          <td>{!i.Hold_Reason__c}</td>
+                        </tr>
+                      </apex:repeat>
+                    </table>
+                    <apex:outputPanel styleClass="view-more-link">
+                      <hr />
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/DocumentRepository?holdStatus=hold')}"
+                      >
+                        View All &raquo;
+                      </a>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!NOT(CONTAINS(portalName, 'TRAIL'))}">
+              <div class="col-sm-12 col-md-6">
+                <c:DashboardList
+                  header="TA Logs Flagged for Follow-up"
+                  listSize="{!logs.size}"
+                  shouldShowMore="true"
+                  showMoreLink="{!URLFOR($Site.Prefix+'/talogs?followup=true')}"
+                >
+                  <table width="100%">
+                    <tr>
+                      <th>Site</th>
+                      <th>Date</th>
+                    </tr>
+                    <apex:repeat value="{!logs}" var="i">
+                      <tr>
+                        <td>{!i.Organization_Name__c}</td>
+                        <td>
+                          <apex:outputField value="{!i.Date__c}" />
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </c:DashboardList>
+              </div>
+            </apex:outputPanel>
+          </div>
+        </apex:outputPanel>
+
+        <div class="row">
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="col-sm-12 col-md-6">
+              <c:GrantList
+                header="Sub-Grants Pending Approval"
+                grantId="{!grantId}"
+                grantList="{!grants_pending}"
+                showMore="{!more_grants_pending}"
+                detailsLink="BudgetDetails"
+                listLink="SubGrants"
+                listType="pending"
+                isDashboard="true"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementList
+                header="Reimbursements Pending Approval"
+                portalName="{!portalName}"
+                grantId="{!grantId}"
+                requestList="{!requests_pending}"
+                showMore="{!more_requests_pending}"
+                listType="Pending"
+                showStatus="true"
+                isDashboard="true"
+                rendered="{!NOT(CONTAINS(profileName, 'Program'))}"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:SessionReportList
+                header="Progress Reports Pending Approval"
+                report_list="{!sessionReports_submitted}"
+                showSiteCol="{!userAcctType != 'Site'}"
+                showMore="{!more_sessionReports_submitted}"
+                listType="pending"
+                rendered="{!CONTAINS(portalName, 'NCAI') && NOT(CONTAINS(portalName, 'OVC'))}"
+              />
+              <c:ProgressReportList
+                header="Check-in Reports Pending Review"
+                report_list="{!progressReports_submitted}"
+                showSiteCol="{!userAcctType != 'Site'}"
+                showMore="{!more_progressReports_submitted}"
+                reportType="Quarterly"
+                rendered="{!portalName == 'STEM'}"
+              />
+              <c:DCTATReportList
+                header="Mid-Year & Final Reports Pending Approval"
+                portalName="{!portalName}"
+                report_list="{!dctatReports_submitted}"
+                showSiteCol="true"
+                showMore="{!more_dctatReports_submitted}"
+                rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:MonthlyPALogsList
+                header="PA Logs Pending Approval"
+                userAcctType="{!userAcctType}"
+                isDashboard="true"
+                report_list="{!palogs_submitted}"
+                showSiteCol="{!userAcctType != 'Site'}"
+                showMore="{!more_palogs_submitted}"
+                listType="submitted"
+                rendered="{!CONTAINS(portalName, 'NCAI') &&  NOT(CONTAINS(portalName, 'OVC'))}"
+              />
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!userAcctType == 'Local Organization'}">
+            <div class="col-sm-12 col-md-6">
+              <c:GrantList
+                header="Incomplete Sub-Grants"
+                grantList="{!grants_incomplete}"
+                showMore="{!more_grants_incomplete}"
+                detailsLink="BudgetDetails"
+                listLink="SubGrants"
+                listType="incomplete"
+                isDashboard="true"
+                rendered="{!NOT(CONTAINS(profileName, 'Program'))}"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementList
+                header="Incomplete Reimbursements"
+                portalName="{!portalName}"
+                requestList="{!requests_incomplete}"
+                showMore="{!more_requests_incomplete}"
+                listType="Incomplete"
+                showStatus="true"
+                isDashboard="true"
+                rendered="{!NOT(CONTAINS(profileName, 'Program'))}"
+              />
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType != 'National Organization'}"
+          >
+            <apex:outputPanel rendered="{!CONTAINS(portalName, 'NCAI')}">
+              <div class="col-sm-12 col-md-6">
+                <c:ApplicationList
+                  header="Incomplete Applications"
+                  app_list="{!apps_incomplete}"
+                  portalName="{!portalName}"
+                  showMore="{!more_apps_incomplete}"
+                />
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <c:SessionReportList
+                  header="Incomplete Progress Reports"
+                  report_list="{!sessionReports_incomplete}"
+                  showSiteCol="{!userAcctType != 'Site'}"
+                  showMore="{!more_sessionReports_incomplete}"
+                  listType="incomplete"
+                  rendered="{!NOT(CONTAINS(portalName, 'OVC')) && (CONTAINS(userAcct.National_Grants__c, 'TRAIL') || userAcct.National_Grants__c == null)}"
+                />
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <c:MonthlyPALogsList
+                  header="Incomplete PA Logs"
+                  userAcctType="{!userAcctType}"
+                  isDashboard="true"
+                  report_list="{!palogs_incomplete}"
+                  showSiteCol="{!userAcctType != 'Site'}"
+                  showMore="{!more_palogs_incomplete}"
+                  listType="incomplete"
+                  rendered="{!NOT(CONTAINS(portalName, 'OVC')) && (CONTAINS(userAcct.National_Grants__c, 'TRAIL') || userAcct.National_Grants__c == null)}"
+                />
+              </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!portalName == 'STEM'}">
+              <div class="col-sm-12 col-md-6">
+                <c:ProgressReportList
+                  header="Incomplete Check-in Reports"
+                  report_list="{!progressReports_incomplete}"
+                  showSiteCol="{!userAcctType != 'Site'}"
+                  showMore="{!more_progressReports_incomplete}"
+                  reportType="Quarterly"
+                />
+              </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}">
+              <div class="col-sm-12 col-md-6">
+                <c:DCTATReportList
+                  header="Incomplete Mid-Year & Final Reports"
+                  report_list="{!dctatReports_incomplete}"
+                  showSiteCol="false"
+                  portalName="{!portalName}"
+                  showMore="{!more_dctatReports_incomplete}"
+                />
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+        </div>
+      </div>
+    </div>
+
+    <apex:pageMessages></apex:pageMessages>
+  </apex:form>
+</apex:page>

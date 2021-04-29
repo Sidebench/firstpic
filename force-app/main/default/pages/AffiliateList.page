@@ -1,0 +1,153 @@
+<apex:page controller="AffiliateListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Affiliate List</title>
+  </head>
+  <c:Header
+    ActivePage="about"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>Affiliate List</h2>
+
+        <c:ErrorMessage errorMessage="{!missingSecondary}"></c:ErrorMessage>
+
+        <div class="row" style="padding-bottom: 10px">
+          <div class="col-auto" style="padding-right: 0">Name or BBBS Id:</div>
+          <div class="col-sm-12 col-md-2">
+            <apex:inputText value="{!keyword}" />
+          </div>
+          <div class="col-auto" style="padding-right: 0">
+            Primary Approver Name:
+          </div>
+          <div class="col-sm-12 col-md-2">
+            <apex:inputText value="{!primary}" />
+          </div>
+          <div class="col-auto" style="padding-right: 0">
+            Secondary Approver Name:
+          </div>
+          <div class="col-sm-12 col-md-2">
+            <apex:inputText value="{!secondary}" />
+          </div>
+          <div class="col-auto" style="padding-right: 0">
+            <apex:commandButton
+              action="{!filterLists}"
+              value="Search"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+            <apex:commandButton
+              action="{!getLists}"
+              value="Clear"
+              status="pageStatus"
+              styleClass="btn-small"
+              reRender="form"
+            >
+              <apex:param assignTo="{!keyword}" name="keyword" value="" />
+              <apex:param assignTo="{!primary}" name="primary" value="" />
+              <apex:param assignTo="{!secondary}" name="secondary" value="" />
+            </apex:commandButton>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Approvers On Leave</div>
+          <div class="panel-body">
+            <apex:dataTable
+              value="{!onLeave_list}"
+              var="i"
+              cellpadding="4"
+              style="width: 100%"
+              rendered="{!onLeave_list.size > 0}"
+            >
+              <apex:column headerValue="Name"> {!i.Name} </apex:column>
+              <apex:column styleClass="text-center">
+                <apex:commandLink
+                  action="{!removeFromLeave}"
+                  value="Remove from On Leave Status"
+                  status="pageStatus"
+                  reRender="form"
+                >
+                  <apex:param
+                    assignTo="{!approverId}"
+                    name="approverId"
+                    value="{!i.Id}"
+                  />
+                </apex:commandLink>
+              </apex:column>
+            </apex:dataTable>
+            <apex:outputText
+              value="No approvers are currently on leave"
+              rendered="{!onLeave_list.size == 0}"
+            />
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Affiliates
+            <span class="col-auto pull-right">
+              <apex:commandButton
+                action="{!markAllOnLeave}"
+                value="Update all to On Leave status"
+                status="pageStatus"
+                styleClass="btn-small"
+                reRender="form"
+              />
+            </span>
+          </div>
+          <div class="panel-body">
+            <apex:dataTable
+              value="{!acct_list}"
+              var="i"
+              cellpadding="4"
+              style="width: 100%"
+            >
+              <apex:column>
+                <apex:facet name="header">BBBS Id</apex:facet>
+                {!i.BBBS_ID__c}
+              </apex:column>
+              <apex:column>
+                <apex:facet name="header">Affiliate Name</apex:facet>
+                {!i.Name}
+              </apex:column>
+              <apex:column>
+                <apex:facet name="header"
+                  >Primary Level One Approver</apex:facet
+                >
+                <apex:selectList value="{!i.Primary_Approver__c}" size="1">
+                  <apex:selectOptions value="{!approvers}" />
+                </apex:selectList>
+              </apex:column>
+              <apex:column>
+                <apex:facet name="header"
+                  >Secondary Level One Approver</apex:facet
+                >
+                <apex:selectList value="{!i.Secondary_Approver__c}" size="1">
+                  <apex:selectOptions value="{!approvers}" />
+                </apex:selectList>
+              </apex:column>
+              <apex:column headerClass="text-center" styleClass="text-center">
+                <apex:facet name="header">Primary Approver On Leave</apex:facet>
+                <apex:inputField value="{!i.Primary_Approver_On_Leave__c}" />
+              </apex:column>
+            </apex:dataTable>
+          </div>
+        </div>
+
+        <apex:commandButton
+          value="Save"
+          action="{!save}"
+          styleClass="primary"
+          status="pageStatus"
+          reRender="form"
+        />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

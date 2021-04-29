@@ -1,0 +1,638 @@
+<apex:page controller="DCTATReportCtrl" showHeader="false" sidebar="false">
+  <c:RipkenHeader
+    ActivePage="progress"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!report.Name}</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <h5>
+                Site:
+                <a
+                  href="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+report.Organization__c )}"
+                  target="_blank"
+                  title="Click here to view contact information for this organization."
+                >
+                  {!report.Organization_Name__c}
+                </a>
+              </h5>
+            </apex:outputPanel>
+            <h5>Status: {!report.Report_Status__c}</h5>
+            <h5>Grant Type: {!report.Grant_Type__c}</h5>
+          </div>
+        </div>
+
+        <h5 class="text-danger">
+          <apex:outputText
+            value="* All fields are required."
+            rendered="{!NOT(readOnly)}"
+          />
+        </h5>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+
+        <apex:outputPanel rendered="{!reportId != null}">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {!report.Grant_Type__c} Quantitative Questions
+            </div>
+            <div class="panel-body grid-pd-md">
+              <apex:outputPanel rendered="{!report.Quarter__c == 'Q2'}">
+                <apex:outputText
+                  value="{!labels['Q2 Header']}"
+                  escape="false"
+                />
+                <br /><br />
+              </apex:outputPanel>
+              <apex:outputPanel
+                rendered="{!report.Quarter__c == 'Q4' && report.Year__c == '2020'}"
+              >
+                <apex:outputText
+                  value="{!labels['Q4 Header']}"
+                  escape="false"
+                />
+                <br /><br />
+              </apex:outputPanel>
+              <apex:outputPanel
+                rendered="{!report.Quarter__c == 'Q4' && report.Year__c != '2020'}"
+              >
+                The reporting period for the final year progress report begins
+                on the first day after your mid-year progress report and ends on
+                the final day of your grant or award period. The grant or award
+                period refers to the entire duration of your grant per the dates
+                specified on your organization’s Letter of Agreement (LOA). If
+                any questions are not tracked, please report as “not tracked” or
+                “N/A”.
+                <br />
+                Unless otherwise specified, complete the following questions for
+                the current reporting period. DO NOT include numbers reported in
+                the mid-year progress report.
+                <br /><br />
+              </apex:outputPanel>
+              <apex:outputPanel
+                rendered="{!labels['Youth Reporting Header'] != '_'}"
+              >
+                <h5>
+                  <apex:outputText
+                    value="{!labels['Youth Reporting Header']}"
+                    escape="false"
+                  />
+                </h5>
+              </apex:outputPanel>
+
+              <apex:repeat value="{!fields}" var="i">
+                <c:DCTATQuestion
+                  label="{!labels['New_Youth_Served__c']}"
+                  field="{!report.New_Youth_Served__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'New_Youth_Served__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_with_Parents_Actively_Serving__c']}"
+                  field="{!report.Youth_with_Parents_Actively_Serving__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_with_Parents_Actively_Serving__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_with_Incarcerate_Parent__c']}"
+                  field="{!report.Youth_with_Incarcerate_Parent__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_with_Incarcerate_Parent__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Completed_Program__c']}"
+                  field="{!report.Youth_Completed_Program__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Completed_Program__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Exited_Program__c']}"
+                  field="{!report.Youth_Exited_Program__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Exited_Program__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['New_Youth_Served_Outside_Program__c']}"
+                  field="{!report.New_Youth_Served_Outside_Program__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'New_Youth_Served_Outside_Program__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_with_Increased_Social_Support__c']}"
+                  field="{!report.Youth_with_Increased_Social_Support__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_with_Increased_Social_Support__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_with_Delinquent_Offenses__c']}"
+                  field="{!report.Youth_with_Delinquent_Offenses__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_with_Delinquent_Offenses__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Recommitted_to_Juvenile_Facility__c']}"
+                  field="{!report.Youth_Recommitted_to_Juvenile_Facility__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Recommitted_to_Juvenile_Facility__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Sentenced_to_Adult_Prison__c']}"
+                  field="{!report.Youth_Sentenced_to_Adult_Prison__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Sentenced_to_Adult_Prison__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Received_Additional_Sentence__c']}"
+                  field="{!report.Youth_Received_Additional_Sentence__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Received_Additional_Sentence__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Experienced_Violent_Victimization__c']}"
+                  field="{!report.Youth_Experienced_Violent_Victimization__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Experienced_Violent_Victimization__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Experienced_Non_Violent_Victim__c']}"
+                  field="{!report.Youth_Experienced_Non_Violent_Victim__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Experienced_Non_Violent_Victim__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Identified_Sex_Trafficking_Victim__c']}"
+                  field="{!report.Youth_Identified_Sex_Trafficking_Victim__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Identified_Sex_Trafficking_Victim__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['New_Youth_Identified_Sex_Trafficking__c']}"
+                  field="{!report.New_Youth_Identified_Sex_Trafficking__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'New_Youth_Identified_Sex_Trafficking__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Identified_Labor_Trafficking__c']}"
+                  field="{!report.Youth_Identified_Labor_Trafficking__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Identified_Labor_Trafficking__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['New_Youth_Identified_Labor_Trafficking__c']}"
+                  field="{!report.New_Youth_Identified_Labor_Trafficking__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'New_Youth_Identified_Labor_Trafficking__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Identified_Both_Labor_Sex_Traffic__c']}"
+                  field="{!report.Youth_Identified_Both_Labor_Sex_Traffic__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Identified_Both_Labor_Sex_Traffic__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['New_Youth_Identified_Both_Labor_Sex__c']}"
+                  field="{!report.New_Youth_Identified_Both_Labor_Sex__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'New_Youth_Identified_Both_Labor_Sex__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Youth_Participated_In_Graduation__c']}"
+                  field="{!report.Youth_Participated_In_Graduation__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Youth_Participated_In_Graduation__c'}"
+                />
+              </apex:repeat>
+
+              <apex:outputPanel
+                rendered="{!labels['Mentor Reporting Header'] != '_'}"
+              >
+                <hr />
+                <h5 style="margin-top: 10px">
+                  <apex:outputText
+                    value="{!labels['Mentor Reporting Header']}"
+                    escape="false"
+                  />
+                </h5>
+              </apex:outputPanel>
+
+              <apex:repeat value="{!fields}" var="i">
+                <c:DCTATQuestion
+                  label="{!labels['New_Mentors__c']}"
+                  field="{!report.New_Mentors__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'New_Mentors__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Mentors_Serving_or_Served_in_Military__c']}"
+                  field="{!report.Mentors_Serving_or_Served_in_Military__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Mentors_Serving_or_Served_in_Military__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Law_Enforcement_Reps_Serving_in_Military__c']}"
+                  field="{!report.Law_Enforcement_Reps_Serving_in_Military__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Law_Enforcement_Reps_Serving_in_Military__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Female_Mentors_Serving_in_Military__c']}"
+                  field="{!report.Female_Mentors_Serving_in_Military__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Female_Mentors_Serving_in_Military__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Mentors_Currently_Serving_in_Military__c']}"
+                  field="{!report.Mentors_Currently_Serving_in_Military__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Mentors_Currently_Serving_in_Military__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Number_of_Parent_Volunteered__c']}"
+                  field="{!report.Number_of_Parent_Volunteered__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Number_of_Parent_Volunteered__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Mentors_Left_the_Program__c']}"
+                  field="{!report.Mentors_Left_the_Program__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Mentors_Left_the_Program__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Female_Mentors_Left_the_Program__c']}"
+                  field="{!report.Female_Mentors_Left_the_Program__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Female_Mentors_Left_the_Program__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['New_Law_Enforcement_Reps_Joined__c']}"
+                  field="{!report.New_Law_Enforcement_Reps_Joined__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'New_Law_Enforcement_Reps_Joined__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Law_Enforcement_Reps_Left_Program__c']}"
+                  field="{!report.Law_Enforcement_Reps_Left_Program__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Law_Enforcement_Reps_Left_Program__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Law_Enforcement_Agencies_Participating__c']}"
+                  field="{!report.Law_Enforcement_Agencies_Participating__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Law_Enforcement_Agencies_Participating__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Additional_Staff_NOT_Complete_Training__c']}"
+                  field="{!report.Additional_Staff_NOT_Complete_Training__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Additional_Staff_NOT_Complete_Training__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Program_Sites_Served__c']}"
+                  field="{!report.Program_Sites_Served__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Program_Sites_Served__c'}"
+                />
+              </apex:repeat>
+
+              <apex:outputPanel
+                rendered="{!labels['Overall Reporting Header'] != '_'}"
+              >
+                <hr />
+                <h5 style="margin-top: 10px">
+                  <apex:outputText
+                    value="{!labels['Overall Reporting Header']}"
+                    escape="false"
+                  />
+                </h5>
+              </apex:outputPanel>
+
+              <apex:repeat
+                value="{!fields}"
+                var="i"
+                rendered="{!labels['Overall Reporting Header'] != '_'}"
+              >
+                <c:DCTATQuestion
+                  label="{!labels['Program_Locations_Served__c']}"
+                  field="{!report.Program_Locations_Served__c}"
+                  readOnly="{!readOnly}"
+                  rendered="{!i.Field_API__c == 'Program_Locations_Served__c'}"
+                />
+              </apex:repeat>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {!report.Grant_Type__c} Qualitative Questions
+            </div>
+            <div class="panel-body grid-pd-md">
+              Complete the following in narrative form. A response is required
+              for all questions; N/A is not an acceptable response.
+              <apex:repeat value="{!fields}" var="i">
+                <c:DCTATQuestion
+                  label="{!labels['Describe_How_Plan_Was_Implemented__c']}"
+                  field="{!report.Describe_How_Plan_Was_Implemented__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'Describe_How_Plan_Was_Implemented__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Role_Volunteers_Played_in_Program__c']}"
+                  field="{!report.Role_Volunteers_Played_in_Program__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'Role_Volunteers_Played_in_Program__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Community_Partnerships__c']}"
+                  field="{!report.Community_Partnerships__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'Community_Partnerships__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['How_Other_Program_Resources_Were_Used__c']}"
+                  field="{!report.How_Other_Program_Resources_Were_Used__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'How_Other_Program_Resources_Were_Used__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Hosted_Graduation_Ceremony__c']}"
+                  field="{!report.Hosted_Graduation_Ceremony__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'Hosted_Graduation_Ceremony__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Problems_Barriers__c']}"
+                  field="{!report.Problems_Barriers__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'Problems_Barriers__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Accomplishments__c']}"
+                  field="{!report.Accomplishments__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'Accomplishments__c'}"
+                />
+
+                <c:DCTATQuestion
+                  label="{!labels['Parent_Guardian_Involvement__c']}"
+                  field="{!report.Parent_Guardian_Involvement__c}"
+                  readOnly="{!readOnly}"
+                  fullWidth="true"
+                  rendered="{!i.Field_API__c == 'Parent_Guardian_Involvement__c'}"
+                />
+              </apex:repeat>
+            </div>
+          </div>
+
+          <apex:outputPanel
+            rendered="{!report.Quarter__c == 'Q4' && report.Youth_Development_Park__c}"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading">Youth Development Park Questions</div>
+              <div class="panel-body grid-pd-md">
+                <div class="row">
+                  <div class="col-sm-9 col-xs-12 semibold">
+                    {!labels['Youth_Development_Park_Name__c']}
+                  </div>
+                  <div class="col-sm-3 col-xs-12 pull-right">
+                    <apex:inputField
+                      value="{!report.Youth_Development_Park_Name__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Youth_Development_Park_Name__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-9 col-xs-12 semibold">
+                    {!labels['Unique_Youth_Used_Youth_Development_Park__c']}
+                  </div>
+                  <div class="col-sm-3 col-xs-12 pull-right">
+                    <apex:inputField
+                      value="{!report.Unique_Youth_Used_Youth_Development_Park__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Unique_Youth_Used_Youth_Development_Park__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-9 col-xs-12 semibold">
+                    {!labels['Adults_Served_at_Youth_Development_Park__c']}
+                  </div>
+                  <div class="col-sm-3 col-xs-12 pull-right">
+                    <apex:inputField
+                      value="{!report.Adults_Served_at_Youth_Development_Park__c}"
+                      rendered="{!NOT(readOnly)}"
+                    />
+                    <apex:outputField
+                      value="{!report.Adults_Served_at_Youth_Development_Park__c}"
+                      rendered="{!readOnly}"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <c:Attachments
+            parentId="{!report.Id}"
+            showUploadBtn="{!NOT(readOnly)}"
+            infoText="Attach any additional documents that you would like to share with us at this time.  If your grant has additional reporting requirements, you may attach them below."
+          />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Certification</div>
+            <div class="panel-body">
+              I certify that the progress report numbers and statements of
+              program progress are true; the progress was made during this
+              reporting period, or where requested, during the grant period.
+              <br /><br />
+              <strong>Name: </strong>
+              <apex:inputField
+                value="{!report.Certified_By__c}"
+                style="width: 30%; display: inline"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!report.Certified_By__c}"
+                style="width: 30%; display: inline"
+                rendered="{!readOnly}"
+              />
+              &nbsp;&nbsp;
+              <strong>Date: </strong>
+              <apex:inputField
+                value="{!report.Certified_Date__c}"
+                styleClass="input-md"
+                rendered="{!NOT(readOnly)}"
+              />
+              <apex:outputField
+                value="{!report.Certified_Date__c}"
+                styleClass="input-md"
+                rendered="{!readOnly}"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Notes"
+          readOnly="true"
+          displayLocalNote="false"
+          nationalNote="{!report.Notes_from_National__c}"
+        />
+
+        <c:CollapsiblePanel
+          header="Modification History"
+          rendered="{!userAcctType == 'National Organization'}"
+        >
+          <apex:outputField value="{!report.Modification_History__c}" />
+        </c:CollapsiblePanel>
+
+        <!-- BEGIN Popups -->
+        <c:NotesPopup
+          displayNotesPopup="{!displaySendBackPopup}"
+          header="Notes"
+          userAcctType="{!userAcctType}"
+          nationalNote="{!report.Notes_from_National__c}"
+          displayLocalNote="false"
+          richText="true"
+        >
+          <apex:commandButton
+            action="{!hideSendBackPopup}"
+            value="Close"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!sendBack}"
+            value="Send Back"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </c:NotesPopup>
+
+        <c:NotesPopup
+          displayNotesPopup="{!displayApprovePopup}"
+          header="Notes"
+          userAcctType="{!userAcctType}"
+          nationalNote="{!report.Notes_from_National__c}"
+          displayLocalNote="false"
+          richText="true"
+        >
+          <apex:commandButton
+            action="{!hideApprovePopup}"
+            value="Close"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!approve}"
+            value="Approve"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </c:NotesPopup>
+        <!-- END Popups -->
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && report.Report_Status__c == 'Submitted'}"
+        >
+          <apex:commandButton
+            action="{!showSendBackPopup}"
+            value="Send Back"
+            status="pageStatus"
+          >
+            <apex:param assignTo="{!action}" name="action" value="sendBack" />
+          </apex:commandButton>
+          <apex:commandButton
+            action="{!showApprovePopup}"
+            value="Approve"
+            status="pageStatus"
+            styleClass="primary"
+          >
+            <apex:param assignTo="{!action}" name="action" value="approve" />
+          </apex:commandButton>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'Local Organization' && NOT(readOnly)}"
+        >
+          <apex:commandButton
+            action="{!save}"
+            value="Save"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!submit}"
+            value="Submit"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

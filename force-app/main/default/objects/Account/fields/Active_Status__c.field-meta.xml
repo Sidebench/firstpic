@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Active Status</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName
+        >Currently Implementing Site Proposing To Continue</fullName>
+                <default>false</default>
+                <label>Currently Implementing Site Proposing To Continue</label>
+            </value>
+            <value>
+                <fullName>Currently Implementing Site Not Continuing</fullName>
+                <default>false</default>
+                <label>Currently Implementing Site Not Continuing</label>
+            </value>
+            <value>
+                <fullName
+        >Not Currently Implementing Site Proposing to Reinstate</fullName>
+                <default>false</default>
+                <label
+        >Not Currently Implementing Site Proposing to Reinstate</label>
+            </value>
+            <value>
+                <fullName>Not Currently Implementing Site</fullName>
+                <default>false</default>
+                <label>Not Currently Implementing Site</label>
+            </value>
+            <value>
+                <fullName>New Site</fullName>
+                <default>false</default>
+                <label>New Site</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

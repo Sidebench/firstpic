@@ -1,0 +1,255 @@
+<apex:component controller="HeaderCtrl">
+  <apex:attribute
+    type="String"
+    name="ActivePage"
+    description="Name of active nav item"
+  />
+  <apex:attribute type="Account" name="acct" description="Account" />
+  <apex:attribute
+    type="String"
+    name="profile"
+    description="Current User profile name"
+  />
+
+  <apex:stylesheet
+    value="{!URLFOR($Resource.styles, 'css/bootstrap.min.css')}"
+  />
+  <apex:stylesheet value="{!URLFOR($Resource.styles, 'css/style.css')}" />
+  <style>
+    a,
+    .primary {
+      color: #00b05e;
+    }
+    a:hover {
+      color: #32bf7e;
+    }
+    input[type="submit"].btn.primary,
+    .btn.primary {
+      background: #00b05e;
+      background-image: -webkit-linear-gradient(top, #00b05e, #32bf7e);
+      background-image: -moz-linear-gradient(top, #00b05e, #32bf7e);
+      background-image: -ms-linear-gradient(top, #00b05e, #32bf7e);
+      background-image: -o-linear-gradient(top, #00b05e, #32bf7e);
+      background-image: linear-gradient(to bottom, #00b05e, #32bf7e);
+      color: #fff;
+    }
+    input[type="submit"].primary:hover,
+    .btn.primary:hover {
+      background: #32bf7e;
+      text-decoration: none;
+    }
+    .subtitle {
+      left: 100px;
+    }
+  </style>
+
+  <c:AdditionalStyles />
+  <c:Spinner />
+
+  <apex:includeScript
+    value="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+  />
+  <apex:includeScript
+    value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+  />
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button
+          type="button"
+          class="navbar-toggle"
+          data-toggle="collapse"
+          data-target=".navbar-collapse"
+        >
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="navbar-brand">
+          <apex:image url="{!$Resource.BBBSicon}" height="44" />
+          <!--<span class="title">
+                        Big Brothers Big Sisters
+                    </span>-->
+          <apex:outputPanel
+            rendered="{!acct.RecordType.Name == 'Local Organization'}"
+            styleClass="subtitle"
+          >
+            {!acct.Name}
+          </apex:outputPanel>
+        </span>
+      </div>
+      <apex:outputPanel rendered="{!acct == null}">
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="login">
+              <a href="{!URLFOR($Site.Prefix+'/login')}"> Login </a>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+
+      <apex:outputPanel
+        rendered="{!acct != null && acct.RecordType.Name == 'Local Organization'}"
+      >
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="dashboard">
+              <a href="{!URLFOR($Site.Prefix+'/BBBSDashboard')}"> Dashboard </a>
+            </li>
+            <li class="{!IF((activePage == 'about'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/BBBSAbout?orgId='+acct.Id)}">
+                Organization Info
+              </a>
+            </li>
+            <li class="{!IF((activePage == 'grants'),'active','')}">
+              <apex:outputPanel rendered="{!NOT(CONTAINS(profile, 'Program'))}">
+                <a href="{!URLFOR($Site.Prefix+'/SubGrants')}"> Sub-Grants </a>
+              </apex:outputPanel>
+            </li>
+            <li class="{!IF((activePage == 'reimbursements'),'active','')}">
+              <apex:outputPanel rendered="{!NOT(CONTAINS(profile, 'Program'))}">
+                <a href="{!URLFOR($Site.Prefix+'/Reimbursements')}">
+                  Reimbursements
+                </a>
+              </apex:outputPanel>
+            </li>
+            <li class="{!IF((activePage == 'help'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/BBBSHelp')}"> Help </a>
+            </li>
+            <li id="logout">
+              <apex:outputLink
+                value="{!$Site.Prefix}/secur/logout.jsp"
+                rendered="{!NOT(ISPICKVAL($User.UserType,'Guest'))}"
+              >
+                {!$Label.site.logout}
+              </apex:outputLink>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+
+      <apex:outputPanel
+        rendered="{!acct != null && acct.RecordType.Name == 'National Organization'}"
+      >
+        <div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li id="dashboard">
+              <a href="{!URLFOR($Site.Prefix+'/BBBSDashboard')}"> Dashboard </a>
+            </li>
+            <li class="{!IF((activePage == 'about'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/BBBSAbout?orgId='+acct.Id)}">
+                Organization Info
+              </a>
+            </li>
+            <li class="{!IF((activePage == 'compliance'),'active','')}">
+              <apex:outputPanel
+                rendered="{!NOT(CONTAINS(profile, 'Read Only'))}"
+              >
+                <a href="{!URLFOR($Site.Prefix+'/Compliance')}"> Compliance </a>
+              </apex:outputPanel>
+            </li>
+            <li
+              class="{!IF((activePage == 'grants'),'dropdown active','dropdown')}"
+            >
+              <apex:outputPanel rendered="{!NOT(CONTAINS(profile, 'Program'))}">
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Grants <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="{!URLFOR($Site.Prefix+'/GrantList')}"> Grants </a>
+                  </li>
+                  <apex:outputPanel
+                    rendered="{!NOT(CONTAINS(profile, 'Accounts Payable'))}"
+                  >
+                    <li>
+                      <a href="{!URLFOR($Site.Prefix+'/SubGrants')}">
+                        Sub-Grants
+                      </a>
+                    </li>
+                  </apex:outputPanel>
+                  <li>
+                    <a href="{!URLFOR($Site.Prefix+'/DocumentRepository')}">
+                      Documents
+                    </a>
+                  </li>
+                </ul>
+              </apex:outputPanel>
+            </li>
+            <li class="{!IF((activePage == 'reimbursements'),'active','')}">
+              <apex:outputPanel
+                rendered="{!CONTAINS(profile, 'Read Only') || CONTAINS(profile, 'Level One') || (CONTAINS(profile, 'Level Two') && NOT(CONTAINS(profile, 'Admin')))}"
+              >
+                <a href="{!URLFOR($Site.Prefix+'/Reimbursements')}">
+                  Reimbursements
+                </a>
+              </apex:outputPanel>
+            </li>
+            <li
+              class="{!IF((activePage == 'reimbursements'),'dropdown active','dropdown')}"
+            >
+              <apex:outputPanel
+                rendered="{!profile == 'BBBSA Admin' || CONTAINS(profile, 'Level Two Admin') || CONTAINS(profile, 'Level Three')}"
+              >
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  data-toggle="dropdown"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Reimbursements <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="{!URLFOR($Site.Prefix+'/ReimbursementDashboard')}">
+                      Process Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{!URLFOR($Site.Prefix+'/Reimbursements')}">
+                      Reimbursements
+                    </a>
+                  </li>
+                </ul>
+              </apex:outputPanel>
+            </li>
+            <li class="{!IF((activePage == 'help'),'active','')}">
+              <a href="{!URLFOR($Site.Prefix+'/BBBSHelp')}"> Help </a>
+            </li>
+            <li id="logout">
+              <apex:outputLink
+                value="{!$Site.Prefix}/secur/logout.jsp"
+                rendered="{!NOT(ISPICKVAL($User.UserType,'Guest'))}"
+              >
+                {!$Label.site.logout}
+              </apex:outputLink>
+            </li>
+          </ul>
+        </div>
+      </apex:outputPanel>
+    </div>
+  </nav>
+  <apex:form id="holdPopup">
+    <c:ConfirmationPopup
+      header="Agency on Hold"
+      body="Please note that your agency is currently on reimbursement payment hold. Please see the Grant Hold History section located within the Organizational Info tab for more detailed information."
+      displayConfirmPopup="{!displayHoldPopup}"
+    >
+      <apex:commandButton
+        value="Close"
+        action="{!hideHoldPopup}"
+        reRender="holdPopup"
+      />
+    </c:ConfirmationPopup>
+  </apex:form>
+</apex:component>

@@ -1,0 +1,38 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Help</title>
+  </head>
+  <c:STEMHeader
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <h4>Help Videos and Documents</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.STEM_Online_Reporting_Guide_and_Rubric}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                STEM Online Reporting Guide and Rubric
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

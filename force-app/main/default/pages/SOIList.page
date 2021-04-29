@@ -1,0 +1,162 @@
+<apex:page
+  controller="ApplicationsCtrl"
+  action="{!getSOIs}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Statements of Interest</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="soi"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2 style="display: inline">Statements of Interest</h2>
+          </div>
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="col-auto pull-right">
+              Organization: &nbsp;
+              <apex:inputText value="{!siteName}" styleClass="input-md" />
+              &nbsp;&nbsp; Type: &nbsp;
+              <apex:selectList value="{!appType}" size="1">
+                <apex:selectOptions value="{!appTypeOptions}" />
+              </apex:selectList>
+              <div style="margin: 5px"></div>
+              &nbsp;&nbsp; Status: &nbsp;
+              <apex:selectList value="{!status}" size="1" id="statusOptions">
+                <apex:selectOptions value="{!statusOptions}" />
+              </apex:selectList>
+              &nbsp;&nbsp; Sort By: &nbsp;
+              <apex:selectList value="{!sortBy}" size="1">
+                <apex:selectOptions value="{!sortByOptions}" />
+              </apex:selectList>
+              <div style="margin: 5px"></div>
+              <apex:commandButton
+                action="{!getSOIs}"
+                value="Update"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                reRender="form"
+              />
+            </div>
+          </apex:outputPanel>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              {!status}
+              <apex:outputText
+                value="Statements of Interest"
+                rendered="{!status == null || status == ''}"
+              />
+            </div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!apps != null && apps.size > 0}">
+                <table style="width: 100%" class="tblWithBorders">
+                  <tr>
+                    <th>Statement of Interest Id</th>
+                    <th
+                      style="{!IF(userAcctType == 'National Organization','','width: 0;')}"
+                    >
+                      <apex:outputText
+                        value="Organization"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Eligibility Notice Received</th>
+                    <th>DUNS</th>
+                    <th>Submitted Date</th>
+                  </tr>
+                  <apex:repeat value="{!apps}" var="i">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.Name}"
+                          action="{!URLFOR($Site.Prefix+'/StatementOfInterest?appId='+ i.id)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          value="{!i.Organization__r.Name}"
+                          rendered="{!i.Organization__r.Name != null && userAcctType == 'National Organization'}"
+                          action="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+ i.Organization__r.id)}"
+                        />
+                        <apex:outputText
+                          value="{!i.Organization_Name__c}"
+                          rendered="{!i.Organization__r.Name == null && userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText value="{!i.Type__c}" />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="Requested"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c == 'Sent to Applicant'}"
+                        />
+                        <apex:outputText
+                          value="Submitted"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c == 'Reviewed'}"
+                        />
+                        <apex:outputText
+                          value="Revision Needed"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c == 'Sent Back'}"
+                        />
+                        <apex:outputText
+                          value="{!i.Status__c}"
+                          rendered="{!userAcctType == 'Local Organization' && i.Status__c != 'Sent to Applicant' && i.Status__c != 'Reviewed' && i.Status__c != 'Sent Back'}"
+                        />
+                        <apex:outputText
+                          value="{!i.Status__c}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputField
+                          value="{!i.Eligibility_Notice_Received__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!i.DUNS_Number__c}" />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!i.Submitted_Date__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!apps == null || apps.size == 0}">
+                No Statements of Interest Found
+              </apex:outputPanel>
+            </div>
+
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

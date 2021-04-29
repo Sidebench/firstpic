@@ -1,0 +1,176 @@
+<apex:page
+  controller="PALogCtrl"
+  action="{!getPALists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>PA Logs</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="{!IF(userAcctType == 'Site', 'logs', 'program')}"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          <apex:outputField
+            value="{!report.Site__r.Name}"
+            rendered="{!userAcctType != 'Site'}"
+          />
+          <div class="{!IF(userAcctType != 'Site', 'pull-right', '')}">
+            {!report.Name}
+          </div>
+        </h2>
+
+        <table class="table">
+          <tr>
+            <td>
+              <span style="font-weight: bold"> Grant: &nbsp;&nbsp; </span>
+              <apex:outputField value="{!report.Grant__r.Name}" />
+            </td>
+            <td>
+              <span style="font-weight: bold"> Month: &nbsp;&nbsp; </span>
+              <apex:outputField value="{!report.Month__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold"> Year: &nbsp;&nbsp; </span>
+              <apex:outputField value="{!report.Year__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold"> Status: &nbsp;&nbsp; </span>
+              <apex:outputField value="{!report.Status__c}" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span style="font-weight: bold">
+                Average # of Boys: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!report.Average_Number_of_Boys__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Average # of Girls: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!report.Average_Number_of_Girls__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Average Minutes of Activity: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!report.Average_Minutes_per_Day__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Total Days Reported Open: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!report.Total_Days_Reported_Open__c}" />
+            </td>
+          </tr>
+        </table>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <c:PALogList
+          userAcctType="{!userAcctType}"
+          header="PA Logs"
+          log_list="{!log_list}"
+          updateStatus="{!updateStatus}"
+          isEditMode="{!IF(report.Status__c != 'Submitted' && report.Status__c != 'Approved' && report.Grant_Status__c != 'Closed', true, false)}"
+        />
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Notes"
+          nationalNote="{!report.Notes_from_National__c}"
+          displayLocalNote="false"
+          readOnly="{!report.Status__c != 'Submitted'}"
+          rendered="{!userAcctType == 'National Organization' || (userAcctType != 'National Organization' && report.Notes_from_National__c != null)}"
+        />
+
+        <!-- BEGIN Notes Popup -->
+        <c:NotesPopup
+          displayNotesPopup="{!displaySendBackPopup}"
+          header="Notes"
+          userAcctType="{!userAcctType}"
+          nationalNote="{!report.Notes_from_National__c}"
+          displayLocalNote="false"
+        >
+          <apex:commandButton
+            action="{!hideSendBackPopup}"
+            value="Close"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!sendBack}"
+            value="Send Back"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </c:NotesPopup>
+
+        <c:NotesPopup
+          displayNotesPopup="{!displayApprovePopup}"
+          header="Notes"
+          userAcctType="{!userAcctType}"
+          nationalNote="{!report.Notes_from_National__c}"
+          displayLocalNote="false"
+        >
+          <apex:commandButton
+            action="{!hideApprovePopup}"
+            value="Close"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            action="{!approve}"
+            value="Approve"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </c:NotesPopup>
+        <!-- END Notes Popup -->
+
+        <!-- BEGIN Page Actions -->
+        <apex:outputPanel rendered="{!report.Grant_Status__c != 'Closed'}">
+          <apex:outputPanel
+            rendered="{!userAcctType != 'National Organization' && report.Status__c != 'Submitted' && report.Status__c != 'Approved'}"
+          >
+            <apex:commandButton action="{!save}" value="Save" />
+            <apex:commandButton
+              action="{!submit}"
+              value="Submit"
+              rendered="{!report.End_Date__c <= Today()}"
+            />
+          </apex:outputPanel>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization' && report.Status__c == 'Submitted'}"
+          >
+            <apex:commandButton
+              action="{!showSendBackPopup}"
+              value="Send Back"
+              status="pageStatus"
+            >
+              <apex:param assignTo="{!action}" name="action" value="sendBack" />
+            </apex:commandButton>
+            <apex:commandButton
+              action="{!showApprovePopup}"
+              value="Approve"
+              status="pageStatus"
+              styleClass="primary"
+            >
+              <apex:param assignTo="{!action}" name="action" value="approve" />
+            </apex:commandButton>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Page Actions -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

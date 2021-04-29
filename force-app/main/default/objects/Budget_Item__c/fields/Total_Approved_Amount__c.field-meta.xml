@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Approved_Amount__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Roll-Up Summary of Reimbursement Items: Approved Amount where Reimbursement Status = Approved, Paid, Closed</inlineHelpText>
+    <label>Total Approved Amount</label>
+    <summarizedField>Reimbursement_Item__c.Approved_Amount__c</summarizedField>
+    <summaryFilterItems>
+        <field
+    >Reimbursement_Item__c.Reimbursement_Status_for_Formula_Fields__c</field>
+        <operation>contains</operation>
+        <value>Approved, Paid, Closed</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Reimbursement_Item__c.Budget_Item__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,201 @@
+<apex:page
+  controller="YouthDataCtrl"
+  action="{!getYouth}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Add/Edit Youth Data</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="{!IF(userAcctType == 'Site', 'reports', 'program')}"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!CONTAINS(portalName, 'NCAI')}"
+  />
+  <c:NPALHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+  <c:DMVHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'DMV'}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Youth Data</h2>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Add Youth
+            <apex:outputPanel rendered="{!reportName != null}">
+              to {!reportName}</apex:outputPanel
+            >
+            <div class="pull-right">
+              <apex:commandButton
+                action="{!showFindYouthPopup}"
+                value="Find Existing Youth"
+                status="pageStatus"
+                styleClass="btn-small primary"
+                immediate="true"
+                rendered="{!youthId == null}"
+                reRender="form"
+              />
+            </div>
+          </div>
+          <div class="panel-body grid-pd-md">
+            <c:YouthForm
+              ctrl="{!YouthDataCtrl}"
+              rendered="{!CONTAINS(portalName, 'NCAI')}"
+            />
+            <c:NPALYouthForm
+              ctrl="{!YouthDataCtrl}"
+              showOrgField="true"
+              showGrantField="true"
+              rendered="{!NOT(CONTAINS(portalName, 'NCAI'))}"
+            />
+          </div>
+        </div>
+
+        <!-- BEGIN findYouthPopup -->
+        <apex:outputPanel id="findYouthPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayFindYouthPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayFindYouthPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Youth</h4>
+                </div>
+                <div class="modal-body">
+                  <apex:outputText
+                    value="No Youth Found. Please enter a Site to search for existing youth."
+                    rendered="{!hasSites && siteId == null && youth_list.size == 0}"
+                  />
+                  <apex:outputText
+                    value="No Youth Found. Please enter an Organization to search for existing youth."
+                    rendered="{!NOT(hasSites) && localOrgId == null && youth_list.size == 0}"
+                  />
+                  <apex:outputPanel rendered="{!youth_list.size > 0}">
+                    <strong>Name</strong>
+                    <apex:repeat value="{!youth_list}" var="i">
+                      <br />
+                      <apex:commandLink
+                        action="{!selectYouth}"
+                        status="pageStatus"
+                        immediate="true"
+                        reRender="form"
+                      >
+                        {!i.Name}
+                        <apex:param
+                          assignTo="{!youthId}"
+                          name="youthId"
+                          value="{!i.Id}"
+                        />
+                      </apex:commandLink>
+                    </apex:repeat>
+                  </apex:outputPanel>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideFindYouthPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    immediate="true"
+                    reRender="form"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END findYouthPopup -->
+
+        <!-- BEGIN confirmPopup -->
+        <apex:outputPanel id="confirmPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayConfirmPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayConfirmPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Confirm</h4>
+                </div>
+                <div class="modal-body">{!confirmMessage}</div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!hideConfirmPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                    immediate="true"
+                    reRender="form"
+                  />
+                  <apex:commandButton
+                    action="{!updateExistingYouth}"
+                    value="Update Existing Record"
+                    status="pageStatus"
+                    reRender="form"
+                  />
+                  <apex:commandButton
+                    action="{!saveYouth}"
+                    value="Save"
+                    status="pageStatus"
+                    styleClass="primary"
+                    reRender="form"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END confirmPopup -->
+
+        <apex:commandButton
+          action="{!URLFOR($Site.Prefix+'/YouthData?localOrgId='+localOrgId+'&siteId='+siteId+'&grantId='+grantId+'&year='+year)}"
+          value="Back"
+          status="pageStatus"
+        />
+        <apex:commandButton
+          action="{!clearYouthForm}"
+          value="Clear Form"
+          status="pageStatus"
+          reRender="form"
+        />
+        <apex:commandButton
+          action="{!youthDupCheck}"
+          value="Save"
+          status="pageStatus"
+          styleClass="primary"
+          reRender="form"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage errorMessage="{!successMessage}" type="success" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

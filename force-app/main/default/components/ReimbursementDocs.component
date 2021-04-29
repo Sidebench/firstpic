@@ -1,0 +1,47 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="headerClass" description="headerClass" />
+  <apex:attribute type="Document__c[]" name="docs" description="docs" />
+  <apex:attribute type="Attachment[]" name="atts" description="atts" />
+  <apex:attribute type="String" name="groupId" description="groupId" />
+
+  <div class="{!headerClass}">{!header}</div>
+  <div class="panel-body">
+    <table width="100%" class="tblWithBorders">
+      <tr>
+        <th>Name</th>
+        <th>Notes</th>
+        <th>View Attachment(s)</th>
+      </tr>
+      <apex:repeat value="{!docs}" var="i">
+        <apex:outputPanel rendered="{!i.Group_Id__c == groupId}">
+          <tr>
+            <td>{!i.Name}</td>
+            <td>{!i.Notes__c}</td>
+            <td>
+              <apex:repeat value="{!atts}" var="a">
+                <apex:outputPanel rendered="{!a.ParentId == i.Id }">
+                  <apex:outputLink
+                    value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                    target="_blank"
+                    >{!a.Name}</apex:outputLink
+                  >
+                  <apex:outputText
+                    value=" ({!a.Description})"
+                    style="font-size: 0.9em; color: #555"
+                    rendered="{!a.Description != null}"
+                  />
+                  <apex:outputText
+                    value=" {!a.CreatedDate}"
+                    style="font-size: 0.9em; color: #555"
+                  />
+                  &nbsp;&nbsp;
+                </apex:outputPanel>
+              </apex:repeat>
+            </td>
+          </tr>
+        </apex:outputPanel>
+      </apex:repeat>
+    </table>
+  </div>
+</apex:component>

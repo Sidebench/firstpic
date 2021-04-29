@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Youth</fullName>
+    <columns>Youth_ID_Number__c</columns>
+    <columns>FULL_NAME</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>Organization_Type__c</columns>
+    <columns>Parent_Guardian__c</columns>
+    <columns>Parent_Guardian_Email__c</columns>
+    <columns>Parent_Guardian_Phone__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CONTACT.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Contact.Youth</value>
+    </filters>
+    <label>Youth</label>
+    <sharedTo>
+        <allInternalUsers />
+    </sharedTo>
+</ListView>

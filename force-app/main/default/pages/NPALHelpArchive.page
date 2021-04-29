@@ -1,0 +1,261 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Help</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <h3>Helpful Links and Documents</h3>
+      <br />
+
+      <h4>Documents</h4>
+      <hr />
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink value="{!$Resource.NPAL_Activity_Report_Template}">
+              <div class="panel-body text-center">Activity Report Template</div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Reimbursement_Procedures_Final}"
+            >
+              <div class="panel-body text-center">
+                Mentoring Reimbursement Procedures Final
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Updating_SAM_Registration}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Updating or Renewing SAM Registration
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Teen_Pre_Survey}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Mentoring Teen Pre Survey
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Teen_Post_Survey}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Mentoring Teen Post Survey
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Youth_Post_Survey}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Mentoring Youth Post Survey
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Youth_PRE_Survey}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Mentoring Youth Pre Survey
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Youth_Application}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring Youth Application
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Parent_Consent}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring Parent Consent
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentor_Application}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring Mentor Application
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentor_Agreement}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring Mentor Agreement
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Mentoring_Match_Tracking_Sheet}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring Attendance Sheet
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NPAL_Close_Out_Process}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Close Out Process and Procedure
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Webinars</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://firstpic.webex.com/firstpic/lsr.php?RCID=77580e7922227956c73375cf5e09a314"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Introduction and Budget Development Webinar
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://firstpic.webex.com/firstpic/lsr.php?RCID=a3f789dc7e7583c1327614caacdf5930"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                National PAL Progress Report Webinar
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://firstpic.webex.com/firstpic/lsr.php?RCID=65c86b92fc91aa55c35ea1fad57d88a0"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Mentoring Webinar: 12/15
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://firstpic.webex.com/firstpic/lsr.php?RCID=bb2c2ac8392aaaf8aa92cee084d89fc8"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                National PAL Community Service Project Webinar
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://firstpic.webex.com/firstpic/lsr.php?RCID=65c86b92fc91aa55c35ea1fad57d88a0"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                NPAL Online Reporting Site Webinar
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

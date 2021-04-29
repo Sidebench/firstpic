@@ -1,0 +1,102 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+  />
+  <apex:attribute type="String" name="localNote" description="localNote" />
+  <apex:attribute
+    type="String"
+    name="nationalNote"
+    description="nationalNote"
+  />
+  <apex:attribute
+    type="String"
+    name="nationalNotePrivate"
+    description="nationalNotePrivate"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayLocalNote"
+    description="displayLocalNote"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayNationalNote"
+    description="displayNationalNote"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayNationalNotePrivate"
+    description="displayNationalNotePrivate"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="readOnly"
+    description="readOnly"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="richText"
+    description="richText"
+    default="false"
+  />
+
+  <apex:outputPanel rendered="{!displayLocalNote}">
+    <apex:inputTextarea
+      value="{!localNote}"
+      rendered="{!userAcctType == 'Local Organization' && NOT(readOnly)}"
+    />
+    <apex:outputPanel
+      rendered="{!userAcctType == 'National Organization' || readOnly}"
+    >
+      <apex:outputText
+        value="{!localNote}"
+        escape="false"
+        rendered="{!localNote != null}"
+      />
+      <apex:outputText
+        value="No Notes from Affiliate"
+        rendered="{!localNote == null}"
+      />
+    </apex:outputPanel>
+    <hr />
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!displayNationalNote}">
+    <strong>Reviewer Notes:</strong><br />
+    <apex:inputTextarea
+      value="{!nationalNote}"
+      richText="{!richText}"
+      rendered="{!userAcctType == 'National Organization' && NOT(readOnly)}"
+    />
+    <apex:outputPanel
+      rendered="{!userAcctType != 'National Organization' || readOnly}"
+    >
+      <apex:outputText
+        value="No Notes from National"
+        rendered="{!nationalNote == null}"
+      />
+      <apex:outputText value="{!nationalNote}" escape="false" />
+    </apex:outputPanel>
+  </apex:outputPanel>
+  <apex:outputPanel
+    rendered="{!userAcctType == 'National Organization' && displayNationalNotePrivate}"
+  >
+    <hr />
+    <strong>Notes for National:</strong><br />
+    <apex:inputTextarea
+      value="{!nationalNotePrivate}"
+      richText="{!richText}"
+      rendered="{!NOT(readOnly)}"
+    />
+    <apex:outputText
+      value="{!nationalNotePrivate}"
+      escape="false"
+      rendered="{!readOnly}"
+    />
+  </apex:outputPanel>
+</apex:component>

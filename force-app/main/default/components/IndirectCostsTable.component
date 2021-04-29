@@ -1,0 +1,50 @@
+<apex:component>
+  <apex:attribute
+    type="Integer"
+    name="budgeted"
+    description="budgeted"
+    required="true"
+  />
+  <apex:attribute
+    type="Integer"
+    name="approved"
+    description="approved"
+    required="true"
+  />
+  <apex:attribute
+    type="Integer"
+    name="balance"
+    description="balance"
+    required="true"
+  />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">Indirect Cost</div>
+    <div class="panel-body">
+      <table style="width: 100%">
+        <tr>
+          <th>Indirect Cost Budgeted</th>
+          <th>Indirect Cost Approved</th>
+          <th>Indirect Cost Remaining</th>
+        </tr>
+        <tr>
+          <td>
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!budgeted}" />
+            </apex:outputText>
+          </td>
+          <td>
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!approved}" />
+            </apex:outputText>
+          </td>
+          <td>
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!balance}" />
+            </apex:outputText>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</apex:component>

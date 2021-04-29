@@ -1,0 +1,1055 @@
+<apex:page
+  controller="UAApplicationCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Application Details</title>
+    <style>
+      .grid-pd [class*="col-"] {
+        padding-bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <c:UAHeader ActivePage="applications" acct="{!userAcct}" />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <span style="float: right; padding-bottom: 10px">
+          <apex:commandButton
+            value="Add Review"
+            action="{!createReview}"
+            status="pageStatus"
+            styleClass="primary"
+            reRender="form"
+            rendered="{!readOnly && NOT(reviewed)}"
+          />
+          <a
+            href="{!URLFOR($Site.Prefix+'/UAApplicationPDF?AppId='+app.Id)}"
+            target="_blank"
+            class="btn primary"
+            >Export to PDF</a
+          >
+        </span>
+        <h2>{!app.Organization_Name__c}</h2>
+
+        <table class="table">
+          <tr>
+            <td><strong>App #: </strong> {!app.Name}</td>
+            <td><strong>EIN #: </strong> {!app.EIN__c}</td>
+            <td>
+              <strong>Address: </strong>
+              {!app.Address__c}, {!app.City__c}, {!app.State__c}
+              {!app.Postal_Zip_Code__c}
+            </td>
+          </tr>
+        </table>
+        <table class="table">
+          <tr>
+            <td><strong>Status: </strong> {!app.Status__c}</td>
+            <apex:outputPanel
+              rendered="{!reviewed || currentUser.Profile.Name == 'UA Admin'}"
+            >
+              <td>
+                <strong>Score: </strong>
+                <apex:outputText value="{!score}" />
+              </td>
+            </apex:outputPanel>
+            <td>
+              <strong>Submitted Date: </strong>
+              <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                <apex:param value="{!app.Submitted_Date__c}" />
+              </apex:outputText>
+            </td>
+            <apex:outputPanel
+              rendered="{!app.Awarded_Date__c != null || app.Closed_Date__c != null}"
+            >
+              <td>
+                <strong>Closed Date: </strong>
+                <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                  <apex:param
+                    value="{!IF(app.Closed_Date__c != null, app.Closed_Date__c, app.Awarded_Date__c)}"
+                  />
+                </apex:outputText>
+              </td>
+            </apex:outputPanel>
+          </tr>
+        </table>
+
+        <!--
+                <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Pride'}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Eligibility 
+                        </div>
+                        <div class="panel-body grid-pd-md">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6">
+                                    <strong>Is your organization a 501 c3 </strong>
+                                    <apex:outputField value="{!app.Is_Organization_501_c3__c}" />
+                                </div>
+                                <div class="col-xs-12 col-sm-6">
+                                    <strong>Are you requesting sponsorship for an event, team or fundraiser activity or general operating support? </strong>
+                                    <apex:outputField value="{!app.Sponsorship_Request_Reason__c}" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6">
+                                    <strong>Does your organization serve LGBTQ+ youth? </strong>
+                                    <apex:outputField value="{!app.LGBTQ_Youth_Served__c}" />
+                                    <br />
+                                    <strong>If so, how many? </strong>
+                                    <apex:outputField value="{!app.How_Many_LGBTQ_Youth__c}" />
+                                </div>
+                                <div class="col-xs-12 col-sm-6">
+                                    <strong>What city does your organization currently serve? </strong>
+                                    <apex:outputField value="{!app.Cities_Served__c}" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+                -->
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Contact Information</div>
+          <div class="panel-body">
+            <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Pride'}">
+              <h5 style="border-bottom: 1px solid #ccc">CEO/ED</h5>
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  <strong>First Name: </strong>
+                  {!app.CEO_First_Name__c}
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <strong>Last Name: </strong>
+                  {!app.CEO_Last_Name__c}
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <strong>Email: </strong>
+                  {!app.CEO_Email__c}
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <strong>Phone: </strong>
+                  {!app.CEO_Phone__c}
+                </div>
+              </div>
+              <br />
+            </apex:outputPanel>
+            <h5 style="border-bottom: 1px solid #ccc">Program Contact</h5>
+            <div class="row">
+              <div class="col-xs-6 col-sm-3">
+                <strong>First Name: </strong>
+                {!app.Program_Contact_First_Name__c}
+              </div>
+              <div class="col-xs-6 col-sm-3">
+                <strong>Last Name: </strong>
+                {!app.Program_Contact_Last_Name__c}
+              </div>
+              <div class="col-xs-6 col-sm-3">
+                <strong>Email: </strong>
+                {!app.Program_Contact_Email__c}
+              </div>
+              <div class="col-xs-6 col-sm-3">
+                <strong>Phone: </strong>
+                {!app.Program_Contact_Phone__c}
+              </div>
+            </div>
+            <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Pride'}">
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong>Organization Mission Statement: </strong>
+                  <apex:outputField value="{!app.Mission_Statement__c}" />
+                </div>
+              </div>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Request Details</div>
+          <div class="panel-body grid-pd-md">
+            <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Pride'}">
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong>Total Amount Requested from Under Armour: </strong>
+                  <apex:outputField value="{!app.Total_Amount_Requested__c}" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-9">
+                  <strong
+                    >Please explain how UA grant funds will be utilized.
+                  </strong>
+                  <br />{!app.How_Funds_Utilized__c}
+                </div>
+                <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                  <div class="col-xs-3">
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.How_Funds_Utilized_Score__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.How_Funds_Utilized_Score__c}"
+                      rendered="{!reviewed}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.How_Funds_Utilized_Notes__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.How_Funds_Utilized_Notes__c}"
+                      rendered="{!reviewed}"
+                    />
+                  </div>
+                </apex:outputPanel>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong
+                    >If funding is being requested for a specific program, are
+                    participants required to pay a fee?
+                  </strong>
+                </div>
+                <div class="col-xs-12">{!app.Has_Participation_Fee__c}</div>
+                <div class="col-xs-12">
+                  <strong>If so, how much:&nbsp;</strong>
+                </div>
+                <div class="col-xs-12">{!app.Participation_Fee__c}</div>
+              </div>
+              <div class="row">
+                <div class="col-xs-9">
+                  <strong
+                    >What is the biggest issue your organization is facing in
+                    light of the COVID-19 crisis:
+                  </strong>
+                  <br />{!app.Biggest_Issue_Organization_is_Facing__c}
+                </div>
+                <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                  <div class="col-xs-3">
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.Biggest_Issue_Org_is_Facing_Score__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Biggest_Issue_Org_is_Facing_Score__c}"
+                      rendered="{!reviewed}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.Biggest_Issue_Org_is_Facing_Notes__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Biggest_Issue_Org_is_Facing_Notes__c}"
+                      rendered="{!reviewed}"
+                    />
+                  </div>
+                </apex:outputPanel>
+              </div>
+              <div class="row">
+                <div class="col-xs-9">
+                  <strong
+                    >In light of COVID-19, has the organization been able to
+                    continue to engage and support LGBTQ+ youth athletes and
+                    communities during this time? If yes, please share a brief
+                    overview of how:
+                  </strong>
+                  <br />{!app.Able_to_Continue_Supporting_Youth__c}
+                </div>
+                <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                  <div class="col-xs-3">
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.Able_to_Continue_Supporting_Youth_Score__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Able_to_Continue_Supporting_Youth_Score__c}"
+                      rendered="{!reviewed}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.Able_to_Continue_Supporting_Youth_Notes__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Able_to_Continue_Supporting_Youth_Notes__c}"
+                      rendered="{!reviewed}"
+                    />
+                  </div>
+                </apex:outputPanel>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong
+                    >Do you currently have UA employees sitting on the Board for
+                    your organization? If yes, please list individuals and their
+                    involvement:
+                  </strong>
+                </div>
+                <div class="col-xs-12">
+                  <apex:outputField
+                    value="{!app.Employees_Donating_Volunteering_Sitting__c}"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong
+                    >What other organizations currently support your
+                    program/organization? Please write n/a if you do not receive
+                    additional support:
+                  </strong>
+                </div>
+                <div class="col-xs-12">
+                  <apex:outputField
+                    value="{!app.Other_Organizations_Supporting_Program__c}"
+                  />
+                </div>
+              </div>
+              <br />
+              <strong
+                >Please provide website and/or social media handles for
+                organization, if applicable.</strong
+              >
+              <table>
+                <tr>
+                  <td>
+                    <strong>Instagram: </strong>
+                  </td>
+                  <td>{!app.Instagram__c}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Twitter: </strong>
+                  </td>
+                  <td>{!app.Twitter__c}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Website: </strong>
+                  </td>
+                  <td>{!app.Website__c}</td>
+                </tr>
+              </table>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong
+                    >Has your organization previously received support from
+                    Under Armour?</strong
+                  >
+                </div>
+                <div class="col-xs-12">{!app.Previous_Support_Received__c}</div>
+                <div class="col-xs-12">
+                  <strong
+                    >If yes, please provide the year(s) and describe the
+                    contribution.
+                  </strong>
+                </div>
+                <div class="col-xs-12">
+                  {!app.Support_Years_and_Contribution__c}
+                </div>
+              </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Pride'}">
+              <div class="row">
+                <apex:outputPanel
+                  rendered="{!app.RecordType.Name != 'UA Freedom'}"
+                >
+                  <div class="col-xs-12 col-sm-6">
+                    <strong>Age of youth impacted: </strong>
+                    {!app.Age__c}
+                  </div>
+                </apex:outputPanel>
+                <div class="col-xs-12 col-sm-6">
+                  <strong>Gender: </strong>
+                  {!app.Gender__c}
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <strong>Total Annual Organization Budget: </strong>
+                  <apex:outputField value="{!app.Total_Budget__c}" />
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <strong>Total Program Budget: </strong>
+                  <apex:outputField
+                    value="{!app.Total_Project_Program_Budget__c}"
+                  />
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <strong>Total Amount Requested from Under Armour: </strong>
+                  <apex:outputField value="{!app.Total_Amount_Requested__c}" />
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <strong
+                    >Have you previously received support from Under Armour?
+                  </strong>
+                  {!app.Previous_Support_Received__c}
+                  <br />
+                  <strong
+                    >If yes, please provide the year(s) and describe the
+                    contribution.
+                  </strong>
+                  {!app.Support_Years_and_Contribution__c}
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <strong
+                    >If providing a match, how much of the requested funding
+                    will be matched?
+                  </strong>
+                  <apex:outputField
+                    value="{!app.Amount_of_Funding_Matched__c}"
+                  />
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <strong
+                    >If providing a match, what type of funds will be used for
+                    the match? (i.e. city funds, individual donor, etc.)</strong
+                  >
+                  {!app.Type_of_Funds_Used_for_Match__c}
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <strong
+                    >Please select which UA philanthropic pillar your
+                    program/request are appealing to (select all that
+                    apply)</strong
+                  >
+                  <br />{!app.Philanthropic_Pillar__c}
+                </div>
+                <apex:outputPanel
+                  rendered="{!app.RecordType.Name != 'UA Freedom'}"
+                >
+                  <div class="col-xs-12 col-sm-6">
+                    <strong
+                      >Area of Impact: Which city is the primary beneficiary of
+                      your program. Please note if your program does not service
+                      one of these markets, your request is ineligible.
+                    </strong>
+                    <br />{!app.Cities_Served__c}
+                  </div>
+                </apex:outputPanel>
+                <div class="col-xs-12 col-sm-6">
+                  <strong
+                    >Is there a participation fee for those interested in the
+                    program?
+                  </strong>
+                  {!app.Has_Participation_Fee__c}
+                  <strong>If so, how much:&nbsp;</strong>
+                  {!app.Participation_Fee__c}
+                </div>
+              </div>
+              <br />
+              <strong
+                >Please provide website and/or social media handles for
+                organization, if applicable.</strong
+              >
+              <table>
+                <tr>
+                  <td>
+                    <strong>Instagram: </strong>
+                  </td>
+                  <td>{!app.Instagram__c}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Twitter: </strong>
+                  </td>
+                  <td>{!app.Twitter__c}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Website: </strong>
+                  </td>
+                  <td>{!app.Website__c}</td>
+                </tr>
+              </table>
+              <br />
+
+              <apex:outputPanel
+                rendered="{!app.RecordType.Name == 'UA Freedom'}"
+              >
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong
+                      >Please provide a brief overview of your 501
+                      (c)(3).</strong
+                    >
+                    <br />{!app.Overview_501c3__c}
+                  </div>
+                  <div class="col-xs-12">
+                    <strong
+                      >Explain how your program or project will impact and serve
+                      the UA Freedom Initiative.</strong
+                    >
+                    <br />{!app.Impact__c}
+                  </div>
+                </div>
+              </apex:outputPanel>
+
+              <apex:outputPanel
+                rendered="{!app.RecordType.Name != 'UA Freedom'}"
+              >
+                <div class="row">
+                  <div class="col-xs-9">
+                    <strong
+                      >Explain how your program or project will meet an unmet
+                      need through innovation, entrepreneurship or education?
+                      Has this model been successful previously or elsewhere? If
+                      so, please explain.
+                    </strong>
+                    <br />{!app.Unmet_Needs_will_be_Met__c}
+                  </div>
+                  <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                    <div class="col-xs-3">
+                      <strong>Score: </strong>
+                      <apex:inputField
+                        value="{!review.Unmet_Needs_Will_Be_Met_Score__c}"
+                        rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                      />
+                      <apex:outputField
+                        value="{!review.Unmet_Needs_Will_Be_Met_Score__c}"
+                        rendered="{!reviewed}"
+                      />
+                      <br />
+                      <strong>Comments: </strong>
+                      <apex:inputField
+                        value="{!review.Unmet_Needs_Will_Be_Met_Notes__c}"
+                        rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                      />
+                      <apex:outputField
+                        value="{!review.Unmet_Needs_Will_Be_Met_Notes__c}"
+                        rendered="{!reviewed}"
+                      />
+                    </div>
+                  </apex:outputPanel>
+                </div>
+              </apex:outputPanel>
+
+              <div class="row">
+                <div class="col-xs-9">
+                  <strong>
+                    What are your program objectives and how will you measure
+                    impact? Identify the specific measurable outcomes you
+                    anticipate as a result of this program and outline how you
+                    will measure project success or impact.
+                  </strong>
+                  <br />{!app.Program_Objectives__c}
+                </div>
+                <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                  <div class="col-xs-3">
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.Program_Objectives_Score__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Program_Objectives_Score__c}"
+                      rendered="{!reviewed}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.Program_Objectives_Notes__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Program_Objectives_Notes__c}"
+                      rendered="{!reviewed}"
+                    />
+                  </div>
+                </apex:outputPanel>
+              </div>
+
+              <div class="row">
+                <div class="col-xs-9">
+                  <strong
+                    >Please explain how UA grant funds will be utilized.
+                  </strong>
+                  <br />{!app.How_Funds_Utilized__c}
+                </div>
+                <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                  <div class="col-xs-3">
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.How_Funds_Utilized_Score__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.How_Funds_Utilized_Score__c}"
+                      rendered="{!reviewed}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.How_Funds_Utilized_Notes__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.How_Funds_Utilized_Notes__c}"
+                      rendered="{!reviewed}"
+                    />
+                  </div>
+                </apex:outputPanel>
+              </div>
+
+              <apex:outputPanel
+                rendered="{!app.RecordType.Name == 'UA Freedom'}"
+              >
+                <div class="row">
+                  <div class="col-xs-9">
+                    <strong
+                      >Explain how your program is sustainable and how this
+                      one-time grant will impact your scope of work for years to
+                      come.
+                    </strong>
+                    <br />{!app.Sustainability__c}
+                  </div>
+                  <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                    <div class="col-xs-3">
+                      <strong>Score: </strong>
+                      <apex:inputField
+                        value="{!review.Sustainability_Score__c}"
+                        rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                      />
+                      <apex:outputField
+                        value="{!review.Sustainability_Score__c}"
+                        rendered="{!reviewed}"
+                      />
+                      <br />
+                      <strong>Comments: </strong>
+                      <apex:inputField
+                        value="{!review.Sustainability_Notes__c}"
+                        rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                      />
+                      <apex:outputField
+                        value="{!review.Sustainability_Notes__c}"
+                        rendered="{!reviewed}"
+                      />
+                    </div>
+                  </apex:outputPanel>
+                </div>
+              </apex:outputPanel>
+
+              <div class="row">
+                <div class="col-xs-9">
+                  <strong
+                    >What story will be amplified if awarded this grant? How
+                    would funds help you to tell your story to others?
+                  </strong>
+                  <br />{!app.How_Story_will_be_Amplified__c}
+                </div>
+                <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                  <div class="col-xs-3">
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.How_Story_Will_Be_Amplified_Score__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.How_Story_Will_Be_Amplified_Score__c}"
+                      rendered="{!reviewed}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.How_Story_Will_Be_Amplified_Notes__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.How_Story_Will_Be_Amplified_Notes__c}"
+                      rendered="{!reviewed}"
+                    />
+                  </div>
+                </apex:outputPanel>
+              </div>
+
+              <apex:outputPanel
+                rendered="{!app.RecordType.Name != 'UA Freedom'}"
+              >
+                <div class="row">
+                  <div class="col-xs-9">
+                    <strong
+                      >Explain your organization or staff leadership experience
+                      in delivering proven or promising opportunities to the
+                      target population.
+                    </strong>
+                    <br />{!app.How_Program_will_be_delivered__c}
+                  </div>
+                  <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                    <div class="col-xs-3">
+                      <strong>Score: </strong>
+                      <apex:inputField
+                        value="{!review.How_Program_Will_Be_Delivered_Score__c}"
+                        rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                      />
+                      <apex:outputField
+                        value="{!review.How_Program_Will_Be_Delivered_Score__c}"
+                        rendered="{!reviewed}"
+                      />
+                      <br />
+                      <strong>Comments: </strong>
+                      <apex:inputField
+                        value="{!review.How_Program_Will_Be_Delivered_Notes__c}"
+                        rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                      />
+                      <apex:outputField
+                        value="{!review.How_Program_Will_Be_Delivered_Notes__c}"
+                        rendered="{!reviewed}"
+                      />
+                    </div>
+                  </apex:outputPanel>
+                </div>
+              </apex:outputPanel>
+
+              <div class="row">
+                <div class="col-xs-9">
+                  <strong
+                    >Please provide an example of a time when the
+                    project/program did not succeed. What lessons were learned
+                    and how will they be applied to future programs/projects?
+                  </strong>
+                  <br />{!app.Example_of_Unsuccessful_Program__c}
+                </div>
+                <apex:outputPanel rendered="{!reviewed || NOT(readOnly)}">
+                  <div class="col-xs-3">
+                    <strong>Score: </strong>
+                    <apex:inputField
+                      value="{!review.Example_of_Unsuccessful_Program_Score__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Example_of_Unsuccessful_Program_Score__c}"
+                      rendered="{!reviewed}"
+                    />
+                    <br />
+                    <strong>Comments: </strong>
+                    <apex:inputField
+                      value="{!review.Example_of_Unsuccessful_Program_Notes__c}"
+                      rendered="{!NOT(readOnly) && NOT(reviewed)}"
+                    />
+                    <apex:outputField
+                      value="{!review.Example_of_Unsuccessful_Program_Notes__c}"
+                      rendered="{!reviewed}"
+                    />
+                  </div>
+                </apex:outputPanel>
+              </div>
+
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong
+                    >Do you currently have UA employees sitting on the Board for
+                    your organization? If yes, please list individuals and their
+                    involvement.
+                  </strong>
+                  <br />{!app.Employees_Donating_Volunteering_Sitting__c}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <strong
+                    >What other organizations currently support your
+                    program/organization? Please write n/a if you do not receive
+                    additional support.
+                  </strong>
+                  <br />{!app.Other_Organizations_Supporting_Program__c}
+                </div>
+              </div>
+              <br />
+
+              <apex:outputPanel
+                rendered="{!app.RecordType.Name != 'UA Freedom'}"
+              >
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>References: </strong>
+                    {!app.References__c}
+                  </div>
+                </div>
+              </apex:outputPanel>
+
+              <apex:outputPanel
+                rendered="{!app.RecordType.Name == 'UA Freedom'}"
+              >
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Reference One</strong>
+                  </div>
+                  <div class="col-sm-6">
+                    First Name: &nbsp;
+                    <apex:outputField value="{!app.R1_First_Name__c}" />
+                  </div>
+                  <div class="col-sm-6">
+                    Last Name: &nbsp;
+                    <apex:outputField value="{!app.R1_Last_Name__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Email: &nbsp;
+                    <apex:outputField value="{!app.R1_Email__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Phone: &nbsp;
+                    <apex:outputField value="{!app.R1_Phone__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Relationship: &nbsp;
+                    <apex:outputField value="{!app.R1_Relationship__c}" />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Reference Two</strong>
+                  </div>
+                  <div class="col-sm-6">
+                    First Name: &nbsp;
+                    <apex:outputField value="{!app.R2_First_Name__c}" />
+                  </div>
+                  <div class="col-sm-6">
+                    Last Name: &nbsp;
+                    <apex:outputField value="{!app.R2_Last_Name__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Email: &nbsp;
+                    <apex:outputField value="{!app.R2_Email__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Phone: &nbsp;
+                    <apex:outputField value="{!app.R2_Phone__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Relationship: &nbsp;
+                    <apex:outputField value="{!app.R2_Relationship__c}" />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Reference Three</strong>
+                  </div>
+                  <div class="col-sm-6">
+                    First Name: &nbsp;
+                    <apex:outputField value="{!app.R3_First_Name__c}" />
+                  </div>
+                  <div class="col-sm-6">
+                    Last Name: &nbsp;
+                    <apex:outputField value="{!app.R3_Last_Name__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Email: &nbsp;
+                    <apex:outputField value="{!app.R3_Email__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Phone: &nbsp;
+                    <apex:outputField value="{!app.R3_Phone__c}" />
+                  </div>
+                  <div class="col-sm-4">
+                    Relationship: &nbsp;
+                    <apex:outputField value="{!app.R3_Relationship__c}" />
+                  </div>
+                </div>
+              </apex:outputPanel>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <c:Attachments parentId="{!app.Id}" enableDeleteAtt="false" />
+
+        <apex:outputPanel
+          rendered="{!app.Notes__c != null || review.Notes__c != null}"
+        >
+          <div class="panel panel-default">
+            <div class="panel-heading">Notes</div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                  <apex:outputField
+                    value="{!app.Notes__c}"
+                    rendered="{!currentUser.Profile.Name == 'UA Admin'}"
+                  />
+                  <apex:outputField
+                    value="{!review.Notes__c}"
+                    rendered="{!reviewed}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!currentUser.Profile.Name == 'UA Admin' && reviews.size > 0}"
+        >
+          <div class="panel panel-default">
+            <div class="panel-heading">Reviews</div>
+            <div class="panel-body grid-pd-md">
+              <table width="100%">
+                <tr>
+                  <th>Reviewer</th>
+                  <th>Date</th>
+                  <th>Score</th>
+                  <th>Should Award?</th>
+                </tr>
+                <apex:repeat value="{!reviews}" var="i">
+                  <tr>
+                    <td>{!i.Reviewer__r.Name}</td>
+                    <td>
+                      <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                        <apex:param value="{!i.CreatedDate}" />
+                      </apex:outputText>
+                    </td>
+                    <td>{!i.Score__c}</td>
+                    <td>{!i.Should_Award__c}</td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:commandButton
+          value="Add Review"
+          action="{!createReview}"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!readOnly && NOT(reviewed)}"
+          reRender="form"
+        />
+        <apex:commandButton
+          value="Score"
+          action="{!scorePopup}"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!NOT(readOnly)}"
+        />
+        <apex:outputPanel
+          rendered="{!app.Status__c == 'Reviewed' && currentUser.Profile.Name == 'UA Admin'}"
+        >
+          <apex:commandButton
+            value="Not Eligible"
+            action="{!notEligible}"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            value="Deny"
+            action="{!notEligible}"
+            status="pageStatus"
+          />
+          <apex:commandButton
+            value="Award"
+            action="{!awardPopup}"
+            status="pageStatus"
+            styleClass="primary"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayScorePopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayScorePopup}"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Record Score for App #: {!app.Name}</h4>
+              </div>
+              <div class="modal-body">
+                <strong>Score: </strong>
+                <apex:inputField
+                  value="{!review.Score__c}"
+                  styleClass="input-md"
+                />
+                <br /><br />
+                <strong
+                  >Do you think this organization should receive funding?:
+                </strong>
+                <apex:inputField
+                  value="{!review.Should_Award__c}"
+                  styleClass="input-md"
+                />
+                <br /><br />
+                <strong>Notes: </strong>
+                <apex:inputField value="{!review.Notes__c}" />
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!scorePopup}"
+                  value="Cancel"
+                  status="pageStatus"
+                />
+                <apex:commandButton
+                  action="{!score}"
+                  value="Submit"
+                  status="pageStatus"
+                  styleClass="primary"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayAwardPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayAwardPopup}"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Award App #: {!app.Name}</h4>
+              </div>
+              <div class="modal-body">
+                <strong>Awarded Amount: </strong>
+                $ <apex:input value="{!awardAmount}" styleClass="input-md" />
+                <br /><br />
+                <strong>Grant Date Range: </strong>
+                <apex:input type="date" value="{!startDate}" />
+                -&nbsp;
+                <apex:input type="date" value="{!endDate}" />
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!awardPopup}"
+                  value="Cancel"
+                  status="pageStatus"
+                />
+                <apex:commandButton
+                  action="{!award}"
+                  value="Submit"
+                  status="pageStatus"
+                  styleClass="primary"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

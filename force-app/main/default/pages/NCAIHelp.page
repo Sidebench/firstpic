@@ -1,0 +1,434 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Help</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <h3>Help Videos and Documents</h3>
+      <br />
+
+      <h4>Quarterly Conference Calls/Webinars</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://www.anymeeting.com/324-290-721/EA53D68287473C"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                T.R.A.I.L. Community Health Partnerships (Recording)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.TRAILCommunityHealthPartnerships }"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                T.R.A.I.L. Community Health Partnerships (Slides)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="https://www.anymeeting.com/WebConference/RecordingDefault.aspx?c_psrid=EA53DA84864E3A&code=811-885-957"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Safe/Socially Distanced Implementation of T.R.A.I.L. During
+                COVID-19 (Recording)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.TRAILCOVIDImplementation}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Safe/Socially Distanced Implementation of T.R.A.I.L. During
+                COVID-19 (Slides)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Implementation Training: Webinar Materials</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.anymeeting.com/806-946-589/EA52D988834F3A"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 New Program Staff Recording (Session 1 of 2)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NewProgramStaff20202021Slides1}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 New Program Staff Slides (Session 1 of 2)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.anymeeting.com/875-681-005/EA52D988874730"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 New Program Staff Recording (Session 2 of 2)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.NewProgramStaff20202021Slides2}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 New Program Staff Slides (Session 2 of 2)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.anymeeting.com/808-109-692/EA52D883864A38"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 Returning Program Staff Recording (Session 1 of 2)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.ReturningProgramStaff20202021Slides1}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 Returning Program Staff Slides (Session 1 of 2)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.anymeeting.com/779-367-663/EA52D88281483F"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 Returning Program Staff Recording (Session 2 of 2)
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.ReturningProgramStaff20202021Slides2}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 Returning Program Staff Slides (Session 2 of 2)
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.anymeeting.com/520-191-589/EA52D880824C3B"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 New Finance Staff Recording
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.FinancialOnlineReportingNewStaff}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 New Finance Staff Slides
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://www.anymeeting.com/855-463-675/EA52D885854B3E"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 Returning Finance Staff Recording
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.FinancialOnlineReportingReturning}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                2020-2021 Returning Finance Staff Slides
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Progress Reports</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.Progress_Reporting_Guide}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                T.R.A.I.L. Progress Reporting Guide
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <a
+              href="https://docs.google.com/document/d/1Z5GH5qnH04E_j7fOIgkYpMYFozr8EO0cpSh1oXwrgy8/edit?usp=sharing"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                T.R.A.I.L. Progress Reporting Template
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <h4>Youth Data</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.TRAIL_Adding_Youth_Data}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Adding Youth Data to the Online Reporting Site
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.TRAIL_Adding_Pre_Post_Test}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Adding Pre / Post Test Data to the Online Reporting Site
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.TRAIL_Pre_Post_Test}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                T.R.A.I.L. Pre / Post Test
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Physical Activity Challenges</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.TRAIL_Adding_Challenge_Data}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Adding Physical Activity Challenge Data to the Online Reporting
+                Site
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.Physical_Activity_Endurance_Challenge_Shuttle_Run}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Physical Activity Endurance Challenge - Shuttle Run
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.Physical_Activity_Strength_Challenge_1_Low_Plank}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Physical Activity Strength Challenge 1 - Low Plank
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.Physical_Activity_Strength_Challenge_2_Push_ups}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Physical Activity Strength Challenge 2 - Push-ups
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.Physical_Activity_Challenge_Tracker}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Physical Activity Challenge Tracker
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Physical Activity Logs (PA Logs)</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.TRAIL_Adding_PA_Logs}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Adding Monthly Physical Activity Logs to the Online Reporting
+                Site
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <h4>Documents Repository</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.Doc_Repo_Walkthrough_Program_Coordinators}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Documents Repository Walkthrough: Program Coordinators
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <apex:outputLink
+              value="{!$Resource.Doc_Repo_Walkthrough_Site_Coordinators}"
+              target="_blank"
+            >
+              <div class="panel-body text-center">
+                Documents Repository Walkthrough: Site Coordinators
+              </div>
+            </apex:outputLink>
+          </div>
+        </div>
+      </div>
+
+      <br /><br />
+      <h3>What's New/System Updates</h3>
+      <hr />
+      <h6>
+        This area will show you any updates that have been made to the system
+        recently, along with detail as to whether this change will affect how
+        you use the system and any changes that you will need to make to the how
+        you are using the system.
+      </h6>
+      <!--
+            <div class="panel panel-info" id="help0">
+                <div class="panel-heading">
+                    Title Here
+                    <span class="pull-right">
+                        04/08/2018
+                    </span>
+                </div>
+                <div class="panel-body">
+                    Enter Content Here
+                </div>
+            </div>
+            -->
+    </div>
+  </div>
+</apex:page>

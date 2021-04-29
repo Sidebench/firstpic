@@ -1,0 +1,150 @@
+<apex:page controller="ApplicationListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Applications</title>
+  </head>
+  <c:UAHeader ActivePage="applications" acct="{!userAcct}" />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Applications</h2>
+          </div>
+          <div class="col-auto pull-right">
+            Id: &nbsp;
+            <apex:inputText value="{!appId}" styleClass="input-sm" />
+            &nbsp;&nbsp; Organization Name: &nbsp;
+            <apex:inputText value="{!name}" style="width: 250px" />
+            <div style="margin: 5px"></div>
+            &nbsp;&nbsp; EIN: &nbsp;
+            <apex:inputText value="{!EIN}" styleClass="input-md" />
+            &nbsp;&nbsp; Type: &nbsp;
+            <apex:selectList value="{!appType}" size="1">
+              <apex:selectOptions value="{!appTypeOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp; Status: &nbsp;
+            <apex:selectList value="{!filterByStatus}" size="1">
+              <apex:selectOptions
+                value="{!filterByStatusOptions}"
+              /> </apex:selectList
+            >&nbsp;
+            <div style="margin: 5px"></div>
+            &nbsp;&nbsp; Location: &nbsp;
+            <apex:selectList value="{!filterByLocation}" size="1">
+              <apex:selectOptions
+                value="{!filterByLocationOptions}"
+              /> </apex:selectList
+            >&nbsp; &nbsp;&nbsp; Reviewed By: &nbsp;
+            <apex:selectList value="{!reviewer}" size="1">
+              <apex:selectOptions
+                value="{!reviewerOptions}"
+              /> </apex:selectList
+            >&nbsp; &nbsp;
+            <apex:commandButton
+              value="Update"
+              action="{!getMap}"
+              reRender="form"
+              status="pageStatus"
+              styleClass="btn-small"
+            />
+            <div style="margin: 10px"></div>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!NOT(showMore)}">
+          <apex:repeat value="{!app_map}" var="key">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">{!key}</div>
+                  <div class="panel-body">
+                    <table class="fixedTbl">
+                      <tr>
+                        <th>App #</th>
+                        <th>Organization Name</th>
+                        <th>EIN</th>
+                        <th>Total Amount Requested</th>
+                        <th>Status</th>
+                        <th>Date Submitted</th>
+                        <th class="text-center">View Application</th>
+                      </tr>
+                      <apex:repeat value="{!app_map[key]}" var="i">
+                        <tr>
+                          <td>
+                            <a
+                              href="{!URLFOR($Site.Prefix+'/UAApplicationDetails?AppId='+i.Id)}"
+                            >
+                              {!i.Name}
+                            </a>
+                          </td>
+                          <td>{!i.Organization_Name__c}</td>
+                          <td>{!i.EIN__c}</td>
+                          <td>
+                            <apex:outputField
+                              value="{!i.Total_Amount_Requested__c}"
+                            />
+                          </td>
+                          <td>{!i.Status__c}</td>
+                          <td>
+                            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                              <apex:param value="{!i.Submitted_Date__c}" />
+                            </apex:outputText>
+                          </td>
+                          <td class="text-center">
+                            <a
+                              href="{!URLFOR($Site.Prefix+'/UAApplicationDetails?AppId='+i.Id)}"
+                            >
+                              <span class="glyphicon glyphicon-eye-open"></span>
+                            </a>
+                          </td>
+                        </tr>
+                      </apex:repeat>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:repeat>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!showMore}">
+          Too many results to display. &nbsp;
+          <apex:outputText
+            value="Please use the dropdowns above to filter results."
+            rendered="{!NOT(limitReached)}"
+          />
+          <apex:outputPanel rendered="{!limitReached}">
+            <a
+              href="{!URLFOR($Site.Prefix+'/UAApplicationListXLS?status='+filterByStatus+'&loc='+filterByLocation)}"
+            >
+              Export Results &raquo;
+            </a>
+          </apex:outputPanel>
+          <br /><br />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!noResults}">
+          No Applications matching the selected criteria were found.
+          <br /><br />
+        </apex:outputPanel>
+        <a
+          href="{!URLFOR($Site.Prefix+'/UAApplicationListXLS')}"
+          class="btn primary"
+        >
+          Export All
+        </a>
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getMap"
+      action="{!getMap}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+  <script>
+    window.onload = function () {
+      getMap();
+    };
+  </script>
+</apex:page>

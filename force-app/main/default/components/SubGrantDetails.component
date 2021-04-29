@@ -1,0 +1,140 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+  />
+  <apex:attribute type="String" name="portalName" description="portalName" />
+  <apex:attribute
+    type="Grant__c"
+    name="grant"
+    description="grant"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="statusColor"
+    description="statusColor"
+    required="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayYear"
+    description="displayYear"
+    default="false"
+  />
+
+  <div class="row">
+    <div class="col-xs-6">
+      <h2>{!grant.Name}</h2>
+    </div>
+    <div class="col-xs-6 pull-right text-right">
+      <h2>
+        Total Awarded: &nbsp;
+        <apex:outputField value="{!grant.Amount__c}" />
+      </h2>
+    </div>
+  </div>
+  <table class="table fixedTbl">
+    <tr>
+      <td>
+        <span style="font-weight: bold"> Organization: &nbsp;&nbsp; </span>
+        <a
+          href="{!URLFOR($Site.Prefix+'/SiteDetails?siteId='+grant.Account__c)}"
+          target="_blank"
+          title="Click here to view contact information for this organization."
+        >
+          {!grant.Account__r.Name}
+        </a>
+      </td>
+      <td>
+        <span style="font-weight: bold"> Date Range: &nbsp;&nbsp; </span>
+        {!grant.Date_Range__c}
+      </td>
+      <td>
+        <span style="font-weight: bold"> Duration: &nbsp;&nbsp; </span>
+        {!grant.Duration__c}
+      </td>
+      <td style="{!IF(displayYear, '', 'width: 0;')}">
+        <apex:outputPanel rendered="{!displayYear}">
+          <span style="font-weight: bold"> Year: &nbsp;&nbsp; </span>
+          {!grant.Year__c}
+        </apex:outputPanel>
+      </td>
+      <td>
+        <span style="font-weight: bold"> Status: &nbsp;&nbsp; </span>
+        <span class="{!statusColor}">
+          <apex:outputField
+            value="{!grant.Grant_Status__c}"
+            rendered="{!(userAcctType == 'Local Organization' && NOT(CONTAINS(grant.Grant_Status__c, 'Pending')))
+                                                                                 || userAcctType == 'National Organization'}"
+          />
+          <apex:outputText
+            value="Pending Approval"
+            rendered="{!userAcctType == 'Local Organization' && CONTAINS(grant.Grant_Status__c, 'Pending')}"
+          />
+        </span>
+      </td>
+    </tr>
+  </table>
+  <table class="table fixedTbl">
+    <tr>
+      <td>
+        <span style="font-weight: bold"> Total Budgeted: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Total_Budgeted__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Requested Amount: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Reimbursement_Requested_Amount__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Approved Amount: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!grant.Reimbursement_Approved_Amount__c}" />
+      </td>
+      <td style="{!IF(portalName == 'Ripken', '', 'width: 0;')}">
+        <apex:outputPanel rendered="{!portalName == 'Ripken'}">
+          <span style="font-weight: bold">
+            Submitted Balance: &nbsp;&nbsp;
+          </span>
+          <apex:outputField value="{!grant.Submitted_Balance__c}" />
+        </apex:outputPanel>
+      </td>
+      <td>
+        <span style="font-weight: bold"> Balance: &nbsp;&nbsp; </span>
+        <apex:outputField
+          value="{!grant.Balance__c}"
+          rendered="{!grant.National_Grant_Type__c == 'OVC'}"
+        />
+        <apex:outputField
+          value="{!grant.Total_Item_Balance__c}"
+          rendered="{!grant.National_Grant_Type__c != 'OVC'}"
+        />
+      </td>
+    </tr>
+  </table>
+  <apex:outputPanel rendered="{!grant.National_Grant_Type__c == 'OVC'}">
+    <table class="table fixedTbl">
+      <tr>
+        <td>
+          <span style="font-weight: bold"> Indirect Rate: &nbsp;&nbsp; </span>
+          <apex:outputField value="{!grant.Indirect_Rate__c}" />
+        </td>
+        <td>
+          <span style="font-weight: bold">
+            Apply Indirect Rate to Expenses: &nbsp;
+          </span>
+          <apex:outputField
+            value="{!grant.Apply_Indirect_Rate_to_Expenses__c}"
+          />
+        </td>
+        <td>
+          <span style="font-weight: bold">
+            Procurement Threshold: &nbsp;&nbsp;
+          </span>
+          <apex:outputField value="{!grant.Procurement_Threshold__c}" />
+        </td>
+        <td></td>
+      </tr>
+    </table>
+  </apex:outputPanel>
+</apex:component>

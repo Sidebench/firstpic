@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Source_Type__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >IF(ST_Baltimore_Gas_Electric__c &gt; 0, &apos;Baltimore Gas &amp; Electric &apos;, &apos;&apos;) + 
+IF(ST_Bauer_Foundation__c &gt; 0, &apos;Bauer Foundation &apos;, &apos;&apos;) + 
+IF(ST_CareFirst__c &gt; 0, &apos;CareFirst &apos;, &apos;&apos;) + 
+IF(ST_Charles_Crane_Foundation__c &gt; 0, &apos;Charles Crane Foundation &apos;, &apos;&apos;) + 
+IF(ST_COPS__c &gt; 0, &apos;COPS &apos;, &apos;&apos;) + 
+IF(ST_CRSF__c &gt; 0, &apos;CRSF &apos;, &apos;&apos;) + 
+IF(ST_Fund_II__c &gt; 0, &apos;Fund II &apos;, &apos;&apos;) + 
+IF(ST_GEICO__c &gt; 0, &apos;GEICO &apos;, &apos;&apos;) + 
+IF(ST_Healthy_Lifestyles_HL__c &gt; 0, &apos;Healthy Lifestyles (HL) &apos;, &apos;&apos;) + 
+IF(ST_Herb_Block_Foundation__c &gt; 0, &apos;Herb Block Foundation &apos;, &apos;&apos;) + 
+IF(ST_JeepChrysler__c &gt; 0, &apos;JeepChrysler &apos;, &apos;&apos;) + 
+IF(ST_Marriott_Foundation__c &gt; 0, &apos;Marriott Foundation &apos;, &apos;&apos;) + 
+IF(ST_Mississippi_Dept_of_Human_Services__c &gt; 0, &apos;Mississippi Dept. of Human Services &apos;, &apos;&apos;) + 
+IF(ST_Naples_Children_Education__c &gt; 0, &apos;Naples Children &amp; Education Foundation &apos;, &apos;&apos;) + 
+IF(ST_Niagara_Cares__c &gt; 0, &apos;Niagara Cares &apos;, &apos;&apos;) + 
+IF(ST_Niagara_Cares_Hurricane_Relief__c &gt; 0, &apos;Niagara Cares Hurricane Relief Foundation &apos;, &apos;&apos;) + 
+IF(ST_North_Carolina_Department_of_Justice__c &gt; 0, &apos;North Carolina Department of Justice &apos;, &apos;&apos;)+ 
+IF(ST_Office_of_Juvenile_Justice__c &gt; 0, &apos;Office of Juvenile Justice &amp; Delinquency Prevention &apos;, &apos;&apos;) + 
+IF(ST_Ohio_Office_of_the_Attorney_General__c &gt; 0, &apos;Ohio Office of the Attorney General &apos;, &apos;&apos;) + 
+IF(ST_Perdue_Henson_Foundation__c &gt; 0, &apos;Perdue &amp; Henson Foundation &apos;, &apos;&apos;) + 
+IF(ST_Prince_William_HIDTA__c &gt; 0, &apos;Prince William HIDTA &apos;, &apos;&apos;) + 
+IF(ST_Private_Grants__c &gt; 0, &apos;Private Grants &apos;, &apos;&apos;) + 
+IF(ST_Roanoke_HIDTA__c &gt; 0, &apos;Roanoke HIDTA &apos;, &apos;&apos;) + 
+IF(ST_SUEZ__c &gt; 0, &apos;SUEZ &apos;, &apos;&apos;) + 
+IF(ST_Sun_Trust_Bank__c &gt; 0, &apos;Sun Trust Bank &apos;, &apos;&apos;) + 
+IF(ST_TransAmerica__c &gt; 0, &apos;TransAmerica &apos;, &apos;&apos;) + 
+IF(ST_Under_Armour__c &gt; 0, &apos;Under Armour &apos;, &apos;&apos;) + 
+IF(ST_United_Health_Care__c &gt; 0, &apos;United Health Care &apos;, &apos;&apos;) + 
+IF(ST_US_Department_of_State__c &gt; 0, &apos;US Department of State &apos;, &apos;&apos;) + 
+IF(ST_Washington_Baltimore_HIDTA__c &gt; 0, &apos;Washington/Baltimore HIDTA &apos;, &apos;&apos;) + 
+IF(ST_Wisconsin_Department_of_Justice__c &gt; 0, &apos;Wisconsin Department of Justice &apos;, &apos;&apos;) + 
+IF(ST_YDP_Growth_Fund__c &gt; 0, &apos;YDP Growth Fund &apos;, &apos;&apos;) + 
+IF(ST_Viragh_Family_Foundation__c &gt; 0, &apos;Viragh Family Foundation &apos;, &apos;&apos;) + 
+IF(ST_Charles_T_Bauer_Charitable_Fdn__c &gt; 0, &apos;Charles T. Bauer Charitable Fdn &apos;, &apos;&apos;) + 
+IF(ST_Sherman_Fairchild_Fdn__c &gt; 0, &apos;Sherman Fairchild Fdn &apos;, &apos;&apos;) + 
+IF(ST_Toledo_Community_Fdn__c &gt; 0, &apos;Toledo Community Fdn &apos;, &apos;&apos;) + 
+IF(ST_PNC__c &gt; 0, &apos;PNC &apos;, &apos;&apos;) +
+IF(ST_Blue_Cross_Blue_Shield__c &gt; 0, &apos;Blue Cross Blue Shield &apos;, &apos;&apos;)</formula>
+    <label>Source Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

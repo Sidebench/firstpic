@@ -1,0 +1,355 @@
+<apex:page
+  controller="ProgressReportCtrl"
+  action="{!getReport}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Monthly Progress Report</title>
+    <style>
+      textarea {
+        height: 50px;
+        margin-bottom: 5px !important;
+      }
+    </style>
+  </head>
+  <c:NPALHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>Progress Report</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h5>Grant: {!report.Grant_Name__c}</h5>
+            <h5>
+              Date:&nbsp;<apex:outputField
+                value="{!report.Month__c}"
+              />,&nbsp;<apex:outputField value="{!report.Year__c}" />
+            </h5>
+          </div>
+        </div>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'Local Organization' && (NOT(readOnly) && report.Status__c != 'Approved')}"
+        >
+          <div
+            class="alert alert-warning"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            NOTE: This progress report has not yet been submitted. Please review
+            and click submit.
+            <apex:commandButton
+              action="{!monthlyFieldValidation}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="btn primary pull-right"
+              style="margin-top: -7px"
+            />
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            {!report.Name}
+            <div class="pull-right">Status: {!report.Status__c}</div>
+          </div>
+          <div class="panel-body grid-pd-sm">
+            <div class="row">
+              <div class="col-auto semibold">
+                1. How many youth participated in the NPAL Mentoring program
+                this month?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Youth_Served__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Youth_Served__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                2. Please upload your Attendance Report for the month here.
+              </div>
+              <div class="col-auto pull-right">
+                <apex:repeat value="{!atts}" var="a">
+                  <apex:outputLink
+                    value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                    style="margin-right: 10px"
+                    target="_blank"
+                  >
+                    {!a.Name}
+                  </apex:outputLink>
+                </apex:repeat>
+                <apex:commandButton
+                  action="{!showAttPopup}"
+                  value="Upload"
+                  status="pageStatus"
+                  styleClass="btn-small"
+                  reRender="uploadAttPopup"
+                  rendered="{!NOT(readOnly)}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                3. How many mentors were in your program this month (including
+                those that started late in the month or left early)?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_of_Mentors__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Number_of_Mentors__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                4. Of the answer to #3, how many mentors left the program this
+                month?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_of_Mentors_Left_Program__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Number_of_Mentors_Left_Program__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                5. Of the answer to #3, how many mentors were new this month?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Number_of_New_Mentors_this_Month__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Number_of_New_Mentors_this_Month__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                6. Did all of your mentors complete a criminal background check?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Background_Checks__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Background_Checks__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                7. Did you encounter any problems/barriers within the reporting
+                period that prevented you from reaching your goals or
+                milestones?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Problems_Barriers_Encountered__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Problems_Barriers_Encountered__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">7a. If yes, please explain.</div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Problems_Barriers_Encountered_Details__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Problems_Barriers_Encountered_Details__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto semibold">
+                8. Is there any assistance that the National PAL or FirstPic,
+                Inc. can provide to address any problems/barriers identified in
+                question #7 above?
+              </div>
+              <div class="col-auto pull-right">
+                <apex:inputField
+                  value="{!report.Assistance_Needed__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Assistance_Needed__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 semibold">8a. If yes, please explain.</div>
+              <div class="col-xs-12">
+                <apex:inputField
+                  value="{!report.Assistance_Needed_Details__c}"
+                  rendered="{!NOT(readOnly)}"
+                />
+                <apex:outputField
+                  value="{!report.Assistance_Needed_Details__c}"
+                  rendered="{!readOnly}"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BEGIN Notes -->
+        <div class="panel panel-default">
+          <div class="panel-heading">Reviewer Notes</div>
+          <div class="panel-body">
+            <c:Notes
+              userAcctType="{!userAcctType}"
+              nationalNote="{!report.Reviewer_Notes__c}"
+              nationalNotePrivate="{!report.Notes_for_National__c}"
+              displayLocalNote="false"
+              displayNationalNote="true"
+              displayNationalNotePrivate="true"
+              richText="true"
+            />
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <hr />
+              <div class="row">
+                <div class="col-xs-6">
+                  <strong>Reviewed By:</strong>&nbsp; {!report.Reviewer_Name__c}
+                </div>
+                <div class="col-xs-6">
+                  <strong>Reviewed Date:</strong>&nbsp;
+                  <apex:outputField value="{!report.Reviewed_Date__c}" />
+                </div>
+              </div>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <c:CollapsiblePanel
+          header="Modification History"
+          rendered="{!userAcctType == 'National Organization'}"
+        >
+          <apex:outputField value="{!report.Modification_History__c}" />
+        </c:CollapsiblePanel>
+        <!-- END Notes -->
+
+        <!-- BEGIN Popups -->
+        <apex:outputPanel id="uploadAttPopup">
+          <c:AttachmentUploadPopup
+            displayAttPopup="{!displayAttPopup}"
+            parentId="{!report.Id}"
+            filename="Attendance Report"
+          >
+            <apex:commandButton
+              action="{!hideAttPopup}"
+              value="Close"
+              status="pageStatus"
+            />
+          </c:AttachmentUploadPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="sendBackPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displaySendBackPopup}"
+            userAcctType="{!userAcctType}"
+            header="Send Back"
+            nationalNote="{!report.Reviewer_Notes__c}"
+            displayLocalNote="false"
+            displayNationalNote="true"
+          >
+            <apex:commandButton action="{!hideSendBackPopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!sendBack}"
+              value="Send Back"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+        <!-- END Popups -->
+
+        <!-- BEGIN Page Actions -->
+        <apex:commandButton
+          action="{!URLFOR($Site.Prefix+'/MonthlyProgressReports?reportId='+reportId+'&status='+status+'&month='+month)}"
+          value="Back"
+          status="pageStatus"
+        />
+        <apex:outputPanel rendered="{!report.Grant_Status__c != 'Closed'}">
+          <apex:commandButton
+            action="{!edit}"
+            value="Update Report"
+            status="pageStatus"
+            rendered="{!userAcctType == 'Local Organization' && readOnly}"
+          />
+          <apex:outputPanel
+            id="btns"
+            rendered="{!userAcctType == 'Local Organization' && NOT(readOnly)}"
+          >
+            <apex:commandButton
+              action="{!save}"
+              value="Save"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!monthlyFieldValidation}"
+              value="Submit"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </apex:outputPanel>
+          <apex:commandButton
+            action="{!markAsReviewed}"
+            value="Mark as Reviewed"
+            status="pageStatus"
+            rendered="{!userAcctType == 'National Organization' && readOnly}"
+          />
+          <apex:commandButton
+            action="{!showSendBackPopup}"
+            value="Send Back"
+            status="pageStatus"
+            styleClass="primary"
+            rendered="{!userAcctType == 'National Organization' && readOnly}"
+          />
+        </apex:outputPanel>
+        <!-- END Page Actions -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,53 @@
+<apex:page
+  controller="DrawdownReportCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  renderAs="PDF"
+>
+  <head>
+    <title>Drawdown Report</title>
+  </head>
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2 style="text-align: center">
+          <apex:outputText value="{!grant.Name}" />
+        </h2>
+        <h3 style="text-align: center">
+          Report: &nbsp;<apex:outputText value="{!ReportId}" />
+        </h3>
+
+        <!-- BEGIN Report List -->
+        <apex:dataTable
+          value="{!inReport_list}"
+          var="i"
+          cellpadding="4"
+          style="width: 100%"
+        >
+          <apex:column headerValue="Request Id">
+            <apex:outputText value="{!i.Name}" />
+          </apex:column>
+          <apex:column headerValue="Sub-Grant Name">
+            <apex:outputText value="{!i.Grant__r.Name}" />
+          </apex:column>
+          <apex:column headerValue="Request Month)}">
+            <apex:outputfield value="{!i.Request_Month__c}" />
+          </apex:column>
+          <apex:column headerValue="Requested Amount">
+            <apex:outputfield value="{!i.Total_Requested_Amount__c}" />
+          </apex:column>
+        </apex:dataTable>
+        <!-- END Report List -->
+
+        <h3 style="text-align: right">
+          Total: &nbsp;
+          <apex:outputText value="${0, number, ###,###,###,##0.00}">
+            <apex:param value="{!reportTotal}" />
+          </apex:outputText>
+        </h3>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,144 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+  />
+  <apex:attribute
+    type="Reimbursement_Request__c"
+    name="request"
+    description="request"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="statusColor"
+    description="statusColor"
+    required="false"
+  />
+  <apex:attribute
+    type="Decimal"
+    name="awarded"
+    description="awarded"
+    required="false"
+  />
+  <apex:attribute
+    type="Decimal"
+    name="budgeted"
+    description="budgeted"
+    required="false"
+  />
+  <apex:attribute
+    type="Decimal"
+    name="balance"
+    description="balance"
+    required="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayYear"
+    description="displayYear"
+    default="false"
+  />
+
+  <div class="row">
+    <div class="col-xs-6">
+      <h2>
+        <a
+          href="{!URLFOR($Site.Prefix+'/BudgetDetails?GrantID='+request.Grant__r.Id)}"
+          target="_blank"
+        >
+          {!request.Grant__r.Name}
+        </a>
+      </h2>
+    </div>
+    <div class="col-xs-6 pull-right text-right">
+      <h4>
+        Total Awarded: &nbsp;
+        <apex:outputText value="${0,number,###,###,###,##0.00}">
+          <apex:param value="{!awarded}" />
+        </apex:outputText>
+        <br />
+        Total Budgeted: &nbsp;
+        <apex:outputText value="${0,number,###,###,###,##0.00}">
+          <apex:param value="{!budgeted}" />
+        </apex:outputText>
+        <br />
+        Balance: &nbsp;
+        <apex:outputText value="${0,number,###,###,###,##0.00}">
+          <apex:param value="{!balance}" />
+        </apex:outputText>
+      </h4>
+    </div>
+  </div>
+
+  <table class="table">
+    <tr>
+      <td>
+        <span style="font-weight: bold"> Request Id: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!request.Name}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Organization: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!request.Organization__c}" />
+      </td>
+      <td>
+        <div class="row">
+          <div class="col-auto" style="font-weight: bold">Date Range:</div>
+          <div class="col-auto">
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!request.Start_Date__c}" />
+            </apex:outputText>
+            -
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!request.End_Date__c}" />
+            </apex:outputText>
+          </div>
+        </div>
+      </td>
+      <td style="{!IF(displayYear, '', 'width: 0;')}">
+        <apex:outputPanel rendered="{!displayYear}">
+          <span style="font-weight: bold"> Year: &nbsp;&nbsp; </span>
+          {!request.Grant_Year__c}
+        </apex:outputPanel>
+      </td>
+      <td>
+        <span style="font-weight: bold"> Pay Periods: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!request.Number_of_Pay_Periods__c}" />
+      </td>
+      <td>
+        <apex:outputPanel
+          rendered="{!request.Indirect_Rate__c != null && request.Indirect_Rate__c > 0}"
+        >
+          <span style="font-weight: bold"> Indirect Rate: &nbsp;&nbsp; </span>
+          <apex:outputField value="{!request.Indirect_Rate__c}" />
+        </apex:outputPanel>
+      </td>
+      <!--
+            <td>
+                <span style="font-weight: bold;">
+                    Currently Running Curriculum: &nbsp;&nbsp;
+                </span>
+                <apex:outputField value="{!request.Currently_Running_Curriculum__c}" />
+            </td>
+            <td>
+                <apex:outputPanel rendered="{!request.Currently_Running_Curriculum__c == 'Yes'}">
+                    <span style="font-weight: bold;">
+                        Current Chapter: &nbsp;&nbsp;
+                    </span>
+                    <apex:outputField value="{!request.Current_Chapter__c}" />
+                </apex:outputPanel>
+            </td>
+			-->
+      <td class="text-right">
+        <span style="font-weight: bold"> Status: &nbsp;&nbsp; </span>
+        <span class="{!statusColor}">
+          <apex:outputField value="{!request.Status__c}" />
+        </span>
+        <apex:outputPanel rendered="{!request.Paid_Date__c != null}">
+          &nbsp;(<apex:outputField value="{!request.Paid_Date__c}" />)
+        </apex:outputPanel>
+      </td>
+    </tr>
+  </table>
+</apex:component>

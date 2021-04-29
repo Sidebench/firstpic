@@ -1,0 +1,69 @@
+<apex:page controller="SubGrantListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Grant List</title>
+  </head>
+  <c:UAHeader ActivePage="grants" acct="{!userAcct}" />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="panel panel-default">
+          <div class="panel-heading">Grants</div>
+          <div class="panel-body">
+            <table style="width: 100%">
+              <tr>
+                <th>Grant Name</th>
+                <th>Organization Name</th>
+                <th>Budget</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+              </tr>
+              <apex:repeat value="{!grant_list}" var="g">
+                <tr>
+                  <td>
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/UAGrantDetails?GrantId='+g.Id)}"
+                    >
+                      {!g.Name}
+                    </a>
+                  </td>
+                  <td>{!g.Account__r.Name}</td>
+                  <td>
+                    <apex:outputField value="{!g.Amount__c}" />
+                  </td>
+                  <td>
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!g.Start_Date__c}" />
+                    </apex:outputText>
+                  </td>
+                  <td>
+                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                      <apex:param value="{!g.End_Date__c}" />
+                    </apex:outputText>
+                  </td>
+                  <td>{!g.Grant_Status__c}</td>
+                </tr>
+              </apex:repeat>
+            </table>
+          </div>
+        </div>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

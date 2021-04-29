@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>How_Program_will_be_delivered__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText
+  >Explain your organization or staff leadership experience in delivering proven or promising opportunities to the target population.</inlineHelpText>
+    <label>How Program will be delivered</label>
+    <length>10000</length>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

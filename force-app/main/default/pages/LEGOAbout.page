@@ -1,0 +1,504 @@
+<apex:page
+  controller="AboutCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>About</title>
+  </head>
+  <c:LEGOHeader
+    ActivePage="about"
+    acct="{!userAcct}"
+    SessionId="{!SessionId}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>
+              <apex:outputPanel id="title">
+                <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+                  {!acct.Name} <br />
+                </apex:outputPanel>
+                {!session.Name}
+              </apex:outputPanel>
+            </h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel rendered="{!userAcctType == 'Site'}">
+              <div style="text-align: right; margin-bottom: 10px">
+                <apex:selectList value="{!SessionId}" size="1">
+                  <apex:actionSupport event="onchange" action="{!init}" />
+                  <apex:selectOptions value="{!options}" />
+                </apex:selectList>
+              </div>
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!SessionId != null}">
+          <!-- BEGIN Coach List -->
+          <apex:outputPanel id="coaches">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Coaches</div>
+                  <div class="panel-body">
+                    <apex:outputPanel rendered="{!contact_list.size > 0}">
+                      <table style="width: 100%">
+                        <tr>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Email</th>
+                          <th>Phone</th>
+                          <th class="text-center"></th>
+                        </tr>
+                        <apex:repeat value="{!contact_list}" var="i">
+                          <tr>
+                            <td>{!i.FirstName}</td>
+                            <td>{!i.LastName}</td>
+                            <td>{!i.Email}</td>
+                            <td>{!i.Phone}</td>
+                            <td class="text-center">
+                              <apex:commandLink
+                                action="{!editContactPopup}"
+                                status="pageStatus"
+                                reRender="editContactPopup"
+                              >
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <apex:param
+                                  name="selectedContactId"
+                                  value="{!i.Id}"
+                                  assignTo="{!selectedContactId}"
+                                />
+                              </apex:commandLink>
+                              &nbsp;
+                              <apex:commandLink
+                                action="{!deleteContactPopup}"
+                                status="pageStatus"
+                                reRender="deleteContactPopup"
+                              >
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <apex:param
+                                  name="selectedContactId"
+                                  value="{!i.Id}"
+                                  assignTo="{!selectedContactId}"
+                                />
+                              </apex:commandLink>
+                            </td>
+                          </tr>
+                        </apex:repeat>
+                      </table>
+                    </apex:outputPanel>
+                  </div>
+                  <div class="panel-footer">
+                    <apex:commandButton
+                      value="Add Coach"
+                      action="{!addContactPopup}"
+                      status="pageStatus"
+                      rerender="addContactPopup"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+          <!-- END Coach List -->
+
+          <!-- BEGIN Youth List -->
+          <apex:outputPanel id="youth">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    Youth
+                    <a
+                      data-toggle="collapse"
+                      href="#collapse1"
+                      class="toggle pull-right"
+                    ></a>
+                  </div>
+                  <div
+                    id="collapse1"
+                    class="panel-body panel-collapse collapse in"
+                  >
+                    <apex:outputPanel rendered="{!youth_list.size > 0}">
+                      <table style="width: 100%">
+                        <tr>
+                          <th>Id</th>
+                          <th>First Name</th>
+                          <th>Last Name</th>
+                          <th>Parent/Guardian</th>
+                          <th>Birthdate</th>
+                          <th>Grade</th>
+                          <th>Gender</th>
+                          <th>School</th>
+                          <th>Cohort</th>
+                          <th class="text-center"></th>
+                        </tr>
+                        <apex:repeat value="{!youth_list}" var="i">
+                          <tr>
+                            <td>{!i.Youth_ID_Number__c}</td>
+                            <td>{!i.FirstName}</td>
+                            <td>{!i.LastName}</td>
+                            <td>{!i.Parent_Guardian_Name__c}</td>
+                            <td>
+                              <apex:outputText
+                                value="{0, date, MM'/'dd'/'yyyy}"
+                              >
+                                <apex:param value="{!i.Birthdate}" />
+                              </apex:outputText>
+                            </td>
+                            <td>{!i.Grade_Level__c}</td>
+                            <td>{!i.Gender__c}</td>
+                            <td>{!i.School_Name__c}</td>
+                            <td>{!i.Cohort__r.Name}</td>
+                            <td class="text-center">
+                              <a
+                                href="{!URLFOR($Site.Prefix+'/LEGOContactForm?ContactId=' + i.Id + '&SessionId=' + SessionId)}"
+                              >
+                                <span class="glyphicon glyphicon-pencil"></span>
+                              </a>
+                              &nbsp;
+                              <apex:commandLink
+                                action="{!deleteContactPopup}"
+                                status="pageStatus"
+                                reRender="deleteContactPopup"
+                              >
+                                <span class="glyphicon glyphicon-trash"></span>
+                                <apex:param
+                                  name="selectedContactId"
+                                  value="{!i.Id}"
+                                  assignTo="{!selectedContactId}"
+                                />
+                              </apex:commandLink>
+                            </td>
+                          </tr>
+                        </apex:repeat>
+                      </table>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!youth_list.size == 0}">
+                      No Youth Found
+                    </apex:outputPanel>
+                  </div>
+                  <div class="panel-footer">
+                    <apex:outputPanel rendered="{!cohort_list.size == 0}">
+                      Please Add a Cohort
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!cohort_list.size > 0}">
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/LEGOContactForm?SessionId='+SessionId)}"
+                        class="btn"
+                      >
+                        Add Youth
+                      </a>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+          <!-- END Youth List -->
+
+          <!-- BEGIN Cohort List -->
+          <apex:outputPanel id="cohorts">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Cohorts</div>
+                  <div class="panel-body">
+                    <apex:outputPanel rendered="{!cohort_list.size > 0}">
+                      <table style="width: 100%">
+                        <tr>
+                          <th>Name</th>
+                          <th>Coaches</th>
+                          <th>Cohort Size</th>
+                        </tr>
+                        <apex:repeat value="{!cohort_list}" var="i">
+                          <tr>
+                            <td>
+                              <a
+                                href="{!URLFOR($Site.Prefix+'/LEGOCohortDetails?CohortId=' + i.Id)}"
+                              >
+                                {!i.Name}
+                              </a>
+                            </td>
+                            <td>
+                              <apex:outputField value="{!i.Coaches__c}" />
+                            </td>
+                            <td>{!i.Cohort_Size__c}</td>
+                          </tr>
+                        </apex:repeat>
+                      </table>
+                    </apex:outputPanel>
+                  </div>
+                  <div class="panel-footer">
+                    <apex:commandButton
+                      value="Add Cohort"
+                      action="{!addCohortPopup}"
+                      rerender=""
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+          <!-- END Cohort List -->
+
+          <!-- BEGIN Add Contact -->
+          <apex:outputPanel id="addContactPopup">
+            <apex:outputPanel
+              styleClass="popupBackground"
+              layout="block"
+              rendered="{!displayAddContactPopup}"
+            />
+            <apex:outputPanel
+              styleClass="custPopup"
+              layout="block"
+              rendered="{!displayAddContactPopup}"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">Add New Coach</h4>
+                  </div>
+                  <div class="modal-body grid-pd-md">
+                    <div class="row">
+                      <div class="col-xs-6">
+                        First Name
+                        <apex:inputField value="{!newContact.FirstName}" />
+                      </div>
+                      <div class="col-xs-6">
+                        Last Name
+                        <apex:inputField
+                          value="{!newContact.LastName}"
+                          required="false"
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-6">
+                        Email
+                        <apex:inputField value="{!newContact.Email}" />
+                      </div>
+                      <div class="col-xs-6">
+                        Phone
+                        <apex:inputField value="{!newContact.Phone}" />
+                      </div>
+                    </div>
+                    <apex:pageMessages></apex:pageMessages>
+                  </div>
+                  <div class="modal-footer">
+                    <apex:commandButton
+                      action="{!cancelAddContactPopup}"
+                      value="Cancel"
+                      status="pageStatus"
+                      immediate="true"
+                      rerender="addContactPopup"
+                    />
+                    <apex:commandButton
+                      value="Submit"
+                      action="{!addContact}"
+                      status="pageStatus"
+                      styleClass="primary"
+                      rerender="form"
+                    />
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+          <!-- END Add Contact -->
+
+          <!-- BEGIN Edit Contact -->
+          <apex:outputPanel id="editContactPopup">
+            <apex:repeat value="{!contact_list}" var="i">
+              <apex:outputPanel rendered="{!i.Id == selectedContactId}">
+                <apex:outputPanel
+                  styleClass="popupBackground"
+                  layout="block"
+                  rendered="{!displayEditContactPopup}"
+                />
+                <apex:outputPanel
+                  styleClass="custPopup"
+                  layout="block"
+                  rendered="{!displayEditContactPopup}"
+                >
+                  <div class="modal-dialog text-left">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">
+                          Edit &nbsp;<apex:outputText value="{!i.Name}" />
+                        </h4>
+                      </div>
+                      <div class="modal-body grid-pd-md">
+                        <div class="row">
+                          <div class="col-xs-6">
+                            First Name
+                            <apex:inputField value="{!i.FirstName}" />
+                          </div>
+                          <div class="col-xs-6">
+                            Last Name
+                            <apex:inputField
+                              value="{!i.LastName}"
+                              required="false"
+                            />
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-6">
+                            Phone
+                            <apex:inputField value="{!i.Phone}" />
+                          </div>
+                          <div class="col-xs-6">
+                            Email
+                            <apex:inputField value="{!i.Email}" />
+                          </div>
+                        </div>
+                        <apex:pageMessages></apex:pageMessages>
+                      </div>
+                      <div class="modal-footer">
+                        <apex:commandButton
+                          action="{!cancelEditContactPopup}"
+                          value="Cancel"
+                          status="pageStatus"
+                          rerender="editContactPopup"
+                        />
+                        <apex:commandButton
+                          action="{!updateContacts}"
+                          value="Save and Close"
+                          status="pageStatus"
+                          styleClass="primary"
+                          rerender="form"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </apex:outputPanel>
+              </apex:outputPanel>
+            </apex:repeat>
+          </apex:outputPanel>
+          <!-- END Edit Contact -->
+
+          <!-- BEGIN Delete Contact -->
+          <apex:outputPanel id="deleteContactPopup">
+            <apex:outputPanel
+              styleClass="popupBackground"
+              layout="block"
+              rendered="{!displayDeleteContactPopup}"
+            />
+            <apex:outputPanel
+              styleClass="custPopup"
+              layout="block"
+              rendered="{!displayDeleteContactPopup}"
+            >
+              <div class="modal-dialog text-left">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title">
+                      Delete &nbsp;<apex:outputText
+                        value="{!selectedContact.Name}"
+                      />
+                    </h4>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to delete this contact? This can't be
+                    undone.
+                    <apex:pageMessages></apex:pageMessages>
+                  </div>
+                  <div class="modal-footer">
+                    <apex:commandButton
+                      action="{!cancelDeleteContactPopup}"
+                      value="Cancel"
+                      status="pageStatus"
+                      rerender="deleteContactPopup"
+                    />
+                    <apex:commandButton
+                      action="{!deleteContact}"
+                      value="Save and Close"
+                      status="pageStatus"
+                      styleClass="primary"
+                    />
+                  </div>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:outputPanel>
+          <!-- END Delete Contact -->
+
+          <!-- BEGIN Add Cohort -->
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAddCohortPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAddCohortPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Add New Cohort to {!session.Name}</h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <apex:pageMessages></apex:pageMessages>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      Name
+                      <apex:inputText value="{!newCohort.Name}" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      Coaches
+                      <apex:selectList
+                        value="{!newCohort.Coaches__c}"
+                        size="4"
+                        multiselect="true"
+                        style="width: 100%"
+                      >
+                        <apex:selectOptions value="{!coaches}" />
+                      </apex:selectList>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!addCohortPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                  />
+                  <apex:commandButton
+                    value="Submit"
+                    action="{!addCohort}"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+          <!-- END Add Cohort -->
+        </apex:outputPanel>
+      </div>
+    </div>
+    <apex:actionFunction
+      name="init"
+      action="{!init}"
+      status="pageStatus"
+      rerender="title, coaches, youth, cohorts"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      init();
+    };
+  </script>
+</apex:page>

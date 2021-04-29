@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Send_Request</fullName>
+    <availability>online</availability>
+    <description>For missing reimbursement submission</description>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Send Request</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url
+  >location.replace(&apos;/email/author/emailauthor.jsp?retURL=/{!Account.Id}}&amp;p3_lkid={!Account.Id}&amp;p2_lkid={!Account.CEO_Email_text__c}&amp;template_id=00X63000000QnK7&apos;);</url>
+</WebLink>

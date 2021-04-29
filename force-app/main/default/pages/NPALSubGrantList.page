@@ -1,0 +1,65 @@
+<apex:page controller="SubGrantListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Sub-Grant List</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <span style="font-weight: bold; color: red">
+          Due to necessary system upgrades the Budget Update functionality may
+          not be working as expected at this time. Please do not submit any
+          further updates to your 2018 NPAL Mentoring budget until given further
+          notification. Thank you for your patience!
+        </span>
+        <br />
+        <br />
+        <br />
+
+        <apex:outputPanel
+          rendered="{!userAcct.RecordType.Name == 'National Organization'}"
+        >
+          <!--
+                    <span style="display: block; text-align: right; padding-bottom: 10px;">
+                        <a href="{!URLFOR($Site.Prefix+'/DrawdownReport?GrantId='+NPALGrantID)}" class="btn primary">Drawdown Reports</a> 
+                    </span>
+                    -->
+          <apex:outputPanel
+            rendered="{!approverLevel == 'Level Three' || CONTAINS(currentUser.Profile.Name, 'Treasurer')}"
+          >
+            <c:GrantList
+              header="National Sub-Grants"
+              grantList="{!nationalGrant_list}"
+              portalName="NPAL"
+            />
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <c:GrantList
+          header="Active Sub-Grants"
+          grantList="{!grant_list}"
+          portalName="NPAL"
+        />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

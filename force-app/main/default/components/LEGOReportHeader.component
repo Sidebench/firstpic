@@ -1,0 +1,39 @@
+<apex:component>
+  <apex:attribute type="Account" name="acct" description="Account" />
+  <apex:attribute type="String" name="title" description="Report title" />
+
+  <h2>{!title}</h2>
+
+  <table class="table">
+    <tr>
+      <td>
+        <span style="font-weight: bold"> Type: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!acct.Type}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> # of Cohorts: &nbsp;&nbsp; </span>
+        <apex:outputText value="{!acct.Number_of_Cohorts__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Team Size: &nbsp;&nbsp; </span>
+        <apex:outputText value="{!acct.Team_Size__c}" />
+      </td>
+      <td>
+        <span style="font-weight: bold">
+          Implementation Model: &nbsp;&nbsp;
+        </span>
+        <apex:outputField value="{!acct.Implementation_Model__c }" />
+      </td>
+      <td>
+        <span style="font-weight: bold"> Start Date: &nbsp;&nbsp; </span>
+        <apex:outputField value="{!acct.Start_Date__c }" />
+      </td>
+      <td>
+        <span style="font-weight: bold">
+          Estimated Date of Expo: &nbsp;&nbsp;
+        </span>
+        <apex:outputField value="{!acct.Estimated_Date_of_Expo__c }" />
+      </td>
+    </tr>
+  </table>
+</apex:component>

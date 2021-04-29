@@ -1,0 +1,173 @@
+<apex:page
+  controller="ProgramPlanCtrl"
+  showHeader="false"
+  sidebar="false"
+  renderAs="PDF"
+>
+  <head>
+    <title>Program Plan</title>
+  </head>
+
+  <apex:form style="padding: 40px">
+    <center>
+      <h2>OVC Micro Grant Program Plan</h2>
+      <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+        <h5>{!plan.Organization_Name__c}</h5>
+      </apex:outputPanel>
+      <h5>
+        Status: {!plan.Status__c}
+        <br />
+        Submitted Date: <apex:outputField value="{!plan.Submitted_Date__c}" />
+      </h5>
+    </center>
+
+    <h3>
+      <apex:outputText
+        value="Current Program Plan"
+        rendered="{!plan.Is_Current_Plan__c}"
+      />
+      <apex:outputText
+        value="Previous Program Plan"
+        rendered="{!NOT(plan.Is_Current_Plan__c)}"
+      />
+    </h3>
+    <apex:outputPanel rendered="{!plan.Reason_for_Updating__c != null}">
+      <strong>Reason for updating Program Plan?</strong><br /><br />
+      <apex:outputField value="{!plan.Reason_for_Updating__c}" /><br /><br />
+    </apex:outputPanel>
+
+    <strong
+      ><apex:outputText
+        value="{!labels['Biggest_Issue_Organization_is_Facing__c']}" /></strong
+    ><br />
+    <apex:outputField
+      value="{!plan.Biggest_Issue_Organization_is_Facing__c}"
+    /><br /><br />
+
+    <strong
+      ><apex:outputText value="{!labels['How_Funds_Utilized__c']}" /></strong
+    ><br />
+    <apex:outputField value="{!plan.How_Funds_Utilized__c}" /><br /><br />
+
+    <h5>
+      This funding opportunity can be used to support a wide variety of
+      programming and services for victims of crime in your community. Please
+      select which activities your grant will include:<br />
+    </h5>
+    <h4>
+      <u>Needs Assessment</u>
+    </h4>
+    <apex:outputText value="Yes" rendered="{!plan.Has_Needs_Assessment__c}" />
+    <apex:outputText
+      value="No"
+      rendered="{!NOT(plan.Has_Needs_Assessment__c)}"
+    />
+    <apex:outputPanel rendered="{!plan.Has_Needs_Assessment__c}">
+      <br /><br />
+      <strong
+        ><apex:outputText
+          value="{!labels['Previous_Experiences__c']}" /></strong
+      ><br />
+      <apex:outputField value="{!plan.Previous_Experiences__c}" />
+      <br /><br />
+      <strong
+        ><apex:outputText value="{!labels['Needs_Assessment__c']}" /></strong
+      ><br />
+      <apex:outputField value="{!plan.Needs_Assessment__c}" />
+    </apex:outputPanel>
+
+    <h4>
+      <u>Strategic Planning</u>
+    </h4>
+    <apex:outputText value="Yes" rendered="{!plan.Has_Strategic_Plan__c}" />
+    <apex:outputText value="No" rendered="{!NOT(plan.Has_Strategic_Plan__c)}" />
+    <apex:outputPanel rendered="{!plan.Has_Strategic_Plan__c}">
+      <br /><br />
+      <strong
+        ><apex:outputText
+          value="{!labels['Strategic_Plan__c']}"
+          escape="false" /></strong
+      ><br /> <apex:outputField value="{!plan.Strategic_Plan__c}" /><br /><br />
+      <strong
+        ><apex:outputText
+          value="{!labels['Additional_Resources_for_Strategic_Plan__c']}"
+          escape="false" /></strong
+      ><br />
+      <apex:outputField
+        value="{!plan.Additional_Resources_for_Strategic_Plan__c}"
+      />
+    </apex:outputPanel>
+
+    <h4>
+      <u>Support for Victim Services</u>
+    </h4>
+    <strong
+      ><apex:outputText
+        value="{!labels['Areas_of_Service__c']}"
+        escape="false" /></strong
+    ><br /> <apex:outputField value="{!plan.Areas_of_Service__c}" /><br />
+    <apex:outputField value="{!plan.Areas_of_Service_Explaination__c}" />
+    <br /><br />
+    <strong
+      ><apex:outputText
+        value="{!labels['Current_Program_Description__c']}"
+        escape="false" /></strong
+    ><br />
+    <apex:outputField value="{!plan.Current_Program_Description__c}" />
+    <br /> <br />
+
+    <h4>
+      <u>Equipment and Supplies</u>
+    </h4>
+    <apex:outputText
+      value="Yes"
+      rendered="{!plan.Has_Equipment_and_Supplies__c}"
+    />
+    <apex:outputText
+      value="No"
+      rendered="{!NOT(plan.Has_Equipment_and_Supplies__c)}"
+    />
+    <apex:outputPanel rendered="{!plan.Has_Equipment_and_Supplies__c == true}">
+      <br /><br />
+      <strong
+        ><apex:outputText
+          value="{!labels['Equipment_and_Supplies__c']}"
+          escape="false" /></strong
+      ><br />
+      <apex:outputField value="{!plan.Equipment_and_Supplies__c}" />
+    </apex:outputPanel>
+
+    <h4>
+      <u>Capabilities and Competencies</u>
+    </h4>
+    <strong
+      ><apex:outputText
+        value="{!labels['Responsibilities__c']}"
+        escape="false" /></strong
+    ><br /> <apex:outputField value="{!plan.Responsibilities__c}" /><br /><br />
+
+    <strong
+      ><apex:outputText
+        value="{!labels['Able_to_Recruit__c']}"
+        escape="false" /></strong
+    ><br /> <apex:outputField value="{!plan.Able_to_Recruit__c}" /><br /><br />
+
+    <strong
+      ><apex:outputText
+        value="{!labels['Other_Challenges__c']}"
+        escape="false" /></strong
+    ><br />
+    <apex:outputField value="{!plan.Other_Challenges__c}" />
+
+    <h4>
+      <u>Notes</u>
+    </h4>
+    <strong>Project Description Summary Plans from National</strong><br />
+    <apex:outputField value="{!plan.Notes__c}" />
+
+    <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+      <strong>Reviewer Notes</strong><br />
+      <apex:outputField value="{!plan.Reviewer_Notes__c}" />
+    </apex:outputPanel>
+  </apex:form>
+</apex:page>

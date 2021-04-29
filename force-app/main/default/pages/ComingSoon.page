@@ -1,0 +1,47 @@
+<apex:page
+  controller="GetUserAcctCtrl"
+  showHeader="false"
+  sidebar="false"
+  readOnly="true"
+>
+  <head>
+    <title>Coming Soon</title>
+  </head>
+  <c:TRAILHeader
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'TRAIL'}"
+  />
+  <c:STEMHeader
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'STEM'}"
+  />
+  <c:RipkenHeader
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'Ripken'}"
+  />
+  <c:NPALHeader
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'NPAL'}"
+  />
+  <c:Header
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    rendered="{!portalName == 'BBBS'}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2 style="display: inline">Coming Soon</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

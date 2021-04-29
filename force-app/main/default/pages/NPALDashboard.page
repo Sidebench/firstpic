@@ -1,0 +1,358 @@
+<apex:page
+  controller="NPALDashboardCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <style>
+    .slds [hidden],
+    .slds template {
+      display: block;
+    }
+  </style>
+  <c:NPALHeader
+    ActivePage="dashboard"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          Hello&nbsp;<apex:outputText
+            value="{!currentUser.Contact.FirstName + ' ' + currentUser.Contact.LastName}"
+          ></apex:outputText
+          >.
+        </h2>
+
+        <div class="alert alert-danger">
+          FINAL Check-in reports are currently open and were due March 30, 2021.
+          These are being collected via Google form and will not appear on the
+          Reports tab. If you have not already done so, please complete this
+          report for all sub-awards by clicking
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSerM_zUvQt65u1mtL0G1LrRtupzcOdonlHr1KmTnBi2FV7ZSA/viewform?vc=0&c=0&w=1&flr=0"
+            target="_blank"
+            >here</a
+          >.
+        </div>
+
+        <apex:outputPanel id="alerts">
+          <apex:outputPanel
+            rendered="{!showDemoAlert && userAcctType == 'Local Organization'}"
+          >
+            <div class="alert alert-danger">
+              Please note: We do not have youth demographic information on file
+              for your organization.
+              <a
+                href="{!URLFOR($Site.Prefix+'/NPALAbout')}"
+                style="color: #000"
+              >
+                Click here to enter.
+              </a>
+            </div>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!showRequestAlert}">
+            <div class="alert alert-danger">
+              Your organization has not submitted a reimbursement request for
+              the most recent month. Please submit a request as soon as
+              possible.
+            </div>
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!showDUNSAlert}">
+            <div class="alert alert-danger">
+              {!DUNSAlert}
+              <a
+                href="https://sam.gov"
+                target="_blank"
+                style="display: block; color: #333"
+                >Please update your SAM.gov registration here.</a
+              >
+              <apex:outputLink
+                value="{!$Resource.NPAL_Updating_SAM_Registration}"
+                target="_blank"
+                style="display: block; color: #333"
+              >
+                Further instructions available here.
+              </apex:outputLink>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <div class="row">
+          <apex:outputPanel
+            rendered="{!userAcctType == 'National Organization'}"
+          >
+            <div class="col-sm-12 col-md-6">
+              <div class="slds">
+                <div class="slds-grid">
+                  <div class="slds-col--padded">
+                    <apex:chart
+                      data="{!requestsByStatus}"
+                      width="100%"
+                      height="350"
+                      animate="true"
+                    >
+                      <apex:axis
+                        type="Numeric"
+                        position="bottom"
+                        fields="requestCount"
+                        title="# of Requests"
+                        steps="1"
+                      />
+                      <apex:axis
+                        type="Category"
+                        position="left"
+                        fields="Status__c"
+                        title="Request Status"
+                      />
+                      <apex:barSeries
+                        orientation="horizontal"
+                        axis="bottom"
+                        xField="requestCount"
+                        yField="Status__c"
+                      />
+                    </apex:chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">What's New/System Updates</div>
+              <div class="panel-body">
+                <ul>
+                  <li>
+                    New training resource added on 12/13/2020.
+                    <apex:outputLink
+                      value="https://www.anymeeting.com/658-880-975/EA53DB87834E3A"
+                      target="_blank"
+                      >Click here</apex:outputLink
+                    >
+                    to view the webinar recording.
+                  </li>
+                  <li>
+                    CEOs now have the ability to add new contacts through the
+                    About tab and assign a role and user profile.
+                  </li>
+                  <li>
+                    The default sort order for all Reimbursement List pages will
+                    now be Request Date (was previously request ID).
+                  </li>
+                  <li>
+                    CEOs are now able to request access to the site by assigning
+                    a user profile to a contact under the About tab.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <apex:outputPanel
+            rendered="{!userAcctType == 'Local Organization' && hasMissingAtt}"
+          >
+            <div class="col-sm-12 col-md-6">
+              <div class="panel panel-warning">
+                <div class="panel-heading">Sub-Grants Missing Documents</div>
+                <div class="panel-body">
+                  <apex:repeat value="{!missingAtt_map}" var="i">
+                    <a
+                      href="{!URLFOR($Site.Prefix+'/NPALSubGrantDetails?GrantID='+i)}"
+                      style="color: #000; display: block"
+                    >
+                      {!missingAtt_map[i]}
+                    </a>
+                  </apex:repeat>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </div>
+
+        <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+          <!-- BEGIN Requests Lists -->
+          <div class="row">
+            <apex:outputPanel
+              rendered="{!approverLevel == 'Level One' || approverLevel == 'Level Two' || approverLevel == 'Level Three' || approverLevel == 'Finance Admin'}"
+            >
+              <div class="col-sm-12 col-md-6">
+                <c:ReimbursementDashboardList
+                  header="Requests Pending First Approval"
+                  requestList="{!first_approval_list}"
+                  portalName="NPAL"
+                  showMore="{!more_first_approval}"
+                  listType="Pending First Approval"
+                />
+              </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel
+              rendered="{!approverLevel == 'Level Two' || approverLevel == 'Level Three' || approverLevel == 'Finance Admin'}"
+            >
+              <div class="col-sm-12 col-md-6">
+                <c:ReimbursementDashboardList
+                  header="Requests Pending Second Approval"
+                  requestList="{!second_approval_list}"
+                  portalName="NPAL"
+                  showMore="{!more_second_approval}"
+                  listType="Pending Second Approval"
+                />
+              </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel
+              rendered="{!approverLevel == 'Level Three' || approverLevel == 'Finance Admin'}"
+            >
+              <div class="col-sm-12 col-md-6">
+                <c:ReimbursementDashboardList
+                  header="Requests Pending Approval"
+                  requestList="{!third_approval_list}"
+                  portalName="NPAL"
+                  showMore="{!more_third_approval}"
+                  listType="Pending Approval"
+                />
+              </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!approverLevel != 'Level Three'}">
+              <div class="col-sm-12 col-md-6">
+                <c:ReimbursementDashboardList
+                  header="Requests Sent Back"
+                  requestList="{!sentBack_request_list}"
+                  portalName="NPAL"
+                  showMore="{!more_sentBack_request}"
+                  listType="Revisions Needed"
+                />
+              </div>
+            </apex:outputPanel>
+          </div>
+          <!-- END Requests Lists -->
+
+          <!-- BEGIN Budgets Lists -->
+          <apex:outputPanel rendered="{!approverLevel != 'Level Three'}">
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <c:GrantDashboardList
+                  header="Budget Forms Pending Approval"
+                  grantList="{!pending_grant_list}"
+                  portalName="NPAL"
+                  showMore="{!more_pending_grant}"
+                  listType="pending"
+                />
+              </div>
+
+              <div class="col-sm-12 col-md-6">
+                <c:GrantDashboardList
+                  header="Budget Forms Sent Back"
+                  grantList="{!sentBack_grant_list}"
+                  portalName="NPAL"
+                  showMore="{!more_sentBack_grant}"
+                  listType="sentback"
+                />
+              </div>
+            </div>
+          </apex:outputPanel>
+          <!-- END Budgets Lists -->
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!userAcctType == 'Local Organization'}">
+          <!-- BEGIN Request Lists -->
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Incomplete Reimbursement Requests"
+                requestList="{!incomplete_request_list}"
+                portalName="NPAL"
+                showMore="{!more_incomplete_request}"
+                listType="Incomplete"
+              />
+            </div>
+
+            <div class="col-sm-12 col-md-6">
+              <c:ReimbursementDashboardList
+                header="Reimbursement Requests Sent Back"
+                requestList="{!sentBack_request_list}"
+                portalName="NPAL"
+                showMore="{!more_sentBack_request}"
+                listType="All Revisions"
+              />
+            </div>
+          </div>
+          <!-- END Request Lists -->
+
+          <!-- BEGIN Report Lists 
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <c:ReportList header="Incomplete Progress Reports"
+                                          reportList="{!incomplete_report_list}"
+                                          portalName="NPAL"
+                                          isDashboard="true"
+                                          showMore="{!more_incomplete_report}"
+                                          showEdit="false"
+                                          listType="incomplete" />
+                        </div>
+                        
+                        <div class="col-sm-12 col-md-6">
+                            <c:ReportList header="Completed Progress Reports"
+                                          reportList="{!complete_report_list}"
+                                          portalName="NPAL"
+                                          isDashboard="true"
+                                          showMore="{!more_complete_report}"
+                                          showEdit="false"
+                                          listType="complete" />
+                        </div>
+                    </div>
+                    <!-- END Report Lists -->
+        </apex:outputPanel>
+
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <c:MonthlyProgressReportList
+              header="Overdue Progress Reports"
+              reports="{!progress_overdue}"
+              showMore="{!more_progress_overdue}"
+              overdue="true"
+            />
+          </div>
+        </div>
+
+        <div class="alert alert-warning">
+          This Web site is funded through Grant # 2017-NPAL-AY-001 from the
+          Office of Juvenile Justice and Delinquency Prevention, Office of
+          Justice Programs, U.S. Department of Justice. Neither the U.S.
+          Department of Justice nor any of its components operate, control, are
+          responsible for, or necessarily endorse, this Web site including,
+          without limitation, its content, technical infrastructure, and
+          policies, and any services or tools provided.
+        </div>
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+    <apex:actionFunction
+      name="getOverdueInfo"
+      action="{!getOverdueInfo}"
+      status="pageStatus"
+      rerender="alerts"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+      getOverdueInfo();
+    };
+  </script>
+</apex:page>

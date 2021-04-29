@@ -1,0 +1,39 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute
+    type="Integer"
+    name="listSize"
+    description="listSize"
+    default="0"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="shouldShowMore"
+    description="display Show More Link?"
+    default="false"
+  />
+  <apex:attribute
+    type="String"
+    name="showMoreLink"
+    description="showMoreLink"
+  />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!listSize > 0}">
+        <apex:componentBody />
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!listSize == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel
+        rendered="{!shouldShowMore}"
+        styleClass="view-more-link"
+      >
+        <hr />
+        <a href="{!showMoreLink}"> View All &raquo; </a>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

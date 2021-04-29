@@ -1,0 +1,736 @@
+<apex:page
+  controller="BudgetExpensesCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Sub-Grant Budget Form</title>
+  </head>
+  <c:Header
+    ActivePage="grants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="budgetForm">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total: &nbsp;
+              <apex:outputField value="{!grant.Amount__c}" />
+            </h2>
+          </div>
+          <div class="col-auto">
+            <span style="font-weight: bold"> Sub-Grant Date Range: </span>
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!grant.National_Grant__r.Start_Date__c}" />
+            </apex:outputText>
+            -
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!grant.National_Grant__r.End_Date__c}" />
+            </apex:outputText>
+          </div>
+          <div class="col-auto pull-right">
+            <span style="font-weight: bold">
+              Full Time Effort: &nbsp;&nbsp;
+            </span>
+            <apex:outputField value="{!grant.Estimated_FTE__c}" />
+            <br />
+            <span style="font-weight: bold">
+              % Children Served: &nbsp;&nbsp;
+            </span>
+            <apex:outputField value="{!grant.Youth_Served_Percent__c}" />
+          </div>
+        </div>
+        <br />
+
+        <div class="alert alert-info" role="alert">
+          <strong>
+            To zero out a line item in your budget, use the checkbox next to the
+            item and then click the button in the upper right that says "Mark
+            Inactive", rather than changing the Total Expense to zero.
+          </strong>
+        </div>
+
+        <apex:outputPanel id="lists">
+          <!-- BEGIN Expense Items -->
+          <apex:outputPanel rendered="{!hasExpenses}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Update Expense Items
+                <div class="pull-right">
+                  <apex:outputPanel rendered="{!NOT(hasReimbursements)}">
+                    <apex:selectList
+                      id="Actions"
+                      size="1"
+                      value="{!bulkAction}"
+                    >
+                      <apex:selectOptions value="{!options}" />
+                    </apex:selectList>
+                    &nbsp;
+                    <apex:commandButton
+                      action="{!updateSelected}"
+                      value="Update"
+                      status="pageStatus"
+                      styleClass="btn-small btn-white"
+                      rerender="budgetForm, errorMessage"
+                    />
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!hasReimbursements}">
+                    <apex:commandButton
+                      action="{!updateSelected}"
+                      value="Mark Inactive"
+                      status="pageStatus"
+                      styleClass="btn-small btn-white"
+                      rerender="budgetForm, errorMessage"
+                    >
+                      <apex:param
+                        assignTo="{!bulkAction}"
+                        id="bulkAction"
+                        value="disable"
+                      />
+                    </apex:commandButton>
+                  </apex:outputPanel>
+                </div>
+              </div>
+              <apex:repeat value="{!expense_map}" var="cat">
+                <div class="panel-heading sub-panel-heading">
+                  <apex:outputText value="{!cat}" />
+                </div>
+                <div class="panel-body">
+                  <table class="fixedTbl">
+                    <tr>
+                      <th style="width: 20px"></th>
+                      <th>Name</th>
+                      <th class="text-center">
+                        Monthly Rate
+                        <span
+                          class="badge"
+                          title="The Monthly Rate (if applicable) will be used for Reimbursement Requests"
+                          >?</span
+                        >
+                      </th>
+                      <th class="text-center">
+                        Total Expense
+                        <span
+                          class="badge"
+                          title="The Total Expense should equal Monthly Rate multiplied by the number of months in the grant."
+                          >?</span
+                        >
+                      </th>
+                      <th
+                        style="{!IF(grant.Use_Indirect_Rate__c != 'Yes','','width: 0;')}"
+                      >
+                        <apex:outputText
+                          value="Factor Type"
+                          rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                        />
+                      </th>
+                      <th
+                        style="{!IF(grant.Use_Indirect_Rate__c != 'Yes','','width: 0;')}"
+                        class="text-center"
+                      >
+                        <apex:outputText
+                          value="Factor Value"
+                          rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                        />
+                      </th>
+                      <th class="text-center">Amount Allocated to Grant</th>
+                      <th class="text-center">Notes</th>
+                    </tr>
+                    <apex:repeat value="{!expense_map[cat]}" var="i">
+                      <tr>
+                        <td>
+                          <apex:inputCheckbox
+                            value="{!i.Selected__c}"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          &nbsp;
+                        </td>
+                        <td>{!i.Name}</td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.Monthly_Rate__c}"
+                            styleClass="input-md"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.Monthly_Rate__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <apex:inputText
+                            value="{!i.New_Rate__c}"
+                            styleClass="input-md"
+                            rendered="{!i.Is_Active__c}"
+                          />
+                          <apex:outputText
+                            value="{!i.New_Rate__c}"
+                            rendered="{!NOT(i.Is_Active__c)}"
+                          />
+                        </td>
+                        <td>
+                          <apex:outputPanel
+                            rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                          >
+                            <apex:inputField
+                              value="{!i.Factor_Type__c}"
+                              styleClass="input-md"
+                              rendered="{!i.Is_Active__c}"
+                            />
+                            <apex:outputText
+                              value="{!i.Factor_Type__c}"
+                              rendered="{!NOT(i.Is_Active__c)}"
+                            />
+                          </apex:outputPanel>
+                        </td>
+                        <td class="text-center">
+                          <apex:outputPanel
+                            rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                          >
+                            <apex:outputText
+                              value="{!grant.Estimated_FTE__c}"
+                              rendered="{!i.Factor_Type__c == 'FTE'}"
+                            />
+                            <apex:outputText
+                              value="{!grant.Youth_Served_Percent__c}"
+                              rendered="{!i.Factor_Type__c == 'TCS'}"
+                            />
+                            <apex:outputText
+                              value="%"
+                              rendered="{!i.Factor_Type__c != 'Other'}"
+                            />
+                            <apex:inputField
+                              value="{!i.Other_Factor_Percent__c}"
+                              rendered="{!i.Factor_Type__c == 'Other' && i.Is_Active__c}"
+                              styleClass="input-md"
+                            />
+                            <apex:outputText
+                              value="{!i.Other_Factor_Percent__c}"
+                              rendered="{!i.Factor_Type__c == 'Other' && NOT(i.Is_Active__c)}"
+                            />
+                          </apex:outputPanel>
+                        </td>
+                        <td class="text-center">
+                          <apex:outputText
+                            value="${0, number, ###,###,###,##0.00}"
+                          >
+                            <apex:param value="{!i.New_Item_Budget__c}" />
+                          </apex:outputText>
+                        </td>
+                        <td class="text-center">
+                          <apex:outputPanel id="expenseNoteIcon">
+                            <apex:commandLink
+                              action="{!expenseNotesPopup}"
+                              status="pageStatus"
+                              reRender="expensePopup"
+                            >
+                              <apex:outputText
+                                rendered="{!i.Item_Note__c != null || i.Response__c != null}"
+                              >
+                                <span
+                                  class="glyphicon glyphicon-comment"
+                                ></span>
+                              </apex:outputText>
+                              <apex:outputText
+                                rendered="{!i.Item_Note__c == null && i.Response__c == null}"
+                                >+</apex:outputText
+                              >
+                            </apex:commandLink>
+                          </apex:outputPanel>
+                          <apex:outputPanel id="expensePopup">
+                            <apex:outputPanel
+                              styleClass="popupBackground"
+                              layout="block"
+                              rendered="{!displayExpenseNotesPopup}"
+                            />
+                            <apex:outputPanel
+                              styleClass="custPopup"
+                              layout="block"
+                              rendered="{!displayExpenseNotesPopup}"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h4 class="modal-title">
+                                      Notes for&nbsp;<apex:outputText
+                                        value="{!i.Name}"
+                                      />
+                                    </h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <apex:inputTextarea
+                                      value="{!i.Item_Note__c}"
+                                    />
+                                    <br />
+                                    <hr />
+                                    <apex:outputPanel
+                                      rendered="{!i.Response__c != null}"
+                                    >
+                                      <apex:outputText
+                                        value="{!i.Response__c}"
+                                      />
+                                    </apex:outputPanel>
+                                    <apex:outputPanel
+                                      rendered="{!i.Response__c == null}"
+                                    >
+                                      No Notes from National
+                                    </apex:outputPanel>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <apex:commandButton
+                                      action="{!expenseNotesPopup}"
+                                      value="Save and Close"
+                                      status="pageStatus"
+                                      styleClass="primary"
+                                      reRender="expenseNoteIcon, expensePopup"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </apex:outputPanel>
+                          </apex:outputPanel>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </div>
+              </apex:repeat>
+            </div>
+          </apex:outputPanel>
+          <!-- END Expense Items -->
+
+          <!-- BEGIN New Expense Items -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Add Expense Items
+              <apex:commandButton
+                action="{!deleteItems}"
+                value="Delete"
+                status="pageStatus"
+                styleClass="btn-small btn-white pull-right"
+                rerender="budgetForm, errorMessage"
+              />
+            </div>
+            <div class="panel-body grid-pd-sm">
+              <apex:outputPanel id="newExpenseItems">
+                <table style="width: 100%">
+                  <tr>
+                    <th style="width: 20px"></th>
+                    <th>Item Name</th>
+                    <th>Category</th>
+                    <th class="text-center">
+                      Monthly Rate
+                      <span
+                        class="badge"
+                        title="The Monthly Rate (if applicable) will be used for Reimbursement Requests"
+                        >?</span
+                      >
+                    </th>
+                    <th class="text-center">
+                      Total Expense
+                      <span
+                        class="badge"
+                        title="The Total Expense should equal Monthly Rate multiplied by the number of months in the grant."
+                        >?</span
+                      >
+                    </th>
+                    <th class="text-center">
+                      <apex:outputText
+                        value="Factor Value"
+                        rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                      />
+                    </th>
+                    <th class="text-center">
+                      <apex:outputText
+                        value="Factor %"
+                        rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                      />
+                    </th>
+                    <th class="text-center">Amount Allocated to Grant</th>
+                    <th class="text-center">Notes</th>
+                  </tr>
+                  <apex:repeat value="{!newExpense_list}" var="i">
+                    <tr>
+                      <td style="width: 20px">
+                        <apex:inputCheckbox value="{!i.Selected__c}" />
+                      </td>
+                      <td>
+                        <apex:inputfield value="{!i.Name}" />
+                      </td>
+                      <td>
+                        <apex:selectList value="{!i.Category__c}" size="1">
+                          <apex:selectOptions value="{!categories}" />
+                        </apex:selectList>
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Monthly_Rate__c}"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.New_Rate__c}"
+                          styleClass="input-md"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:selectList
+                          value="{!i.Factor_Type__c}"
+                          size="1"
+                          rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                        >
+                          <apex:selectOptions value="{!factorTypes}" />
+                        </apex:selectList>
+                      </td>
+                      <td class="text-center">
+                        <apex:outputPanel
+                          rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}"
+                        >
+                          <apex:outputText
+                            value="{!grant.Estimated_FTE__c}"
+                            rendered="{!i.Factor_Type__c == 'FTE'}"
+                          />
+                          <apex:outputText
+                            value="{!grant.Youth_Served_Percent__c}"
+                            rendered="{!i.Factor_Type__c == 'TCS'}"
+                          />
+                          <apex:outputText
+                            value="%"
+                            rendered="{!i.Factor_Type__c == 'FTE' || i.Factor_Type__c == 'TCS'}"
+                          />
+                          <apex:inputField
+                            value="{!i.Other_Factor_Percent__c}"
+                            rendered="{!i.Factor_Type__c == 'Other'}"
+                            styleClass="input-md"
+                          />
+                        </apex:outputPanel>
+                      </td>
+                      <td class="text-center">
+                        <apex:outputText
+                          value="${0, number, ###,###,###,##0.00}"
+                        >
+                          <apex:param value="{!i.New_Item_Budget__c}" />
+                        </apex:outputText>
+                      </td>
+                      <td class="text-center">
+                        <apex:actionRegion renderRegionOnly="false">
+                          <apex:commandLink
+                            action="{!newExpenseNotesPopup}"
+                            status="pageStatus"
+                            reRender="newExpensePopup"
+                          >
+                            <apex:outputText
+                              rendered="{!i.Item_Note__c != null || i.Response__c != null}"
+                            >
+                              <span class="glyphicon glyphicon-comment"></span>
+                            </apex:outputText>
+                            <apex:outputText
+                              rendered="{!i.Item_Note__c == null && i.Response__c == null}"
+                              >+</apex:outputText
+                            >
+                          </apex:commandLink>
+                        </apex:actionRegion>
+                        <apex:outputPanel id="newExpensePopup">
+                          <apex:outputPanel
+                            styleClass="popupBackground"
+                            layout="block"
+                            rendered="{!displayNewExpenseNotesPopup}"
+                          />
+                          <apex:outputPanel
+                            styleClass="custPopup"
+                            layout="block"
+                            rendered="{!displayNewExpenseNotesPopup}"
+                          >
+                            <div class="modal-dialog text-left">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h4 class="modal-title">
+                                    Notes for&nbsp;<apex:outputText
+                                      value="{!i.Name}"
+                                    />
+                                  </h4>
+                                </div>
+                                <div class="modal-body">
+                                  <apex:inputTextarea
+                                    value="{!i.Item_Note__c}"
+                                  />
+                                  <br />
+                                  <hr />
+                                  <apex:outputPanel
+                                    rendered="{!i.Response__c != null}"
+                                  >
+                                    <apex:outputText value="{!i.Response__c}" />
+                                  </apex:outputPanel>
+                                  <apex:outputPanel
+                                    rendered="{!i.Response__c == null}"
+                                  >
+                                    No Notes from National
+                                  </apex:outputPanel>
+                                </div>
+                                <div class="modal-footer">
+                                  <apex:commandButton
+                                    action="{!newExpenseNotesPopup}"
+                                    value="Save and Close"
+                                    status="pageStatus"
+                                    styleClass="primary"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </apex:outputPanel>
+                        </apex:outputPanel>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+            </div>
+            <div class="panel-footer">
+              <apex:actionRegion renderRegionOnly="false">
+                <apex:commandbutton
+                  value="Add"
+                  action="{!addItem}"
+                  status="pageStatus"
+                  reRender="newExpenseItems"
+                >
+                  <apex:param assignTo="{!recordType}" value="expense" />
+                </apex:commandbutton>
+              </apex:actionRegion>
+            </div>
+          </div>
+          <!-- END New Expense Items -->
+        </apex:outputPanel>
+
+        <!-- BEGIN Notes -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <apex:outputText value="Expense Notes" />
+          </div>
+          <div class="panel-body">
+            <apex:inputTextarea value="{!grant.Expense_Notes__c}" />
+            <hr />
+            <apex:outputText
+              value="No notes from National"
+              rendered="{!grant.Expense_Response__c == null}"
+            />
+            <apex:outputText
+              value="Notes from National: "
+              rendered="{!grant.Expense_Response__c != null}"
+            />
+            <apex:outputText value="{!grant.Expense_Response__c}" />
+          </div>
+        </div>
+        <!-- END Notes -->
+
+        <!-- BEGIN Attachments -->
+        <apex:outputPanel id="attachments">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <apex:outputText value="Attachments" />
+            </div>
+            <div class="panel-body grid-pd-md">
+              <apex:repeat value="{!att_list}" var="a">
+                <div class="row">
+                  <div class="col-auto">
+                    <apex:outputPanel rendered="{!a.Id != null}">
+                      <apex:commandLink
+                        action="{!deleteAtt}"
+                        status="pageStatus"
+                        rerender="attachments"
+                      >
+                        <span class="glyphicon glyphicon-remove-circle"></span>
+                        <apex:param
+                          name="deleteAtt"
+                          value="{!a.Id}"
+                          assignTo="{!deleteAttId}"
+                        ></apex:param>
+                      </apex:commandLink>
+                      <apex:outputLink
+                        value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                        style="margin-right: 10px"
+                        target="_blank"
+                      >
+                        {!a.Name}
+                      </apex:outputLink>
+                      <apex:outputText rendered="{!a.Description != null}">
+                        ({!a.Description})
+                      </apex:outputText>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </apex:repeat>
+            </div>
+            <div class="panel-footer">
+              <apex:commandButton
+                action="{!attPopup}"
+                value="Upload Attachments"
+                status="pageStatus"
+                reRender="attachments"
+              />
+            </div>
+          </div>
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAttPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAttPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Upload New Attachment</h4>
+                </div>
+                <div class="modal-body">
+                  <iframe
+                    id="attachmentIFrame"
+                    frameborder="0"
+                    width="100%"
+                    height="200px"
+                    src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ grant.id)}"
+                  >
+                  </iframe>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!attPopup}"
+                    value="Close"
+                    status="pageStatus"
+                    reRender="attachments"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Attachments -->
+
+        <!-- BEGIN Indirect Rate -->
+        <apex:outputPanel id="indirect">
+          <apex:outputPanel rendered="{!grant.Use_Indirect_Rate__c == 'Yes'}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <apex:outputText value="Modified Direct Cost" />
+              </div>
+              <div class="panel-body grid-pd-sm">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Total Requested for Personnel: </strong>
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!laborRequestedAmount}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Total Requested for Expenses: </strong>
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!expenseRequestedAmount}" />
+                    </apex:outputText>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <strong>Total Indirect Cost: </strong>
+                    ( &nbsp;
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!laborRequestedAmount}" />
+                    </apex:outputText>
+                    + &nbsp;
+                    <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                      <apex:param value="{!expenseRequestedAmount}" />
+                    </apex:outputText>
+                    ) * &nbsp;
+                    <apex:outputText value="{!grant.Indirect_Rate__c}" />% =
+                    &nbsp;
+                    <strong>
+                      <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                        <apex:param
+                          value="{!grant.New_Indirect_Rate_Amount__c}"
+                        />
+                      </apex:outputText>
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Indirect Rate -->
+
+        <!-- BEGIN Actions -->
+        <div class="row">
+          <div class="col-xs-6">
+            <apex:actionRegion renderRegionOnly="false">
+              <apex:commandButton action="{!previous}" value="Previous" />
+              <apex:commandButton
+                action="{!updateAmounts}"
+                value="Update Amounts"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                action="{!saveAndExit}"
+                value="Save and Exit"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                value="Submit"
+                action="{!submit}"
+                status="pageStatus"
+                styleClass="btn primary"
+              />
+            </apex:actionRegion>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <apex:outputPanel id="totals">
+              <apex:outputPanel rendered="{!amountError}">
+                <h4 style="color: #b94a48">
+                  Total Requested Amount: &nbsp;
+                  <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!totalRequestedAmount}" />
+                  </apex:outputText>
+                </h4>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!NOT(amountError)}">
+                <h4>
+                  Total Requested Amount: &nbsp;
+                  <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!totalRequestedAmount}" />
+                  </apex:outputText>
+                </h4>
+              </apex:outputPanel>
+            </apex:outputPanel>
+          </div>
+        </div>
+        <!-- END Actions -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="lists, indirect, totals"
+    />
+  </apex:form>
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

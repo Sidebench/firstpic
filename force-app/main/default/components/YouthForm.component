@@ -1,0 +1,70 @@
+<apex:component>
+  <apex:attribute
+    type="YouthDataCtrl"
+    name="ctrl"
+    description="YouthDataCtrl"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="displayGrantOptions"
+    description="displayGrantOptions"
+    default="true"
+  />
+
+  <div class="row">
+    <div class="col-xs-4">
+      <strong> Site <span class="text-danger">*</span> <br /> </strong>
+      <apex:selectList value="{!ctrl.siteId}" size="1">
+        <apex:selectOptions value="{!ctrl.siteOptions}" />
+        <apex:actionSupport
+          event="onchange"
+          action="{!ctrl.getGrantOptions}"
+          rerender="grantOptions"
+        />
+      </apex:selectList>
+    </div>
+    <apex:outputPanel rendered="{!displayGrantOptions}">
+      <div class="col-xs-4">
+        <strong> Grant <span class="text-danger">*</span> <br /> </strong>
+        <apex:selectList value="{!ctrl.grantId}" size="1" id="grantOptions">
+          <apex:selectOptions value="{!ctrl.grantOptions}" />
+        </apex:selectList>
+      </div>
+      <div class="col-xs-4">
+        <strong> Year <span class="text-danger">*</span> <br /> </strong>
+        <apex:selectList value="{!ctrl.year}" size="1">
+          <apex:selectOptions value="{!ctrl.yearOptions}" />
+        </apex:selectList>
+      </div>
+    </apex:outputPanel>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <strong> First Name <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.FirstName}" />
+    </div>
+    <div class="col-xs-4">
+      <strong> Middle Name <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.MiddleName}" />
+    </div>
+    <div class="col-xs-4">
+      <strong> Last Initial <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.LastName}" required="false" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <strong> Sex <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.Gender__c}" />
+    </div>
+    <div class="col-xs-4">
+      <strong> Birth Month <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.Birth_Month__c}" />
+    </div>
+    <div class="col-xs-4">
+      <strong> Birth Year <span class="text-danger">*</span> <br /> </strong>
+      <apex:inputField value="{!ctrl.youth.Birth_Year__c}" />
+    </div>
+  </div>
+</apex:component>

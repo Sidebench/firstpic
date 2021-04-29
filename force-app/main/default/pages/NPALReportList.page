@@ -1,0 +1,221 @@
+<apex:page controller="ReportListCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Report List</title>
+  </head>
+  <c:NPALHeader
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div style="text-align: right; margin-bottom: 10px">
+          Reporting Period: &nbsp;
+          <apex:selectList id="title" size="1" value="{!reportPeriod}">
+            <apex:selectOptions value="{!reportPeriodOptions}" />
+            <apex:actionSupport
+              event="onchange"
+              action="{!getLists}"
+              reRender="form"
+              status="pageStatus"
+            />
+          </apex:selectList>
+        </div>
+        <apex:outputPanel rendered="{!GrantId != null}">
+          <div class="row">
+            <div class="col-auto">
+              <h2>{!grantName}</h2>
+            </div>
+            <div class="col-auto pull-right">
+              <!--
+                            <apex:outputPanel rendered="{!incompleteReport == false}">
+                                <a class="btn primary pull-right" href="{!URLFOR($Site.Prefix+'/NPALGranteeReportForm?GrantID='+SubGrantID)}">
+                                    Create Report
+                                </a>
+                            </apex:outputPanel>
+                            -->
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!--
+                <apex:outputPanel rendered="{!GrantId == null && userAcctType == 'Local Organization'}">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Active Sub-Grants
+                        </div>
+                        <div class="panel-body">
+                            <table style="width: 100%">
+                                <tr>
+                                    <th>
+                                        Sub-Grant Name
+                                    </th>
+                                    <th></th>
+                                </tr>
+                                <apex:repeat value="{!grant_map}" var="key">
+                                    <tr>
+                                        <apex:repeat value="{!grant_map[key]}" var="i">
+                                            <td>
+                                                <apex:outputPanel rendered="{!i != null && i != 'false' && i != 'true'}">
+                                                    <apex:outputPanel rendered="{!CONTAINS(currentUser.Profile.Name, 'Program')}">
+                                                        {!i}
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!NOT(CONTAINS(currentUser.Profile.Name, 'Program'))}">
+                                                        <a href="{!URLFOR($Site.Prefix+'/NPALSubGrantDetails?GrantID=' + key)}">
+                                                            {!i}
+                                                        </a>
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                            </td>
+                                            <td class="text-right"> 
+                                                <apex:outputPanel rendered="{!i == 'false'}">
+                                                    <a href="{!URLFOR($Site.Prefix+'/NPALGranteeReportForm?GrantID=' + key)}">
+                                                        Create Report
+                                                    </a>
+                                                </apex:outputPanel>
+                                            </td>
+                                        </apex:repeat>
+                                    </tr>
+                                </apex:repeat>
+                            </table>
+                        </div>
+                    </div>
+                </apex:outputPanel>
+                -->
+        <c:ReportList
+          header="Incomplete Grantee Reports"
+          reportList="{!incomplete_report_list}"
+          portalName="NPAL"
+          showEdit="{!userAcctType == 'Local Organization'}"
+        />
+
+        <c:ReportList
+          header="Submitted Grantee Reports"
+          reportList="{!submitted_report_list}"
+          portalName="NPAL"
+        />
+
+        <c:ReportList
+          header="Approved Grantee Reports"
+          reportList="{!approved_report_list}"
+          portalName="NPAL"
+        />
+
+        <!--
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Grantee Reports
+                    </div>
+                    <div class="panel-body">
+                        <table style="width: 100%;">
+                            <tr>
+                                <th>
+                                    Sub-Grant Name
+                                </th>
+                                <th>
+                                    Submitted Date
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th></th>
+                            </tr>
+                            <apex:repeat value="{!report_list}" var="r">
+                                <tr>
+                                    <td>
+                                        <apex:outputPanel rendered="{!CONTAINS(currentUser.Profile.Name, 'Program')}">
+                                            {!r.Grant__r.Name}
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!NOT(CONTAINS(currentUser.Profile.Name, 'Program'))}">
+                                            <a href="{!URLFOR($Site.Prefix+'/NPALSubGrantDetails?GrantID=' + r.Grant__c)}">
+                                                {!r.Grant__r.Name}
+                                            </a>
+                                        </apex:outputPanel>
+                                    </td>
+                                    <td>
+                                        <apex:outputfield value="{!r.Submitted_Date__c}"/>
+                                    </td>
+                                    <td>
+                                        <apex:outputfield value="{!r.Report_Status__c}"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <apex:outputPanel rendered="{!(r.Report_Status__c != 'In Progress' && r.Report_Status__c != 'Revisions Needed' && r.Report_Status__c != 'Revision in Progress')}">
+                                            <a href="{!URLFOR($Site.Prefix+'/NPALGranteeReport?ReportID=' + r.ID)}">
+                                                View Details
+                                            </a>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!userAcctType == 'Local Organization' && (r.Report_Status__c == 'In Progress' || r.Report_Status__c == 'Revisions Needed' || r.Report_Status__c == 'Revision in Progress')}">
+                                            <a href="{!URLFOR($Site.Prefix+'/NPALGranteeReportForm?ReportID=' + r.ID)}">
+                                                Edit
+                                            </a>
+                                            &nbsp;|&nbsp;
+                                            <apex:commandLink value="Delete" action="{!deleteReportPopup}">
+                                                <apex:param name="ReportID" value="{!r.ID}" assignTo="{!ReportID}"/>
+                                            </apex:commandLink>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                    </div>
+                </div>
+                -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <!-- BEGIN Delete Report Popup -->
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayDeleteReportPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayDeleteReportPopup}"
+        >
+          <div class="modal-dialog text-left">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">
+                  Delete {!report.Grant__r.Name} Report
+                </h4>
+              </div>
+              <div class="modal-body grid-pd-md">
+                Are you should you'd like to delete this report? This cannot be
+                undone.
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!deleteReportPopup}"
+                  value="Cancel"
+                  immediate="true"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  action="{!deleteReport}"
+                  value="Delete"
+                  styleClass="primary"
+                  reRender="form"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

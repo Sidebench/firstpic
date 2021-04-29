@@ -1,0 +1,38 @@
+<apex:page
+  controller="DocumentCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  readOnly="true"
+  contentType="application/vnd.ms-excel#ComplianceReport.xls"
+>
+  <h4>{!objectType} Documents</h4>
+  <table>
+    <tr>
+      <th>
+        <apex:outputText
+          value="BBBS Id"
+          rendered="{!portalName == 'BBBS' || portalName == ''}"
+        />
+      </th>
+      <th>Organization</th>
+      <th>Document Name</th>
+      <th>Document Status</th>
+      <th>Has Attachments</th>
+    </tr>
+    <apex:repeat value="{!doc_list}" var="i">
+      <tr>
+        <td>
+          <apex:outputText
+            value="{!i.Organization_Id__c}"
+            rendered="{!portalName == 'BBBS' || portalName == ''}"
+          />
+        </td>
+        <td>{!i.Organization_Name__c}</td>
+        <td>{!i.Name}</td>
+        <td>{!i.Status__c}</td>
+        <td>{!i.Has_Attachments__c}</td>
+      </tr>
+    </apex:repeat>
+  </table>
+</apex:page>

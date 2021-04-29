@@ -1,0 +1,209 @@
+<apex:page
+  controller="ReimbursementListCtrl"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Reimbursement List</title>
+  </head>
+  <c:Header
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2 style="display: inline">Reimbursement Requests</h2>
+        <span class="col-auto pull-right">
+          Name or Request Id: &nbsp;<apex:inputText
+            value="{!keyword}"
+            styleClass="input-md"
+          />&nbsp; &nbsp;&nbsp; Sort By: &nbsp;
+          <apex:selectList value="{!sortBy}" size="1">
+            <apex:selectOptions value="{!sortByOptions}" />
+          </apex:selectList>
+          &nbsp;
+          <apex:commandButton
+            action="{!getLists}"
+            value="Update"
+            status="pageStatus"
+            styleClass="btn-small primary"
+            reRender="form"
+          />
+        </span>
+        <br /><br />
+
+        <apex:outputPanel
+          rendered="{!userAcct.RecordType.Name == 'National Organization'}"
+        >
+          <apex:outputPanel rendered="{!pending_first_list.size > 0}">
+            <c:ReimbursementList
+              header="Pending First Review"
+              portalName="BBBS"
+              requestList="{!pending_first_list}"
+              showMore="{!more_pending_first}"
+              listType="pendingfirst"
+            />
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!pending_second_list.size > 0}">
+            <c:ReimbursementList
+              header="Pending Second Review"
+              portalName="BBBS"
+              requestList="{!pending_second_list}"
+              showMore="{!more_pending_second}"
+              listType="pendingsecond"
+            />
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!pending_third_list.size > 0}">
+            <c:ReimbursementList
+              header="Pending Third Review"
+              portalName="BBBS"
+              requestList="{!pending_third_list}"
+              showMore="{!more_pending_third}"
+              listType="pendingfinal"
+            />
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!userAcct.RecordType.Name == 'Local Organization'}"
+        >
+          <apex:outputPanel rendered="{!pending_list.size > 0}">
+            <c:ReimbursementList
+              header="Pending Approval"
+              portalName="BBBS"
+              requestList="{!pending_list}"
+              showMore="{!more_pending}"
+              listType="pendingapproval"
+            />
+          </apex:outputPanel>
+
+          <apex:outputPanel rendered="{!incomplete_list.size > 0}">
+            <c:ReimbursementList
+              header="Incomplete Requests"
+              portalName="BBBS"
+              requestList="{!incomplete_list}"
+              showMore="{!more_incomplete}"
+              showEdit="true"
+              listType="incomplete"
+            />
+          </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!revisions_list.size > 0}">
+          <c:ReimbursementList
+            header="Revisions Needed"
+            portalName="BBBS"
+            requestList="{!revisions_list}"
+            showStatus="true"
+            showMore="{!more_revisions}"
+            showEdit="{!userAcctType == 'Local Organization'}"
+            listType="sentback"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!national_request_list.size > 0 && userAcctType == 'National Organization' && (approverLevel == 'Level Three' || approverLevel == 'Level Two Admin')}"
+        >
+          <c:ReimbursementList
+            header="National Reimbursement Requests"
+            portalName="BBBS"
+            requestList="{!national_request_list}"
+            showStatus="true"
+            showMore="{!more_national_request}"
+            showEdit="true"
+            listType="national"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!request_list.size > 0}">
+          <c:ReimbursementList
+            header="Completed Reimbursement Requests"
+            portalName="BBBS"
+            requestList="{!request_list}"
+            showMore="{!more_request}"
+            listType="completed"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!approved_list.size > 0}">
+          <c:ReimbursementList
+            header="Approved Reimbursement Requests"
+            portalName="BBBS"
+            requestList="{!approved_list}"
+            showMore="{!more_approved}"
+            listType="completedapproved"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!paid_list.size > 0}">
+          <c:ReimbursementList
+            header="Paid Reimbursement Requests"
+            portalName="BBBS"
+            requestList="{!paid_list}"
+            showMore="{!more_paid}"
+            listType="completedpaid"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!denied_list.size > 0}">
+          <c:ReimbursementList
+            header="Denied Reimbursement Requests"
+            portalName="BBBS"
+            requestList="{!denied_list}"
+            showMore="{!more_denied}"
+            listType="completeddenied"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!userAcctType == 'National Organization' && listType != 'completed'}"
+        >
+          <a
+            href="{!URLFOR($Site.Prefix+'/ReimbursementList?type=completed')}"
+            class="btn primary"
+          >
+            Completed Requests
+          </a>
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!GrantID != null && (userAcctType == 'Local Organization' || approverLevel == 'Level Two Admin')}"
+        >
+          <a
+            href="{!URLFOR($Site.Prefix+'/RequestForm?GrantID='+GrantID)}"
+            class="btn primary"
+          >
+            Request Reimbursement
+          </a>
+          <br /><br />
+          <div class="alert alert-info" role="alert">
+            <strong>
+              You won't be able to submit a reimbursement until you have an
+              approved budget.
+            </strong>
+          </div>
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+    <apex:actionFunction
+      name="getLists"
+      action="{!getLists}"
+      status="pageStatus"
+      rerender="form"
+    />
+  </apex:form>
+
+  <script>
+    window.onload = function () {
+      getLists();
+    };
+  </script>
+</apex:page>

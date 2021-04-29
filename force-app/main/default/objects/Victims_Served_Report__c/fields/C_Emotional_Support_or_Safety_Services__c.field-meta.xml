@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>C_Emotional_Support_or_Safety_Services__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >C1_Crisis_Intervention__c +  C2_HotlineCrisis_Line_counseling__c +  C3_On_Scene_Crisis_Response__c +  C4_Individual_Counseling__c +  C5_Support_Groups__c +  C6_Other_Therapy__c +  C7_Emergency_Financial_Assistance__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>C. Emotional Support or Safety Services</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

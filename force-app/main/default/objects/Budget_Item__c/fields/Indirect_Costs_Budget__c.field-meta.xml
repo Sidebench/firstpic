@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Indirect_Costs_Budget__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >IF(Apply_Indirect_Rate_Cap__c, Amount_Allocated_for_Indirect_Cost__c * Indirect_Rate__c, 
+IF(New_Item_Budget__c &gt; 0, New_Item_Budget__c * Indirect_Rate__c, 
+Item_Budget__c * Indirect_Rate__c))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Indirect Costs Budget</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

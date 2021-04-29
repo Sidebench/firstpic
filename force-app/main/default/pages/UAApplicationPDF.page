@@ -1,0 +1,536 @@
+<apex:page
+  controller="UAApplicationCtrl"
+  showHeader="false"
+  sidebar="false"
+  applyBodyTag="false"
+  renderAs="PDF"
+>
+  <head>
+    <title>Application</title>
+  </head>
+
+  <body
+    style="
+      font-family: 'Arial Unicode MS';
+      color: #555;
+      font-size: 16px;
+      line-height: 26px;
+    "
+  >
+    <h2 style="text-align: center">{!app.Organization_Name__c}</h2>
+
+    <table style="width: 100%">
+      <tr>
+        <td><span style="color: #000">App #: </span> {!app.Name}</td>
+        <td><span style="color: #000">EIN #: </span> {!app.EIN__c}</td>
+        <td colspan="3">
+          <span style="color: #000">Address: </span>
+          {!app.Address__c}, {!app.City__c}, {!app.State__c}
+          {!app.Postal_Zip_Code__c}
+        </td>
+      </tr>
+      <tr>
+        <td><span style="color: #000">Status: </span> {!app.Status__c}</td>
+        <td><span style="color: #000">Score: </span> {!app.Score__c}</td>
+        <td>
+          <span style="color: #000">Awarded Date: </span>
+          <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+            <apex:param value="{!app.Awarded_Date__c}" />
+          </apex:outputText>
+        </td>
+        <td>
+          <span style="color: #000">Closed Date: </span>
+          <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+            <apex:param value="{!app.Closed_Date__c}" />
+          </apex:outputText>
+        </td>
+      </tr>
+    </table>
+
+    <br />
+    <h3 style="border-bottom: 1px solid #aaa">Contact Information</h3>
+    <table style="width: 100%">
+      <tr>
+        <td>
+          <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Pride'}">
+            <span style="font-size: 18px; border-bottom: 1px solid #ccc">
+              CEO/ED
+            </span>
+            <br />
+            <span style="color: #000">First Name: </span>
+            {!app.CEO_First_Name__c}
+            <br />
+            <span style="color: #000">Last Name: </span>
+            {!app.CEO_Last_Name__c}
+            <br />
+            <span style="color: #000">Email: </span>
+            {!app.CEO_Email__c}
+            <br />
+            <span style="color: #000">Phone: </span>
+            {!app.CEO_Phone__c}
+          </apex:outputPanel>
+        </td>
+        <td>
+          <span style="font-size: 18px; border-bottom: 1px solid #ccc">
+            Program Contact
+          </span>
+          <br />
+          <span style="color: #000">First Name: </span>
+          {!app.Program_Contact_First_Name__c}
+          <br />
+          <span style="color: #000">Last Name: </span>
+          {!app.Program_Contact_Last_Name__c}
+          <br />
+          <span style="color: #000">Email: </span>
+          {!app.Program_Contact_Email__c}
+          <br />
+          <span style="color: #000">Phone: </span>
+          {!app.Program_Contact_Phone__c}
+        </td>
+      </tr>
+    </table>
+    <br />
+    <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Pride'}">
+      <span style="color: #000">Organization Mission Statement: </span>
+      <br />
+      <apex:outputField value="{!app.Mission_Statement__c}" />
+    </apex:outputPanel>
+
+    <br /><br />
+    <h3 style="border-bottom: 1px solid #aaa">Request Details</h3>
+    <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Pride'}">
+      <span style="color: #000"
+        >Total Amount Requested from Under Armour:
+      </span>
+      <apex:outputField value="{!app.Total_Amount_Requested__c}" />
+      <br /><br />
+      <span style="color: #000"
+        >Please explain how UA grant funds will be utilized:
+      </span>
+      <br />
+      <apex:outputField value="{!app.How_Funds_Utilized__c}" />
+      <br /><br />
+      <span style="color: #000"
+        >If funding is being requested for a specific program, are participants
+        required to pay a fee?
+      </span>
+      {!app.Has_Participation_Fee__c}
+      <br />
+      <span style="color: #000">If so, how much:&nbsp;</span>
+      {!app.Participation_Fee__c}
+      <br /><br />
+      <span style="color: #000"
+        >What is the biggest issue your organization is facing in light of the
+        COVID-19 crisis:
+      </span>
+      <br />
+      <apex:outputField
+        value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+      />
+      <br /><br />
+      <span style="color: #000"
+        >In light of COVID-19, has the organization been able to continue to
+        engage and support LGBTQ+ youth athletes and communities during this
+        time? If yes, please share a brief overview of how:
+      </span>
+      <br />
+      <apex:outputField value="{!app.Able_to_Continue_Supporting_Youth__c}" />
+      <br /><br />
+      <span style="color: #000"
+        >Do you currently have UA employees sitting on the Board for your
+        organization? If yes, please list individuals and their involvement:
+      </span>
+      <br />
+      <apex:outputField
+        value="{!app.Employees_Donating_Volunteering_Sitting__c}"
+      />
+      <br /><br />
+      <span style="color: #000"
+        >What other organizations currently support your program/organization?
+        Please write n/a if you do not receive additional support:
+      </span>
+      <br />
+      <apex:outputField
+        value="{!app.Other_Organizations_Supporting_Program__c}"
+      />
+      <br /><br />
+      <span style="color: #000"
+        >Please provide website and/or social media handles for organization, if
+        applicable.</span
+      >
+      <table>
+        <tr>
+          <td>
+            <strong>Instagram: </strong>
+          </td>
+          <td>{!app.Instagram__c}</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Twitter: </strong>
+          </td>
+          <td>{!app.Twitter__c}</td>
+        </tr>
+        <tr>
+          <td>
+            <strong>Website: </strong>
+          </td>
+          <td>{!app.Website__c}</td>
+        </tr>
+      </table>
+      <br />
+      <span style="color: #000"
+        >Has your organization previously received support from Under Armour?
+      </span>
+      {!app.Previous_Support_Received__c}
+      <br />
+      <span style="color: #000"
+        >If yes, please provide the year(s) and describe the contribution.
+      </span>
+      {!app.Support_Years_and_Contribution__c}
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Pride'}">
+      <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Freedom'}">
+        <span style="color: #000">Project Title: </span>
+        <apex:outputField value="{!app.Project_Title__c}" />
+        <br />
+      </apex:outputPanel>
+      <span style="color: #000"
+        >Number of years organization has operated:
+      </span>
+      <apex:outputField value="{!app.Year_Founded__c}" />
+      <br />
+      <span style="color: #000"
+        >How many individuals will be impacted DIRECTLY by the Project?
+      </span>
+      <apex:outputField
+        value="{!app.Individuals_Directly_Impacted_by_Grant__c}"
+      />
+      <br />
+      <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Freedom'}">
+        <span style="color: #000">Age of youth impacted: </span>
+        <apex:outputField value="{!app.Age__c}" />
+        <br />
+      </apex:outputPanel>
+      <span style="color: #000">Gender: </span>
+      <apex:outputField value="{!app.Gender__c}" />
+      <br />
+      <span style="color: #000">Total Annual Organization Budget: </span>
+      <apex:outputField value="{!app.Total_Budget__c}" />
+      <br />
+      <span style="color: #000">Total Program Budget: </span>
+      <apex:outputField value="{!app.Total_Project_Program_Budget__c}" />
+      <br />
+      <span style="color: #000"
+        >Total Amount Requested from Under Armour:
+      </span>
+      <apex:outputField value="{!app.Total_Amount_Requested__c}" />
+      <br />
+      <span style="color: #000"
+        >Have you previously received support from Under Armour?
+      </span>
+      <apex:outputField value="{!app.Previous_Support_Received__c}" />
+      <br />
+      <span style="color: #000"
+        >If yes, please provide the year(s) and describe the contribution.
+      </span>
+      <apex:outputField value="{!app.Support_Years_and_Contribution__c}" />
+      <br />
+      <span style="color: #000"
+        >If providing a match, how much of the requested funding will be
+        matched?
+      </span>
+      <apex:outputField value="{!app.Amount_of_Funding_Matched__c}" />
+      <br />
+      <span style="color: #000"
+        >If providing a match, what type of funds will be used for the match?
+        (i.e. city funds, individual donor, etc.)
+      </span>
+      <apex:outputField value="{!app.Type_of_Funds_Used_for_Match__c}" />
+      <br />
+      <span style="color: #000"
+        >Please select which UA philanthropic pillar your program/request are
+        appealing to (select all that apply)
+      </span>
+      <apex:outputField value="{!app.Philanthropic_Pillar__c}" />
+      <br />
+      <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Freedom'}">
+        <span style="color: #000"
+          >Area of Impact: Which city is the primary beneficiary of your
+          program. Please note if your program does not service one of these
+          markets, your request is ineligible.
+        </span>
+        <apex:outputField value="{!app.Cities_Served__c}" />
+        <br />
+      </apex:outputPanel>
+      <span style="color: #000"
+        >Is there a participation fee for those interested in the program?
+      </span>
+      <apex:outputField value="{!app.Has_Participation_Fee__c}" />
+      <br />
+      <span style="color: #000">If so, how much: </span>
+      <apex:outputField value="{!app.Participation_Fee__c}" />
+      <br />
+      <span style="color: #000"
+        >Please provide website and/or social media handles for organization, if
+        applicable.
+      </span>
+      <br />
+      <table style="width: 100%">
+        <tr>
+          <td>
+            <span style="color: #000">Instagram: </span>
+            {!app.Instagram__c}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style="color: #000">Twitter: </span>
+            {!app.Twitter__c}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <span style="color: #000">Website: </span>
+            {!app.Website__c}
+          </td>
+        </tr>
+      </table>
+      <br /><br />
+
+      <table style="width: 100%">
+        <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Freedom'}">
+          <tr>
+            <td valign="top">
+              <span style="color: #000"
+                >Please provide a brief overview of your 501 (c)(3).</span
+              >
+              <br />{!app.Overview_501c3__c}
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <span style="color: #000"
+                >Explain how your program or project will impact and serve the
+                UA Freedom Initiative.</span
+              >
+              <br />{!app.Impact__c}
+            </td>
+          </tr>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Freedom'}">
+          <tr>
+            <td valign="top">
+              <span style="color: #000"
+                >Explain how your program or project will meet an unmet need
+                through innovation, entrepreneurship or education? Has this
+                model been successful previously or elsewhere? If so, please
+                explain.
+              </span>
+              <br />{!app.Unmet_Needs_will_be_Met__c}
+            </td>
+            <td valign="top">
+              <span style="color: #000">Score: </span>
+              {!app.Unmet_Needs_will_be_Met_Score__c}
+              <br />
+              <span style="color: #000">Comments: </span>
+              {!app.Unmet_Needs_will_be_Met_Comments__c}
+            </td>
+          </tr>
+          <tr>
+            <td><br /></td>
+          </tr>
+        </apex:outputPanel>
+        <tr>
+          <td valign="top">
+            <span style="color: #000"
+              >What are your program objectives and how will you measure impact?
+              Identify the specific measurable outcomes you anticipate as a
+              result of this program and outline how you will measure project
+              success or impact.
+            </span>
+            <br />{!app.Program_Objectives__c}
+          </td>
+          <td valign="top">
+            <span style="color: #000">Score: </span>
+            {!app.Program_Objectives_Score__c}
+            <br />
+            <span style="color: #000">Comments: </span>
+            {!app.Program_Objectives_Comments__c}
+          </td>
+        </tr>
+        <tr>
+          <td><br /></td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <span style="color: #000"
+              >Please explain how UA grant funds will be utilized.
+            </span>
+            <br />{!app.How_Funds_Utilized__c}
+          </td>
+          <td valign="top">
+            <span style="color: #000">Score: </span>
+            {!app.How_Funds_Utilized_Score__c}
+            <br />
+            <span style="color: #000">Comments: </span>
+            {!app.How_Funds_Utilized_Comments__c}
+          </td>
+        </tr>
+        <tr>
+          <td><br /></td>
+        </tr>
+        <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Freedom'}">
+          <tr>
+            <td valign="top">
+              <span style="color: #000"
+                >Explain how your program is sustainable and how this one-time
+                grant will impact your scope of work for years to come.
+              </span>
+              <br />{!app.Sustainability__c}
+            </td>
+            <td valign="top">
+              <span style="color: #000">Score: </span>
+              {!review.Sustainability_Score__c}
+              <br />
+              <span style="color: #000">Comments: </span>
+              {!review.Sustainability_Notes__c}
+            </td>
+          </tr>
+        </apex:outputPanel>
+        <tr>
+          <td valign="top">
+            <span style="color: #000"
+              >What story will be amplified if awarded this grant? How would
+              funds help you to tell your story to others?
+            </span>
+            <br />{!app.How_Story_will_be_Amplified__c}
+          </td>
+          <td valign="top">
+            <span style="color: #000">Score: </span>
+            {!app.How_Story_will_be_Amplified_Score__c}
+            <br />
+            <span style="color: #000">Comments: </span>
+            {!app.How_Story_will_be_Amplified_Comments__c}
+          </td>
+        </tr>
+        <tr>
+          <td><br /></td>
+        </tr>
+        <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Freedom'}">
+          <tr>
+            <td valign="top">
+              <span style="color: #000"
+                >Explain your organization or staff leadership experience in
+                delivering proven or promising opportunities to the target
+                population.
+              </span>
+              <br />{!app.How_Program_will_be_delivered__c}
+            </td>
+            <td valign="top">
+              <span style="color: #000">Score: </span>
+              {!app.How_Program_will_be_Delivered_Score__c}
+              <br />
+              <span style="color: #000">Comments: </span>
+              {!app.How_Program_will_be_Delivered_Comments__c}
+            </td>
+          </tr>
+        </apex:outputPanel>
+        <tr>
+          <td><br /></td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <span style="color: #000"
+              >Please provide an example of a time when the project/program did
+              not succeed. What lessons were learned and how will they be
+              applied to future programs/projects?
+            </span>
+            <br />{!app.Example_of_Unsuccessful_Program__c}
+          </td>
+          <td valign="top">
+            <span style="color: #000">Score: </span>
+            {!app.Example_of_Unsuccessful_Program_Score__c}
+            <br />
+            <span style="color: #000">Comments: </span>
+            {!app.Example_of_Unsuccessful_Program_Comments__c}
+          </td>
+        </tr>
+        <tr>
+          <td><br /></td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <span style="color: #000"
+              >Do you currently have UA employees sitting on the Board for your
+              organization? If yes, please list individuals and their
+              involvement.
+            </span>
+            <br />{!app.Employees_Donating_Volunteering_Sitting__c}
+          </td>
+        </tr>
+        <tr>
+          <td><br /></td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <span style="color: #000"
+              >What other organizations currently support your
+              program/organization? Please write n/a if you do not receive
+              additional support.
+            </span>
+            <br />{!app.Other_Organizations_Supporting_Program__c}
+          </td>
+        </tr>
+      </table>
+      <br /><br />
+
+      <span style="color: #000">References: </span>
+
+      <apex:outputPanel rendered="{!app.RecordType.Name != 'UA Freedom'}">
+        {!app.References__c}
+      </apex:outputPanel>
+
+      <apex:outputPanel rendered="{!app.RecordType.Name == 'UA Freedom'}">
+        <span style="color: #000">Reference One</span>
+        <br />
+        First Name: &nbsp; {!app.R1_First_Name__c}
+        <br />
+        Last Name: &nbsp; {!app.R1_Last_Name__c}
+        <br />
+        Email: &nbsp; {!app.R1_Email__c}
+        <br />
+        Phone: &nbsp; {!app.R1_Phone__c}
+        <br />
+        Relationship: &nbsp; {!app.R1_Relationship__c}
+        <br /><br />
+        <span style="color: #000">Reference Two</span>
+        First Name: &nbsp; {!app.R2_First_Name__c}
+        <br />
+        Last Name: &nbsp; {!app.R2_Last_Name__c}
+        <br />
+        Email: &nbsp; {!app.R2_Email__c}
+        <br />
+        Phone: &nbsp; {!app.R2_Phone__c}
+        <br />
+        Relationship: &nbsp; {!app.R2_Relationship__c}
+        <br /><br />
+        <span style="color: #000">Reference Three</span>
+        First Name: &nbsp; {!app.R3_First_Name__c}
+        <br />
+        Last Name: &nbsp; {!app.R3_Last_Name__c}
+        <br />
+        Email: &nbsp; {!app.R3_Email__c}
+        <br />
+        Phone: &nbsp; {!app.R3_Phone__c}
+        <br />
+        Relationship: &nbsp; {!app.R3_Relationship__c}
+      </apex:outputPanel>
+    </apex:outputPanel>
+
+    <br /><br />
+    <h3 style="border-bottom: 1px solid #aaa">Notes</h3>
+    <apex:outputField value="{!app.Notes__c}" />
+  </body>
+</apex:page>

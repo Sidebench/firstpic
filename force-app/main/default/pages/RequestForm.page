@@ -1,0 +1,143 @@
+<apex:page
+  controller="RequestFormController"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Reimbursement Request</title>
+  </head>
+  <c:Header
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Balance: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!grant.Balance__c}" />
+              </apex:outputText>
+            </h2>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+          <div class="panel panel-warning">
+            <div class="panel-heading">Notes</div>
+            <div class="panel-body">
+              <apex:outputField value="{!request.Request_Notes__c}" />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <apex:outputText value="Request Details" />
+          </div>
+          <div class="panel-body grid-pd-md">
+            <div class="row">
+              <div class="col-auto" style="font-weight: bold">
+                Reimbursement Date Range:
+              </div>
+              <div class="col-auto">
+                From: &nbsp;
+                <apex:inputField
+                  value="{!request.Start_Date__c}"
+                  style="width: 100px; display: inline"
+                />
+              </div>
+              <div class="col-auto">
+                To: &nbsp;
+                <apex:inputField
+                  value="{!request.End_Date__c}"
+                  style="width: 100px; display: inline"
+                />
+              </div>
+              <div class="col-auto pull-right">
+                <span style="font-weight: bold">
+                  Total employee hours at affiliate during this month:
+                  &nbsp;&nbsp;
+                </span>
+                <apex:inputField
+                  value="{!request.Total_FTE_at_Affiliate__c}"
+                  style="width: 80px; display: inline"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-auto">
+                <span style="font-weight: bold">
+                  Total number of youth served during the month: &nbsp;&nbsp;
+                </span>
+                <apex:inputField
+                  value="{!request.Youth_Served__c}"
+                  style="width: 80px; display: inline"
+                />
+              </div>
+              <div class="col-auto pull-right">
+                <span style="font-weight: bold">
+                  Number of youth served with grant funding this month:
+                  &nbsp;&nbsp;
+                </span>
+                <apex:inputField
+                  value="{!request.Youth_Served_with_Grant_Funding__c}"
+                  style="width: 80px; display: inline"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info" role="alert">
+          <strong>
+            You should not start a reimbursement without having an approved
+            budget.
+          </strong>
+          <br />
+          <apex:outputText rendered="{!grant.Use_Indirect_Rate__c == 'Yes'}">
+            Your budget was submitted with an <strong>indirect rate</strong>. If
+            this is incorrect please resubmit your budget before creating a
+            reimbursement request.
+          </apex:outputText>
+          <apex:outputText rendered="{!grant.Use_Indirect_Rate__c != 'Yes'}">
+            Your budget was submitted using
+            <strong>FTE and TCS factor values</strong>.
+          </apex:outputText>
+          <br />
+          <apex:inputCheckbox value="{!factorConfirm}" />
+          I understand that this cannot be changed during the course of the
+          grant period.
+        </div>
+
+        <apex:commandButton
+          action="{!cancel}"
+          value="Cancel"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!next}"
+          value="Next"
+          status="pageStatus"
+          styleClass="btn primary"
+        />
+        <br /><br />
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <h6>
+          Leaving a reimbursement request without saving or submitting will
+          result in the lose of information in this request.
+        </h6>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

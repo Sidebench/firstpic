@@ -1,0 +1,136 @@
+<apex:component controller="AttachmentCtrl" allowDML="true">
+  <apex:attribute
+    type="String"
+    name="parentId"
+    description="parentId"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="fileName"
+    description="fileName"
+    required="false"
+  />
+  <apex:attribute
+    type="String"
+    name="emptyListText"
+    description="Text displayed if att_list is empty"
+    required="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showUploadBtn"
+    description="showUploadBtn"
+  />
+  <apex:attribute
+    type="String"
+    name="requiredText"
+    description="requiredText"
+    default=""
+  />
+  <apex:attribute type="String" name="infoText" description="infoText" />
+  <apex:attribute
+    type="Boolean"
+    name="filterByFileName"
+    description="filterByFileName"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="enableDeleteAtt"
+    description="enableDeleteAtt"
+    default="true"
+  />
+
+  <apex:outputPanel id="attachments">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Attachments &nbsp;<apex:outputText
+          value="{!requiredText}"
+          styleClass="text-danger"
+          rendered="{!requiredText != ''}"
+        />
+      </div>
+      <div class="panel-body">
+        {!infoText}
+        <apex:outputPanel rendered="{!att_list != null && att_list.size > 0}">
+          <apex:repeat value="{!att_list}" var="a">
+            <div class="row">
+              <div class="col-auto">
+                <apex:outputPanel rendered="{!a.Id != null}">
+                  <apex:commandLink
+                    action="{!deleteAttById}"
+                    status="pageStatus"
+                    rendered="{!enableDeleteAtt}"
+                  >
+                    <span class="glyphicon glyphicon-remove-circle"></span>
+                    <apex:param
+                      name="deleteAttId"
+                      value="{!a.Id}"
+                      assignTo="{!deleteAttId}"
+                    ></apex:param>
+                  </apex:commandLink>
+                  <apex:outputLink
+                    value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                    style="margin-right: 10px"
+                    target="_blank"
+                  >
+                    {!a.Name}
+                  </apex:outputLink>
+                  <apex:outputText rendered="{!a.Description != null}">
+                    ({!a.Description})
+                  </apex:outputText>
+                </apex:outputPanel>
+              </div>
+            </div>
+          </apex:repeat>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!att_list.size == 0 || att_list == null}">
+          {!emptyListText}
+        </apex:outputPanel>
+      </div>
+      <apex:outputPanel rendered="{!showUploadBtn}">
+        <div class="panel-footer">
+          <apex:commandButton
+            action="{!showAttPopup}"
+            value="Upload Attachments"
+            status="pageStatus"
+            reRender="attachments"
+          />
+        </div>
+      </apex:outputPanel>
+    </div>
+    <c:AttachmentUploadPopup
+      displayAttPopup="{!displayAttPopup}"
+      parentId="{!parentId}"
+      filename="{!filename}"
+    >
+      <apex:commandButton
+        action="{!hideAttPopup}"
+        value="Close"
+        status="pageStatus"
+        immediate="true"
+      />
+    </c:AttachmentUploadPopup>
+  </apex:outputPanel>
+
+  <apex:actionFunction
+    name="getAttList"
+    action="{!getAttList}"
+    status="pageStatus"
+    rerender="attachments"
+  >
+    <apex:param assignTo="{!parentId}" name="parentId" value="{!parentId}" />
+    <apex:param assignTo="{!fileName}" name="fileName" value="{!fileName}" />
+    <apex:param
+      assignTo="{!filterByFileName}"
+      name="filterByFileName"
+      value="{!filterByFileName}"
+    />
+  </apex:actionFunction>
+  <script>
+    window.onload = function () {
+      getAttList();
+    };
+  </script>
+</apex:component>

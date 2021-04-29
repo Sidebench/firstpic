@@ -1,0 +1,194 @@
+<apex:page
+  controller="ReimbursementCtrl"
+  action="{!getRequestItems}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Reimbursement Expenses</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:ReimbursementDetails
+          userAcctType="{!userAcctType}"
+          request="{!request}"
+          budgeted="{!request.Grant_Budgeted_Amount__c}"
+          awarded="{!awarded}"
+          balance="{!balance}"
+        />
+
+        <c:ErrorMessage errorMessage="{!warningMessage}" type="warning" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+          <div class="panel panel-info">
+            <div class="panel-heading">Notes</div>
+            <div class="panel-body">
+              <apex:outputField value="{!request.Request_Notes__c}" />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <c:ReimbursementExpenseItems
+          ctrl="{!ReimbursementCtrl}"
+          isEditMode="true"
+        />
+
+        <apex:outputPanel
+          rendered="{!CONTAINS(portalName, 'NCAI') && userAcctType = 'Local Organization' && grant.National_Grant_Type__c = 'OVC'}"
+        >
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="panel panel-info">
+                <div class="panel-heading">Note</div>
+                <div class="panel-body">
+                  Initial reimbursements must include a copy of the Tribe’s or
+                  organization’s W-9 and a completed copy of the NCAI Direct
+                  Deposit form which can be downloaded&nbsp;<apex:outputLink
+                    value="{!$Resource.DirectDepositEnrollmentFormNCAI}"
+                    target="_blank"
+                    >here</apex:outputLink
+                  >.
+                </div>
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <c:Documents
+          groupId="Expenses"
+          enableDeleteDoc="true"
+          showStatus="false"
+          showWarning="true"
+          showUploadBtn="true"
+        />
+
+        <!-- BEGIN popups -->
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            itemName="{!selectedItem.Budget_Item__r.Name}"
+            localNote="{!selectedItem.Item_Note__c}"
+            nationalNote="{!selectedItem.Response__c}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+              reRender="notesPopup"
+            />
+            <apex:commandButton
+              action="{!upsertItem}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="uploadAttPopup">
+          <c:AttachmentUploadPopup
+            displayAttPopup="{!displayAttPopup}"
+            parentId="{!selectedItemId}"
+          >
+            <apex:commandButton
+              action="{!hideAttPopup}"
+              value="Close"
+              status="pageStatus"
+            />
+          </c:AttachmentUploadPopup>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="reviewPopup">
+          <c:ConfirmationPopup
+            displayConfirmPopup="{!displayReviewPopup}"
+            header="Review & Submit"
+            body="Items in your reimbursement request exceed your Tribe’s Procurement Threshold. Please ensure that you have uploaded the necessary procurement documentation before submitting this request."
+          >
+            <apex:commandButton action="{!hideReviewPopup}" value="Cancel" />
+            <apex:commandButton
+              action="{!goToReview}"
+              value="Continue"
+              styleClass="primary"
+            />
+          </c:ConfirmationPopup>
+        </apex:outputPanel>
+        <!-- END popups -->
+
+        <c:UpdateAmountsMessage rendered="{!portalName == 'Ripken'}" />
+        <c:ErrorMessage errorMessage="{!warningMessage}" type="warning" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+
+        <apex:commandButton
+          action="{!previousFromExpenses}"
+          value="Previous"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!upsertExpenseItems}"
+          value="Save"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!saveExpensesAndExit}"
+          value="Save and Exit"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!review}"
+          value="Review and Submit"
+          status="pageStatus"
+          styleClass="btn primary"
+        />
+
+        <apex:outputPanel id="totals" styleClass="pull-right">
+          Total Personnel Requested: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!personnelRequested}" />
+          </apex:outputText>
+          <br />
+          Total Fringe Requested: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!fringeRequested}" />
+          </apex:outputText>
+          <br />
+          Total Expense Requested: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!expensesRequested}" />
+          </apex:outputText>
+          <apex:outputPanel rendered="{!indirectCostsRequested > 0}">
+            <br />
+            Total Indirect Rate Requested: &nbsp;
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!indirectCostsRequested}" />
+            </apex:outputText>
+          </apex:outputPanel>
+          <h4
+            style="{!IF((totalRequested > balance),'color: #b94a48; padding-top: 4px;','padding-top: 4px;')}"
+          >
+            Total Requested Amount: &nbsp;
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!totalRequested}" />
+            </apex:outputText>
+          </h4>
+          <br />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

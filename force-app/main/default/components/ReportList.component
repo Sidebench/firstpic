@@ -1,0 +1,134 @@
+<apex:component>
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="portalName" description="Portal Name" />
+  <apex:attribute
+    type="Grantee_Report__c[]"
+    name="reportList"
+    description="Grantee Report List"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isDashboard"
+    default="false"
+    description="Show basic version of table?"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    default="false"
+    description="Show More Link?"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showEdit"
+    default="false"
+    description="Show Edit Link?"
+  />
+  <apex:attribute type="String" name="listType" description="List Type" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!reportList.size > 0}">
+        <table style="width: 100%">
+          <tr>
+            <th>Report Id</th>
+            <th>Sub-Grant Name</th>
+            <th>
+              <apex:outputText
+                value="Reporting Period"
+                rendered="{!portalName == 'NPAL'}"
+              />
+            </th>
+            <th>
+              <apex:outputText value="Status" rendered="{!NOT(isDashboard)}" />
+            </th>
+            <th>
+              <apex:outputText
+                value="Submitted Date"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th>
+              <apex:outputText
+                value="Last Modified Date"
+                rendered="{!isDashboard}"
+              />
+            </th>
+            <th></th>
+          </tr>
+          <apex:repeat value="{!reportList}" var="i">
+            <tr>
+              <td>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/'+portalName+'GranteeReport?ReportID='+i.Id)}"
+                >
+                  {!i.Name}
+                </a>
+              </td>
+              <td>
+                <a
+                  href="{!URLFOR($Site.Prefix+'/'+portalName+'SubGrantDetails?GrantID='+i.Grant__c)}"
+                >
+                  {!i.Grant__r.Name}
+                </a>
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Reporting_Period__c}"
+                  rendered="{!portalName == 'NPAL'}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Report_Status__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Submitted_Date__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.LastModifiedDate}"
+                  rendered="{!isDashboard}"
+                />
+              </td>
+              <td class="text-right">
+                <apex:outputPanel rendered="{!showEdit}">
+                  <a
+                    href="{!URLFOR($Site.Prefix+'/'+portalName+'GranteeReportForm?ReportID='+i.Id)}"
+                  >
+                    Edit
+                  </a>
+                  &nbsp;|&nbsp;
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(isDashboard)}">
+                  <a
+                    href="{!URLFOR($Site.Prefix+'/'+portalName+'GranteeReport?ReportID='+i.Id)}"
+                  >
+                    View Details
+                  </a>
+                </apex:outputPanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!reportList.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <a
+          href="{!URLFOR($Site.Prefix+'/'+portalName+'ReportList?type='+listType)}"
+        >
+          View All &raquo;
+        </a>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

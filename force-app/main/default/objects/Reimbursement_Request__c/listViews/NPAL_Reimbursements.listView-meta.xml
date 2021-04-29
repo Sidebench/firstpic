@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NPAL_Reimbursements</fullName>
+    <columns>NAME</columns>
+    <columns>Grant__c</columns>
+    <columns>Request_Date__c</columns>
+    <columns>Status__c</columns>
+    <columns>Requested_Amount__c</columns>
+    <columns>Approved_Amount__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>National_Org_Name__c</field>
+        <operation>contains</operation>
+        <value>PAL,NPAL,Mentoring</value>
+    </filters>
+    <label>NPAL Reimbursements</label>
+    <sharedTo>
+        <allInternalUsers />
+    </sharedTo>
+</ListView>

@@ -1,0 +1,41 @@
+<apex:component>
+  <apex:attribute
+    type="Boolean"
+    name="displayAttPopup"
+    description="displayAttPopup"
+  />
+  <apex:attribute type="String" name="parentId" description="parentId" />
+  <apex:attribute type="String" name="filename" description="filename" />
+
+  <apex:outputPanel
+    styleClass="popupBackground"
+    layout="block"
+    rendered="{!displayAttPopup}"
+  />
+  <apex:outputPanel
+    styleClass="custPopup"
+    layout="block"
+    rendered="{!displayAttPopup}"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Upload New Attachment</h4>
+        </div>
+        <div class="modal-body">
+          <iframe
+            id="attachmentIFrame"
+            frameborder="0"
+            width="100%"
+            height="200px"
+            src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ parentId +'&filename='+ fileName)}"
+          >
+          </iframe>
+        </div>
+        <div class="modal-footer">
+          <apex:componentBody />
+        </div>
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>

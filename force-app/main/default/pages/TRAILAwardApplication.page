@@ -1,0 +1,166 @@
+<apex:page
+  controller="ApplicationCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Grant Application</title>
+  </head>
+  <c:TRAILHeader
+    ActivePage="applications"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <apex:outputPanel rendered="{!sg.Id == null}">
+          <div class="row">
+            <div class="col-auto">
+              <h2>{!app.Organization_Name__c}</h2>
+            </div>
+            <div class="col-auto pull-right">
+              Application Id: {!app.Name} <br />
+              Status: {!app.Status__c}
+            </div>
+          </div>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!sg.Id != null}">
+          <div class="row">
+            <div class="col-auto">
+              <h2>{!sg.Organization_Name__c}</h2>
+            </div>
+            <div class="col-auto pull-right">
+              <h2>Status: {!sg.Grant_Status__c}</h2>
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Award Application</div>
+          <div class="panel-body grid-pd-md">
+            <div class="row">
+              <div class="col-xs-3">
+                National Grant <br />
+                <apex:selectList
+                  value="{!grant}"
+                  size="1"
+                  style="display: block"
+                  rendered="{!sg.Id == null}"
+                >
+                  <apex:selectOptions value="{!grantOptions}" />
+                </apex:selectList>
+                <apex:outputText
+                  value="{!sg.National_Grant_Name__c}"
+                  rendered="{!sg.Id != null}"
+                />
+              </div>
+              <div class="col-xs-3">
+                Sub-Grant Name <br />
+                <apex:inputField value="{!sg.Name}" />
+              </div>
+              <div class="col-xs-3">
+                Grant Date Range <br />
+                <apex:inputField
+                  value="{!sg.Start_Date__c}"
+                  styleClass="input-sm"
+                />
+                -&nbsp;
+                <apex:inputField
+                  value="{!sg.End_Date__c}"
+                  styleClass="input-sm"
+                />
+              </div>
+              <div class="col-xs-3">
+                Awarded Amount <br /> $&nbsp;<apex:inputField
+                  value="{!sg.Amount__c}"
+                  style="width: 80%"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-3">
+                Year <br />
+                <apex:inputField value="{!sg.Year__c}" />
+              </div>
+              <div class="col-xs-3">
+                State <br />
+                <apex:inputField value="{!sg.State__c}" />
+              </div>
+              <div class="col-xs-3">
+                Behavioral Health <br />
+                <apex:inputField value="{!sg.Behavioral_Health__c}" />
+              </div>
+              <div class="col-xs-3">
+                Summer Camp <br />
+                <apex:inputField value="{!sg.Summer_Camp__c}" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">LOA Details</div>
+          <div class="panel-body grid-pd-md">
+            <div class="row">
+              <div class="col-xs-6">
+                Youth Served <br />
+                <apex:inputField value="{!sg.Youth_Served__c}" />
+              </div>
+              <div class="col-xs-6">
+                Number of Sites Awarded <br />
+                <apex:inputField value="{!sg.Number_of_Sites__c}" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                Name(s) of Sites Awarded <br />
+                <apex:inputField value="{!sg.Names_of_Sites__c}" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Notes"
+          readOnly="false"
+          displayLocalNote="false"
+          displayNationalNotePrivate="true"
+          nationalNote="{!app.Reviewer_Notes__c}"
+          nationalNotePrivate="{!app.Notes_for_National__c}"
+        />
+
+        <apex:outputPanel rendered="{!sg.Id == null}">
+          <apex:commandButton
+            value="Return to Application"
+            action="{!URLFOR($Site.Prefix+'/TRAILApplication?appId='+app.Id)}"
+          />
+          <apex:commandButton
+            value="Award"
+            action="{!award}"
+            status="pageStatus"
+            styleClass="primary"
+            reRender="form"
+          />
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!sg.Id != null}">
+          <apex:commandButton
+            value="Cancel"
+            action="{!URLFOR($Site.Prefix+'/BudgetDetails?grantId='+sg.Id)}"
+          />
+          <apex:commandButton
+            value="Save"
+            action="{!upsertGrant}"
+            styleClass="btn primary"
+          />
+        </apex:outputPanel>
+
+        <apex:pageMessages></apex:pageMessages>
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

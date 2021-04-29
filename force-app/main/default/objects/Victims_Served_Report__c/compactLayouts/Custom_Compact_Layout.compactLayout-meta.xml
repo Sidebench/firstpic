@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Custom_Compact_Layout</fullName>
+    <fields>Name</fields>
+    <fields>A1_Provide_Criminal_Justice_System_Info__c</fields>
+    <fields>A2_Information_About_Victim_Rights__c</fields>
+    <fields>A3_Referral_to_Other_Victim_Programs__c</fields>
+    <fields>A4_Referral_to_Other_Services__c</fields>
+    <fields>B1_Advocacy_to_Emergency_Medical_Care__c</fields>
+    <fields>B2_Advocacy_to_Medical_Forensic_Exam__c</fields>
+    <fields>B3_Law_Enforcement_Interview_Advocacy__c</fields>
+    <fields>B4_Individual_Advocacy__c</fields>
+    <fields>B5_Performance_of_Medical_Forensic_Exam__c</fields>
+    <label>Custom Compact Layout</label>
+</CompactLayout>

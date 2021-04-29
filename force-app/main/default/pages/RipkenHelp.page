@@ -1,0 +1,64 @@
+<apex:page controller="GetUserAcctCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Help</title>
+  </head>
+  <c:RipkenHeader
+    ActivePage="help"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <div class="main-panel">
+    <div
+      class="content grid-pd-md"
+      style="
+        margin: 20px auto;
+        padding-right: 40px !important;
+        padding-left: 40px !important;
+      "
+    >
+      <h4>Webinars</h4>
+      <hr />
+      <div class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-body text-center">
+              <h5>Entering a Budget Webinar</h5>
+              <apex:outputLink
+                value="http://www.anymeeting.com/130-387-976/E957DE8882493B"
+                target="_blank"
+              >
+                View Webinar &raquo;
+              </apex:outputLink>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <apex:outputLink
+                value="{!$Resource.Ripken_Entering_Budget_UPDATED_final}"
+              >
+                View Powerpoint &raquo;
+              </apex:outputLink>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-body text-center">
+              <h5>Entering a Reimbursement Request Webinar</h5>
+              <apex:outputLink
+                value="http://www.anymeeting.com/575-189-310/E957DC88814A3C"
+                target="_blank"
+              >
+                View Webinar &raquo;
+              </apex:outputLink>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <apex:outputLink
+                value="{!$Resource.Reimbursement_Webinar_Slides_for_CRSF_Awarded_Sites}"
+              >
+                View Powerpoint &raquo;
+              </apex:outputLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</apex:page>

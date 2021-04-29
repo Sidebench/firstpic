@@ -1,0 +1,1259 @@
+<apex:page
+  controller="ApplicationCtrl"
+  action="{!getFieldsAndAtt}"
+  showHeader="false"
+  renderAs="PDF"
+>
+  <head>
+    <title>Grant Application</title>
+  </head>
+
+  <apex:pageMessages />
+  <!--BEGIN 2020 - 2021 Application-->
+  <apex:outputPanel rendered="{!app.Grant_Year__c == '2020 - 2021'}">
+    <center><h2>NCAI Fund’s Victim Services Micro-Grant Program</h2></center>
+    <h3>About the Funding &amp; Eligibility</h3>
+    <p>
+      The NCAI Fund received an award from the U.S. Department of Justice (DOJ)
+      Office for Victims of Crime (OVC) to make subgrants to eligible Indian
+      tribes. The intent of this funding is to support tribal nations who have
+      not been able to access the tribal set-aside funding from OVC previously.
+      <strong
+        >Recipients of this funding will be required to comply with all
+        applicable federal policies and regulations.</strong
+      >
+    </p>
+    <p>
+      <u>Use of Funds</u>
+      <br />
+      Funding can be used for a wide variety of activities related to supporting
+      victims of crime in your community.
+      <u
+        >Please reference the chart of allowable and unallowable
+        <a
+          href="https://tribalvictimservices.org/wp-content/uploads/2020/05/Allowable_Costs_Overview.pdf"
+          target="_blank"
+          >costs</a
+        ></u
+      >.
+    </p>
+    <p>With this funding, your tribal nation can:</p>
+    <ul>
+      <li>
+        Assess the need for additional programming and services for victims of
+        crime or develop a strategic plan to improve or expand existing victim
+        services
+      </li>
+      <li>
+        Purchase equipment and supplies necessary for victim services
+        programming or victim services grant management.
+      </li>
+      <li>
+        Implement program activities, including personnel costs, to support
+        victims of crimes.
+      </li>
+    </ul>
+    <h6>
+      <sup>1</sup>This funding opportunity is currently limited to those
+      entities who have not received funding from OVC in FY 18 or FY 19.
+      Entities who have applied to the OVC FY 2020 Tribal Victim Services
+      Set-Aside Program<strong> may apply</strong> for this funding, as long as
+      the proposed use of funding is for different activities than the FY 2020
+      Tribal Victim Services Set-Aside Program.
+    </h6>
+    <hr />
+    <h3>Applicant Tribe/Organization Information</h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>{!fields['Organization_Name__c']}</th>
+        <td><apex:outputField value="{!app.Organization_Name__c}" /></td>
+      </tr>
+      <tr>
+        <th>{!fields['DUNS_Number__c']} *</th>
+        <td><apex:outputField value="{!app.DUNS_Number__c}" /></td>
+      </tr>
+      <tr>
+        <th>{!fields['Organization_Type__c']} *</th>
+        <td><apex:outputField value="{!app.Organization_Type__c}" /></td>
+      </tr>
+      <tr>
+        <th>{!fields['Address__c']} *</th>
+        <td><apex:outputField value="{!app.Address__c}" /></td>
+      </tr>
+      <tr>
+        <th>{!fields['City__c']} *</th>
+        <td><apex:outputField value="{!app.City__c}" /></td>
+      </tr>
+      <tr>
+        <th>{!fields['State__c']} *</th>
+        <td><apex:outputField value="{!app.State__c}" /></td>
+      </tr>
+      <tr>
+        <th>{!fields['Postal_Zip_Code__c']} *</th>
+        <td><apex:outputField value="{!app.Postal_Zip_Code__c}" /></td>
+      </tr>
+    </table>
+
+    <hr />
+    <div style="page-break-after: always" />
+
+    <h3>Applicant Tribe/Organization Point of Contact</h3>
+    <h4>Grant Admin</h4>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>First Name *</th>
+        <th>Last Name *</th>
+        <th>Phone *</th>
+        <th>Email *</th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_First_Name__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_Last_Name__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_Phone__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_Email__c}" />
+        </td>
+      </tr>
+    </table>
+    <h4>Program Contact</h4>
+    <table width="100%" padding="4">
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_First_Name__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_Last_Name__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_Phone__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_Email__c}" />
+        </td>
+      </tr>
+    </table>
+    <hr />
+    <h3>Authorization</h3>
+    <table width="100%" padding="4">
+      <tr>
+        <th>
+          <apex:outputText value="{!fields['Authority_to_Apply__c']}" />
+        </th>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.Authority_to_Apply__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.Authority_to_Apply__c)}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText value="{!fields['Tribe_Represented__c']}" />
+        </th>
+        <td>
+          <apex:outputField value="{!app.Tribe_Represented__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h3>Attachments</h3>
+    <strong
+      >If you are applying as a Consortium or Designee, you will be required to
+      submit documentation showing that your organization has the authority to
+      apply for this federal funding opportunity on the Tribe's behalf. If you
+      have this authorization, please upload it below. If you do not have the
+      required documentation, you will be required to submit it before receiving
+      your Letter of Agreement.</strong
+    >
+    <br /><apex:outputText value="{!att.Description}" /><apex:outputText
+      value="No Attachment Uploaded"
+      rendered="{!att == null}"
+    />
+
+    <hr />
+
+    <h3>Request Details</h3>
+    <strong
+      ><apex:outputText
+        value="{!fields['Biggest_Issue_Organization_is_Facing__c']}"
+      />
+      *</strong
+    ><br /><br />
+    <apex:outputField
+      value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+    /><br /><br />
+
+    <strong
+      ><apex:outputText value="{!fields['How_Funds_Utilized__c']}" /> *</strong
+    ><br />
+    <apex:outputField value="{!app.How_Funds_Utilized__c}" /><br /><br />
+
+    <hr />
+    <div style="page-break-after: always" />
+
+    <h5>
+      This funding opportunity can be used to support a wide variety of
+      programming and services for victims of crime in your community. Please
+      select which activities your grant will include:<br />
+    </h5>
+    <h4>
+      <u>Needs Assessment</u>
+    </h4>
+    <apex:outputText value="Yes" rendered="{!app.Has_Needs_Assessment__c}" />
+    <apex:outputText
+      value="No"
+      rendered="{!NOT(app.Has_Needs_Assessment__c)}"
+    />
+    <apex:outputPanel rendered="{!app.Has_Needs_Assessment__c}">
+      <br /><br />
+      <strong
+        ><apex:outputText value="{!fields['Previous_Experiences__c']}" />
+        *</strong
+      ><br />
+      <apex:outputField value="{!app.Previous_Experiences__c}" />
+      <br /><br />
+      <strong
+        ><apex:outputText value="{!fields['Needs_Assessment__c']}" /> *</strong
+      ><br />
+      <apex:outputField value="{!app.Needs_Assessment__c}" />
+    </apex:outputPanel>
+
+    <h4>
+      <u>Strategic Planning</u>
+    </h4>
+    <apex:outputText value="Yes" rendered="{!app.Has_Strategic_Plan__c}" />
+    <apex:outputText value="No" rendered="{!NOT(app.Has_Strategic_Plan__c)}" />
+    <apex:outputPanel rendered="{!app.Has_Strategic_Plan__c}">
+      <br /><br />
+      <strong
+        ><apex:outputText
+          value="{!fields['Strategic_Plan__c']}"
+          escape="false"
+        />
+        *</strong
+      ><br /> <apex:outputField value="{!app.Strategic_Plan__c}" /><br /><br />
+      <strong
+        ><apex:outputText
+          value="{!fields['Additional_Resources_for_Strategic_Plan__c']}"
+          escape="false"
+        />
+        *</strong
+      ><br />
+      <apex:outputField
+        value="{!app.Additional_Resources_for_Strategic_Plan__c}"
+      />
+    </apex:outputPanel>
+
+    <h4>
+      <u>Support for Victim Services</u>
+    </h4>
+    <strong
+      ><apex:outputText
+        value="{!fields['Areas_of_Service__c']}"
+        escape="false"
+      />
+      *</strong
+    ><br /> <apex:outputField value="{!app.Areas_of_Service__c}" /><br />
+    <apex:outputField value="{!app.Areas_of_Service_Explaination__c}" />
+    <br /><br />
+    <strong
+      ><apex:outputText
+        value="{!fields['Current_Program_Description__c']}"
+        escape="false"
+      />
+      *</strong
+    ><br />
+    <apex:outputField value="{!app.Current_Program_Description__c}" />
+    <br /> <br />
+
+    <div style="page-break-after: always" />
+    <h4>
+      <u>Equipment and Supplies</u>
+    </h4>
+    <apex:outputText
+      value="Yes"
+      rendered="{!app.Has_Equipment_and_Supplies__c}"
+    />
+    <apex:outputText
+      value="No"
+      rendered="{!NOT(app.Has_Equipment_and_Supplies__c)}"
+    />
+    <apex:outputPanel rendered="{!app.Has_Equipment_and_Supplies__c == true}">
+      <br /><br />
+      <strong
+        ><apex:outputText
+          value="{!fields['Equipment_and_Supplies__c']}"
+          escape="false"
+        />
+        *</strong
+      ><br />
+      <apex:outputField value="{!app.Equipment_and_Supplies__c}" />
+    </apex:outputPanel>
+
+    <h4>
+      <u>Capabilities and Competencies</u>
+    </h4>
+    <strong
+      ><apex:outputText
+        value="{!fields['Responsibilities__c']}"
+        escape="false"
+      />
+      *</strong
+    ><br /> <apex:outputField value="{!app.Responsibilities__c}" /><br /><br />
+
+    <strong
+      ><apex:outputText
+        value="{!fields['Able_to_Recruit__c']}"
+        escape="false"
+      />
+      *</strong
+    ><br /> <apex:outputField value="{!app.Able_to_Recruit__c}" /><br /><br />
+
+    <strong
+      ><apex:outputText
+        value="{!fields['Other_Challenges__c']}"
+        escape="false"
+      />
+      *</strong
+    ><br />
+    <apex:outputField value="{!app.Other_Challenges__c}" />
+
+    <hr />
+    <div style="page-break-after: always" />
+
+    <h3>Summary Budget</h3>
+    <p>
+      Indicate the amount of funding you are requesting under each budget
+      category and include a brief description of how these funds will be spent.
+      We anticipate that most awards will be between $25,000-$250,000. If you
+      anticipate your project’s actual need to be more than $250,000 for your
+      project, please explain in the space provided. In no case will an award
+      exceed $350,000. If funded, you will work with the NCAI Fund technical
+      assistance team to complete a detailed budget for your program.
+    </p>
+    <table withd="100%" padding="4">
+      <tr>
+        <th width="220px">Category</th>
+        <th width="180px">Amount</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>Personnel<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Personnel_Budget__c}" /></td>
+        <td><apex:outputField value="{!app.Personnel_Description__c}" /></td>
+      </tr>
+      <tr>
+        <td>Fringe Benefits<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Fringe_Benefits_Budget__c}" /></td>
+        <td>
+          <apex:outputField value="{!app.Fringe_Benefits_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Travel<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Travel_Budget__c}" /></td>
+        <td><apex:outputField value="{!app.Travel_Description__c}" /></td>
+      </tr>
+      <tr>
+        <td>Equipment/Supplies<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Supplies_Budget__c}" /></td>
+        <td><apex:outputField value="{!app.Supplies_Description__c}" /></td>
+      </tr>
+      <tr>
+        <td>Contracts and Consultants<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Contracts_Budget__c}" /></td>
+        <td><apex:outputField value="{!app.Contracts_Description__c}" /></td>
+      </tr>
+      <tr>
+        <td>Consultant/Contractor Travel<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Contractor_Travel_Budget__c}" /></td>
+        <td>
+          <apex:outputField value="{!app.Contractor_Travel_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Other Costs<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Other_Costs_Budget__c}" /></td>
+        <td><apex:outputField value="{!app.Other_Costs_Description__c}" /></td>
+      </tr>
+      <tr>
+        <td>Indirect Costs<span class="text-danger"> *</span></td>
+        <td><apex:outputField value="{!app.Indirect_Costs_Budget__c}" /></td>
+        <td>
+          <apex:outputField value="{!app.Indirect_Costs_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Total</strong></td>
+        <td>
+          <strong
+            ><apex:outputField value="{!app.Total_Amount_Requested__c}"
+          /></strong>
+        </td>
+      </tr>
+    </table>
+    <br />
+    <apex:outputPanel
+      rendered="{!IF(app.Total_Amount_Requested__c == null || app.Total_Amount_Requested__c < 250000, false, true)}"
+    >
+      <strong
+        ><apex:outputText
+          value="Please provide an additional justification for any funding requested over $250K." /></strong
+      ><br />
+      <apex:outputField value="{!app.Budget_Details__c}" />
+    </apex:outputPanel>
+
+    <hr />
+
+    <strong
+      ><apex:outputField value="{!app.Organization_Name__c}" /> acknowledges
+      that if awarded, &nbsp;
+      <apex:outputField value="{!app.Organization_Name__c}" /> will be required
+      to comply with all applicable federal financial management policies and
+      regulations. *</strong
+    ><br />
+    <apex:outputText value="Yes" rendered="{!app.Terms_Acknowledged__c}" />
+    <apex:outputText value="No" rendered="{!NOT(app.Terms_Acknowledged__c)}" />
+    <br /><br />
+
+    <h4>
+      Please note that if awarded an NCAI Fund Victim Services Micro-grant, you
+      will be prompted to sign the Letter of Agreement electronically, using
+      Sertifi. Please provide the name and contact information for the person
+      who will sign the Letter of Agreement.
+    </h4>
+    <table width="100%" padding="4">
+      <tr>
+        <th>Signatory Title</th>
+        <th>Signatory Name</th>
+        <th>Signatory Email</th>
+      </tr>
+      <tr>
+        <td><apex:outputField value="{!app.Signatory_Title__c}" /></td>
+        <td><apex:outputField value="{!app.Signatory_Name__c}" /></td>
+        <td><apex:outputField value="{!app.Signatory_Email__c}" /></td>
+      </tr>
+    </table>
+
+    <br />
+
+    <apex:outputField value="{!app.Alternate_Signing_Method__c}" /> Please click
+    here to request an alternate method of signing the letter of agreement.
+
+    <br /><br />
+
+    <strong>Date Submitted: </strong
+    ><apex:outputField value="{!app.Submitted_Date__c}" />
+  </apex:outputPanel>
+  <!--END 2020 - 2021 Application-->
+
+  <!--BEGIN 2021 - 2022 Application-->
+  <apex:outputPanel rendered="{!app.Grant_Year__c == '2021 - 2022'}">
+    <center><h2>NCAI Fund’s Victim Services Micro-Grant Program</h2></center>
+    <h3>About the Funding &amp; Eligibility</h3>
+    <p>
+      The NCAI Fund received an award from the U.S. Department of Justice (DOJ)
+      Office for Victims of Crime (OVC) to make subgrants to eligible Indian
+      tribes. This funding opportunity is available to federally recognized
+      tribal nations who did not receive victim services funding from NCAI Fund
+      in 2020.
+      <strong
+        >Recipients of this funding will be required to comply with all
+        applicable federal policies and regulations.</strong
+      >
+    </p>
+    <p>
+      <u>Use of Funds</u>
+      <br />
+      Funding can be used for a wide variety of activities related to supporting
+      victims of crime in your community.
+      <u
+        ><a
+          href="https://tribalvictimservices.org/PDF/2021_Examples_of_Allowable_and_Unallowable_Costs.pdf "
+          target="_blank"
+          >Please reference the chart of allowable and unallowable costs</a
+        ></u
+      >.
+    </p>
+    <p>With this funding, your tribal nation can:</p>
+    <ul>
+      <li>
+        Assess the need for additional programming and services for victims of
+        crime or develop a strategic plan to improve or expand existing victim
+        services.
+      </li>
+      <li>
+        Purchase equipment and supplies necessary for victim services
+        programming or victim services grant management.
+      </li>
+      <li>
+        Implement program activities, including personnel costs, to support
+        victims of crimes.
+      </li>
+    </ul>
+
+    <h3>1. Applicant Tribal Nation/Organization Information</h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          {!fields['Organization_Name__c']} <span class="text-danger"> *</span>
+        </th>
+        <td>
+          <apex:outputField value="{!app.Organization_Name__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>{!fields['DUNS_Number__c']} <span class="text-danger"> *</span></th>
+        <td><apex:outputField value="{!app.DUNS_Number__c}" /></td>
+      </tr>
+      <tr>
+        <th>
+          {!fields['Organization_Type__c']} <span class="text-danger"> *</span>
+        </th>
+        <td><apex:outputField value="{!app.Organization_Type__c}" /></td>
+      </tr>
+      <tr>
+        <th>{!fields['Address__c']} <span class="text-danger"> *</span></th>
+        <td>
+          <apex:outputField value="{!app.Address__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>{!fields['City__c']} <span class="text-danger"> *</span></th>
+        <td>
+          <apex:outputField value="{!app.City__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>{!fields['State__c']} <span class="text-danger"> *</span></th>
+        <td>
+          <apex:outputField value="{!app.State__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          {!fields['Postal_Zip_Code__c']} <span class="text-danger"> *</span>
+        </th>
+        <td>
+          <apex:outputField value="{!app.Postal_Zip_Code__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <h3>2. Applicant Tribal National/Organization Point of Contact</h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>Point of Contact First Name<span class="text-danger"> *</span></th>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_First_Name__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Point of Contact Last Name<span class="text-danger"> *</span></th>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_Last_Name__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Point of Contact Email<span class="text-danger"> *</span></th>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_Email__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Point of Contact Phone<span class="text-danger"> *</span></th>
+        <td>
+          <apex:outputField value="{!app.Grant_Admin_Phone__c}" />
+        </td>
+      </tr>
+      <hr />
+      <tr>
+        <th>
+          {!fields['Point_of_Contact__c']} <span class="text-danger"> *</span>
+        </th>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.POC_Can_Receive_Communication__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.POC_Can_Receive_Communication__c)}"
+          />
+        </td>
+      </tr>
+      <br />
+
+      <tr>
+        <th>
+          {!fields['Alt_Point_of_Contact__c']}
+          <span class="text-danger"> *</span>
+        </th>
+      </tr>
+      <tr>
+        <th>First Name</th>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_First_Name__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Last Name</th>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_Last_Name__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_Email__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>Phone</th>
+        <td>
+          <apex:outputField value="{!app.Program_Contact_Phone__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h3>Authorization</h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <apex:outputText
+            value="5. {!fields['Authority_to_Apply__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.Authority_to_Apply__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.Authority_to_Apply__c)}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="6a. {!fields['Tribe_Represented__c']}"
+            escape="false"
+          />
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Tribe_Represented__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Required_Documentation__c']}"
+            escape="false"
+          />
+        </th>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h3 class="panel-title">Previous Funding</h3>
+    <table>
+      <tr>
+        <th>
+          {!fields['Previously_Applied__c']} <span class="text-danger"> *</span>
+        </th>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.Previously_Applied__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.Previously_Applied__c)}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          {!fields['Previous_Support_Received__c']}
+          <span class="text-danger"> *</span>
+        </th>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.Previous_Support_Received__c == 'Yes'}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!app.Previous_Support_Received__c == 'No'}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>If yes, please explain.</th>
+        <td>
+          <apex:outputField value="{!app.Previous_Funding_Received__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h3>Proposed Use of Funds</h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['New_or_Existing__c']}"
+            escape="false"
+          />
+        </th>
+        <td>
+          <apex:outputField
+            value="{!app.New_or_Existing__c}"
+            style="width: auto"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Existing_Services__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Existing_Services__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Biggest_Issue_Organization_is_Facing__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField
+            value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['How_Funds_Utilized__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span>
+        </th>
+        <td>
+          <apex:outputField value="{!app.How_Funds_Utilized__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <table>
+      <tr>
+        <th>
+          <apex:outputText value="{!fields['Activities__c']}" escape="false" />
+        </th>
+      </tr>
+    </table>
+
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <h3><u>Needs Assessment</u> <span class="text-danger"> *</span></h3>
+        </th>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.Has_Needs_Assessment__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.Has_Needs_Assessment__c)}"
+          />
+        </td>
+      </tr>
+    </table>
+    <apex:outputPanel rendered="{!app.Has_Needs_Assessment__c}">
+      <table width="100%" cellpadding="4">
+        <tr>
+          <th>
+            <apex:outputText
+              value="{!fields['Previous_Experiences__c']}"
+              escape="false"
+            />
+            <span class="text-danger"> *</span>
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <apex:outputField value="{!app.Previous_Experiences__c}" />
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <apex:outputText
+              value="{!fields['Needs_Assessment__c']}"
+              escape="false"
+            />
+            <span class="text-danger"> *</span>
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <apex:outputField value="{!app.Needs_Assessment__c}" />
+          </td>
+        </tr>
+      </table>
+    </apex:outputPanel>
+
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <h3><u>Strategic Planning</u> <span class="text-danger"> *</span></h3>
+        </th>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.Has_Strategic_Plan__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.Has_Strategic_Plan__c)}"
+          />
+        </td>
+      </tr>
+    </table>
+    <apex:outputPanel rendered="{!app.Has_Strategic_Plan__c}">
+      <table width="100%" cellpadding="4">
+        <tr>
+          <th>
+            <apex:outputText
+              value="{!fields['Strategic_Plan__c']}"
+              escape="false"
+            />
+            <span class="text-danger"> *</span>
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <apex:outputField value="{!app.Strategic_Plan__c}" />
+          </td>
+        </tr>
+      </table>
+    </apex:outputPanel>
+
+    <h3>
+      <u>Support for Victim Services</u><span class="text-danger"> *</span>
+    </h3>
+    <table>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Areas_of_Service__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span><br />
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Areas_of_Service__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Areas_of_Service_Explaination__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <h3>
+            <u>Equipment and Supplies</u> <span class="text-danger"> *</span>
+          </h3>
+        </th>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!app.Has_Equipment_and_Supplies__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.Has_Equipment_and_Supplies__c)}"
+          />
+        </td>
+      </tr>
+    </table>
+    <apex:outputPanel rendered="{!app.Has_Equipment_and_Supplies__c}">
+      <table width="100%" cellpadding="4">
+        <tr>
+          <th>
+            <apex:outputText
+              value="{!fields['Equipment_and_Supplies__c']}"
+              escape="false"
+            />
+            <span class="text-danger"> *</span>
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <apex:outputField value="{!app.Equipment_and_Supplies__c}" />
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <apex:outputText
+              value="{!fields['Funding_to_Purchase_Vehicle__c']}"
+              escape="false"
+            />
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <apex:outputText
+              value="Yes"
+              rendered="{!app.Funding_to_Purchase_Vehicle__c}"
+            />
+            <apex:outputText
+              value="No"
+              rendered="{!NOT(app.Funding_to_Purchase_Vehicle__c)}"
+            />
+          </td>
+        </tr>
+        <tr>
+          <th>
+            Please note that purchases must be made pursuant to your internal
+            procurement policy that complies with federal law. If you do not
+            have a procurement policy, technical assistance will be provided to
+            help you develop one.
+          </th>
+        </tr>
+      </table>
+    </apex:outputPanel>
+
+    <hr />
+
+    <h3>Grant Management</h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <td>
+          If awarded, you will be required to comply with all applicable federal
+          policies and regulations.
+        </td>
+      </tr>
+      <tr>
+        <th><strong>13. Capabilities and Competencies</strong><br /></th>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Responsibilities__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span><br />
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Responsibilities__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Management_Procurement__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span><br />
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Management_Procurement__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Responsible_Reporting__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span><br />
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Responsible_Reporting__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Able_to_Recruit__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Able_to_Recruit__c}" />
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Other_Challenges__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputText value="Yes" rendered="{!app.Has_Competencies__c}" />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(app.Has_Competencies__c)}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th>If yes, please explain.</th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Other_Challenges__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h3>
+      <u>Summary Budget</u>
+    </h3>
+    <apex:outputText value="{!fields['Summary_Budget__c']}" escape="false" />
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th width="220px">Category</th>
+        <th width="180px">Amount</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td>Personnel<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField id="personnel" value="{!app.Personnel_Budget__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Personnel_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Fringe Benefits<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField
+            id="fringe"
+            value="{!app.Fringe_Benefits_Budget__c}"
+          />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Fringe_Benefits_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Travel<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField id="travel" value="{!app.Travel_Budget__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Travel_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Equipment/Supplies<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField id="supplies" value="{!app.Supplies_Budget__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Supplies_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Contracts and Consultants<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField id="contracts" value="{!app.Contracts_Budget__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Contracts_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Consultant/Contractor Travel<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField
+            id="contractorTravel"
+            value="{!app.Contractor_Travel_Budget__c}"
+          />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Contractor_Travel_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Other Costs<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField id="other" value="{!app.Other_Costs_Budget__c}" />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Other_Costs_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Indirect Costs<span class="text-danger"> *</span></td>
+        <td>
+          <apex:outputField
+            id="indirect"
+            value="{!app.Indirect_Costs_Budget__c}"
+          />
+        </td>
+        <td>
+          <apex:outputField value="{!app.Indirect_Costs_Description__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Total</strong></td>
+        <td>
+          <strong
+            ><apex:outputField value="{!app.Total_Amount_Requested__c}"
+          /></strong>
+        </td>
+      </tr>
+    </table>
+
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <apex:outputText value="{!fields['Justification__c']}" />
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Budget_Details__c}" />
+        </td>
+      </tr>
+    </table>
+
+    <hr />
+
+    <h3>
+      <u>Acknowledgement</u>
+    </h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <apex:outputText
+            value="{!fields['Terms_Acknowledged__c']}"
+            escape="false"
+          />
+          <span class="text-danger"> *</span>
+        </th>
+        <td>
+          <apex:outputField value="{!app.Terms_Acknowledged__c}" />
+        </td>
+      </tr>
+    </table>
+    <hr />
+
+    <h3>Signatory</h3>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>
+          <apex:outputText value="{!fields['Signature__c']}" escape="false" />
+        </th>
+      </tr>
+    </table>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <th>Signatory Title <span class="text-danger"> *</span></th>
+        <th>Signatory Name <span class="text-danger"> *</span></th>
+        <th>Signatory Email <span class="text-danger"> *</span></th>
+      </tr>
+      <tr>
+        <td>
+          <apex:outputField
+            value="{!app.Signatory_Title__c}"
+            style="display: inline"
+          />
+        </td>
+        <td>
+          <apex:outputField
+            value="{!app.Signatory_Name__c}"
+            style="display: inline"
+          />
+        </td>
+        <td>
+          <apex:outputField
+            value="{!app.Signatory_Email__c}"
+            style="display: inline"
+          />
+        </td>
+      </tr>
+    </table>
+    <table width="100%" cellpadding="4">
+      <tr>
+        <td>
+          <apex:outputField value="{!app.Alternate_Signing_Method__c}" />
+          <apex:outputText
+            value="{!fields['Alternate_Signature__c']}"
+            escape="false"
+          />
+        </td>
+      </tr>
+    </table>
+  </apex:outputPanel>
+  <!--END 2021 - 2022 Application-->
+</apex:page>

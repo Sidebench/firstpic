@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Areas_of_Service__c</fullName>
+    <externalId>false</externalId>
+    <label>Areas of Service</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Providing information to crime victims</fullName>
+                <default>false</default>
+                <label>Providing information to crime victims</label>
+            </value>
+            <value>
+                <fullName>Referral services for crime victims</fullName>
+                <default>false</default>
+                <label>Referral services for crime victims</label>
+            </value>
+            <value>
+                <fullName>Victim advocacy/accompaniment</fullName>
+                <default>false</default>
+                <label>Victim advocacy/accompaniment</label>
+            </value>
+            <value>
+                <fullName
+        >Law enforcement interview advocacy/accompaniment</fullName>
+                <default>false</default>
+                <label>Law enforcement interview advocacy/accompaniment</label>
+            </value>
+            <value>
+                <fullName
+        >Intervention with employer, creditor, landlord or academic institution</fullName>
+                <default>false</default>
+                <label
+        >Intervention with employer, creditor, landlord or academic institution</label>
+            </value>
+            <value>
+                <fullName>Child and/or dependent care assistance</fullName>
+                <default>false</default>
+                <label>Child and/or dependent care assistance</label>
+            </value>
+            <value>
+                <fullName>Transportation assistance</fullName>
+                <default>false</default>
+                <label>Transportation assistance</label>
+            </value>
+            <value>
+                <fullName>Interpreter services</fullName>
+                <default>false</default>
+                <label>Interpreter services</label>
+            </value>
+            <value>
+                <fullName>Crisis intervention</fullName>
+                <default>false</default>
+                <label>Crisis intervention</label>
+            </value>
+            <value>
+                <fullName>Hotline/crisis line counseling</fullName>
+                <default>false</default>
+                <label>Hotline/crisis line counseling</label>
+            </value>
+            <value>
+                <fullName>On-scene crisis response</fullName>
+                <default>false</default>
+                <label>On-scene crisis response</label>
+            </value>
+            <value>
+                <fullName
+        >Sexual Assault Response Team (SART) team development</fullName>
+                <default>false</default>
+                <label
+        >Sexual Assault Response Team (SART) team development</label>
+            </value>
+            <value>
+                <fullName
+        >Coordinated Community Response (CCR) team development</fullName>
+                <default>false</default>
+                <label
+        >Coordinated Community Response (CCR) team development</label>
+            </value>
+            <value>
+                <fullName>Updating tribal codes for victim services</fullName>
+                <default>false</default>
+                <label>Updating tribal codes for victim services</label>
+            </value>
+            <value>
+                <fullName
+        >Access to Traditional/Cultural Healing ceremonies for victims</fullName>
+                <default>false</default>
+                <label
+        >Access to Traditional/Cultural Healing ceremonies for victims</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

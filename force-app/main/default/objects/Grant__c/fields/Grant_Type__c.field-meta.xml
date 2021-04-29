@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grant_Type__c</fullName>
+    <externalId>false</externalId>
+    <label>Grant Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Badges for Baseball</fullName>
+                <default>false</default>
+                <label>Badges for Baseball</label>
+            </value>
+            <value>
+                <fullName>Special Initiative</fullName>
+                <default>false</default>
+                <label>Special Initiative</label>
+            </value>
+            <value>
+                <fullName>I&apos;m GREAT</fullName>
+                <default>false</default>
+                <label>I&apos;m GREAT</label>
+            </value>
+            <value>
+                <fullName>STEM</fullName>
+                <default>false</default>
+                <label>STEM</label>
+            </value>
+            <value>
+                <fullName>Healthy Lifestyles</fullName>
+                <default>false</default>
+                <label>Healthy Lifestyles</label>
+            </value>
+            <value>
+                <fullName>TRAIL</fullName>
+                <default>false</default>
+                <label>TRAIL</label>
+            </value>
+            <value>
+                <fullName>OVC</fullName>
+                <default>false</default>
+                <label>OVC</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

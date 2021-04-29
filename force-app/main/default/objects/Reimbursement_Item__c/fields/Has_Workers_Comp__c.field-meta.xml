@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Has_Workers_Comp__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >AND(NOT(ISNULL(Budget_Item__r.Workers_Comp__c)), Budget_Item__r.Workers_Comp__c &gt; 0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Has Workers Comp</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

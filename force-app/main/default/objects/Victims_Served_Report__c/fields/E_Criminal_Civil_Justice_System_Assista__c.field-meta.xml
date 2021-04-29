@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>E_Criminal_Civil_Justice_System_Assista__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >E1_Notified_of_Criminal_Justice_Events__c +  E2_Victim_Impact_Statement_Assistance__c +  E3_Assistance_with_Restitution__c +  E4_Legal_Assist_with_Restraining_Order__c +  E5_Legal_Assist_with_Family_Law__c +  E6_Emergency_Justice_Related_Assist__c +  E8_Prosecution_Interview_Advocacy__c +  E10_Criminal_Advocacy_or_Accompaniment__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>E. Criminal/Civil Justice System Assista</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

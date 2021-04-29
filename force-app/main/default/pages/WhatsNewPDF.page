@@ -1,0 +1,234 @@
+<apex:page showHeader="false" sidebar="false" renderAs="PDF">
+  <head>
+    <title>What's New</title>
+  </head>
+
+  <h2 style="text-align: center">What's New/System Updates</h2>
+  <hr />
+
+  <h3>
+    Enhanced Reimbursement List Page
+    <span style="float: right"> 01/14/2018 </span>
+  </h3>
+  Users will now be able to search for Reimbursements by Request Id, filter by
+  Grant/Sub-Grant, and filter by Status. If more than 40 results are available
+  based on the search criteria, results will be paginated. Users also will have
+  the ability to Export Results.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Employee line cannot be deleted.
+    <span style="float: right"> 06/18/2017 </span>
+  </h3>
+  Once an employee is added to a budget and the budget is approved, the employee
+  line cannot be ‘deleted’.   This will prevent important history of the budget
+  from being lost.  The ‘Inactivate’ option should be used when an employee has
+  left, been re-assigned or there has been a name change.  Please remember that
+  ALL REIMBURSEMENTS containing that employee must be APPROVED prior to being
+  ‘Inactivated’.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    No longer be able to change a name.
+    <span style="float: right"> 06/18/2017 </span>
+  </h3>
+  When completing a budget modification, you will no longer be able to ‘change a
+  name’ in the employee section or a line ‘label’ in the expense section.  Once
+  the line has been added and the budget approved, these fields will be locked. 
+  This will prevent important history of the budget from being lost.  The
+  ‘Inactivate’ option should be used when the line is no longer needed.  Please
+  remember that ALL REIMBURSEMENTS containing an amount from the line in
+  question must be APPROVED prior to being ‘Inactivated’.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    A “FAQ” section can now be found under the Help tab by selecting the ‘Need
+    Help?’ button on the upper right side of the screen.
+    <span style="float: right"> 04/15/2017 </span>
+  </h3>
+  Technical Assistance Request Tickets under the ‘Need Help?’ section are also
+  now available. If you are still having a technical issue with the portal after
+  reviewing the FAQ, click on the ‘Request Technical Assistance’ link at the top
+  right of the page. Complete the request form and submit. Your issue will be
+  communicated and someone from the FirstPic team will reach out within 24 hours
+  with a status.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Ability to Search &amp; Filter Reimbursements
+    <span style="float: right"> 04/3/2017 </span>
+  </h3>
+  Users now have the ability to search &amp; filter the reimbursements on the
+  reimbursements page.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Subtotals on Reimbursements
+    <span style="float: right"> 04/3/2017 </span>
+  </h3>
+  Reimbursement Requests will now show subtotals for Total Requested (under
+  Personnel) and all benefits columns.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Users can delete Self-Assessments
+    <span style="float: right">03/6/2017</span>
+  </h3>
+  Users now have the ability to delete Self-Assessments. You can delete
+  by clicking on the pencil icon to the right of your Self-Assessment. This
+  allows you to edit or at the bottom of the page is a delete button.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Only PDFs will be accepted as attachments.
+    <span style="float: right">03/6/2017</span>
+  </h3>
+  Users will only be able to upload PDFs as attachments.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Affiliate will receive notification when reimbursements are paid.
+    <span style="float: right">03/6/2017</span>
+  </h3>
+  The user that created the reimbursement will receive an email to notify them
+  when their reimbursement has been paid.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    R-number associated with the reimbursement will be visible on
+    reimbursements.
+    <span style="float: right">03/6/2017</span>
+  </h3>
+  The R-number associated with a reimbursement will now be available to view on
+  the reimbursement, on the reimbursement tab, as well as the dashboard.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Affiliate will not be able to create a new Self-Assessment if one is
+    currently in progress
+    <span style="float: right">03/6/2017</span>
+  </h3>
+  Each affiliate should only have one Self-Assessment which they can update
+  using the pencil icon under the Edit column. If you currently have an active
+  Self-Assessment, you will not be able to create a new Self-Assessment, and
+  will only be able to edit your current assessment.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Users will be alerted when system updates are being made.
+    <span style="float: right">03/6/2017</span>
+  </h3>
+  When system updates are being made users will see this message - "We are
+  currently making updates to the system. If you encounter any errors, please
+  refresh your browser or log-out and log back in".
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Edit button removed once a reimbursement has been submitted
+    <span style="float: right">02/23/2017</span>
+  </h3>
+  In order to prevent users from editing a reimbursement when it is being
+  reviewed by BBBSA, the ability to edit has been removed.
+  <br />
+  If you need to edit a reimbursement during any approval stage, please contact
+  your grant specialist.
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Requesting System Access for Contacts
+    <span style="float: right">02/16/2017</span>
+  </h3>
+  When Contacts are added to the Organization Info tab, they do not
+  automatically have access to the system as users. Only CEOs can request that a
+  contact be given user access to the system. To do so, the CEO clicks on the
+  purple pen under Edit for the contact.
+  <br />
+  At the bottom of the Edit Contact form, there is a dropdown called User
+  Profile. Select the appropriate user profile and click Save and Close.
+  <br /><br />
+  <strong>User Profile Definitions:</strong>
+  <br />
+  <strong>Finance Admin –</strong> complete access to all financial information
+  and Self-Assessment
+  <br />
+  <strong>Self-Assessment Only –</strong> access to only the self-assessment, no
+  access to financial information
+  <br />
+  <strong>All Access –</strong> access to all aspects of the system
+  <br />
+  <strong>Inactive User –</strong> Contact remains inactive (or is moved from an
+  active user to inactive) but stays as a contact listed within the organization
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    "Processing" Icon
+    <span style="float: right">02/16/2017</span>
+  </h3>
+  A spinner wheel will show up if the system is processing an action for more
+  than one second
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Hourly Rate calculation in Update Budget Form
+    <span style="float: right">02/16/2017</span>
+  </h3>
+  Previously, when entering a salaried employee into the budget, the system
+  would calculate the hourly rate using a 2,080 hour work year which is based on
+  a 40 hour work week. As some affiliates do not operate using a 40 hour work
+  weeks, we have changed this calculation to calculate the hours worked per year
+  using figure entered under the "Total Hrs/Wk" field.
+  <br /><br /> <strong>Who this will affect:</strong> If your organization does
+  not use a 40 hour work week and when filling out your budget you entered a
+  number other than "40" for salaried employees under "Total Hrs/Wk", the next
+  time you update your budget you will see a change in the calculated "Projected
+  Total" column. Many of you with a non-40 hour work week created a work around
+  to build your budget to match the actual amount you will charge for each staff
+  member, so the next time you update your budget you will be able to replace
+  that work around with the true numbers and get the correct "Projected Total"
+  <br /><br /> <strong>Who this will NOT affect:</strong> All hourly employees
+  and any salaried employees with 40 under "Total Hrs/Wk"
+
+  <br /><br />
+  <hr />
+
+  <h3>
+    Paid Reimbursements
+    <span style="float: right">02/16/2017</span>
+  </h3>
+  Once a reimbursement request has been been paid, the request will change from
+  an "Approved" status to a "Paid" status. The date of the payment will also
+  appear next to the status. Additionally, you will be able to see the paid
+  status and date in the upper right hand corner when viewing the Reimbursement
+  details. You can find the status of all reimbursements under the
+  Reimbursements tab.
+</apex:page>

@@ -1,0 +1,144 @@
+<apex:page
+  controller="ReimbursementCtrl"
+  action="{!getRequestItems}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Reimbursement Personnel</title>
+  </head>
+  <c:HeaderSwitch
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+    portalName="{!portalName}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <c:ReimbursementDetails
+          userAcctType="{!userAcctType}"
+          request="{!request}"
+          budgeted="{!request.Grant_Budgeted_Amount__c}"
+          awarded="{!awarded}"
+          balance="{!balance}"
+        />
+
+        <c:ErrorMessage errorMessage="{!warningMessage}" type="warning" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+          <div class="panel panel-info">
+            <div class="panel-heading">Notes</div>
+            <div class="panel-body">
+              <apex:outputField value="{!request.Request_Notes__c}" />
+            </div>
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Personnel Pay Period: {!payPeriod}</div>
+          <c:ReimbursementPersonnelItems
+            ctrl="{!ReimbursementCtrl}"
+            payPeriod="{!payPeriod}"
+            isEditMode="true"
+          />
+        </div>
+
+        <c:Documents
+          groupId="{!'Pay Period: ' + TEXT(payPeriod)}"
+          fileNames="Payroll,Timesheet"
+          enableDeleteDoc="true"
+          showStatus="false"
+          showWarning="true"
+          showUploadBtn="true"
+        />
+
+        <apex:outputPanel id="notesPopup">
+          <c:NotesPopup
+            displayNotesPopup="{!displayNotesPopup}"
+            userAcctType="{!userAcctType}"
+            itemName="{!selectedItem.Budget_Item__r.Name}"
+            localNote="{!selectedItem.Item_Note__c}"
+            nationalNote="{!selectedItem.Response__c}"
+          >
+            <apex:commandButton
+              action="{!hideNotesPopup}"
+              value="Close"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!upsertItem}"
+              value="Save"
+              status="pageStatus"
+              styleClass="primary"
+            />
+          </c:NotesPopup>
+        </apex:outputPanel>
+
+        <c:UpdateAmountsMessage rendered="{!portalName == 'Ripken'}" />
+        <c:ErrorMessage errorMessage="{!warningMessage}" type="warning" />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+        <apex:commandButton
+          action="{!previousFromPersonnel}"
+          value="Previous"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!updatePersonnelAmounts}"
+          value="Update Amounts"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!savePersonnel}"
+          value="Save"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!savePersonnelAndExit}"
+          value="Save and Exit"
+          status="pageStatus"
+          styleClass="btn"
+        />
+        <apex:commandButton
+          action="{!nextFromPersonnel}"
+          value="Next"
+          status="pageStatus"
+          styleClass="btn primary"
+        />
+
+        <apex:outputPanel id="totals" styleClass="pull-right">
+          Total Requested Personnel: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!personnelRequested}" />
+          </apex:outputText>
+          <br />
+          Personnel Balance: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!grant.Salary_Balance__c}" />
+          </apex:outputText>
+          <br />
+          Personnel Budgeted Amount: &nbsp;
+          <apex:outputText value="${0,number,###,###,###,##0.00}">
+            <apex:param value="{!grant.Total_Labor_Item_Budget__c}" />
+          </apex:outputText>
+          <h4
+            style="{!IF((totalRequested > balance),'color: #b94a48; padding-top: 4px;','padding-top: 4px;')}"
+          >
+            Total Requested Amount: &nbsp;
+            <apex:outputText value="${0,number,###,###,###,##0.00}">
+              <apex:param value="{!totalRequested}" />
+            </apex:outputText>
+          </h4>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

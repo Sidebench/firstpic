@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Equipment_and_Supplies_Amount__c</fullName>
+    <externalId>false</externalId>
+    <label>Equipment and Supplies Amount</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Less than $50,000</fullName>
+                <default>false</default>
+                <label>Less than $50,000</label>
+            </value>
+            <value>
+                <fullName>$50,000-$100,000</fullName>
+                <default>false</default>
+                <label>$50,000-$100,000</label>
+            </value>
+            <value>
+                <fullName>$100,001-$200,000</fullName>
+                <default>false</default>
+                <label>$100,001-$200,000</label>
+            </value>
+            <value>
+                <fullName>$200,001-$350,000</fullName>
+                <default>false</default>
+                <label>$200,001-$350,000</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

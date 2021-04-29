@@ -1,0 +1,1095 @@
+<apex:page
+  controller="PublicApplicationCtrl"
+  action="{!setOVCAppType}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <link
+    href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    rel="stylesheet"
+    media="screen"
+  />
+  <apex:includeScript
+    value="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"
+  />
+
+  <head>
+    <title>Application</title>
+    <style>
+      a,
+      .primary {
+        color: #ad2820;
+      }
+      a:hover {
+        color: #7d2302;
+      }
+      h6,
+      .h6 {
+        font-size: 12px;
+        color: #aaa;
+        display: block;
+        margin: 2px 0 0;
+      }
+      input[type="submit"].btn.primary,
+      .btn.primary {
+        background: #ad2820;
+        background-image: -webkit-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -moz-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -ms-linear-gradient(top, #ad2820, #7d2302);
+        background-image: -o-linear-gradient(top, #ad2820, #7d2302);
+        background-image: linear-gradient(to bottom, #ad2820, #7d2302);
+        color: #fff;
+      }
+      input[type="submit"].primary:hover,
+      .btn.primary:hover {
+        background: #7d2302;
+        text-decoration: none;
+      }
+      input[type="text"],
+      select,
+      textarea {
+        display: block;
+        width: 100%;
+      }
+      input[type="radio"],
+      input[type="checkbox"] {
+        margin: 4px 4px 0 0;
+      }
+      .grid-pd [class*="col-"] {
+        padding-bottom: 10px;
+      }
+      label {
+        margin-right: 15px;
+      }
+      .semibold {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <apex:form id="form" style="margin: 40px">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row" style="margin-bottom: 10px">
+          <div class="col-auto">
+            <h2>
+              <center>NCAI Fund’s Victim Services Micro-grant Program</center>
+            </h2>
+            <div>
+              <span class="text-danger">* All Fields are Required</span> <br />
+              <h4>
+                This application is not editable once it is submitted. You can
+                access technical assistance resources
+                <u
+                  ><a
+                    href="https://tribalvictimservices.org/applicant-resources/"
+                    target="_blank"
+                    >here</a
+                  ></u
+                >.
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        <apex:outputPanel rendered="{!showSuccess || app.Id != null}">
+          <c:ErrorMessage
+            errorMessage="You have successfully submitted your application."
+            type="success"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!NOT(showSuccess) && app.Id == null}">
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">About the Funding &amp; Eligibility</h1>
+            </div>
+            <div class="panel-body">
+              <p>
+                The NCAI Fund received an award from the U.S. Department of
+                Justice (DOJ) Office for Victims of Crime (OVC) to make
+                subgrants to eligible Indian tribes. This funding opportunity is
+                available to federally recognized tribal nations who did not
+                receive victim services funding from NCAI Fund in 2020.
+                <strong
+                  >Recipients of this funding will be required to comply with
+                  all applicable federal policies and regulations.</strong
+                >
+              </p>
+              <p>
+                <u>Use of Funds</u>
+                <br />
+                Funding can be used for a wide variety of activities related to
+                supporting victims of crime in your community.
+                <u
+                  ><a
+                    href="https://tribalvictimservices.org/PDF/2021_Examples_of_Allowable_and_Unallowable_Costs.pdf"
+                    target="_blank"
+                    >Please reference the chart of allowable and unallowable
+                    costs</a
+                  ></u
+                >.
+              </p>
+              <p>With this funding, your tribal nation can:</p>
+              <ul>
+                <li>
+                  Assess the need for additional programming and services for
+                  victims of crime or develop a strategic plan to improve or
+                  expand existing victim services.
+                </li>
+                <li>
+                  Purchase equipment and supplies necessary for victim services
+                  programming or victim services grant management.
+                </li>
+                <li>
+                  Implement program activities, including personnel costs, to
+                  support victims of crimes.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                1. Applicant Tribal National/Organization Information
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Organization_Name__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.Organization_Name__c}"
+                    required="true"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['DUNS_Number__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.DUNS_Number__c}"
+                    required="true"
+                  />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Organization_Type__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.Organization_Type__c}"
+                    required="true"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Address__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField value="{!app.Address__c}" required="true" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['City__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField value="{!app.City__c}" required="true" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['State__c']} <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField value="{!app.State__c}" required="true" />
+                </div>
+                <div class="col-xs-3">
+                  <div class="semibold">
+                    {!fields['Postal_Zip_Code__c']}
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.Postal_Zip_Code__c}"
+                    required="true"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                2. Applicant Tribal National/Organization Point of Contact
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact First Name<span class="text-danger">
+                      *</span
+                    >
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_First_Name__c}"
+                    required="true"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact Last Name<span class="text-danger">
+                      *</span
+                    >
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Last_Name__c}"
+                    required="true"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact Email<span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Email__c}"
+                    required="true"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">
+                    Point of Contact Phone<span class="text-danger"> *</span>
+                  </div>
+                  <apex:inputField
+                    value="{!app.Grant_Admin_Phone__c}"
+                    required="true"
+                  />
+                </div>
+              </div>
+              <hr />
+              <h5>
+                <div class="semibold">
+                  {!fields['Point_of_Contact__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+              </h5>
+              <apex:selectRadio value="{!app.POC_Can_Receive_Communication__c}">
+                <apex:selectOption itemValue="true" itemLabel="Yes" />
+                <apex:selectOption itemValue="false" itemLabel="No" />
+              </apex:selectRadio>
+              <br />
+              <h5>
+                <div class="semibold">
+                  {!fields['Alt_Point_of_Contact__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+              </h5>
+              <div class="row">
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">First Name</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_First_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">Last Name</div>
+                  <apex:inputField
+                    value="{!app.Program_Contact_Last_Name__c}"
+                  />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">Email</div>
+                  <apex:inputField value="{!app.Program_Contact_Email__c}" />
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                  <div class="semibold">Phone</div>
+                  <apex:inputField value="{!app.Program_Contact_Phone__c}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Authorization</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="5. {!fields['Authority_to_Apply__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-12">
+                  <apex:selectRadio value="{!app.Authority_to_Apply__c}">
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                  </apex:selectRadio>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="6a. {!fields['Tribe_Represented__c']}"
+                    escape="false"
+                  />
+                </div>
+                <div class="col-xs-12">
+                  <apex:inputField value="{!app.Tribe_Represented__c}" />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="{!fields['Required_Documentation__c']}"
+                    escape="false"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Previous Funding</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!fields['Previously_Applied__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-12">
+                  <apex:selectRadio value="{!app.Previously_Applied__c}">
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                  </apex:selectRadio>
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  {!fields['Previous_Support_Received__c']}
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-12">
+                  <apex:selectRadio
+                    value="{!app.Previous_Support_Received__c}"
+                    required="true"
+                  >
+                    <apex:selectOption itemValue="Yes" itemLabel="Yes" />
+                    <apex:selectOption itemValue="No" itemLabel="No" />
+                  </apex:selectRadio>
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12 semibold">If yes, please explain.</div>
+                <div class="col-xs-12">
+                  <apex:inputField
+                    value="{!app.Previous_Funding_Received__c}"
+                    required="{!app.Previous_Support_Received__c}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <apex:outputPanel id="details">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Proposed Use of Funds</h1>
+              </div>
+              <div class="panel-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['New_or_Existing__c']}"
+                      escape="false"
+                    />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.New_or_Existing__c}"
+                      style="width: auto"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Existing_Services__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Existing_Services__c}"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Biggest_Issue_Organization_is_Facing__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Biggest_Issue_Organization_is_Facing__c}"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['How_Funds_Utilized__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.How_Funds_Utilized__c}"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <hr />
+
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Activities__c']}"
+                      escape="false"
+                    />
+                  </div>
+                </div>
+                <br />
+                <apex:actionRegion>
+                  <u>Needs Assessment</u> <span class="text-danger"> *</span>
+                  <br />
+                  <apex:selectRadio
+                    value="{!app.Has_Needs_Assessment__c}"
+                    required="true"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="needs"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel id="needs">
+                    <apex:outputPanel
+                      rendered="{!app.Has_Needs_Assessment__c == true}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="{!fields['Previous_Experiences__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Previous_Experiences__c}"
+                            required="true"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="{!fields['Needs_Assessment__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Needs_Assessment__c}"
+                            required="true"
+                          />
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                </apex:actionRegion>
+                <br />
+                <apex:actionRegion>
+                  <u>Strategic Planning</u> <span class="text-danger"> *</span>
+                  <br />
+                  <apex:selectRadio value="{!app.Has_Strategic_Plan__c}">
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="strategic"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel id="strategic">
+                    <apex:outputPanel
+                      rendered="{!app.Has_Strategic_Plan__c == true}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="{!fields['Strategic_Plan__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Strategic_Plan__c}"
+                            required="true"
+                          />
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                </apex:actionRegion>
+                <br />
+                <u>Support for Victim Services</u
+                ><span class="text-danger"> *</span>
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Areas_of_Service__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectCheckboxes
+                      layout="pageDirection"
+                      value="{!services}"
+                    >
+                      <apex:selectOptions value="{!serviceOptions}" />
+                      <apex:actionSupport
+                        event="onchange"
+                        reRender="details"
+                        status="pageStatus"
+                      />
+                    </apex:selectCheckboxes>
+                    <apex:inputField
+                      value="{!app.Areas_of_Service_Explaination__c}"
+                    />
+                  </div>
+                </div>
+                <br />
+                <apex:actionRegion>
+                  <u>Equipment and Supplies</u>
+                  <span class="text-danger"> *</span>
+                  <apex:selectRadio
+                    value="{!app.Has_Equipment_and_Supplies__c}"
+                  >
+                    <apex:selectOption itemValue="true" itemLabel="Yes" />
+                    <apex:selectOption itemValue="false" itemLabel="No" />
+                    <apex:actionSupport
+                      event="onchange"
+                      reRender="equipment"
+                      status="pageStatus"
+                    />
+                  </apex:selectRadio>
+                  <apex:outputPanel id="equipment">
+                    <apex:outputPanel
+                      rendered="{!app.Has_Equipment_and_Supplies__c == true}"
+                    >
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="{!fields['Equipment_and_Supplies__c']}"
+                            escape="false"
+                          />
+                          <span class="text-danger"> *</span>
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:inputField
+                            value="{!app.Equipment_and_Supplies__c}"
+                            required="true"
+                          />
+                        </div>
+                      </div>
+                      <br />
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <apex:outputText
+                            value="{!fields['Funding_to_Purchase_Vehicle__c']}"
+                            escape="false"
+                          />
+                        </div>
+                        <div class="col-xs-12">
+                          <apex:selectRadio
+                            value="{!app.Funding_to_Purchase_Vehicle__c}"
+                          >
+                            <apex:selectOption
+                              itemValue="true"
+                              itemLabel="Yes"
+                            />
+                            <apex:selectOption
+                              itemValue="false"
+                              itemLabel="No"
+                            />
+                          </apex:selectRadio>
+                        </div>
+                      </div>
+                      <br />
+                      <div class="row">
+                        <div class="col-xs-12 semibold">
+                          <strong
+                            >Please note that purchases must be made pursuant to
+                            your internal procurement policy that complies with
+                            federal law. If you do not have a procurement
+                            policy, technical assistance will be provided to
+                            help you develop one.</strong
+                          >
+                        </div>
+                      </div>
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                </apex:actionRegion>
+              </div>
+            </div>
+          </apex:outputPanel>
+          <apex:outputPanel id="management">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Grant Management</h1>
+              </div>
+              <div class="panel-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <h4>
+                      If awarded, you will be required to comply with all
+                      applicable federal policies and regulations.
+                    </h4>
+                  </div>
+                </div>
+                <br />
+                <strong>13. Capabilities and Competencies</strong><br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Responsibilities__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Responsibilities__c}"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Management_Procurement__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Management_Procurement__c}"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Responsible_Reporting__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span><br />
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Responsible_Reporting__c}"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Able_to_Recruit__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:inputField
+                      value="{!app.Able_to_Recruit__c}"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Other_Challenges__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectRadio value="{!app.Has_Competencies__c}">
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 semibold">If yes, please explain.</div>
+                  <div class="col-xs-12">
+                    <apex:inputField value="{!app.Other_Challenges__c}" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:actionRegion>
+            <apex:outputPanel id="budget">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h1 class="panel-title">Summary Budget</h1>
+                </div>
+                <div class="panel-body">
+                  <p>
+                    <apex:outputText
+                      value="{!fields['Summary_Budget__c']}"
+                      escape="false"
+                    />
+                  </p>
+                  <table class="table">
+                    <tr>
+                      <th width="220px">Category</th>
+                      <th width="180px">Amount</th>
+                      <th>Description</th>
+                    </tr>
+                    <tr>
+                      <td>Personnel<span class="text-danger"> *</span></td>
+                      <td>
+                        <apex:inputField
+                          id="personnel"
+                          onblur="getTotal()"
+                          value="{!app.Personnel_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Personnel_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Fringe Benefits<span class="text-danger"> *</span>
+                      </td>
+                      <td>
+                        <apex:inputField
+                          id="fringe"
+                          onblur="getTotal()"
+                          value="{!app.Fringe_Benefits_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Fringe_Benefits_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Travel<span class="text-danger"> *</span></td>
+                      <td>
+                        <apex:inputField
+                          id="travel"
+                          onblur="getTotal()"
+                          value="{!app.Travel_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Travel_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Equipment/Supplies<span class="text-danger"> *</span>
+                      </td>
+                      <td>
+                        <apex:inputField
+                          id="supplies"
+                          onblur="getTotal()"
+                          value="{!app.Supplies_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Supplies_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Contracts and Consultants<span class="text-danger">
+                          *</span
+                        >
+                      </td>
+                      <td>
+                        <apex:inputField
+                          id="contracts"
+                          onblur="getTotal()"
+                          value="{!app.Contracts_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Contracts_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Consultant/Contractor Travel<span class="text-danger">
+                          *</span
+                        >
+                      </td>
+                      <td>
+                        <apex:inputField
+                          id="contractorTravel"
+                          onblur="getTotal()"
+                          value="{!app.Contractor_Travel_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Contractor_Travel_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Other Costs<span class="text-danger"> *</span></td>
+                      <td>
+                        <apex:inputField
+                          id="other"
+                          onblur="getTotal()"
+                          value="{!app.Other_Costs_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Other_Costs_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Indirect Costs<span class="text-danger"> *</span></td>
+                      <td>
+                        <apex:inputField
+                          id="indirect"
+                          onblur="getTotal()"
+                          value="{!app.Indirect_Costs_Budget__c}"
+                          required="true"
+                        />
+                      </td>
+                      <td>
+                        <apex:inputField
+                          value="{!app.Indirect_Costs_Description__c}"
+                          required="true"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Total</strong></td>
+                      <td>
+                        <!--<strong><apex:outputField value="{!app.Total_Amount_Requested__c}" /></strong>-->
+                        <strong><div id="total"></div></strong>
+                      </td>
+                    </tr>
+                  </table>
+                  <hr />
+                  <apex:outputText value="{!fields['Justification__c']}" />
+                  <br />
+                  <apex:inputField value="{!app.Budget_Details__c}" />
+                </div>
+              </div>
+            </apex:outputPanel>
+          </apex:actionRegion>
+
+          <apex:outputPanel id="final">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Acknowledgement</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Terms_Acknowledged__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectRadio value="{!app.Terms_Acknowledged__c}">
+                      <apex:selectOption itemValue="true" itemLabel="Yes" />
+                      <apex:selectOption itemValue="false" itemLabel="No" />
+                    </apex:selectRadio>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Signatory</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:outputText
+                      value="{!fields['Signature__c']}"
+                      escape="false"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-4 semibold">
+                    Signatory Title <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-4 semibold">
+                    Signatory Name <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-4 semibold">
+                    Signatory Email <span class="text-danger"> *</span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4">
+                    <apex:inputField
+                      value="{!app.Signatory_Title__c}"
+                      style="display: inline"
+                      required="true"
+                    />
+                  </div>
+                  <div class="col-xs-4">
+                    <apex:inputField
+                      value="{!app.Signatory_Name__c}"
+                      style="display: inline"
+                      required="true"
+                    />
+                  </div>
+                  <div class="col-xs-4">
+                    <apex:inputField
+                      value="{!app.Signatory_Email__c}"
+                      style="display: inline"
+                      required="true"
+                    />
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <div class="col-xs-12 semibold">
+                    <apex:inputField
+                      value="{!app.Alternate_Signing_Method__c}"
+                    />
+                    <apex:outputText
+                      value="{!fields['Alternate_Signature__c']}"
+                      escape="false"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <apex:commandButton
+            value="Submit"
+            action="{!submit}"
+            status="pageStatus"
+            styleClass="btn primary"
+            rendered="{!app.Id == null}"
+          />
+
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+          <apex:pageMessages />
+        </apex:outputPanel>
+        <br /><br />
+      </div>
+    </div>
+  </apex:form>
+
+  <script>
+    $j = jQuery.noConflict();
+    function getTotal() {
+      var personnel = document.getElementById("j_id0:form:personnel").value * 1;
+      var fringe = document.getElementById("j_id0:form:fringe").value * 1;
+      var travel = document.getElementById("j_id0:form:travel").value * 1;
+      var supplies = document.getElementById("j_id0:form:supplies").value * 1;
+      var contracts = document.getElementById("j_id0:form:contracts").value * 1;
+      var contractorTravel =
+        document.getElementById("j_id0:form:contractorTravel").value * 1;
+      var other = document.getElementById("j_id0:form:other").value * 1;
+      var indirect = document.getElementById("j_id0:form:indirect").value * 1;
+      var total =
+        personnel +
+        fringe +
+        travel +
+        supplies +
+        contracts +
+        contractorTravel +
+        other +
+        indirect;
+      $j("#total").text(total);
+    }
+  </script>
+</apex:page>

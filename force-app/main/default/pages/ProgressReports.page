@@ -1,0 +1,140 @@
+<apex:page
+  controller="SessionReportsCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Progress Reports</title>
+  </head>
+  <c:TRAILHeader
+    ActivePage="progress"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Progress Reports</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel rendered="{!userAcctType != 'Site'}">
+              <apex:outputText
+                value="{!IF(userAcctType == 'Local Organization', 'Site', 'Organization or Site')}"
+              />
+              &nbsp;<apex:inputText value="{!orgName}" style="width: 240px" />
+              <div style="margin: 5px"></div>
+            </apex:outputPanel>
+            Year: &nbsp;
+            <apex:selectList value="{!year}" size="1" id="years">
+              <apex:selectOptions value="{!yearOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp; Status: &nbsp;
+            <apex:selectList value="{!status}" size="1" id="statusOptions">
+              <apex:selectOptions value="{!statusOptions}" />
+            </apex:selectList>
+            &nbsp;
+            <apex:commandButton
+              action="{!getLists}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+          </div>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">{!status}</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!reports.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>
+                      <apex:outputText
+                        value="Organization"
+                        rendered="{!userAcctType == 'National Organization'}"
+                      />
+                    </th>
+                    <th>
+                      <apex:outputText
+                        value="Site"
+                        rendered="{!userAcctType != 'Site'}"
+                      />
+                    </th>
+                    <th>Q1 Progress Report</th>
+                    <th>Q2 Progress Report</th>
+                    <th>Q3 Progress Report</th>
+                    <th>Q4 Progress Report</th>
+                  </tr>
+                  <apex:repeat value="{!reports}" var="i">
+                    <tr>
+                      <td>
+                        <apex:outputText
+                          value="{!i.orgName}"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="{!i.siteName}"
+                          rendered="{!userAcctType != 'Site'}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          target="_blank"
+                          value="{!i.q1Status}"
+                          action="{!URLFOR($Site.Prefix+'/ProgressReport?reportId='+i.q1Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          target="_blank"
+                          value="{!i.q2Status}"
+                          action="{!URLFOR($Site.Prefix+'/ProgressReport?reportId='+i.q2Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          target="_blank"
+                          value="{!i.q3Status}"
+                          action="{!URLFOR($Site.Prefix+'/ProgressReport?reportId='+i.q3Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:commandLink
+                          target="_blank"
+                          value="{!i.q4Status}"
+                          action="{!URLFOR($Site.Prefix+'/ProgressReport?reportId='+i.q4Id+'&siteId='+siteId)}"
+                        />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!reports.size == 0}">
+                No Reports Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

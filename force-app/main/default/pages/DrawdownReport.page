@@ -1,0 +1,434 @@
+<apex:page
+  controller="DrawdownReportCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Drawdown Report</title>
+  </head>
+  <c:Header
+    ActivePage="reports"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>{!grant.Name}</h2>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:outputPanel rendered="{!displaySuccess}">
+          <div
+            class="alert alert-success"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            Save Successful
+          </div>
+        </apex:outputPanel>
+
+        <!-- BEGIN Approved List -->
+        <apex:outputPanel rendered="{!approverLevel == 'Level Three Admin'}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Approved Reimbursement Requests</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!approved_list.size > 0}">
+                <table style="width: 100%">
+                  <tr>
+                    <th class="col-sm">
+                      <apex:actionRegion>
+                        <apex:inputCheckbox selected="true">
+                          <apex:actionSupport
+                            event="onclick"
+                            action="{!selectAllApproved}"
+                            status="pageStatus"
+                            rerender="form"
+                          />
+                        </apex:inputCheckbox>
+                      </apex:actionRegion>
+                    </th>
+                    <th>Request Id</th>
+                    <th>Sub-Grant Name</th>
+                    <th>Request Month</th>
+                    <th>Requested Amount</th>
+                  </tr>
+                  <apex:repeat value="{!approved_list}" var="i">
+                    <tr>
+                      <td>
+                        <apex:inputField value="{!i.Selected__c}" />
+                      </td>
+                      <td>{!i.Name}</td>
+                      <td>{!i.Grant__r.Name}</td>
+                      <td>{!i.Request_Month__c}</td>
+                      <td>
+                        <apex:outputText value="${0, number, #,###,###.##}">
+                          <apex:param value="{!i.Total_Requested_Amount__c}" />
+                        </apex:outputText>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!approved_list.size = 0}">
+                No Active Reimbursement Requests Found
+              </apex:outputPanel>
+            </div>
+            <div class="panel-footer">
+              <apex:commandButton
+                value="Generate Report"
+                action="{!createReport}"
+                status="pageStatus"
+                reRender="form"
+              />
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Approved List -->
+
+        <!-- BEGIN Pending Reports List -->
+        <apex:outputPanel
+          rendered="{!NOT(CONTAINS(currentUser.Profile.Name, 'Accounts Payable'))}"
+          id="pend"
+        >
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Requests In Pending Drawdown Report
+              <span class="col-auto pull-right">
+                Report Id: &nbsp;<apex:inputText
+                  value="{!pendingReportId}"
+                  styleClass="input-md"
+                />&nbsp;
+                <apex:commandButton
+                  action="{!getLists}"
+                  value="Update"
+                  status="pageStatus"
+                  styleClass="primary btn-small"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  action="{!getLists}"
+                  value="Clear"
+                  status="pageStatus"
+                  styleClass="btn-small"
+                  reRender="form"
+                >
+                  <apex:param
+                    assignTo="{!pendingReportId}"
+                    name="pendingReportId"
+                    value=""
+                  />
+                </apex:commandButton>
+              </span>
+            </div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!inPending_list.size > 0}">
+                <table style="width: 100%">
+                  <tr>
+                    <th class="col-sm">
+                      <apex:actionRegion>
+                        <apex:inputCheckbox
+                          selected="true"
+                          rendered="{!approverLevel == 'Level Three Admin'}"
+                        >
+                          <apex:actionSupport
+                            event="onclick"
+                            action="{!selectAllInReport}"
+                            status="pageStatus"
+                            reRender="form"
+                          />
+                        </apex:inputCheckbox>
+                      </apex:actionRegion>
+                    </th>
+                    <th>Report Id</th>
+                    <th>Sub-Grant Name</th>
+                    <th>Request Month</th>
+                    <th>Requested Amount</th>
+                    <th class="text-right">View Report</th>
+                  </tr>
+                  <apex:repeat value="{!inPending_list}" var="i">
+                    <tr>
+                      <td>
+                        <apex:inputCheckbox
+                          value="{!i.Selected__c}"
+                          rendered="{!approverLevel == 'Level Three Admin'}"
+                        />
+                      </td>
+                      <td>{!i.Report_Id__c}</td>
+                      <td
+                        class="{!IF(i.Hold_Status__c = 'Hold', 'text-danger', '')}"
+                      >
+                        {!i.Grant__r.Name}
+                      </td>
+                      <td>{!i.Request_Month__c}</td>
+                      <td>
+                        <apex:outputText value="${0, number, #,###,###.##}">
+                          <apex:param value="{!i.Total_Requested_Amount__c}" />
+                        </apex:outputText>
+                      </td>
+                      <td class="text-right">
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/BBBSDrawdownReportPDF?GrantID=' + GrantId + '&ReportID=' + i.Report_Id__c)}"
+                          target="_blank"
+                        >
+                          PDF
+                        </a>
+                        &nbsp;| &nbsp;
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/BBBSDrawdownReportXLS?GrantID=' + GrantId + '&ReportID=' + i.Report_Id__c)}"
+                          target="_blank"
+                        >
+                          XLS
+                        </a>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!inPending_list.size == 0}">
+                No Requests In Pending Drawdown Report Found
+              </apex:outputPanel>
+            </div>
+            <apex:outputPanel
+              rendered="{!approverLevel == 'Level Three Admin'}"
+            >
+              <div class="panel-footer">
+                <apex:commandButton
+                  value="Update"
+                  action="{!updateReport}"
+                  status="pageStatus"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  value="Complete Drawdown"
+                  action="{!completeDrawdown}"
+                  status="pageStatus"
+                  styleClass="primary"
+                  reRender="form"
+                />
+                <div class="pull-right">
+                  <h5 style="padding-top: 10px">
+                    Total Pending Drawdown: &nbsp;
+                    <apex:outputText value="${0, number, #,###,###.##}">
+                      <apex:param value="{!reportTotal}" />
+                    </apex:outputText>
+                  </h5>
+                </div>
+              </div>
+            </apex:outputPanel>
+          </div>
+          <!-- END In Pending Reports List -->
+
+          <!-- BEGIN Completed Reports List -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Completed Drawdown Reports
+              <span
+                class="pull-right"
+                style="margin-top: -3px; font-weight: normal"
+              >
+                Drawndown Date Range: &nbsp;<apex:input
+                  type="date"
+                  value="{!startDate}"
+                />&nbsp; - &nbsp;<apex:input
+                  type="date"
+                  value="{!endDate}"
+                />&nbsp;
+                <apex:commandButton
+                  action="{!getLists}"
+                  value="Update"
+                  status="pageStatus"
+                  styleClass="primary btn-small"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  action="{!getLists}"
+                  value="Clear"
+                  status="pageStatus"
+                  styleClass="btn-small"
+                  reRender="form"
+                >
+                  <apex:param assignTo="{!reportId}" name="reportId" value="" />
+                  <apex:param
+                    assignTo="{!startDate}"
+                    name="startDate"
+                    value=""
+                  />
+                  <apex:param assignTo="{!endDate}" name="endDate" value="" />
+                </apex:commandButton>
+              </span>
+            </div>
+            <div class="panel-body">
+              <table style="width: 100%">
+                <tr>
+                  <th>Report Id</th>
+                  <th>Report Date</th>
+                  <th class="text-right">View Report</th>
+                </tr>
+                <apex:repeat value="{!report_list}" var="i">
+                  <tr>
+                    <td>{!i.reportId}</td>
+                    <td>
+                      <apex:outputText value="{0, date, MMMM d',' yyyy}">
+                        <apex:param value="{!i.reportDate}" />
+                      </apex:outputText>
+                    </td>
+                    <td class="text-right">
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/BBBSDrawdownReportPDF?GrantID=' + GrantId + '&ReportID=' + i.reportId)}"
+                        target="_blank"
+                      >
+                        PDF
+                      </a>
+                      &nbsp;| &nbsp;
+                      <a
+                        href="{!URLFOR($Site.Prefix+'/BBBSDrawdownReportXLS?GrantID=' + GrantId + '&ReportID=' + i.reportId)}"
+                        target="_blank"
+                      >
+                        XLS
+                      </a>
+                    </td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </div>
+          </div>
+          <!-- END Completed Reports List -->
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!CONTAINS(currentUser.Profile.Name, 'Accounts Payable') || CONTAINS(currentUser.Profile.Name, 'Treasurer')}"
+        >
+          <!-- BEGIN Drawndown Reports List -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Drawndown Requests Report
+              <span
+                class="pull-right"
+                style="margin-top: -3px; font-weight: normal"
+              >
+                Report Id: &nbsp;<apex:inputText
+                  value="{!reportId}"
+                  styleClass="input-md"
+                />&nbsp; Paid Date Range: &nbsp;<apex:input
+                  type="date"
+                  value="{!startDate}"
+                />&nbsp; - &nbsp;<apex:input
+                  type="date"
+                  value="{!endDate}"
+                />&nbsp;
+                <apex:commandButton
+                  action="{!getLists}"
+                  value="Update"
+                  status="pageStatus"
+                  styleClass="primary btn-small"
+                  reRender="form"
+                />
+                <apex:commandButton
+                  action="{!getLists}"
+                  value="Clear"
+                  status="pageStatus"
+                  styleClass="btn-small"
+                  reRender="form"
+                >
+                  <apex:param assignTo="{!reportId}" name="reportId" value="" />
+                  <apex:param
+                    assignTo="{!startDate}"
+                    name="startDate"
+                    value=""
+                  />
+                  <apex:param assignTo="{!endDate}" name="endDate" value="" />
+                </apex:commandButton>
+              </span>
+            </div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!completed_list.size > 0}">
+                <table style="width: 100%">
+                  <tr>
+                    <th>Report Id</th>
+                    <th>Request Id</th>
+                    <th>Sub-Grant Name</th>
+                    <th>Request Month</th>
+                    <th>Requested Amount</th>
+                    <th class="text-center">EFT</th>
+                    <th class="text-center">Paid Date</th>
+                    <th class="text-right">View Report</th>
+                  </tr>
+                  <apex:repeat value="{!completed_list}" var="i">
+                    <tr>
+                      <td>{!i.Report_Id__c}</td>
+                      <td>{!i.Name}</td>
+                      <td>{!i.Grant__r.Name}</td>
+                      <td>{!i.Request_Month__c}</td>
+                      <td>
+                        <apex:outputText value="${0, number, #,###,###.##}">
+                          <apex:param value="{!i.Total_Requested_Amount__c}" />
+                        </apex:outputText>
+                      </td>
+                      <td class="text-center">
+                        <apex:inputField value="{!i.EFT__c}" />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputField value="{!i.Paid_Date__c}" />
+                      </td>
+                      <td class="text-right">
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/BBBSDrawdownReportPDF?GrantID=' + GrantId + '&ReportID=' + i.Report_Id__c)}"
+                          target="_blank"
+                        >
+                          PDF
+                        </a>
+                        &nbsp;| &nbsp;
+                        <a
+                          href="{!URLFOR($Site.Prefix+'/BBBSDrawdownReportXLS?GrantID=' + GrantId + '&ReportID=' + i.Report_Id__c)}"
+                          target="_blank"
+                        >
+                          XLS
+                        </a>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!completed_list.size == 0}">
+                No Requests Drawndown Found
+              </apex:outputPanel>
+            </div>
+            <div class="panel-footer">
+              <apex:commandButton
+                value="Process"
+                action="{!processEFT}"
+                status="pageStatus"
+                reRender="form"
+              />
+              <div class="pull-right">
+                <h5 style="padding-top: 10px">
+                  Total Drawndown: &nbsp;
+                  <apex:outputText value="${0, number, #,###,###,##0.00}">
+                    <apex:param value="{!drawdownTotal}" />
+                  </apex:outputText>
+                </h5>
+              </div>
+            </div>
+          </div>
+          <!-- END Drawndown Reports List -->
+        </apex:outputPanel>
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+        <apex:pageMessages></apex:pageMessages>
+        <apex:outputPanel rendered="{!displaySuccess}">
+          <div
+            class="alert alert-success"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            Save Successful
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

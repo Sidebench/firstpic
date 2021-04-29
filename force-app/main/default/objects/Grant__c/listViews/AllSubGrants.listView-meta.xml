@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllSubGrants</fullName>
+    <columns>NAME</columns>
+    <columns>Account__c</columns>
+    <columns>National_Grant__c</columns>
+    <columns>Grant_Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Grant__c.Sub_Grant</value>
+    </filters>
+    <label>All Sub-Grants</label>
+    <sharedTo>
+        <allInternalUsers />
+    </sharedTo>
+</ListView>

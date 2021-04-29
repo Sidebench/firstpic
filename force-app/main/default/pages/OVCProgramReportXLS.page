@@ -1,0 +1,1235 @@
+<apex:page
+  controller="VictimsServedReportCtrl"
+  action="{!exportXLS}"
+  showHeader="false"
+  sidebar="false"
+  readOnly="true"
+  contentType="application/vnd.ms-excel#Report.xls"
+>
+  <table>
+    <tr>
+      <td>Report ID</td>
+      <td><apex:outputText value="{!report.Name}" /></td>
+    </tr>
+    <tr>
+      <td>Number of Individuals that Received Services</td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_of_Individuals_Received_Services__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of Anonymous Contacts</td>
+      <td>
+        <apex:outputText value="{!report.Number_of_Anonymous_Contacts__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of New Individuals</td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_of_New_Individuals__c}"
+          rendered="{!report.Tracking_New_Individuals__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>American Indian/Alaska Native</td>
+      <td>
+        <apex:outputText
+          value="{!report.American_Indian_Alaska_Native__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Asian</td>
+      <td>
+        <apex:outputText
+          value="{!report.Asian__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Black/African American</td>
+      <td>
+        <apex:outputText
+          value="{!report.Black_African_American__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Hispanic or Latino</td>
+      <td>
+        <apex:outputText
+          value="{!report.Hispanic_or_Latino__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Native Hawaiian and Other Pacific Islander</td>
+      <td>
+        <apex:outputText
+          value="{!report.Native_Hawaiian_and_Other_Pacific_Island__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>White Non-Latino/Caucasian</td>
+      <td>
+        <apex:outputText
+          value="{!report.White_Non_Latino_Caucasian__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Some Other Race</td>
+      <td>
+        <apex:outputText
+          value="{!report.Some_Other_Race__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Multiple Races</td>
+      <td>
+        <apex:outputText
+          value="{!report.Multiple_Races__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Not Reported</td>
+      <td>
+        <apex:outputText
+          value="{!report.Not_Reported__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Race_Ethnicity_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Race_Ethnicity_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of Males</td>
+      <td>
+        <apex:outputText
+          value="{!report.Male__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Gender_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Gender_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of Females</td>
+      <td>
+        <apex:outputText
+          value="{!report.Female__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Gender_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Gender_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of Other Individuals</td>
+      <td>
+        <apex:outputText
+          value="{!report.Other_Gender__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Gender_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Gender_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Description of Other Individuals</td>
+      <td>
+        <apex:outputText
+          value="{!report.Other_Genders__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Gender_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Gender_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of Not Reported</td>
+      <td>
+        <apex:outputText
+          value="{!report.Gender_Not_Reported__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Gender_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Gender_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Age 0-12</td>
+      <td>
+        <apex:outputText
+          value="{!report.Age_0_12__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Age_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Age_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Age 13-17</td>
+      <td>
+        <apex:outputText
+          value="{!report.Age_13_17__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Age_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Age_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Age 18-24</td>
+      <td>
+        <apex:outputText
+          value="{!report.Age_18_24__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Age_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Age_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Age 25-59</td>
+      <td>
+        <apex:outputText
+          value="{!report.Age_25_59__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Age_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Age_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>60 and Older</td>
+      <td>
+        <apex:outputText
+          value="{!report.Age_60_and_Older__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Age_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Age_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Not Reported</td>
+      <td>
+        <apex:outputText
+          value="{!report.Age_Not_Reported__c}"
+          rendered="{!report.Tracking_New_Individuals__c && report.Age_Tracked__c}"
+        />
+        <apex:outputText
+          value="N/T"
+          rendered="{!NOT(report.Tracking_New_Individuals__c) || NOT(report.Age_Tracked__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Adult Physical Assault</td>
+      <td><apex:outputText value="{!report.Adult_Physical_Assault__c}" /></td>
+    </tr>
+    <tr>
+      <td>Adult Sexual Assault</td>
+      <td><apex:outputText value="{!report.Adult_Sexual_Assault__c}" /></td>
+    </tr>
+    <tr>
+      <td>Adults Sexually Abused/Assaulted as Children</td>
+      <td><apex:outputText value="{!report.Adults_Sexually_Abused__c}" /></td>
+    </tr>
+    <tr>
+      <td>Arson</td>
+      <td><apex:outputText value="{!report.Arson__c}" /></td>
+    </tr>
+    <tr>
+      <td>Bullying (Verbal, Cyber, or Physical)</td>
+      <td><apex:outputText value="{!report.Bullying__c}" /></td>
+    </tr>
+    <tr>
+      <td>Burglary</td>
+      <td><apex:outputText value="{!report.Burglary__c}" /></td>
+    </tr>
+    <tr>
+      <td>Child Physical Abuse or Neglect</td>
+      <td><apex:outputText value="{!report.Child_Physical_Abuse__c}" /></td>
+    </tr>
+    <tr>
+      <td>Child Pornograpnhy</td>
+      <td><apex:outputText value="{!report.Child_Pornography__c}" /></td>
+    </tr>
+    <tr>
+      <td>Child Sexual Abuse/Assault</td>
+      <td><apex:outputText value="{!report.Child_Sexual_Abuse__c}" /></td>
+    </tr>
+    <tr>
+      <td>Domestic and/or Family Violence</td>
+      <td><apex:outputText value="{!report.Domestic_Violence__c}" /></td>
+    </tr>
+    <tr>
+      <td>DUI/DWI Incidents</td>
+      <td><apex:outputText value="{!report.DUI_DWI__c}" /></td>
+    </tr>
+    <tr>
+      <td>Elder Abuse or Neglect</td>
+      <td><apex:outputText value="{!report.Elder_Abuse__c}" /></td>
+    </tr>
+    <tr>
+      <td>Hate Crimes</td>
+      <td><apex:outputText value="{!report.Hate_Crime__c}" /></td>
+    </tr>
+    <tr>
+      <td>Hate Crimes Explanation</td>
+      <td><apex:outputText value="{!report.Hate_Crime_Explanation__c}" /></td>
+    </tr>
+    <tr>
+      <td>Human Trafficking: Labor</td>
+      <td><apex:outputText value="{!report.Human_Trafficking_Labor__c}" /></td>
+    </tr>
+    <tr>
+      <td>Human Trafficking: Sex</td>
+      <td><apex:outputText value="{!report.Human_Trafficking_Sex__c}" /></td>
+    </tr>
+    <tr>
+      <td>Identity Theft/Fraud/Financial Crime</td>
+      <td><apex:outputText value="{!report.Identity_Theft__c}" /></td>
+    </tr>
+    <tr>
+      <td>Kidnapping (Non-custodial)</td>
+      <td><apex:outputText value="{!report.Kidnapping_Non_custodial__c}" /></td>
+    </tr>
+    <tr>
+      <td>Kidnapping (Custodial)</td>
+      <td><apex:outputText value="{!report.Kidnapping_Custodial__c}" /></td>
+    </tr>
+    <tr>
+      <td>Mass Violence (Domestic/International)</td>
+      <td><apex:outputText value="{!report.Mass_Violence__c}" /></td>
+    </tr>
+    <tr>
+      <td>Other Vehicular Victimization (e.g., Hit and Run)</td>
+      <td>
+        <apex:outputText value="{!report.Other_Vehicular_Victimization__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>Robbery</td>
+      <td><apex:outputText value="{!report.Robbery__c}" /></td>
+    </tr>
+    <tr>
+      <td>Stalking/Harassment</td>
+      <td><apex:outputText value="{!report.Stalking__c}" /></td>
+    </tr>
+    <tr>
+      <td>Survivors of Homicide Victims</td>
+      <td>
+        <apex:outputText value="{!report.Survivors_of_Homicide_Victims__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>Teen Dating Victimization</td>
+      <td>
+        <apex:outputText value="{!report.Teen_Dating_Victimization__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>Terrorism (Domestic/International)</td>
+      <td><apex:outputText value="{!report.Terrorism__c}" /></td>
+    </tr>
+    <tr>
+      <td>Other - Victimization</td>
+      <td><apex:outputText value="{!report.Other_Victimization__c}" /></td>
+    </tr>
+    <tr>
+      <td>Other Victimization Descriptions</td>
+      <td>
+        <apex:outputText value="{!report.Other_Victimization_Explanation__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>Multiple Types of Victimizations</td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_w_Multiple_Type_of_Victimization__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Deaf/Hard of Hearing</td>
+      <td><apex:outputText value="{!report.Deaf_Hard_of_Hearing__c}" /></td>
+    </tr>
+    <tr>
+      <td>Homeless</td>
+      <td><apex:outputText value="{!report.Homeless__c}" /></td>
+    </tr>
+    <tr>
+      <td>Immigrants/Refugees/Asylum Seekers</td>
+      <td>
+        <apex:outputText
+          value="{!report.Immigrants_Refugees_Asylum_Seekers__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>LGBTQ</td>
+      <td><apex:outputText value="{!report.LGBTQ__c}" /></td>
+    </tr>
+    <tr>
+      <td>Veterans</td>
+      <td><apex:outputText value="{!report.Veterans__c}" /></td>
+    </tr>
+    <tr>
+      <td>Victims with Disabilities: Cognitive/Physical/Mental</td>
+      <td>
+        <apex:outputText value="{!report.Victims_with_Disabilities__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>Victims with Limited English Proficiency</td>
+      <td>
+        <apex:outputText
+          value="{!report.Victims_with_Limited_English_Proficiency__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Other - Special Classification</td>
+      <td>
+        <apex:outputText value="{!report.Other_Special_Classification__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>Other Special Classification Description</td>
+      <td>
+        <apex:outputText
+          value="{!report.Other_Special_Classification_Explanation__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Victim Compensation Applications</td>
+      <td>
+        <apex:outputText value="{!report.Victim_Compensation_Application__c}" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Number of Individuals who received Information and Referral Services
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_Received_Referral_Services__c}"
+          rendered="{!report.Info_and_Referral_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Info_and_Referral_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>A1. Information about the criminal justice process</td>
+      <td>
+        <apex:outputText
+          value="{!report.A1_Provide_Criminal_Justice_System_Info__c}"
+          rendered="{!report.Info_and_Referral_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Info_and_Referral_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        A2. Information about victim rights, how to obtain notifications, etc.
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.A2_Information_About_Victim_Rights__c}"
+          rendered="{!report.Info_and_Referral_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Info_and_Referral_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>A3. Referral to other victim service programs</td>
+      <td>
+        <apex:outputText
+          value="{!report.A3_Referral_to_Other_Victim_Programs__c}"
+          rendered="{!report.Info_and_Referral_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Info_and_Referral_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        A4. Referral to other services, supports, and resources (includes legal,
+        medical, faith-based organizations, address-confidentiality programs,
+        etc.)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.A4_Referral_to_Other_Services__c}"
+          rendered="{!report.Info_and_Referral_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Info_and_Referral_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of Individuals who received Personal Advocacy Services</td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_Received_Advocacy_Services__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>B1. Victim advocacy/accompaniment to emergency medical care</td>
+      <td>
+        <apex:outputText
+          value="{!report.B1_Advocacy_to_Emergency_Medical_Care__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>B2. Victim advocacy/accompaniment to medical forensic exam</td>
+      <td>
+        <apex:outputText
+          value="{!report.B2_Advocacy_to_Medical_Forensic_Exam__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>B3. Law enforcement interview advocacy/accompaniment</td>
+      <td>
+        <apex:outputText
+          value="{!report.B3_Law_Enforcement_Interview_Advocacy__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        B4. Individual advocacy (e.g., assistance in applying for public
+        benefits, return of personal property or effects)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.B4_Individual_Advocacy__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        B5. Performance of medical or nonmedical forensic exam or interview, or
+        medical evidence collection
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.B5_Performance_of_Medical_Forensic_Exam__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        B6. Immigration assistance (e.g., special visas, continued presence
+        application, and other immigration relief)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.B6_Immigration_Assistance__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        B7. Intervention with employer, creditor, landlord, or academic
+        institution
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.B7_Intervention_with_Employer_or_Other__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        B8. Child or dependent care assistance (includes coordination of
+        services)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.B8_Child_or_Dependent_Care_Assistance__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>B9. Transportation assistance (includes coordination of services)</td>
+      <td>
+        <apex:outputText
+          value="{!report.B9_Transportation_Assistance__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>B10. Interpreter services</td>
+      <td>
+        <apex:outputText
+          value="{!report.B10_Interpreter_Services__c}"
+          rendered="{!report.Personal_Advocacy_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Personal_Advocacy_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Number of Individuals who received Emotional Support or Safety Services
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_Received_Support_Services__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        C1. Crisis intervention (in-person, includes safety planning, etc.)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.C1_Crisis_Intervention__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>C2. Hotline/crisis line counseling</td>
+      <td>
+        <apex:outputText
+          value="{!report.C2_HotlineCrisis_Line_counseling__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>C3. On-scene crisis response (e.g., community crisis response)</td>
+      <td>
+        <apex:outputText
+          value="{!report.C3_On_Scene_Crisis_Response__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>C4. Individual counseling</td>
+      <td>
+        <apex:outputText
+          value="{!report.C4_Individual_Counseling__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>C5. Support groups (facilitated or peer)</td>
+      <td>
+        <apex:outputText
+          value="{!report.C5_Support_Groups__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        C6. Other Therapy (traditional, cultural, or alternative healing; art,
+        writing, or play therapy, etc.)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.C6_Other_Therapy__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        C7. Emergency financial assistance (includes emergency loans and petty
+        cash, payment for items such as food and/or clothing, changing windows
+        and/or locks, taxis, prophylactic and nonprophylactic meds, durable
+        medical equipment, etc.)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.C7_Emergency_Financial_Assistance__c}"
+          rendered="{!report.Emotional_Support_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Emotional_Support_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Number of Individuals who received Shelter/Housing Services</td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_Received_Housing_Services__c}"
+          rendered="{!report.Shelter_Housing_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Shelter_Housing_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>D1. Emergency shelter or safe house</td>
+      <td>
+        <apex:outputText
+          value="{!report.D1_Emergency_Shelter_or_Safe_House__c}"
+          rendered="{!report.Shelter_Housing_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Shelter_Housing_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>D2. Transitional housing</td>
+      <td>
+        <apex:outputText
+          value="{!report.D2_Transitional_Housing__c}"
+          rendered="{!report.Shelter_Housing_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Shelter_Housing_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        D3. Relocation assistance (includes assistance with obtaining housing)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.D3_Relocation_Assistance__c}"
+          rendered="{!report.Shelter_Housing_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Shelter_Housing_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Number of Individuals who received Criminal/Civil Justice System
+        Assistance
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.Number_Received_Justice_System_Services__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        E1. Notification of criminal justice events (e.g., case status, arrest,
+        court proceedings, case disposition, release, etc.)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.E1_Notified_of_Criminal_Justice_Events__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>E2. Victim impact statement assistance</td>
+      <td>
+        <apex:outputText
+          value="{!report.E2_Victim_Impact_Statement_Assistance__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        E3. Assistance with restitution (includes assistance in requesting and
+        when collection efforts are not successful)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.E3_Assistance_with_Restitution__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        E4. Civil legal assistance in obtaining protection or restraining order
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.E4_Legal_Assist_with_Restraining_Order__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        E5. Civil legal assistance with family law issues (e.g., custody,
+        visitation, or support)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.E5_Legal_Assist_with_Family_Law__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>E6. Other emergency justice-related assistance</td>
+      <td>
+        <apex:outputText
+          value="{!report.E6_Emergency_Justice_Related_Assist__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        E7. Immigration assistance (e.g., special visas, continued presence
+        application, and other immigration relief)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.E7_Immigration_Assistance__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        E8. Prosecution interview advocacy/accompaniment (includes accompaniment
+        with prosecuting attorney and with victim/witness)
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.E8_Prosecution_Interview_Advocacy__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>E9. Law enforcement interview advocacy/accompaniment</td>
+      <td>
+        <apex:outputText
+          value="{!report.E9_Law_Enforcement_Interview__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>E10. Criminal advocacy/accompaniment</td>
+      <td>
+        <apex:outputText
+          value="{!report.E10_Criminal_Advocacy_or_Accompaniment__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>E11. Other legal advice and/or counsel</td>
+      <td>
+        <apex:outputText
+          value="{!report.E11_Other_Legal_Advice__c}"
+          rendered="{!report.Justice_System_Services_Provided__c}"
+        />
+        <apex:outputText
+          value="Not Provided"
+          rendered="{!NOT(report.Justice_System_Services_Provided__c)}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Additional Comments About Types of Services</td>
+      <td>
+        <apex:outputText
+          value="{!report.Types_of_Services_Additional_Info__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>9a. Please describe ongoing successes in your program</td>
+      <td><apex:outputText value="{!report.Ongoing_Successes__c}" /></td>
+    </tr>
+    <apex:outputPanel rendered="{!NOT(isFinalReport)}">
+      <tr>
+        <td>
+          9b. Are there challenges or barriers your victim services program has
+          faced, internal or external, that you did not anticipate? Please
+          describe
+        </td>
+        <td><apex:outputText value="{!report.Challenges_or_Barriers__c}" /></td>
+      </tr>
+    </apex:outputPanel>
+    <tr>
+      <td>
+        10a. Please describe additional topics for training or technical
+        assistance you would like to receive
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.Training_and_Technical_Assistance__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        10b. What is your preferred method of technical assistance delivery
+      </td>
+      <td>
+        <apex:outputText
+          value="{!report.Preferred_Method_of_T_TA_Delivery__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>11. Are you on Track?</td>
+      <td>
+        <apex:outputText
+          value="No"
+          rendered="{!NOT(report.On_Track_Fiscally__c)}"
+        />
+        <apex:outputText
+          value="Yes"
+          rendered="{!report.On_Track_Fiscally__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>Please Explain</td>
+      <td>
+        <apex:outputText
+          value="{!report.Fiscally_on_Track__c}"
+          rendered="{!NOT(report.On_Track_Fiscally__c)}"
+        />
+        <apex:outputText
+          value="N/A"
+          rendered="{!report.On_Track_Fiscally__c}"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        12. What are specific challenges or barriers facing victims of crime
+        during this time of COVID-19, or natural disasters?
+      </td>
+      <td><apex:outputText value="{!report.Challenges_During_COVID__c}" /></td>
+    </tr>
+    <tr>
+      <td>
+        13. Are there issues that are out of scope of the current funding stream
+        that are an ongoing need in your community?
+      </td>
+      <td><apex:outputText value="{!report.Issues_Out_of_Scope__c}" /></td>
+    </tr>
+    <apex:outputPanel rendered="{!isFinalReport}">
+      <tr>
+        <td>
+          14. Number of requests for services that were unmet because of
+          organizational capacity issues
+        </td>
+        <td>
+          <apex:outputText value="{!report.Number_of_Unmet_Requests__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>Please explain</td>
+        <td>
+          <apex:outputText value="{!report.Unmet_Requests_Explanation__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          15. Please describe some of the services that victims needed but you
+          could not provide. What were the challenges that prevented you from
+          providing those services
+        </td>
+        <td><apex:outputText value="{!report.Services_Not_Provided__c}" /></td>
+      </tr>
+      <tr>
+        <td>
+          16. Does your organization formally survey clients for feedback on
+          services received
+        </td>
+        <td>
+          <apex:outputText
+            value="Yes"
+            rendered="{!report.Clients_Surveyed_for_Feedback__c}"
+          />
+          <apex:outputText
+            value="No"
+            rendered="{!NOT(report.Clients_Surveyed_for_Feedback__c)}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>17. Number of surveys distributed</td>
+        <td>
+          <apex:outputText
+            value="{!report.Number_of_Surveys_Distributed__c}"
+            rendered="{!report.Clients_Surveyed_for_Feedback__c}"
+          />
+          <apex:outputText
+            value="N/A"
+            rendered="{!NOT(report.Clients_Surveyed_for_Feedback__c)}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>18. Number of surveys completed</td>
+        <td>
+          <apex:outputText
+            value="{!report.Number_of_Surveys_Completed__c}"
+            rendered="{report.Clients_Surveyed_for_Feedback__c}"
+          />
+          <apex:outputText
+            value="N/A"
+            rendered="{!NOT(report.Clients_Surveyed_for_Feedback__c)}"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          19. Please discuss some of the challenges your victim assistance
+          program faced during the course of the Federal fiscal year
+        </td>
+        <td>
+          <apex:outputText value="{!report.Challenges_During_Fiscal_Year__c}" />
+        </td>
+      </tr>
+      <tr>
+        <td>20. Please use this space to describe your Micro-grant program</td>
+        <td><apex:outputText value="{!report.Project_Description__c}" /></td>
+      </tr>
+      <tr>
+        <td>
+          21. Please use this space to describe the changes you have seen in
+          your community, since you began your Micro-grant program
+        </td>
+        <td><apex:outputText value="{!report.Changes_in_Community__c}" /></td>
+      </tr>
+    </apex:outputPanel>
+  </table>
+</apex:page>

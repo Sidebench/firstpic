@@ -1,0 +1,248 @@
+<apex:page controller="TAPlanCtrl" showHeader="false" sidebar="false">
+  <head>
+    <title>Technical Assistance Plan</title>
+  </head>
+  <c:NCAIHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!plan.Name}</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <h5>{!plan.Organization_Name__c}</h5>
+            </apex:outputPanel>
+            <apex:commandButton
+              action="mailto:microgrants@ncai.org"
+              value="Request Technical Assistance"
+              status="pageStatus"
+              styleClass="primary"
+              rendered="{!userAcctType != 'National Organization'}"
+            />
+            <apex:commandButton
+              action="{!updatePlan}"
+              value="Update Plan and Score"
+              status="pageStatus"
+              styleClass="primary"
+              rendered="{!userAcctType == 'National Organization' && readOnly}"
+            />
+          </div>
+        </div>
+        <br />
+
+        <c:CollapsiblePanel header="Current Technical Assistance Plan">
+          <div class="col-xs-10">
+            <strong> Compliance TA Plans from National: </strong>
+            <br />
+            <apex:outputField
+              value="{!plan.Compliance_TA_Plans_from_National__c}"
+              rendered="{!readOnly}"
+            />
+            <apex:inputField
+              value="{!plan.Compliance_TA_Plans_from_National__c}"
+              rendered="{!NOT(readOnly)}"
+            />
+
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <br />
+              <strong> Compliance TA Plans Internal Notes: </strong>
+              <br />
+              <apex:outputField
+                value="{!plan.Compliance_TA_Plans_Internal_Notes__c}"
+                rendered="{!readOnly}"
+              />
+              <apex:inputField
+                value="{!plan.Compliance_TA_Plans_Internal_Notes__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+            </apex:outputPanel>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <strong>
+                <span
+                  class="badge"
+                  title="0-No Needs          
+                                                           1-TBD 1          
+                                                           2-TBD 2          
+                                                           3-TBD 3          
+                                                           4-TBD 4          
+                                                           5-Urgent Needs"
+                  >?</span
+                >
+                Compliance TA Score:
+              </strong>
+              <br />
+              <apex:outputField
+                value="{!plan.Compliance_Score__c}"
+                rendered="{!readOnly}"
+              />
+              <apex:inputField
+                value="{!plan.Compliance_Score__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+            </apex:outputPanel>
+          </div>
+        </c:CollapsiblePanel>
+
+        <c:CollapsiblePanel
+          header="Finance Technical Assistance Plan"
+          startCollapsed="true"
+        >
+          <div class="col-xs-10">
+            <strong> Finance TA Plans from National: </strong>
+            <br />
+            <apex:outputField
+              value="{!plan.Finance_TA_Plans_from_National__c}"
+              rendered="{!readOnly}"
+            />
+            <apex:inputField
+              value="{!plan.Finance_TA_Plans_from_National__c}"
+              rendered="{!NOT(readOnly)}"
+            />
+
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <br />
+              <strong> Finance TA Plans Internal Notes: </strong>
+              <br />
+              <apex:outputField
+                value="{!plan.Finance_TA_Plans_Internal_Notes__c}"
+                rendered="{!readOnly}"
+              />
+              <apex:inputField
+                value="{!plan.Finance_TA_Plans_Internal_Notes__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+            </apex:outputPanel>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <strong>
+                <span
+                  class="badge"
+                  title="0-No Needs          
+                                                           1-TBD 1          
+                                                           2-TBD 2          
+                                                           3-TBD 3          
+                                                           4-TBD 4          
+                                                           5-Urgent Needs"
+                  >?</span
+                >
+                Finance TA Score:
+              </strong>
+              <br />
+              <apex:outputField
+                value="{!plan.Finance_Score__c}"
+                rendered="{!readOnly}"
+              />
+              <apex:inputField
+                value="{!plan.Finance_Score__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+            </apex:outputPanel>
+          </div>
+        </c:CollapsiblePanel>
+
+        <c:CollapsiblePanel
+          header="Program Technical Assistance Plan"
+          startCollapsed="true"
+        >
+          <div class="col-xs-10">
+            <strong> Program TA Plans from National: </strong>
+            <br />
+            <apex:outputField
+              value="{!plan.Program_TA_Plans_from_National__c}"
+              rendered="{!readOnly}"
+            />
+            <apex:inputField
+              value="{!plan.Program_TA_Plans_from_National__c}"
+              rendered="{!NOT(readOnly)}"
+            />
+
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <br />
+              <strong> Program TA Plans Internal Notes: </strong>
+              <br />
+              <apex:outputField
+                value="{!plan.Program_TA_Plans_Internal_Notes__c}"
+                rendered="{!readOnly}"
+              />
+              <apex:inputField
+                value="{!plan.Program_TA_Plans_Internal_Notes__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+            </apex:outputPanel>
+          </div>
+          <div class="col-auto pull-right">
+            <apex:outputPanel
+              rendered="{!userAcctType == 'National Organization'}"
+            >
+              <strong>
+                <span
+                  class="badge"
+                  title="0-No Needs          
+                                                           1-TBD 1          
+                                                           2-TBD 2          
+                                                           3-Urgent Needs"
+                  >?</span
+                >
+                Program TA Score:
+              </strong>
+              <br />
+              <apex:outputField
+                value="{!plan.Program_Score__c}"
+                rendered="{!readOnly}"
+              />
+              <apex:inputField
+                value="{!plan.Program_Score__c}"
+                rendered="{!NOT(readOnly)}"
+              />
+            </apex:outputPanel>
+          </div>
+        </c:CollapsiblePanel>
+
+        <apex:commandButton
+          action="{!updatePlan}"
+          value="Update Plan and Score"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!userAcctType == 'National Organization' && readOnly}"
+        />
+        <apex:commandButton
+          action="{!savePlan}"
+          value="Save Plan and Score"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!userAcctType == 'National Organization' && NOT(readOnly)}"
+        />
+        <apex:commandLink
+          value="Export TA Plan to PDF"
+          action="{!URLFOR($Site.Prefix+'/TAPlanPDF?planId='+plan.Id)}"
+          styleClass="btn"
+          target="_blank"
+        />
+
+        <apex:pageMessages />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

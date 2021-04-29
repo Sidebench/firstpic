@@ -1,0 +1,161 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+    required="true"
+  />
+  <apex:attribute
+    type="String"
+    name="header"
+    description="header"
+    required="true"
+  />
+  <apex:attribute
+    type="Program_Report__c[]"
+    name="report_list"
+    description="PA Log List"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showSiteCol"
+    description="showSiteCol"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    description="Show More Link?"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isDashboard"
+    description="isDashboard"
+    default="false"
+  />
+  <apex:attribute type="String" name="listType" description="List Type" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel
+        rendered="{!report_list != null && report_list.size > 0}"
+      >
+        <table width="100%">
+          <tr>
+            <th>Report Title</th>
+            <th style="{!IF(showSiteCol,'','width: 0;')}">
+              <apex:outputText value="Site" rendered="{!showSiteCol}" />
+            </th>
+            <th
+              style="{!IF(NOT(isDashboard) && showSiteCol && userAcctType == 'National Organization','','width: 0;')}"
+            >
+              <apex:outputText
+                value="Organization"
+                rendered="{!NOT(isDashboard) && showSiteCol && userAcctType == 'National Organization'}"
+              />
+            </th>
+            <!--
+                        <th style="{!IF(isDashboard, 'width: 0', '')}">
+                            <apex:outputText value="Grant" rendered="{!NOT(isDashboard)}" />
+                        </th>
+						-->
+            <th>Month</th>
+            <th>Year</th>
+            <th style="{!IF(isDashboard, 'width: 0', '')}">
+              <apex:outputText
+                value="Days Open"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF(isDashboard, 'width: 0', '')}">
+              <apex:outputText
+                value="# of Boys / Average"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF(isDashboard, 'width: 0', '')}">
+              <apex:outputText
+                value="# of Girls / Average"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th style="{!IF(isDashboard, 'width: 0', '')}">
+              <apex:outputText
+                value="Minutes / Average"
+                rendered="{!NOT(isDashboard)}"
+              />
+            </th>
+            <th>Status</th>
+          </tr>
+          <apex:repeat value="{!report_list}" var="i">
+            <tr>
+              <td>
+                <apex:commandLink
+                  value="{!i.Name}"
+                  action="{!URLFOR($Site.Prefix+'/PALogs?reportId='+ i.Id)}"
+                />
+              </td>
+              <td>
+                <apex:outputText
+                  value="{!i.Site_Name__c}"
+                  rendered="{!showSiteCol}"
+                />
+              </td>
+              <td>
+                <apex:outputText
+                  value="{!i.Org_Name__c}"
+                  rendered="{!NOT(isDashboard) && showSiteCol && userAcctType == 'National Organization'}"
+                />
+              </td>
+              <!--
+                            <td>
+                                <apex:outputText value="{!i.Grant_Name__c}" rendered="{!NOT(isDashboard)}" />
+                            </td>
+							-->
+              <td>{!i.Month__c}</td>
+              <td>{!i.Year__c}</td>
+              <td>
+                <apex:outputText
+                  value="{!i.Total_Days_Reported_Open__c}"
+                  rendered="{!NOT(isDashboard)}"
+                />
+              </td>
+              <td>
+                <apex:outputPanel rendered="{!NOT(isDashboard)}">
+                  {!i.Total_Number_of_Boys__c} / {!i.Average_Number_of_Boys__c}
+                </apex:outputPanel>
+              </td>
+              <td>
+                <apex:outputPanel rendered="{!NOT(isDashboard)}">
+                  {!i.Total_Number_of_Girls__c} /
+                  {!i.Average_Number_of_Girls__c}
+                </apex:outputPanel>
+              </td>
+              <td>
+                <apex:outputPanel rendered="{!NOT(isDashboard)}">
+                  {!i.Total_Daily_Minutes__c} / {!i.Average_Minutes_per_Day__c}
+                </apex:outputPanel>
+              </td>
+              <td>{!i.Status__c}</td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel
+        rendered="{!report_list == null || report_list.size == 0}"
+      >
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <a href="{!URLFOR($Site.Prefix+'/'+'MonthlyPALogs?type='+listType)}">
+          View All &raquo;
+        </a>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

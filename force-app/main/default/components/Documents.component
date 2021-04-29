@@ -1,0 +1,684 @@
+<apex:component controller="DocumentCtrl" allowDML="true">
+  <apex:attribute type="String" name="header" description="header" />
+  <apex:attribute type="String" name="groupId" description="groupId" />
+  <apex:attribute
+    type="String"
+    name="newDocGroupId"
+    description="newDocGroupId"
+  />
+  <apex:attribute type="String[]" name="fileNames" description="fileNames[]" />
+  <apex:attribute
+    type="String"
+    name="emptyListText"
+    description="Text displayed if doc_list is empty"
+  />
+  <apex:attribute type="String" name="infoTxt" description="infoTxt" />
+  <apex:attribute
+    type="Boolean"
+    name="showYearOptions"
+    description="showYearOptions"
+    default="false"
+  />
+  <apex:attribute type="String" name="year" description="year" />
+  <apex:attribute type="String[]" name="years" description="years[]" />
+  <apex:attribute
+    type="Boolean"
+    name="enableEditDoc"
+    description="enableEditDoc"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="enableDeleteDoc"
+    description="enableDeleteDoc"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="enableDeleteAtt"
+    description="enableDeleteAtt"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showAttPopupOnly"
+    description="showAttPopupOnly"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showAttCreatedDate"
+    description="showAttCreatedDate"
+    default="false"
+  />
+  <apex:attribute type="Boolean" name="showStatus" description="showStatus" />
+  <apex:attribute
+    type="Boolean"
+    name="statusReadOnly"
+    description="statusReadOnly"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showNotesForNational"
+    description="showNotesForNational"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showModHist"
+    description="showModHist"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showRequired"
+    description="showRequired"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showDueDate"
+    description="showDueDate"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showAccessMode"
+    description="showAccessMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="hasAdmin"
+    description="hasAdmin"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showGroup"
+    description="showGroup"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showWarning"
+    description="showWarning"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showUploadBtn"
+    description="showUploadBtn"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showDefaultCloseBtn"
+    description="showDefaultCloseBtn"
+    default="true"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="close"
+    description="Close Btn Action"
+    required="false"
+  />
+
+  <apex:outputPanel id="docs">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <apex:outputPanel rendered="{!showYearOptions}" styleClass="pull-right">
+          &nbsp;&nbsp; Year: &nbsp;
+          <apex:selectList value="{!year}" size="1">
+            <apex:selectOptions value="{!yearOptions}" />
+          </apex:selectList>
+          &nbsp;&nbsp;
+          <apex:commandButton
+            action="{!getLists}"
+            value="Update"
+            status="pageStatus"
+            styleClass="btn-small primary"
+            reRender="list"
+          />
+        </apex:outputPanel>
+        <apex:outputText
+          value="{!IF(header != null, header, 'Attachments')}"
+          escape="false"
+        />
+        {!doc_list.size}
+      </div>
+      <apex:outputPanel id="list">
+        <div class="panel-body">
+          <apex:outputPanel rendered="{!doc_list.size > 0}">
+            <table width="100%" class="tblWithBorders">
+              <tr>
+                <th
+                  style="{!IF(enableDeleteDoc,'width: 20px;','width: 0;')}"
+                ></th>
+                <th>Name</th>
+                <th style="{!IF(showDueDate,'width: 100px;','width: 0;')}">
+                  <apex:outputText value="Due Date" rendered="{!showDueDate}" />
+                </th>
+                <th style="{!IF(showStatus,'width: 100px;','width: 0;')}">
+                  <apex:outputText value="Status" rendered="{!showStatus}" />
+                </th>
+                <th
+                  class="text-center"
+                  style="{!IF(showRequired,'width: 100px;','width: 0;')}"
+                >
+                  <apex:outputText
+                    value="Required"
+                    rendered="{!showRequired}"
+                  />
+                </th>
+                <th
+                  class="text-center"
+                  style="{!IF(showAccessMode,'width: 100px;','width: 0;')}"
+                >
+                  <apex:outputText
+                    value="Access Mode"
+                    rendered="{!showAccessMode}"
+                  />
+                </th>
+                <th
+                  class="text-center"
+                  style="{!IF(showAccessMode,'width: 100px;','width: 0;')}"
+                >
+                  <apex:outputText
+                    value="Status Updated by Admin Only"
+                    rendered="{!showAccessMode}"
+                  />
+                </th>
+                <th style="{!IF(showGroup,'','width: 0;')}">
+                  <apex:outputText value="Group" rendered="{!showGroup}" />
+                </th>
+                <th>Notes</th>
+                <th style="{!IF(showNotesForNational,'','width: 0;')}">
+                  <apex:outputText
+                    value="Notes for National"
+                    rendered="{!showNotesForNational}"
+                  />
+                </th>
+                <th
+                  class="text-center"
+                  style="{!IF(enableEditDoc,'width: 50px;','width: 0;')}"
+                >
+                  <apex:outputText
+                    value="Edit/Upload"
+                    rendered="{!enableEditDoc}"
+                  />
+                </th>
+                <th>View Attachment(s)</th>
+              </tr>
+              <apex:repeat value="{!doc_list}" var="i">
+                <tr>
+                  <td>
+                    <apex:commandLink
+                      action="{!showDeleteDocPopup}"
+                      rendered="{!enableDeleteDoc}"
+                      reRender="deleteDocPopup"
+                    >
+                      <span class="glyphicon glyphicon-remove-circle" />
+                      <apex:param
+                        assignTo="{!selectedDocId}"
+                        name="selectedDocId"
+                        value="{!i.Id}"
+                      />
+                    </apex:commandLink>
+                  </td>
+                  <td>{!i.Name}</td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.Due_Date__c}"
+                      rendered="{!showDueDate}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputText
+                      value="{!i.Status__c}"
+                      rendered="{!showStatus}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:outputField
+                      value="{!i.Required__c}"
+                      rendered="{!showRequired}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:outputField
+                      value="{!i.Access_Mode__c}"
+                      rendered="{!showAccessMode}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:outputField
+                      value="{!i.Status_Updated_by_Admin_Only__c}"
+                      rendered="{!showAccessMode}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputText
+                      value="{!i.Group_Id__c}"
+                      rendered="{!showGroup}"
+                    />
+                  </td>
+                  <td>{!i.Notes__c}</td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.Notes_for_National__c}"
+                      rendered="{!showNotesForNational}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:commandLink
+                      action="{!showDocPopup}"
+                      status="pageStatus"
+                      reRender="docPopup"
+                      rendered="{!enableEditDoc && (i.Access_Mode__c == null || userAcctType == 'National Organization')}"
+                    >
+                      <span class="glyphicon glyphicon-pencil"></span>
+                      <apex:param
+                        assignTo="{!selectedDocId}"
+                        name="selectedDocId"
+                        value="{!i.Id}"
+                      />
+                      <apex:param
+                        assignTo="{!isNewDoc}"
+                        name="isNewDoc"
+                        value="false"
+                      />
+                      <apex:param
+                        assignTo="{!attachNewDoc}"
+                        name="attachNewDoc"
+                        value="false"
+                      />
+                    </apex:commandLink>
+                  </td>
+                  <td>
+                    <apex:repeat value="{!att_list}" var="a">
+                      <apex:outputPanel rendered="{!a.ParentId == i.Id}">
+                        <apex:commandLink
+                          action="{!showDeleteAttPopup}"
+                          rendered="{!enableDeleteAtt}"
+                          reRender="deleteAttPopup"
+                        >
+                          <span class="glyphicon glyphicon-remove-circle" />
+                          <apex:param
+                            assignTo="{!selectedAttId}"
+                            name="selectedAttId"
+                            value="{!a.Id}"
+                          />
+                          &nbsp;
+                        </apex:commandLink>
+                        <apex:outputLink
+                          value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                          target="_blank"
+                          >{!a.Name}</apex:outputLink
+                        >
+                        <apex:outputText
+                          value=" ({!a.Description})"
+                          style="font-size: 0.9em; color: #555"
+                          rendered="{!a.Description != null}"
+                        />
+                        <apex:outputText
+                          value=" {!a.CreatedDate}"
+                          style="font-size: 0.9em; color: #555"
+                          rendered="{!showAttCreatedDate}"
+                        />
+                        &nbsp;&nbsp;
+                      </apex:outputPanel>
+                    </apex:repeat>
+                    <apex:outputText
+                      value="No Attachments Found"
+                      styleClass="text-warning"
+                      rendered="{!showWarning && userAcctType != 'National Organization' && i.Has_Attachments__c == false}"
+                    />
+                  </td>
+                </tr>
+              </apex:repeat>
+            </table>
+            <apex:outputPanel rendered="{!infoTxt != '' && infoTxt != null}">
+              <h6 style="margin: 20px 0 0">{!infoTxt}</h6>
+            </apex:outputPanel>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!doc_list.size == 0}">
+            <apex:outputText
+              value="{!IF(emptyListText != '', emptyListText, 'No Attachments Found')}"
+            />
+          </apex:outputPanel>
+          <apex:componentBody />
+        </div>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showUploadBtn}">
+        <div class="panel-footer">
+          <apex:commandButton
+            action="{!showDocPopup}"
+            value="Upload Attachment"
+            status="pageStatus"
+            reRender="docPopup"
+          >
+            <apex:param assignTo="{!isNewDoc}" name="isNewDoc" value="true" />
+            <apex:param
+              assignTo="{!attachNewDoc}"
+              name="attachNewDoc"
+              value="false"
+            />
+          </apex:commandButton>
+        </div>
+      </apex:outputPanel>
+    </div>
+
+    <apex:outputPanel id="docPopup">
+      <apex:outputPanel
+        styleClass="popupBackground"
+        layout="block"
+        rendered="{!displayDocPopup}"
+      />
+      <apex:outputPanel
+        styleClass="custPopup"
+        layout="block"
+        rendered="{!displayDocPopup}"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">
+                <apex:outputText
+                  value="Edit {!selectedDoc.Name}"
+                  rendered="{!isNewDoc != true}"
+                />
+                <apex:outputText
+                  value="Add New Document"
+                  rendered="{!isNewDoc == true}"
+                />
+              </h4>
+            </div>
+            <div class="modal-body">
+              <apex:outputPanel
+                rendered="{!attachNewDoc == false && NOT(showAttPopupOnly)}"
+              >
+                <div class="row">
+                  <div class="col-xs-6" style="padding-bottom: 10px">
+                    <apex:selectList
+                      value="{!selectedDoc.Name}"
+                      size="1"
+                      styleClass="input-md"
+                      rendered="{!names_list.size > 0}"
+                    >
+                      <apex:selectOptions value="{!names_list}" />
+                    </apex:selectList>
+                    <apex:outputPanel
+                      rendered="{!names_list.size == 0 || names_list == null}"
+                    >
+                      <strong>Name: </strong>
+                      <apex:inputText value="{!selectedDoc.Name}" />
+                    </apex:outputPanel>
+                  </div>
+                  <apex:outputPanel rendered="{!showDueDate}">
+                    <div class="col-xs-6" style="padding-bottom: 10px">
+                      <strong>Due Date: </strong>
+                      <apex:input
+                        type="date"
+                        value="{!dueDate}"
+                        style="display: block"
+                      />
+                    </div>
+                  </apex:outputPanel>
+                  <apex:outputPanel id="status" rendered="{!showStatus}">
+                    <div class="col-xs-6" style="padding-bottom: 10px">
+                      <strong>Status: </strong>
+                      <apex:outputPanel
+                        rendered="{!statusReadOnly == false && (selectedDoc.Status_Updated_by_Admin_Only__c == false || (selectedDoc.Status_Updated_by_Admin_Only__c == true && CONTAINS(approverLevel, 'Admin')))}"
+                      >
+                        <apex:inputField
+                          value="{!selectedDoc.Status__c}"
+                          style="display: block"
+                        >
+                          <apex:actionsupport
+                            event="onchange"
+                            rerender="status"
+                          />
+                        </apex:inputField>
+                      </apex:outputPanel>
+                      <apex:outputPanel
+                        rendered="{!statusReadOnly == true || (selectedDoc.Status_Updated_by_Admin_Only__c == true && NOT(CONTAINS(approverLevel, 'Admin')))}"
+                      >
+                        <div style="margin: 4px 0">
+                          <apex:outputField value="{!selectedDoc.Status__c}" />
+                        </div>
+                      </apex:outputPanel>
+                    </div>
+                    <apex:outputPanel
+                      rendered="{!selectedDoc.Status__c == 'Sent Back'}"
+                    >
+                      <div class="col-xs-6" style="padding-bottom: 10px">
+                        <strong>Recipient: </strong>
+                        <apex:inputField
+                          value="{!selectedDoc.Recipient__c}"
+                          style="display: block"
+                        />
+                      </div>
+                    </apex:outputPanel>
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!showAccessMode}">
+                    <div class="col-xs-6" style="padding-bottom: 10px">
+                      <strong>Access Mode: </strong>
+                      <apex:selectList
+                        id="chooseColor"
+                        value="{!selectedDoc.Access_Mode__c}"
+                        size="1"
+                        rendered="{!showAccessMode}"
+                      >
+                        <apex:selectOption itemValue="" itemLabel="None" />
+                        <apex:selectOption
+                          itemValue="Local Read Only"
+                          itemLabel="Local Read Only"
+                        />
+                        <apex:selectOption
+                          itemValue="National Access Only"
+                          itemLabel="National Access Only"
+                        />
+                        <apex:selectOption
+                          itemValue="National L2a/L3a Access Only"
+                          itemLabel="National L2a/L3a Access Only"
+                          rendered="{!hasAdmin == true}"
+                        />
+                      </apex:selectList>
+                    </div>
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!showAccessMode}">
+                    <div class="col-xs-6" style="padding-bottom: 10px">
+                      <strong>Status Updated by Admin Only: </strong>
+                      <apex:inputField
+                        value="{!selectedDoc.Status_Updated_by_Admin_Only__c}"
+                      />
+                    </div>
+                  </apex:outputPanel>
+                  <apex:outputPanel rendered="{!showRequired}">
+                    <div class="col-xs-6" style="padding-bottom: 10px">
+                      <strong>Required: </strong>
+                      <apex:inputField value="{!selectedDoc.Required__c}" />
+                    </div>
+                  </apex:outputPanel>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12" style="padding-bottom: 10px">
+                    <strong>Notes: </strong>
+                    <apex:inputField
+                      value="{!selectedDoc.Notes__c}"
+                      style="height: 40px"
+                    />
+                  </div>
+                </div>
+                <apex:outputPanel rendered="{!showNotesForNational}">
+                  <div class="row">
+                    <div class="col-xs-12" style="padding-bottom: 10px">
+                      <strong>Notes for National: </strong>
+                      <apex:inputField
+                        value="{!selectedDoc.Notes_for_National__c}"
+                        style="height: 40px"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!showModHist && NOT(isNewDoc)}">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <strong>Modification History: </strong><br />
+                      <apex:outputField
+                        value="{!selectedDoc.Modification_History__c}"
+                      />
+                    </div>
+                  </div>
+                </apex:outputPanel>
+              </apex:outputPanel>
+              <apex:outputPanel
+                rendered="{!attachNewDoc == true || showAttPopupOnly}"
+              >
+                <div class="row">
+                  <div class="col-xs-12" style="padding-top: 20px">
+                    <iframe
+                      id="attachmentIFrame"
+                      frameborder="0"
+                      width="100%"
+                      height="250px"
+                      src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ selectedDoc.id)}"
+                    >
+                    </iframe>
+                  </div>
+                </div>
+              </apex:outputPanel>
+              <c:ErrorMessage errorMessage="{!errorMessage}" />
+            </div>
+            <div class="modal-footer">
+              <apex:commandButton
+                action="{!cancelDocPopup}"
+                value="Close"
+                status="pageStatus"
+                rendered="{!showDefaultCloseBtn == true}"
+              />
+              <apex:commandButton
+                action="{!close}"
+                value="Close"
+                status="pageStatus"
+                rendered="{!showDefaultCloseBtn == false}"
+              />
+              <apex:outputPanel
+                rendered="{!attachNewDoc == false && NOT(showAttPopupOnly)}"
+              >
+                <apex:commandButton
+                  action="{!saveDoc}"
+                  value="Save and Close"
+                  oncomplete="top.location.reload(true);"
+                />
+                <apex:commandButton
+                  action="{!saveAndContinue}"
+                  value="Upload New Attachment"
+                  status="pageStatus"
+                  styleClass="primary"
+                  reRender="docPopup"
+                />
+              </apex:outputPanel>
+            </div>
+          </div>
+        </div>
+      </apex:outputPanel>
+    </apex:outputPanel>
+
+    <apex:outputPanel id="deleteDocPopup">
+      <apex:outputPanel
+        styleClass="popupBackground"
+        layout="block"
+        rendered="{!displayDeleteDocPopup}"
+      />
+      <apex:outputPanel
+        styleClass="custPopup"
+        layout="block"
+        rendered="{!displayDeleteDocPopup}"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Delete {!selectedDoc.Name}</h4>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete this document? This cannot be
+              undone.
+            </div>
+            <div class="modal-footer">
+              <apex:commandButton
+                action="{!cancelDeleteDocPopup}"
+                value="Cancel"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                action="{!deleteDoc}"
+                value="Delete"
+                status="pageStatus"
+              />
+            </div>
+          </div>
+        </div>
+      </apex:outputPanel>
+    </apex:outputPanel>
+  </apex:outputPanel>
+
+  <apex:outputPanel id="deleteAttPopup">
+    <apex:outputPanel
+      styleClass="popupBackground"
+      layout="block"
+      rendered="{!displayDeleteAttPopup}"
+    />
+    <apex:outputPanel
+      styleClass="custPopup"
+      layout="block"
+      rendered="{!displayDeleteAttPopup}"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Delete {!selectedAtt.Name}</h4>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this attachment? This cannot be
+            undone.
+          </div>
+          <div class="modal-footer">
+            <apex:commandButton
+              action="{!cancelDeleteAttPopup}"
+              value="Cancel"
+              status="pageStatus"
+            />
+            <apex:commandButton
+              action="{!deleteAtt}"
+              value="Delete"
+              status="pageStatus"
+            />
+          </div>
+        </div>
+      </div>
+    </apex:outputPanel>
+  </apex:outputPanel>
+
+  <apex:actionFunction
+    name="setParams"
+    action="{!setParams}"
+    status="pageStatus"
+    rerender="docs"
+  >
+    <apex:param assignTo="{!groupId}" name="groupId" value="{!groupId}" />
+    <apex:param
+      assignTo="{!newDocGroupId}"
+      name="newDocGroupId"
+      value="{!newDocGroupId}"
+    />
+    <apex:param assignTo="{!fileNames}" name="fileNames" value="{!fileNames}" />
+    <apex:param assignTo="{!years}" name="years" value="{!years}" />
+    <apex:param assignTo="{!year}" name="year" value="{!year}" />
+  </apex:actionFunction>
+  <script>
+    window.onload = function () {
+      setParams();
+    };
+  </script>
+</apex:component>

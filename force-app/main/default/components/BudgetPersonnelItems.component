@@ -1,0 +1,668 @@
+<apex:component allowDML="true">
+  <apex:attribute
+    type="BudgetCtrl"
+    name="ctrl"
+    description="BudgetCtrl"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isEditMode"
+    description="isEditMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isReviewMode"
+    description="isReviewMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showAddItems"
+    description="showAddItems"
+    default="false"
+  />
+
+  <style>
+    .checkImg {
+      margin-left: -5px;
+    }
+  </style>
+
+  <apex:outputPanel id="items">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Personnel
+        <div class="pull-right">
+          <apex:commandButton
+            value="Mark Inactive"
+            action="{!ctrl.markPersonnelInactive}"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!isEditMode}"
+          />
+          <apex:commandButton
+            value="Delete"
+            action="{!ctrl.deleteLaborItems}"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!isEditMode && NOT(ctrl.hasReimbursements)}"
+          />
+        </div>
+      </div>
+      <div class="panel-body">
+        <table class="tblWithBorders" width="100%">
+          <tr>
+            <th style="{!IF((isEditMode),'width: 20px;','width: 0;')}"></th>
+            <th style="min-width: 100px">Title</th>
+            <th style="{!IF(isEditMode,'width: 0;','')}">
+              <apex:outputText value="Active" rendered="{!isReviewMode}" />
+            </th>
+            <th>Hourly/Salary</th>
+            <th>Rate/Salary</th>
+            <th style="{!IF((isEditMode),'','width: 0;')}">
+              <apex:outputText value="Total Hrs/Wk" rendered="{!isEditMode}" />
+            </th>
+            <th>
+              <apex:outputText value="Grant Hrs/Wk" />
+            </th>
+            <th>Wks on Grant</th>
+            <th style="{!IF((isEditMode),'text-align: center;','')}">
+              % on Grant
+            </th>
+            <th
+              style="{!IF(NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending'),'width: 0;','')}"
+            >
+              <apex:outputText
+                value="New Item Budget"
+                rendered="{!NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')}"
+              />
+            </th>
+            <th style="{!IF((NOT(isEditMode)),'','text-align: center;')}">
+              Amount Allocated
+            </th>
+            <th style="{!IF((NOT(isEditMode)),'','width: 0;')}">
+              <apex:outputText
+                value="Requested Amount"
+                rendered="{!NOT(isEditMode)}"
+              />
+            </th>
+            <th style="{!IF((NOT(isEditMode)),'','width: 0;')}">
+              <apex:outputText
+                value="Approved Amount"
+                rendered="{!NOT(isEditMode)}"
+              />
+            </th>
+            <th style="{!IF((NOT(isEditMode)),'','width: 0;')}">
+              <apex:outputText value="Balance" rendered="{!NOT(isEditMode)}" />
+            </th>
+            <th class="text-center" style="width: 60px">Notes</th>
+          </tr>
+          <apex:repeat value="{!ctrl.laborItem_list}" var="i">
+            <tr>
+              <td>
+                <apex:inputCheckbox
+                  value="{!i.Selected__c}"
+                  style="margin-left: -2px"
+                  rendered="{!i.Is_Active__c && isEditMode}"
+                />&nbsp;
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Name}"
+                  rendered="{!NOT(i.Is_Active__c) || NOT(isEditMode) || i.Original_Budget_Item__c != null}"
+                />
+                <apex:inputField
+                  value="{!i.Name}"
+                  rendered="{!i.Is_Active__c && isEditMode && i.Original_Budget_Item__c == null}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Is_Active__c}"
+                  rendered="{!NOT(isEditMode)}"
+                />
+              </td>
+              <td>
+                <apex:outputText
+                  value="Hourly"
+                  rendered="{!(NOT(i.Is_Active__c) || NOT(isEditMode)) && i.Is_Hourly__c}"
+                />
+                <apex:outputText
+                  value="Salary"
+                  rendered="{!(NOT(i.Is_Active__c) || NOT(isEditMode)) && NOT(i.Is_Hourly__c)}"
+                />
+                <apex:selectList
+                  value="{!i.Is_Hourly__c}"
+                  size="1"
+                  rendered="{!i.Is_Active__c && isEditMode}"
+                >
+                  <apex:selectOption itemValue="true" itemLabel="Hourly" />
+                  <apex:selectOption itemValue="false" itemLabel="Salary" />
+                </apex:selectList>
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.New_Rate__c }"
+                  rendered="{!NOT(i.Is_Active__c) || NOT(isEditMode)}"
+                />
+                <apex:inputField
+                  value="{!i.New_Rate__c}"
+                  rendered="{!i.Is_Active__c && isEditMode}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Projected_Hours_Per_Week__c}"
+                  rendered="{!NOT(i.Is_Active__c) && isEditMode}"
+                />
+                <apex:inputText
+                  value="{!i.Projected_Hours_Per_Week__c}"
+                  rendered="{!i.Is_Active__c && isEditMode}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                  rendered="{!NOT(i.Is_Active__c) || NOT(isEditMode)}"
+                />
+                <apex:inputText
+                  value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                  rendered="{!i.Is_Active__c && isEditMode}"
+                />
+              </td>
+              <td>
+                <apex:outputField
+                  value="{!i.Number_of_Weeks_on_Grant__c}"
+                  rendered="{!NOT(i.Is_Active__c) || NOT(isEditMode)}"
+                />
+                <apex:inputField
+                  value="{!i.Number_of_Weeks_on_Grant__c}"
+                  rendered="{!i.Is_Active__c && isEditMode}"
+                />
+              </td>
+              <td style="{!IF((isEditMode),'text-align: center;','')}">
+                <apex:outputField
+                  value="{!i.Projected_Percent_Time_on_Grant__c}"
+                />
+              </td>
+              <td
+                style="{!IF((i.New_Wages__c != i.Wages__c),'font-weight: bold;','')}"
+              >
+                <apex:outputfield
+                  value="{!i.New_Wages__c}"
+                  rendered="{!NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')}"
+                />
+              </td>
+              <td style="{!IF((isEditMode),'text-align: center;','')}">
+                <apex:outputfield value="{!i.Wages__c}"
+                rendered="{!NOT(isEditMode) && NOT( ctrl.grant.Grant_Status__c
+                == 'Incomplete') && NOT(CONTAINS(ctrl.grant.Grant_Status__c,
+                "Pending")) && ctrl.grant.Grant_Status__c != 'Revisions
+                Needed'}" /> <apex:outputfield value="{!i.New_Wages__c}"
+                rendered="{!isEditMode || ctrl.grant.Grant_Status__c ==
+                'Incomplete' || CONTAINS(ctrl.grant.Grant_Status__c, "Pending")
+                || ctrl.grant.Grant_Status__c == 'Revisions Needed'}" />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.Total_Requested_Salary__c}"
+                  rendered="{!NOT(isEditMode)}"
+                />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.Total_Approved_Salary__c}"
+                  rendered="{!NOT(isEditMode)}"
+                />
+              </td>
+              <td>
+                <apex:outputfield
+                  value="{!i.Labor_Balance__c}"
+                  rendered="{!NOT(isEditMode)}"
+                />
+              </td>
+              <td class="text-center">
+                <apex:commandLink
+                  action="{!ctrl.showLaborNotesPopup}"
+                  status="pageStatus"
+                  reRender="laborNotesPopup"
+                >
+                  <apex:param
+                    assignTo="{!ctrl.selectedItemId}"
+                    name="selectedItemId"
+                    value="{!i.Id}"
+                  />
+                  <apex:param
+                    assignTo="{!ctrl.selectedItemType}"
+                    name="selectedItemType"
+                    value="newLabor"
+                  />
+                  <apex:outputText rendered="{!i.Has_Notes__c == true}">
+                    <span class="glyphicon glyphicon-comment"></span>
+                  </apex:outputText>
+                  <apex:outputText
+                    value="+"
+                    rendered="{!i.Has_Notes__c == false}"
+                  />
+                </apex:commandLink>
+                <apex:outputPanel id="laborNotesPopup">
+                  <c:NotesPopup
+                    displayNotesPopup="{!ctrl.displayLaborNotesPopup}"
+                    userAcctType="{!ctrl.userAcctType}"
+                    itemName="{!i.Name}"
+                    localNote="{!i.Item_Note__c}"
+                    nationalNote="{!i.Response__c}"
+                  >
+                    <apex:commandButton
+                      action="{!ctrl.hideLaborNotesPopup}"
+                      value="Close"
+                      status="pageStatus"
+                    />
+                    <apex:commandButton
+                      action="{!ctrl.upsertItem}"
+                      value="Save"
+                      status="pageStatus"
+                      styleClass="primary"
+                    />
+                  </c:NotesPopup>
+                </apex:outputPanel>
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </div>
+    </div>
+
+    <c:FringeItems
+      type="budget"
+      budgetCtrl="{!ctrl}"
+      isEditMode="{!isEditMode}"
+      isReviewMode="{!isReviewMode}"
+    >
+      <apex:outputPanel rendered="{!NOT(isEditMode)}">
+        <div class="fringeTotals">
+          <table width="100%" class="text-center">
+            <tr>
+              <th></th>
+              <th
+                class="text-center"
+                style="{!IF((NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')),'width: 200px;','width: 0;')}"
+              >
+                <apex:outputText
+                  value="New Fringe Benefits"
+                  rendered="{!NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')}"
+                />
+              </th>
+              <th
+                class="text-center"
+                style="{!IF((NOT(isEditMode)),'width: 200px;','width: 0;')}"
+              >
+                <apex:outputText value="Benefits Allocated to Grant" />
+              </th>
+              <th
+                class="text-center"
+                style="{!IF((NOT(isEditMode)),'width: 200px;','width: 0;')}"
+              >
+                <apex:outputText value="Requested Benefits" />
+              </th>
+              <th
+                class="text-center"
+                style="{!IF((NOT(isEditMode)),'width: 200px;','width: 0;')}"
+              >
+                <apex:outputText value="Approved Benefits" />
+              </th>
+              <th
+                class="text-center"
+                style="{!IF((NOT(isEditMode)),'width: 120px;','width: 0;')}"
+              >
+                <apex:outputText value="Balance" />
+              </th>
+            </tr>
+            <tr>
+              <td></td>
+              <td
+                style="{!IF((i.New_Fringe_Benefits__c != i.Fringe_Benefits__c),'font-weight: bold;','')}"
+              >
+                <apex:outputField
+                  value="{!i.New_Fringe_Benefits__c}"
+                  rendered="{!NOT(isEditMode) && CONTAINS(ctrl.grant.Grant_Status__c, 'Pending')}"
+                />
+              </td>
+              <td>
+                <apex:outputField value="{!i.Fringe_Benefits__c}" />
+              </td>
+              <td>
+                <apex:outputfield value="{!i.Total_Requested_Benefits__c}" />
+              </td>
+              <td>
+                <apex:outputfield value="{!i.Total_Approved_Benefits__c}" />
+              </td>
+              <td>
+                <apex:outputfield value="{!i.Fringe_Balance__c}" />
+              </td>
+            </tr>
+          </table>
+        </div>
+      </apex:outputPanel>
+    </c:FringeItems>
+  </apex:outputPanel>
+
+  <apex:outputPanel id="newItems" rendered="{!showAddItems}">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Add Personnel
+        <div class="pull-right">
+          <apex:commandButton
+            value="Delete"
+            action="{!ctrl.deleteNewLaborItems}"
+            status="pageStatus"
+            styleClass="btn-small btn-white"
+            rendered="{!isEditMode}"
+          />
+        </div>
+      </div>
+      <div class="panel-body fringe">
+        <apex:repeat value="{!ctrl.newLaborItem_list}" var="i">
+          <table style="width: 100%; border-bottom: none">
+            <tr>
+              <th style="width: 20px"></th>
+              <th>Title</th>
+              <th>Hourly/Salary</th>
+              <th>Rate/Annual Salary</th>
+              <th>Total Hrs/Wk</th>
+              <th>Grant Hrs/Wk</th>
+              <th># Weeks on Grant</th>
+              <th class="text-center">% Time on Grant</th>
+              <th class="text-center">Amount Allocated to Grant</th>
+              <th class="text-center" style="width: 60px">Notes</th>
+            </tr>
+            <tr>
+              <td><apex:inputCheckbox value="{!i.Selected__c}" />&nbsp;</td>
+              <td>
+                <apex:inputField value="{!i.Name}" />
+              </td>
+              <td>
+                <apex:selectList value="{!i.Is_Hourly__c}" size="1">
+                  <apex:selectOption itemValue="true" itemLabel="Hourly" />
+                  <apex:selectOption itemValue="false" itemLabel="Salary" />
+                </apex:selectList>
+              </td>
+              <td>
+                <apex:inputField value="{!i.New_Rate__c}" />
+              </td>
+              <td>
+                <apex:inputText value="{!i.Projected_Hours_Per_Week__c}" />
+              </td>
+              <td>
+                <apex:inputText
+                  value="{!i.Projected_Grant_Hours_Per_Week__c}"
+                />
+              </td>
+              <td>
+                <apex:inputField value="{!i.Number_of_Weeks_on_Grant__c}" />
+              </td>
+              <td class="text-center">
+                <apex:outputField
+                  value="{!i.Projected_Percent_Time_on_Grant__c}"
+                />
+              </td>
+              <td class="text-center">
+                <apex:outputfield value="{!i.New_Wages__c}" />
+              </td>
+              <td class="text-center">
+                <apex:commandLink
+                  action="{!ctrl.showNewLaborNotesPopup}"
+                  status="pageStatus"
+                  reRender="newLaborNotesPopup"
+                >
+                  <apex:param
+                    assignTo="{!ctrl.selectedItemId}"
+                    name="selectedItemId"
+                    value="{!i.Id}"
+                  />
+                  <apex:param
+                    assignTo="{!ctrl.selectedItemType}"
+                    name="selectedItemType"
+                    value="newLabor"
+                  />
+                  <apex:outputText rendered="{!i.Has_Notes__c == true}">
+                    <span class="glyphicon glyphicon-comment"></span>
+                  </apex:outputText>
+                  <apex:outputText
+                    value="+"
+                    rendered="{!i.Has_Notes__c == false}"
+                  />
+                </apex:commandLink>
+                <apex:outputPanel id="newLaborNotesPopup">
+                  <apex:outputPanel
+                    styleClass="popupBackground"
+                    layout="block"
+                    rendered="{!ctrl.displayNewLaborNotesPopup}"
+                  />
+                  <apex:outputPanel
+                    styleClass="custPopup"
+                    layout="block"
+                    rendered="{!ctrl.displayNewLaborNotesPopup}"
+                  >
+                    <div class="modal-dialog" style="text-align: left">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">
+                            Notes for&nbsp;<apex:outputText value="{!i.Name}" />
+                          </h4>
+                        </div>
+                        <div class="modal-body">
+                          <apex:inputTextarea value="{!i.Item_Note__c}" />
+                          <br />
+                          <hr />
+                          <apex:outputText
+                            value="{!i.Response__c}"
+                            rendered="{!i.Response__c != null}"
+                          />
+                          <apex:outputText
+                            value="No Notes from National"
+                            rendered="{!i.Response__c == null}"
+                          />
+                        </div>
+                        <div class="modal-footer">
+                          <apex:commandButton
+                            action="{!ctrl.hideNewLaborNotesPopup}"
+                            value="Save and Close"
+                            status="pageStatus"
+                            styleClass="primary"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </apex:outputPanel>
+                </apex:outputPanel>
+              </td>
+            </tr>
+          </table>
+          <apex:outputPanel rendered="{!ctrl.portalName != 'Ripken'}">
+            <table class="fixedTbl">
+              <tr>
+                <th style="width: 20px">
+                  <span
+                    class="badge"
+                    title="Please enter annual premium amounts on this line"
+                    >?</span
+                  >
+                </th>
+                <th>Medical</th>
+                <th>Dental</th>
+                <th>Vision</th>
+                <th>Short Term</th>
+                <th>Long Term</th>
+                <th>Life</th>
+                <th>Other</th>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Medical_Premium__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  &nbsp;&nbsp;
+                  <apex:outputField value="{!i.Medical__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Dental_Premium__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  &nbsp;&nbsp;
+                  <apex:outputField value="{!i.Dental__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Vision_Premium__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  &nbsp;&nbsp;
+                  <apex:outputField value="{!i.Vision__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Short_Term_Premium__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  &nbsp;&nbsp;
+                  <apex:outputField value="{!i.Short_Term_Disability__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Long_Term_Premium__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  &nbsp;&nbsp;
+                  <apex:outputField value="{!i.Long_Term_Disability__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Life_Premium__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  &nbsp;&nbsp;
+                  <apex:outputField value="{!i.Life__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Other_Premium__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  &nbsp;&nbsp;
+                  <apex:outputField value="{!i.Other_Benefits__c}" />
+                </td>
+              </tr>
+              <tr>
+                <th></th>
+                <th>FICA</th>
+                <th>SUTA</th>
+                <th>Workers Comp</th>
+                <th>Retirement</th>
+                <th>Other</th>
+                <th colspan="2" class="text-center">
+                  Benefits Allocated to Grant
+                </th>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <apex:inputField
+                    value="{!i.FICA_Percent__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  %&nbsp;&nbsp;
+                  <apex:outputField value="{!i.FICA__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.SUTA_Percent__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  %&nbsp;&nbsp;
+                  <apex:outputField value="{!i.SUTA__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Workers_Comp_Percent__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  %&nbsp;&nbsp;
+                  <apex:outputField value="{!i.Workers_Comp__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Retirement_Percent__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  %&nbsp;&nbsp;
+                  <apex:outputField value="{!i.Retirement__c}" />
+                </td>
+                <td>
+                  <apex:inputField
+                    value="{!i.Other_Percent__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  %&nbsp;&nbsp;
+                  <apex:outputField value="{!i.Other_Percent_Based__c}" />
+                </td>
+                <td colspan="2" class="text-center">
+                  <apex:outputfield value="{!i.New_Fringe_Benefits__c}" />
+                </td>
+              </tr>
+            </table>
+          </apex:outputPanel>
+          <apex:outputPanel rendered="{!ctrl.portalName == 'Ripken'}">
+            <table>
+              <tr>
+                <th width="200px">FICA</th>
+              </tr>
+              <tr>
+                <td>
+                  <apex:inputField
+                    value="{!i.FICA_Percent__c}"
+                    style="width: 40%"
+                    rendered="{!isEditMode}"
+                  />
+                  %&nbsp;&nbsp;
+                  <apex:outputField value="{!i.FICA__c}" />
+                </td>
+              </tr>
+            </table>
+          </apex:outputPanel>
+        </apex:repeat>
+      </div>
+      <div class="panel-footer">
+        <apex:commandButton
+          value="Add"
+          action="{!ctrl.addLaborItem}"
+          status="pageStatus"
+          rerender="newItems"
+        />
+        <apex:commandButton
+          value="Update Amounts"
+          action="{!ctrl.updateNewLaborAmounts}"
+          status="pageStatus"
+          rerender="newItems"
+        />
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>

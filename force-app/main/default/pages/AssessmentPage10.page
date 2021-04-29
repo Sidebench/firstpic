@@ -1,0 +1,105 @@
+<apex:page
+  controller="AssessmentCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Self Assessment</title>
+  </head>
+  <c:Header
+    ActivePage="compliance"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="assessment">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>Summary</h2>
+          </div>
+          <div class="col-xs-6 pull-right">
+            <h5>{!assess.Organization_Name__c}</h5>
+            <h5>Self Assessment Year: {!assess.Year__c}</h5>
+          </div>
+        </div>
+
+        <c:AssessmentTabs
+          userAcctType="{!userAcctType}"
+          assessmentId="{!AssessmentId}"
+          activeTabId="10"
+          year="{!assess.Year__c}"
+          hideStandards="{!assess.Hide_Standards__c}"
+          save="{!save}"
+        />
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Fields marked as Out of Compliance</div>
+          <div class="panel-body">
+            <apex:dataTable
+              value="{!out_map}"
+              var="i"
+              cellpadding="4"
+              style="width: 100%"
+            >
+              <apex:column headerValue="Field Name" style="min-width: 200px">
+                {!i}
+              </apex:column>
+              <apex:column headerValue="Text"> {!out_map[i]} </apex:column>
+            </apex:dataTable>
+          </div>
+        </div>
+
+        <apex:outputPanel
+          rendered="{!assess.Assessment_Status__c == 'Submitted'}"
+        >
+          <div
+            class="alert alert-success"
+            role="alert"
+            style="margin-top: 20px"
+          >
+            You have successfully submitted your self assessment
+          </div>
+        </apex:outputPanel>
+
+        <!-- BEGIN Notes -->
+        <c:NotesPanel
+          userAcctType="{!userAcctType}"
+          header="Notes"
+          displayLocalNote="false"
+          displayNationalNotePrivate="true"
+          richText="true"
+          nationalNote="{!assess.Reviewer_Notes__c}"
+          nationalNotePrivate="{!assess.Notes_for_National__c}"
+        />
+        <!-- END Notes -->
+
+        <c:AssesssmentActions
+          assessmentId="{!AssessmentId}"
+          activeTabId="10"
+          hideStandards="{!assess.Hide_Standards__c}"
+          userAcctType="{!userAcctType}"
+          errorMessage="{!errorMessage}"
+          fileErrorMessage="{!fileErrorMessage}"
+          additionalReqsErrorMessage="{!additionalReqsErrorMessage}"
+          fileName="{!fileName}"
+          displayAttPopup="{!displayAttPopup}"
+          closeAttPopup="{!closeAttPopup}"
+          displayDeletePopup="{!displayDeletePopup}"
+          deletePopup="{!deletePopup}"
+          deleteAssessment="{!deleteAssessment}"
+          saveAndExit="{!saveAndExit}"
+          saveAndContinue="{!saveAndContinue}"
+          submit="{!submit}"
+          upsertAssessment="{!upsertAssessment}"
+        />
+
+        <c:ErrorMessage type="success" errorMessage="{!successMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

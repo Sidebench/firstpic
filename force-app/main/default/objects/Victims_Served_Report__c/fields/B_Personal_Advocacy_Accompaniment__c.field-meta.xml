@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>B_Personal_Advocacy_Accompaniment__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >B1_Advocacy_to_Emergency_Medical_Care__c + B2_Advocacy_to_Medical_Forensic_Exam__c  + B3_Law_Enforcement_Interview_Advocacy__c +  B4_Individual_Advocacy__c +  B5_Performance_of_Medical_Forensic_Exam__c +  B6_Immigration_Assistance__c +  B7_Intervention_with_Employer_or_Other__c +  B8_Child_or_Dependent_Care_Assistance__c +  B9_Transportation_Assistance__c +  B10_Interpreter_Services__c</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>B. Personal Advocacy/Accompaniment</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,18 @@
+<apex:component>
+  <apex:attribute type="String" name="type" description="Error Type" />
+  <apex:attribute
+    type="String"
+    name="errorMessage"
+    description="Error Message"
+  />
+
+  <apex:outputPanel id="errorMessage" rendered="{!errorMessage != null}">
+    <div
+      class="{!CASE(type,'info','alert alert-info','success','alert alert-success','warning','alert alert-warning','alert alert-danger')}"
+      role="alert"
+      style="margin-top: 20px"
+    >
+      <apex:outputText escape="false" value="{!errorMessage}" />
+    </div>
+  </apex:outputPanel>
+</apex:component>

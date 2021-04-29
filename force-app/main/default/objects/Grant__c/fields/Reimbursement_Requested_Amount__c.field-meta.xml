@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reimbursement_Requested_Amount__c</fullName>
+    <externalId>false</externalId>
+    <formula
+  >Reimbursement_Requested_Salary__c + Reimbursement_Requested_Benefits__c + Requested_Amount_Submitted__c + IF(ISPICKVAL(Use_Indirect_Rate__c, &apos;Yes&apos;), IF(FirstPic_National_Org_Code__c = &apos;BBBSA&apos;, Requested_Indirect_Rate_Amount__c, Requested_Indirect_Costs__c), 0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText
+  >Reimbursement_Requested_Salary__c + Reimbursement_Requested_Benefits__c + Requested_Amount_Submitted__c + IF(ISPICKVAL(Use_Indirect_Rate__c, &apos;Yes&apos;), IF(FirstPic_National_Org_Code__c = &apos;BBBSA&apos;, Requested_Indirect_Rate_Amount__c, Requested_Indirect_Costs__c</inlineHelpText>
+    <label>Total Reimbursement Requested Amount</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

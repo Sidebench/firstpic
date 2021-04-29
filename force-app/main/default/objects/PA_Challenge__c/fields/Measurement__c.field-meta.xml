@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Measurement__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(Title__c, 
+&apos;Physical Activity Strength Challenge 1 – Low Plank&apos;, &apos;Time in Seconds&apos;,
+&apos;Physical Activity Strength Challenge 2 – Push-ups&apos;, &apos;Number Completed&apos;,
+&apos;Physical Activity Endurance Challenge – Shuttle Run&apos;, &apos;Time in Seconds&apos;,
+&apos;&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Measurement</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

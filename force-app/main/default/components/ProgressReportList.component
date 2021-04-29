@@ -1,0 +1,89 @@
+<apex:component>
+  <apex:attribute
+    type="String"
+    name="header"
+    description="header"
+    required="true"
+  />
+  <apex:attribute
+    type="Progress_Report__c[]"
+    name="report_list"
+    description="Progress Report List"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showSiteCol"
+    description="showSiteCol"
+    required="false"
+    default="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="showMore"
+    default="false"
+    description="Show More Link?"
+  />
+  <apex:attribute type="String" name="reportType" description="Report Type" />
+
+  <div class="panel panel-default">
+    <div class="panel-heading">{!header}</div>
+    <div class="panel-body">
+      <apex:outputPanel rendered="{!report_list.size > 0}">
+        <table class="fixedTbl">
+          <tr>
+            <th>Report Name</th>
+            <th>
+              <apex:outputText value="Site" rendered="{!showSiteCol}" />
+            </th>
+            <th>Status</th>
+            <th>Submitted Date</th>
+          </tr>
+          <apex:repeat value="{!report_list}" var="i">
+            <tr>
+              <td>
+                <apex:commandLink
+                  value="{!i.Name}"
+                  rendered="{!reportType == 'Quarterly'}"
+                  action="{!URLFOR($Site.Prefix+'/QuarterlyCheckIn?reportId='+i.Id)}"
+                />
+                <apex:commandLink
+                  value="{!i.Name}"
+                  rendered="{!reportType == 'Monthly'}"
+                  action="{!URLFOR($Site.Prefix+'/MonthlyProgressReport?reportId='+i.Id)}"
+                />
+              </td>
+              <td>
+                <apex:outputPanel rendered="{!showSiteCol}">
+                  {!i.Organization_Name__c}
+                </apex:outputPanel>
+              </td>
+              <td>{!i.Status__c}</td>
+              <td>
+                <apex:outputField value="{!i.Submitted_Date__c}" />
+              </td>
+            </tr>
+          </apex:repeat>
+        </table>
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!report_list.size == 0}">
+        No {!header} Found
+      </apex:outputPanel>
+      <apex:outputPanel rendered="{!showMore}" styleClass="view-more-link">
+        <hr />
+        <apex:commandLink
+          action="{!URLFOR($Site.Prefix+'/QuarterlyProgressReports')}"
+          rendered="{!reportType == 'Quarterly'}"
+        >
+          View All &raquo;
+        </apex:commandLink>
+        <apex:commandLink
+          action="{!URLFOR($Site.Prefix+'/MonthlyProgressReports')}"
+          rendered="{!reportType == 'Monthly'}"
+        >
+          View All &raquo;
+        </apex:commandLink>
+      </apex:outputPanel>
+    </div>
+  </div>
+</apex:component>

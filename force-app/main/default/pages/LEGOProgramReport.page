@@ -1,0 +1,316 @@
+<apex:page
+  controller="LEGOProgramReportCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Program Report</title>
+  </head>
+  <c:LEGOHeader ActivePage="reports" acct="{!userAcct}" />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <h2>
+          <div class="row">
+            <div class="col-auto">{!report.Name}</div>
+            <div class="col-auto pull-right">
+              <apex:outputPanel rendered="{!userAcctType == 'Site'}">
+                <apex:selectList value="{!SessionId}" size="1">
+                  <apex:actionSupport event="onchange" action="{!init}" />
+                  <apex:selectOptions value="{!options}" />
+                </apex:selectList>
+              </apex:outputPanel>
+            </div>
+          </div>
+        </h2>
+
+        <!--
+                <table class="table">
+                    <tr>
+                        <td>
+                            <span style="font-weight: bold;">
+                                Season: &nbsp;&nbsp;
+                            </span>
+                            <apex:outputField value="{!report.Session__r.Name}" />
+                        </td>
+                        <td>
+                            <span style="font-weight: bold;">
+                                Status: &nbsp;&nbsp;
+                            </span>
+                            <apex:outputField value="{!report.Status__c}" />
+                        </td>
+                    </tr>
+                </table>
+                -->
+
+        <!-- BEGIN Coach List -->
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                Program Report
+                <span class="pull-right">
+                  Status:
+                  <span class="{!statusColor}">{!report.Status__c}</span>
+                </span>
+              </div>
+              <div class="panel-body">
+                <div class="grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >When did you implement your final FLL Jr. session?
+                        &nbsp;&nbsp;</strong
+                      >
+                      <apex:inputField
+                        value="{!report.Final_Session_Implementation_Date__c}"
+                        rendered="{!editMode}"
+                        styleClass="input-md"
+                      />
+                      <apex:outputField
+                        value="{!report.Final_Session_Implementation_Date__c}"
+                        rendered="{!NOT(editMode)}"
+                        styleClass="input-md"
+                      />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >How many youth participated in your FLL Jr. program?
+                        &nbsp;&nbsp;</strong
+                      >
+                      <apex:inputField
+                        value="{!report.Number_of_Youth_Participated__c}"
+                        rendered="{!editMode}"
+                        styleClass="input-md"
+                      />
+                      <apex:outputField
+                        value="{!report.Number_of_Youth_Participated__c}"
+                        rendered="{!NOT(editMode)}"
+                        styleClass="input-md"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >Can you please share with us some accomplishments of
+                        your FLL Jr. program?</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!report.Program_Accomplishments__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!report.Program_Accomplishments__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >Can you please share with us any problems or barriers
+                        encountered during your FLL Jr. program?</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!report.Problems_with_Program__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!report.Problems_with_Program__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >Is there any assistance that FIRST or FirstPic, Inc.
+                        can provide to address any of the problems listed in the
+                        question above?</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!report.Assistance_Needed__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!report.Assistance_Needed__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >Do you have any innovative accomplishments regarding
+                        the implementation of your FLL Jr. program that you
+                        would like to share with FIRST?</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!report.Innovative_Accomplishments__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!report.Innovative_Accomplishments__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >What are you plans for implementing the next program
+                        year?</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!report.Next_Program_Year_Plans__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!report.Next_Program_Year_Plans__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                      <strong
+                        >If you did not reach 144 students this year, please
+                        detail plans on how you will in the 2017-2018
+                        season.</strong
+                      >
+                      <br />
+                      <apex:inputField
+                        value="{!report.Plans_for_Reaching_144_Students__c}"
+                        rendered="{!editMode}"
+                      />
+                      <apex:outputField
+                        value="{!report.Plans_for_Reaching_144_Students__c}"
+                        rendered="{!NOT(editMode)}"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BEGIN Attachments -->
+        <apex:outputPanel id="attachments">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Please upload any photos of your FLL Jr. program here.
+            </div>
+            <div class="panel-body grid-pd-md">
+              Please upload all attachments (including photos) in PDF format.
+              <apex:repeat value="{!att_list}" var="a">
+                <div class="row">
+                  <div class="col-auto">
+                    <apex:outputPanel rendered="{!a.Id != null}">
+                      <apex:commandLink
+                        action="{!deleteAtt}"
+                        status="pageStatus"
+                        rerender="attachments"
+                      >
+                        <span class="glyphicon glyphicon-remove-circle"></span>
+                        <apex:param
+                          name="deleteAtt"
+                          value="{!a.Id}"
+                          assignTo="{!deleteAttId}"
+                        ></apex:param>
+                      </apex:commandLink>
+                      <apex:outputLink
+                        value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                        style="margin-right: 10px"
+                        target="_blank"
+                      >
+                        {!a.Name}
+                      </apex:outputLink>
+                      <apex:outputText rendered="{!a.Description != null}">
+                        ({!a.Description})
+                      </apex:outputText>
+                    </apex:outputPanel>
+                  </div>
+                </div>
+              </apex:repeat>
+            </div>
+            <apex:outputPanel rendered="{!editMode}">
+              <div class="panel-footer">
+                <apex:commandButton
+                  action="{!attPopup}"
+                  value="Upload Attachments"
+                  status="pageStatus"
+                  reRender="attachments"
+                />
+              </div>
+            </apex:outputPanel>
+          </div>
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayAttPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayAttPopup}"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Upload New Attachment</h4>
+                </div>
+                <div class="modal-body">
+                  <iframe
+                    id="attachmentIFrame"
+                    frameborder="0"
+                    width="100%"
+                    height="200px"
+                    src="{!URLFOR($Site.Prefix+'/AttachmentUpload?ParentId='+ report.id +'&filename=Program Photo')}"
+                  >
+                  </iframe>
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!closeAttPopup}"
+                    value="Close"
+                    status="pageStatus"
+                    reRender="attachments"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Attachments -->
+
+        <apex:commandButton
+          action="{!save}"
+          value="Save and Exit"
+          status="pageStatus"
+          rendered="{!editMode}"
+        />
+        <apex:commandButton
+          action="{!submit}"
+          value="Submit"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!editMode}"
+        />
+        <apex:commandButton
+          action="{!sendBack}"
+          value="Send Back"
+          status="pageStatus"
+          styleClass="primary"
+          rendered="{!userAcctType == 'National Organization'}"
+        />
+
+        <c:ErrorMessage />
+        <apex:pageMessages />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

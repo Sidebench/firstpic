@@ -1,0 +1,157 @@
+<apex:component>
+  <apex:attribute type="String" name="portalName" description="portalName" />
+  <apex:attribute
+    type="String"
+    name="userAcctType"
+    description="userAcctType"
+  />
+  <apex:attribute
+    type="Grant__c"
+    name="grant"
+    description="grant"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="sendLOASuccessful"
+    description="sendLOASuccessful"
+    default="false"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="createMOU"
+    description="createMOU"
+    required="true"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="sendFFATASuccessful"
+    description="sendFFATASuccessful"
+    default="false"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="updateLOASubmittedDate"
+    description="updateLOASubmittedDate"
+  />
+  <apex:attribute
+    type="ApexPages.Action"
+    name="sendFFATA"
+    description="sendFFATA"
+  />
+  <!--    <apex:attribute type="Sertifi2_0__EDocument__c[]" name="docs" description="docs" />-->
+  <apex:attribute type="Attachment[]" name="atts" description="atts" />
+
+  <apex:outputPanel rendered="{!userAcctType == 'National Organization'}">
+    <table class="table fixedTbl">
+      <tr>
+        <td>
+          <apex:commandLink
+            value="Edit Award"
+            action="{!URLFOR($Site.Prefix+'/TRAILAwardApplication?grantId='+grant.Id)}"
+            rendered="{!portalName == 'TRAIL' && grant.Grant_Status__c != 'Closed'}"
+          />
+          <apex:commandLink
+            value="Edit Award"
+            action="{!URLFOR($Site.Prefix+'/AwardApplication?grantId='+grant.Id)}"
+            rendered="{!portalName == 'Ripken' && grant.Grant_Status__c != 'Closed'}"
+          />
+        </td>
+        <td>
+          <apex:commandLink
+            value="Send FFATA"
+            action="{!sendFFATA}"
+            styleClass="pull-right"
+            rendered="{!portalName == 'NCAI - TRAIL' && NOT(sendFFATASuccessful) && grant.Grant_Status__c == 'Approved'}"
+          />
+          <apex:outputText
+            value="FFATA Sent"
+            styleClass="text-success pull-right"
+            rendered="{!sendFFATASuccessful}"
+          />
+        </td>
+        <td>
+          <apex:commandLink
+            value="Send LOA"
+            action="{!createMOU}"
+            styleClass="pull-right"
+            rendered="{!NOT(sendLOASuccessful) && grant.Grant_Status__c == 'Approved'}"
+          />
+          <apex:outputText
+            value="LOA Sent"
+            styleClass="text-success pull-right"
+            rendered="{!sendLOASuccessful}"
+          />
+        </td>
+        <td>
+          <apex:commandLink
+            value="Update LOA Signed Date"
+            action="{!updateLOASubmittedDate}"
+            styleClass="pull-right"
+            rendered="{!grant.Grant_Status__c == 'Approved' && portalName == 'Ripken'}"
+          />
+          <apex:outputText
+            value="LOA Submitted Date: {!IF(grant.LOA_Submitted_Date__c != null, grant.LOA_Submitted_Date__c, 'N/A')} &nbsp;&nbsp;"
+            escape="false"
+            styleClass="pull-right"
+            rendered="{!portalName == 'Ripken'}"
+          />
+        </td>
+      </tr>
+    </table>
+  </apex:outputPanel>
+
+  <apex:outputPanel rendered="{!atts.size > 0}">
+    <table
+      class="table"
+      style="background: #fff; padding: 0 10px 10px; border: 1px solid #eee"
+    >
+      <tr>
+        <td><strong>Compliance Document Name</strong></td>
+      </tr>
+      <apex:repeat value="{!atts}" var="a">
+        <tr>
+          <td>
+            <apex:outputLink
+              value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+              style="margin-right: 10px"
+              target="_blank"
+            >
+              {!a.Name}
+            </apex:outputLink>
+          </td>
+        </tr>
+      </apex:repeat>
+    </table>
+  </apex:outputPanel>
+
+  <!--
+    <apex:outputPanel rendered="{!docs.size > 0}">
+        <table class="table" style="background: #fff; padding: 0 10px 10px; border: 1px solid #eee;">
+            <tr>
+                <td><strong>Sertifi Document Name</strong></td>
+                <td><strong>Status</strong></td>
+                <td><strong>Signed Date</strong></td>
+            </tr>
+            <apex:repeat value="{!docs}" var="i">
+                <tr>
+                    <td>
+                        <apex:commandLink value="{!i.Name__c}" action="{!IF(i.Sertifi2_0__SignedLink__c != null, i.Sertifi2_0__SignedLink__c, i.Sertifi2_0__PartiallySignedLink__c)}"
+                                          rendered="{!i.Sertifi2_0__SignedLink__c != null || i.Sertifi2_0__PartiallySignedLink__c != null}" />
+                        <apex:outputText value="{!i.Name__c}" rendered="{!i.Sertifi2_0__SignedLink__c == null && i.Sertifi2_0__PartiallySignedLink__c == null}" />
+                    </td>
+                    <td> 
+                        {!i.Sertifi2_0__Status__c} 
+                    </td>
+                    <td> 
+                        <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                            <apex:param value="{!i.Sertifi2_0__Date_Signed__c}" /> 
+                        </apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>
+        </table>
+        <br />
+    </apex:outputPanel>
+    -->
+</apex:component>

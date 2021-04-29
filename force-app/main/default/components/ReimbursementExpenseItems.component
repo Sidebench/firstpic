@@ -1,0 +1,287 @@
+<apex:component allowDML="true">
+  <apex:attribute type="String" name="type" description="type" />
+  <apex:attribute
+    type="ReimbursementCtrl"
+    name="ctrl"
+    description="ReimbursementCtrl"
+    required="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isEditMode"
+    description="isEditMode"
+    default="false"
+  />
+  <apex:attribute
+    type="Boolean"
+    name="isReviewMode"
+    description="isReviewMode"
+    default="false"
+  />
+
+  <style>
+    .checkImg {
+      margin-left: -5px;
+    }
+  </style>
+
+  <apex:outputPanel id="items">
+    <div class="panel panel-default">
+      <div class="panel-heading">Expenses</div>
+      <apex:repeat value="{!ctrl.categories}" var="cat">
+        <div class="panel-heading sub-panel-heading">{!cat}</div>
+        <div class="panel-body">
+          <table class="fixedTbl">
+            <tr>
+              <th>Item</th>
+              <th width="150px">Rate</th>
+              <th width="150px">Quantity</th>
+              <th class="text-center" width="150px">Amount Requested</th>
+              <th
+                class="text-center"
+                style="{!IF(ctrl.grant.National_Grant_Type__c == 'OVC', 'width: 150px', 'width: 0')}"
+              >
+                <apex:outputText
+                  value="Indirect Amount"
+                  rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC'}"
+                />
+              </th>
+              <th
+                class="text-center"
+                style="{!IF(ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization','width: 150px;','width: 0;')}"
+              >
+                <apex:outputText
+                  value="Amount Approved"
+                  rendered="{!ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization'}"
+                />
+              </th>
+              <th
+                class="text-center"
+                style="{!IF(ctrl.grant.Procurement_Threshold__c != null && ctrl.grant.Procurement_Threshold__c > 0,'width: 150px;','width: 0;')}"
+              >
+                <apex:outputText
+                  value="Threshold Exceeded"
+                  rendered="{!ctrl.grant.Procurement_Threshold__c != null && ctrl.grant.Procurement_Threshold__c > 0}"
+                />
+              </th>
+              <th class="text-center" style="width: 75px">Notes</th>
+              <th>Attachments</th>
+            </tr>
+            <apex:repeat value="{!ctrl.expense_list}" var="i">
+              <apex:outputPanel rendered="{!i.Category__c == cat}">
+                <tr>
+                  <td>
+                    {!i.Budget_Item__r.Name}
+                    <apex:outputText
+                      value="Budgeted Indirect Cost for this line item has been maxed out."
+                      styleClass="text-danger"
+                      style="font-size: 11px; display: block"
+                      rendered="{!i.Indirect_Costs_Budget__c != null && i.Indirect_Costs_Budget__c > 0 && i.Indirect_Rate_Amount__c != null && i.Budget_Item__r.Requested_Indirect_Rate_Amount__c != null &&
+                                                                   (i.Category__c == 'Sub Awards' || i.Category__c == 'Procurement Contracts') &&
+                                                                   (
+                                                                       (i.Reimbursement_Status__c == 'Incomplete' && i.Indirect_Costs_Budget__c <= i.Indirect_Rate_Amount__c + i.Budget_Item__r.Requested_Indirect_Rate_Amount__c)
+                                                                       ||
+                                                                       (i.Reimbursement_Status__c != 'Incomplete' && i.Indirect_Costs_Budget__c <= i.Budget_Item__r.Requested_Indirect_Rate_Amount__c)
+                                                                   )
+                                                                   }"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.Rate__c}"
+                      rendered="{!(NOT(i.Is_Active__c) || NOT(isEditMode)) && i.Type__c != 'Mileage'}"
+                    />
+                    <apex:inputField
+                      value="{!i.Rate__c}"
+                      rendered="{!i.Is_Active__c && isEditMode && i.Type__c != 'Mileage'}"
+                    />
+                    <apex:outputField
+                      value="{!i.Mileage_Rate__c}"
+                      rendered="{!(NOT(i.Is_Active__c) || NOT(isEditMode)) && i.Type__c == 'Mileage'}"
+                    />
+                    <apex:inputField
+                      value="{!i.Mileage_Rate__c}"
+                      rendered="{!i.Is_Active__c && isEditMode && i.Type__c == 'Mileage'}"
+                    />
+                  </td>
+                  <td>
+                    <apex:outputField
+                      value="{!i.Quantity__c}"
+                      rendered="{!NOT(i.Is_Active__c) || NOT(isEditMode)}"
+                    />
+                    <apex:inputField
+                      value="{!i.Quantity__c}"
+                      rendered="{!i.Is_Active__c && isEditMode}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:outputfield value="{!i.Requested_Amount__c}" />
+                  </td>
+                  <td class="text-center">
+                    <apex:outputfield
+                      value="{!i.Indirect_Rate_Amount__c}"
+                      rendered="{!ctrl.grant.National_Grant_Type__c == 'OVC'}"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <apex:outputPanel
+                      rendered="{!ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization'}"
+                    >
+                      <apex:inputField
+                        value="{!i.Approved_Amount__c}"
+                        rendered="{!isReviewMode}"
+                      />
+                      <apex:outputField
+                        value="{!i.Approved_Amount__c}"
+                        rendered="{!NOT(isReviewMode)}"
+                      />
+                    </apex:outputPanel>
+                  </td>
+                  <td class="text-center">
+                    <apex:outputText
+                      rendered="{!i.Requested_Amount__c != null && ctrl.grant.Procurement_Threshold__c != null && i.Requested_Amount__c > ctrl.grant.Procurement_Threshold__c && ctrl.grant.Procurement_Threshold__c > 0}"
+                    >
+                      <span
+                        class="glyphicon glyphicon-flag text-warning"
+                      ></span>
+                    </apex:outputText>
+                  </td>
+                  <td class="text-center">
+                    <apex:commandLink
+                      action="{!ctrl.showNotesPopup}"
+                      status="pageStatus"
+                      reRender="notesPopup"
+                    >
+                      <apex:param
+                        assignTo="{!ctrl.selectedItemId}"
+                        name="selectedItemId"
+                        value="{!i.Id}"
+                      />
+                      <apex:param
+                        assignTo="{!ctrl.selectedItemType}"
+                        name="selectedItemType"
+                        value="expense"
+                      />
+                      <apex:outputText rendered="{!i.Has_Notes__c == true}">
+                        <span class="glyphicon glyphicon-comment"></span>
+                      </apex:outputText>
+                      <apex:outputText
+                        value="+"
+                        rendered="{!i.Has_Notes__c == false}"
+                      />
+                    </apex:commandLink>
+                  </td>
+                  <td>
+                    <apex:commandLink
+                      action="{!ctrl.showAttPopup}"
+                      status="pageStatus"
+                      reRender="uploadAttPopup"
+                      rendered="{!isEditMode}"
+                    >
+                      <span class="glyphicon glyphicon-upload"></span
+                      >&nbsp;&nbsp;
+                      <apex:param
+                        assignTo="{!ctrl.selectedItemId}"
+                        name="selectedItemId"
+                        value="{!i.Id}"
+                      />
+                    </apex:commandLink>
+                    <apex:repeat value="{!ctrl.itemAtts}" var="a">
+                      <apex:outputPanel rendered="{!a.ParentId == i.Id }">
+                        <apex:commandLink
+                          action="{!ctrl.deleteAtt}"
+                          status="pageStatus"
+                          rendered="{!isEditMode}"
+                        >
+                          <span class="glyphicon glyphicon-remove-circle"></span
+                          >&nbsp;
+                          <apex:param
+                            assignTo="{!ctrl.selectedAttId}"
+                            name="selectedAttId"
+                            value="{!a.Id}"
+                          />
+                        </apex:commandLink>
+                        <apex:outputLink
+                          value="{!URLFOR($Action.Attachment.Download, a.Id)}"
+                          target="_blank"
+                          >{!a.Name}</apex:outputLink
+                        >
+                        <apex:outputText
+                          value=" ({!a.Description})"
+                          style="font-size: 0.9em; color: #555"
+                          rendered="{!a.Description != null}"
+                        />
+                        <apex:outputText
+                          value=" {!a.CreatedDate}"
+                          style="font-size: 0.9em; color: #555"
+                        />
+                        &nbsp;&nbsp;
+                      </apex:outputPanel>
+                    </apex:repeat>
+                  </td>
+                </tr>
+              </apex:outputPanel>
+            </apex:repeat>
+          </table>
+          <table
+            class="fixedTbl"
+            style="border-top: 1px solid #eee; margin-top: 10px"
+          >
+            <tr>
+              <th colspan="2"></th>
+              <th class="text-center">
+                Total Requested
+                <div style="font-size: 0.9em; font-weight: normal; color: #555">
+                  (this reimbursement)
+                </div>
+              </th>
+              <th
+                class="text-center"
+                style="{!IF(ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization','','width: 0;')}"
+              >
+                <apex:outputPanel
+                  rendered="{!ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization'}"
+                >
+                  Total Approved
+                  <div
+                    style="font-size: 0.9em; font-weight: normal; color: #555"
+                  >
+                    (this reimbursement)
+                  </div>
+                </apex:outputPanel>
+              </th>
+              <th class="text-center">
+                Balance
+                <div style="font-size: 0.9em; font-weight: normal; color: #555">
+                  (not including pending requests)
+                </div>
+              </th>
+              <th class="text-center">Total Budgeted</th>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td class="text-center">${!ctrl.catRequested[cat]}</td>
+              <td class="text-center">
+                <apex:outputText
+                  rendered="{!ctrl.request.Status__c == 'Approved' || ctrl.userAcctType == 'National Organization'}"
+                >
+                  ${!ctrl.catApproved[cat]}
+                </apex:outputText>
+              </td>
+              <td class="text-center">${!ctrl.catBalance[cat]}</td>
+              <td class="text-center">${!ctrl.catBudgeted[cat]}</td>
+            </tr>
+          </table>
+        </div>
+      </apex:repeat>
+      <div class="panel-footer" style="{!IF((isEditMode),'','padding: 0;')}">
+        <apex:commandButton
+          value="Update Amounts"
+          action="{!ctrl.updateExpenseAmounts}"
+          status="pageStatus"
+          rendered="{!isEditMode}"
+        />
+      </div>
+    </div>
+  </apex:outputPanel>
+</apex:component>
