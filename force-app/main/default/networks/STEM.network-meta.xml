@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Network xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInternalUserLogin>true</allowInternalUserLogin>
+    <allowMembersToFlag>false</allowMembersToFlag>
+    <changePasswordTemplate
+  >unfiled$public/CommunityChangePasswordEmailTemplate</changePasswordTemplate>
+    <communityRoles />
+    <disableReputationRecordConversations
+  >false</disableReputationRecordConversations>
+    <emailSenderAddress>support@firstpic.org</emailSenderAddress>
+    <emailSenderName>STEM</emailSenderName>
+    <enableCustomVFErrorPageOverrides>true</enableCustomVFErrorPageOverrides>
+    <enableDirectMessages>false</enableDirectMessages>
+    <enableGuestChatter>false</enableGuestChatter>
+    <enableGuestFileAccess>false</enableGuestFileAccess>
+    <enableGuestMemberVisibility>false</enableGuestMemberVisibility>
+    <enableInvitation>false</enableInvitation>
+    <enableKnowledgeable>false</enableKnowledgeable>
+    <enableMemberVisibility>true</enableMemberVisibility>
+    <enableNicknameDisplay>false</enableNicknameDisplay>
+    <enablePrivateMessages>false</enablePrivateMessages>
+    <enableReputation>false</enableReputation>
+    <enableShowAllNetworkSettings>false</enableShowAllNetworkSettings>
+    <enableSiteAsContainer>false</enableSiteAsContainer>
+    <enableTalkingAboutStats>true</enableTalkingAboutStats>
+    <enableTopicAssignmentRules>true</enableTopicAssignmentRules>
+    <enableTopicSuggestions>false</enableTopicSuggestions>
+    <enableUpDownVote>true</enableUpDownVote>
+    <forgotPasswordTemplate
+  >unfiled$public/CommunityForgotPasswordEmailTemplate</forgotPasswordTemplate>
+    <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
+    <networkMemberGroups>
+        <profile>admin</profile>
+        <profile>stem local admin</profile>
+        <profile>stem program user</profile>
+        <profile>stem level one</profile>
+        <profile>stem level three</profile>
+        <profile>stem level two</profile>
+        <profile>stem level four</profile>
+        <profile>stem report builder</profile>
+    </networkMemberGroups>
+    <networkPageOverrides>
+        <changePasswordPageOverrideSetting
+    >Standard</changePasswordPageOverrideSetting>
+        <forgotPasswordPageOverrideSetting
+    >Standard</forgotPasswordPageOverrideSetting>
+        <homePageOverrideSetting>VisualForce</homePageOverrideSetting>
+        <loginPageOverrideSetting>Standard</loginPageOverrideSetting>
+        <selfRegProfilePageOverrideSetting
+    >Standard</selfRegProfilePageOverrideSetting>
+    </networkPageOverrides>
+    <picassoSite>STEM1</picassoSite>
+    <selfRegistration>false</selfRegistration>
+    <sendWelcomeEmail>true</sendWelcomeEmail>
+    <site>STEM</site>
+    <status>Live</status>
+    <tabs>
+        <defaultTab>home</defaultTab>
+        <standardTab>Chatter</standardTab>
+    </tabs>
+    <urlPathPrefix>stem</urlPathPrefix>
+    <welcomeTemplate
+  >unfiled$public/CommunityWelcomeEmailTemplate</welcomeTemplate>
+</Network>

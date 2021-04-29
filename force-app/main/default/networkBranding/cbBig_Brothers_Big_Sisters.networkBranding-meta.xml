@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NetworkBranding xmlns="http://soap.sforce.com/2006/04/metadata">
+    <loginFooterText>salesforce.com</loginFooterText>
+    <loginLogo
+  >Communities_Shared_Document_Folder/Login_Logo_1_png.png</loginLogo>
+    <loginLogoName>Login Logo (1).png</loginLogoName>
+    <loginPrimaryColor>#00B05E</loginPrimaryColor>
+    <loginQuaternaryColor>#EDEDED</loginQuaternaryColor>
+    <network>Big Brothers Big Sisters</network>
+    <pageFooter>Communities_Shared_Document_Folder/empty.html</pageFooter>
+    <pageHeader>Communities_Shared_Document_Folder/empty.html</pageHeader>
+    <primaryColor>#00B05E</primaryColor>
+    <primaryComplementColor>#222222</primaryComplementColor>
+    <quaternaryColor>#EDEDED</quaternaryColor>
+    <quaternaryComplementColor>#222222</quaternaryComplementColor>
+    <secondaryColor>#CACACA</secondaryColor>
+    <tertiaryColor>#FFFFFF</tertiaryColor>
+    <tertiaryComplementColor>#222222</tertiaryComplementColor>
+    <zeronaryColor>#FFFFFF</zeronaryColor>
+    <zeronaryComplementColor>#222222</zeronaryComplementColor>
+</NetworkBranding>

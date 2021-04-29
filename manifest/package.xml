@@ -59,7 +59,94 @@
 		<name>Dashboard</name>
 	</types>
 	<types>
-		<members>*</members>
+		<members>Big_Brothers_Big_Sisters/AIM_Affiliate_Forms_not_Uploaded</members>
+		<members>Big_Brothers_Big_Sisters/AIM_Affiliate_Forms_not_Uploaded_LATE</members>
+		<members>Big_Brothers_Big_Sisters/AIM_Fee_Uploaded</members>
+		<members>Big_Brothers_Big_Sisters/Add_All_Access_User</members>
+		<members>Big_Brothers_Big_Sisters/Add_Self_Assessment_User</members>
+		<members>Big_Brothers_Big_Sisters/Add_User</members>
+		<members>Big_Brothers_Big_Sisters/Affiliate_Fee_Uploaded</members>
+		<members>Big_Brothers_Big_Sisters/BBBSA_Hold_Audit_Overdue</members>
+		<members>Big_Brothers_Big_Sisters/BBBSA_Hold_DOJ_Certification_Overdue</members>
+		<members>Big_Brothers_Big_Sisters/BBBSA_Hold_Other</members>
+		<members>Big_Brothers_Big_Sisters/Budget_Submission</members>
+		<members>Big_Brothers_Big_Sisters/DUNS_Number_Expired</members>
+		<members>Big_Brothers_Big_Sisters/Document_Approaching_Due_Date</members>
+		<members>Big_Brothers_Big_Sisters/Self_Assessment_Not_Uploaded</members>
+		<members>Big_Brothers_Big_Sisters/Self_Assessment_Not_Uploaded_LATE</members>
+		<members>Big_Brothers_Big_Sisters/Self_Assessment_Uploaded</members>
+		<members>Florida_Lego_League/Reminder_Cohort_Info</members>
+		<members>Florida_Lego_League/Reminder_Cohort_Info_Needed</members>
+		<members>NCAI/Monthly_PA_Log_Approved</members>
+		<members>NCAI/Monthly_PA_Log_Overdue</members>
+		<members>NCAI/Monthly_PA_Log_Sent_Back</members>
+		<members>NCAI/NCAI_Budget_Approval</members>
+		<members>NCAI/NCAI_OVC_SOI_Confirmation_Email</members>
+		<members>NCAI/NCAI_Progress_Report_Approved</members>
+		<members>NCAI/NCAI_Progress_Report_Sent_Back</members>
+		<members>NCAI/NCAI_Reimbursement_Request_Approved</members>
+		<members>NCAI/NCAI_Reimbursement_Request_Revisions_Needed</members>
+		<members>NPAL/Monthly_Progress_Report_Approved</members>
+		<members>NPAL/Monthly_Progress_Report_Overdue</members>
+		<members>NPAL/Monthly_Progress_Report_Revisions_Requested</members>
+		<members>NPAL/NPAL_LOA_Sent</members>
+		<members>NPAL/NPAL_Mentoring_Award_Adjustment</members>
+		<members>NPAL/NPAL_Reimbursement_Approval</members>
+		<members>NPAL/Reimbursement_Request_Missing</members>
+		<members>NPAL/Reimbursement_Returned</members>
+		<members>NPAL/Report_Sent_Back</members>
+		<members>Ripken/Application_Awarded</members>
+		<members>Ripken/Application_Sent_Back_to_Applicant</members>
+		<members>Ripken/Application_Sent_to_Applicant</members>
+		<members>Ripken/LOA_Sent</members>
+		<members>Ripken/Ripken_Application_Awarded</members>
+		<members>Ripken/Ripken_Budget_Approval</members>
+		<members>Ripken/Ripken_Budget_Sent_Back</members>
+		<members>Ripken/Ripken_Progress_Report_Approved</members>
+		<members>Ripken/Ripken_Progress_Report_Revisions_Requested</members>
+		<members>Ripken/Ripken_Reimbursement_Reminder</members>
+		<members>STEM/STEM_Budget_Approval</members>
+		<members>STEM/STEM_DCTAT_Report_Approved</members>
+		<members>STEM/STEM_DCTAT_Report_Revisions_Requested</members>
+		<members>STEM/STEM_Progress_Report_Approved</members>
+		<members>STEM/STEM_Progress_Report_Revisions_Requested</members>
+		<members>STEM/STEM_Reimbursement_Request_Approved</members>
+		<members>STEM/STEM_Reimbursement_Request_Revisions_Needed</members>
+		<members>Shared_Email_Templates/Application_Submitted</members>
+		<members>Shared_Email_Templates/Budget_Approval</members>
+		<members>Shared_Email_Templates/Budget_Revisions</members>
+		<members>Shared_Email_Templates/Budget_Revisions_Needed</members>
+		<members>Shared_Email_Templates/Budget_Sent_Back</members>
+		<members>Shared_Email_Templates/Budget_Submitted</members>
+		<members>Shared_Email_Templates/DCTAT_Approved</members>
+		<members>Shared_Email_Templates/DCTAT_Revisions_Needed</members>
+		<members>Shared_Email_Templates/DCTAT_Submitted</members>
+		<members>Shared_Email_Templates/DUNS_Expiration_Date_Updated</members>
+		<members>Shared_Email_Templates/Deactivate_User</members>
+		<members>Shared_Email_Templates/Document_Sent_Back</members>
+		<members>Shared_Email_Templates/Organization_Placed_on_Hold</members>
+		<members>Shared_Email_Templates/Payment_Made</members>
+		<members>Shared_Email_Templates/Reimbursement_Approval</members>
+		<members>Shared_Email_Templates/Reimbursement_Denial</members>
+		<members>Shared_Email_Templates/Reimbursement_Paid</members>
+		<members>Shared_Email_Templates/Reimbursement_Sent_Back</members>
+		<members>Shared_Email_Templates/Reimbursement_Submission</members>
+		<members>Shared_Email_Templates/Reimbursement_Submitted</members>
+		<members>Shared_Email_Templates/Self_Assessment_Document_Sent_Back</members>
+		<members>Under_Armour/UA_Application_Approved</members>
+		<members>Under_Armour/UA_Application_Denied</members>
+		<members>Under_Armour/UA_Application_Submitted</members>
+		<members>Under_Armour/UA_Grant_Denied</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder_1Day</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder_1Week</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder_2Week</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder_3Day</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder_4Week</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder_5Day</members>
+		<members>Under_Armour/UA_Grantee_Report_Due_Reminder_6Week</members>
+		<members>Under_Armour/UA_Grantee_Report_Overdue</members>
+		<members>Under_Armour/UA_Not_Eligible</members>
 		<name>EmailTemplate</name>
 	</types>
 	<types>
@@ -89,6 +176,14 @@
 	<types>
 		<members>*</members>
 		<name>ListView</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>Network</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>NetworkBranding</name>
 	</types>
 	<types>
 		<members>*</members>
@@ -136,3 +231,4 @@
 	</types>
 	<version>50.0</version>
 </Package>
+
