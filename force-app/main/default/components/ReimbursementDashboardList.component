@@ -36,13 +36,13 @@
               <td>
                 <apex:outputLink
                   value="{!URLFOR($Site.Prefix+'/'+portalName+'SubGrantDetails?GrantID='+r.Grant__c)}"
-                  rendered="{!portalName != 'DMV'}"
+                  rendered="{!portalName != 'DMV' && portalName != 'MDGO'}"
                 >
                   {!r.Grant__r.Name}
                 </apex:outputLink>
                 <apex:outputText
                   value="{!r.Grant__r.Name}"
-                  rendered="{!portalName == 'DMV'}"
+                  rendered="{!portalName == 'DMV' || portalName == 'MDGO'}"
                 />
               </td>
               <td>

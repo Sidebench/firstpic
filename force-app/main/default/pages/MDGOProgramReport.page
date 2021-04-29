@@ -1,0 +1,692 @@
+<apex:page
+  controller="BJAGProgramReportCtrl"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Program Report</title>
+  </head>
+  <c:MDGOHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row" style="margin-bottom: 10px">
+          <div class="col-xs-6">
+            <h2>{!report.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Status: &nbsp;
+              <apex:outputField value="{!report.Status__c}" />
+            </h2>
+          </div>
+        </div>
+
+        <apex:outputPanel
+          rendered="{!successMessage != null && successMessage != ''}"
+        >
+          <c:ErrorMessage
+            errorMessage="Program Report Submitted Successfully."
+            type="success"
+          />
+        </apex:outputPanel>
+
+        <apex:outputPanel
+          rendered="{!(successMessage == null || successMessage == '')}"
+          id="details"
+        >
+          <c:ErrorMessage errorMessage="{!errorMessage}" />
+
+          <span class="text-danger">* Required Field</span> <br />
+
+          <apex:outputPanel rendered="{!report.Submitted_Date__c != null}">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h1 class="panel-title">Organization Information</h1>
+              </div>
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-xs-3 semibold">
+                    <apex:outputText value="DUNS Number" escape="false" />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-3 semibold">
+                    <apex:outputText value="Organization Name" escape="false" />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-3 semibold">
+                    <apex:outputText value="Submitted By" escape="false" />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-3 semibold">
+                    <apex:outputText value="Submitter Email" escape="false" />
+                    <space class="text-danger"> *</space>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-3">
+                    <apex:outputField value="{!report.DUNS_Number__c}" />
+                  </div>
+                  <div class="col-xs-3">
+                    <apex:outputField
+                      value="{!report.Organization_Name_Text__c}"
+                    />
+                  </div>
+                  <div class="col-xs-3">
+                    <apex:outputField value="{!report.Submitted_By_Text__c}" />
+                  </div>
+                  <div class="col-xs-3">
+                    <apex:outputText value="{!report.DOD_Email__c}" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Performance Measures</h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Served__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Youth_Served__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Youth_Served__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Evidence_Activities__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Number_Activities__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Number_Activities__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Wellbeing_Increase__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Youth_Wellbeing_Increase__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Youth_Wellbeing_Increase__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Consistent_Mentorship__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Number_of_Mentors__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Number_of_Mentors__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Law_Enforcement_Engaged__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Law_Enforcement_Engaged__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Law_Enforcement_Engaged__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Youth_Improved_Opinion_of_Law__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Increase_in_Perception_of_Social_Support__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Increase_in_Perception_of_Social_Support__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Law_Enforcement_Improved_Knowledge__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Law_Enforcement_Improved_Knowledge__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Law_Enforcement_Improved_Knowledge__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Laptops_Utilized__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Laptops_Utilized__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Laptops_Utilized__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-11 semibold">
+                  <apex:outputText
+                    value="{!fields['Chromebooks_Utilized__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-1">
+                  <apex:outputField
+                    value="{!report.Chromebooks_Utilized__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Chromebooks_Utilized__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Progress Report Questions</h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Project_Effectiveness__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Projects_Effectiveness__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Projects_Effectiveness__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Barriers_Challenges__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Problems_Barriers_Encountered_Details__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Problems_Barriers_Encountered_Details__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['No_Funds_Anticipated_Request__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Reason_Requesting_Funds__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Reason_Requesting_Funds__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Upcoming_Activities__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Major_Activities_Planned__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Major_Activities_Planned__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Successes_Best_Practices__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Accomplishments_this_Reporting_Period__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Accomplishments_this_Reporting_Period__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Reduced_Crime_Improve_Safety__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Innovative_Programs_Accomplishments__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Innovative_Programs_Accomplishments__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Cooperation_Collaboration__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Cooperation_Collaboration__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Cooperation_Collaboration__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Summarize_Goals__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <apex:outputField
+                    value="{!report.Progress_of_Completed_Goals__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Progress_of_Completed_Goals__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-xs-12 semibold">
+                  <apex:outputText
+                    value="{!fields['Performance_Measurement__c']}"
+                    escape="false"
+                  />
+                  <span class="text-danger"> *</span>
+                </div>
+                <div class="col-xs-12">
+                  <apex:outputField
+                    value="{!report.Performance_Measurement__c}"
+                    rendered="{!readOnly}"
+                  />
+                  <apex:inputField
+                    value="{!report.Performance_Measurement__c}"
+                    rendered="{!NOT(readOnly)}"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">
+                Community Activity - BJA (Additional Reporting) (Accountability
+                Measures)
+              </h1>
+            </div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Surveyed_Topics__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="col-xs-12">
+                    <apex:selectCheckboxes
+                      disabled="{!readOnly}"
+                      layout="pageDirection"
+                      value="{!topics}"
+                    >
+                      <apex:selectOptions value="{!topicOptions}" />
+                      <apex:actionSupport
+                        event="onchange"
+                        reRender="form"
+                        status="pageStatus"
+                      />
+                    </apex:selectCheckboxes>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="semibold">
+                    <apex:outputText
+                      value="{!fields['Community_Activity_Frequency__c']}"
+                      escape="false"
+                    />
+                    <span class="text-danger"> *</span>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Hosted_Meetings__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:outputField
+                        value="{!report.Hosted_Meetings__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Hosted_Meetings__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Attended_Meetings__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:outputField
+                        value="{!report.Attended_Meetings__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Attended_Meetings__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Distributed_Newsletter__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:outputField
+                        value="{!report.Distributed_Newsletter__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Distributed_Newsletter__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Attended_Events__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:outputField
+                        value="{!report.Attended_Events__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Attended_Events__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Social_Media_Activities__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:outputField
+                        value="{!report.Social_Media_Activities__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Social_Media_Activities__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Conducted_Outreach__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:outputField
+                        value="{!report.Conducted_Outreach__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Conducted_Outreach__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10">
+                      <apex:outputText
+                        value="{!fields['Other__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-2">
+                      <apex:outputField
+                        value="{!report.Other__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Other__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <apex:outputText
+                        value="{!fields['Other_Describe__c']}"
+                        escape="false"
+                      />
+                      <span class="text-danger"> *</span>
+                    </div>
+                    <div class="col-xs-12">
+                      <apex:outputField
+                        value="{!report.Other_Describe__c}"
+                        rendered="{!readOnly}"
+                      />
+                      <apex:inputField
+                        value="{!report.Other_Describe__c}"
+                        rendered="{!NOT(readOnly)}"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <apex:commandButton
+            value="Submit"
+            action="{!submit}"
+            styleClass="primary"
+            rendered="{!NOT(readOnly)}"
+          />
+          <apex:commandButton
+            value="Save"
+            action="{!save}"
+            rendered="{!NOT(readOnly)}"
+          />
+          <apex:commandButton
+            value="Approve"
+            action="{!approve}"
+            styleClass="primary"
+            rendered="{!review}"
+          />
+          <apex:commandButton
+            value="Send Back"
+            action="{!sendBack}"
+            rendered="{!review}"
+          />
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

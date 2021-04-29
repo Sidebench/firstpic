@@ -2,7 +2,6 @@
   controller="ReimbursementsCtrl"
   showHeader="false"
   sidebar="false"
-  readOnly="true"
   contentType="application/vnd.ms-excel#Reimbursements.xls"
 >
   <h4>{!status} Reimbursements</h4>
@@ -37,35 +36,41 @@
         <td>{!r.Organization__c}</td>
         <td>{!r.Grant__r.Name}</td>
         <td>
-          <apex:outputfield value="{!r.Status__c}" rendered="{!showStatus}" />
+          <apex:outputText value="{!r.Status__c}" rendered="{!showStatus}" />
         </td>
         <td>
-          <apex:outputfield value="{!r.Start_Date__c}" />
+          <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+            <apex:param value="{!r.Start_Date__c}" />
+          </apex:outputText>
         </td>
         <td>
-          <apex:outputfield value="{!r.End_Date__c}" />
+          <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+            <apex:param value="{!r.End_Date__c}" />
+          </apex:outputText>
         </td>
         <td>
-          <apex:outputfield value="{!r.Request_Date__c}" />
+          <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+            <apex:param value="{!r.Request_Date__c}" />
+          </apex:outputText>
         </td>
         <td>
-          <apex:outputfield
+          <apex:outputText
             value="{!r.Total_Requested_Amount__c}"
-            rendered="{!portalName == 'NPAL' || portalName == 'BBBS' || portalName == ''}"
+            rendered="{!portalName == 'MDGO' || portalName == 'NPAL' || portalName == 'BBBS' || portalName == ''}"
           />
-          <apex:outputfield
+          <apex:outputText
             value="{!r.Total_Requested__c}"
             rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != ''}"
           />
         </td>
         <td>
-          <apex:outputfield
+          <apex:outputText
             value="{!r.Total_Approved_Amount__c}"
             rendered="{!showApprovedAmount}"
           />
         </td>
         <td>
-          <apex:outputfield
+          <apex:outputText
             value="{!r.Primary_Approver_Name__c}"
             rendered="{!showPrimaryApprover}"
           />

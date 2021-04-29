@@ -33,29 +33,29 @@
         <td>{!i.Name}</td>
         <td>{!i.Organization_Name__c}</td>
         <td>
-          <apex:outputfield value="{!i.Amount__c}" />
+          <apex:outputText value="${!i.Amount__c}" />
         </td>
         <td>
-          <apex:outputField value="{!i.Total_Budgeted__c}" />
+          <apex:outputText value="${!i.Total_Budgeted__c}" />
         </td>
         <td>
-          <apex:outputfield value="{!i.Reimbursement_Requested_Amount__c}" />
+          <apex:outputText value="${!i.Reimbursement_Requested_Amount__c}" />
         </td>
         <td>
-          <apex:outputfield value="{!i.Reimbursement_Approved_Amount__c}" />
+          <apex:outputText value="${!i.Reimbursement_Approved_Amount__c}" />
         </td>
         <td>
-          <apex:outputfield value="{!i.Balance__c}" />
+          <apex:outputText value="${!i.Balance__c}" />
         </td>
         <td>
-          <apex:outputField
+          <apex:outputText
             value="{!i.Grant_Status__c}"
             rendered="{!displayStatus}"
           />
         </td>
         <apex:outputPanel rendered="{!portalName == 'Ripken'}">
           <td>
-            <apex:outputfield value="{!i.Equipment_and_Materials_Value__c}" />
+            <apex:outputText value="{!i.Equipment_and_Materials_Value__c}" />
           </td>
           <td>{!i.EIN__c}</td>
           <td>{!i.Account_Address__c}</td>

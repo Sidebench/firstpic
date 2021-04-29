@@ -2,6 +2,7 @@
   <head>
     <title>Affiliate List</title>
   </head>
+
   <c:Header
     ActivePage="about"
     acct="{!userAcct}"
