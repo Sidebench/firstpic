@@ -224,8 +224,12 @@ public with sharing class RequestFormController {
       }
 
       request.Request_Date__c = dt;
-      //if(startDate != null) request.Start_Date__c = startDate;
-      //if(endDate != null) request.End_Date__c = endDate;
+      if (portalName == 'MDGO') {
+        if (startDate != null)
+          request.Start_Date__c = startDate;
+        if (endDate != null)
+          request.End_Date__c = endDate;
+      }
       request.Previous_Status__c = request.Status__c;
       if (request.Status__c == 'Revisions Needed') {
         request.Status__c = 'Revision in Progress';

@@ -120,7 +120,11 @@ public with sharing class RequestExpensesFormController {
             itemAtt_list.add(a);
           }
 
-          if (portalName == 'NPAL' || portalName == 'DMV')
+          if (
+            portalName == 'NPAL' ||
+            portalName == 'DMV' ||
+            portalName == 'MDGO'
+          )
             ri.Factor_Percent__c = 100;
           else {
             if (ri.Budget_Item__r.Factor_Type__c == 'FTE') {
@@ -290,20 +294,24 @@ ri.Factor_Percent__c = ri.Budget_Item__r.Other_Factor_Percent__c;
     List<List<Reimbursement_Item__c>> expense_list = expense_map.values();
     for (Integer i = 0; i < expense_list.size(); i++) {
       for (Reimbursement_Item__c ri : expense_list.get(i)) {
-        if (ri.Rate__c > 0) {
-          if (
-            ri.Factor_Percent__c != null &&
-            grant.Use_Indirect_Rate__c != 'Yes'
-          ) {
-            ri.Requested_Amount__c = (ri.Rate__c *
-              ri.Factor_Percent__c /
-              100)
-              .setScale(2);
+        if (portalName != 'MDGO') {
+          if (ri.Rate__c > 0) {
+            if (
+              ri.Factor_Percent__c != null &&
+              grant.Use_Indirect_Rate__c != 'Yes'
+            ) {
+              ri.Requested_Amount__c = (ri.Rate__c *
+                ri.Factor_Percent__c /
+                100)
+                .setScale(2);
+            } else {
+              ri.Requested_Amount__c = ri.Rate__c.setScale(2);
+            }
           } else {
-            ri.Requested_Amount__c = ri.Rate__c.setScale(2);
+            ri.Requested_Amount__c = 0;
           }
         } else {
-          ri.Requested_Amount__c = 0;
+          ri.Requested_Amount__c = ri.Rate__c;
         }
         ri.Requested_Amount__c.setScale(2);
         expenseRequestedAmount += ri.Requested_Amount__c;
@@ -366,7 +374,7 @@ ri.Factor_Percent__c = ri.Budget_Item__r.Other_Factor_Percent__c;
         hasLedger = true;
       }
     }
-    if (!hasLedger && portalName != 'NPAL') {
+    if (!hasLedger && portalName != 'NPAL' && portalName != 'MDGO') {
       errorMessage = 'A General Ledger document is required';
     }
 

@@ -1,6 +1,5 @@
 public without sharing class GetIdFromString {
   public Id getId(String stringId) {
-    system.debug('GetIdFromString stringId = ' + stringId);
     Id validId;
     if (stringId != '' && stringId != null) {
       if (

@@ -47,4 +47,10 @@
     profile="{!profile}"
     rendered="{!portalName == 'Ripken'}"
   />
+  <c:MDGOHeader
+    ActivePage="{!activePage}"
+    acct="{!acct}"
+    profile="{!profile}"
+    rendered="{!portalName == 'MDGO'}"
+  />
 </apex:component>

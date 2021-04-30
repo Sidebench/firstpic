@@ -5,6 +5,11 @@ public without sharing class ProgressReportCtrl {
   public String userAcctType { get; set; }
   public String portalName { get; set; }
 
+  //BEGIN BJAG Code
+  private FieldLabelClass flc = new FieldLabelClass();
+  public Map<String, String> fields { get; set; }
+  //END BJAG Code
+
   private ProgressReportClass prc = new ProgressReportClass();
   private AttachmentClass ac = new AttachmentClass();
   private PaginationClass pc = new PaginationClass();
@@ -490,4 +495,29 @@ public without sharing class ProgressReportCtrl {
     disableNext = true;
   }
   // END Pagination
+
+  // BEGIN BJAG method
+  public void setBJAG() {
+    report.Organization__r = [
+      SELECT Id
+      FROM Account
+      WHERE Name = 'BJAG Placeholder'
+      LIMIT 1
+    ];
+    report.Grant__r = [
+      SELECT Id
+      FROM Grant__c
+      WHERE Name = 'BJAG Placeholder'
+      LIMIT 1
+    ];
+
+    fields = new Map<String, String>();
+    fields = flc.getFieldLabelMap(
+      'Progress_Report__c',
+      'BJAG',
+      null,
+      ' AND Year__c includes (\'2021\')'
+    );
+  }
+  // END BJAG Method
 }

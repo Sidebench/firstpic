@@ -425,5 +425,13 @@
             <fullName>2019</fullName>
             <default>false</default>
         </values>
+        <values>
+            <fullName>2020</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2021</fullName>
+            <default>false</default>
+        </values>
     </picklistValues>
 </RecordType>

@@ -52,6 +52,7 @@ public class TestTALogs {
       Flagged_for_Follow_Up__c = true,
       Grantee_Attendee__c = 'asdf',
       Is_Follow_Up__c = false,
+      Topic__c = 'Budget',
       Notes__c = 'asdf'
       //TA_By__c = 'asdf'
     );
@@ -105,6 +106,7 @@ public class TestTALogs {
       ctrl1.selectedLogId = ta1.Id;
       ctrl1.showTAFollowUpPopup();
       ctrl1.selectedLog.Notes__c = 'Follow Up Test';
+      system.assertEquals(ta1.Topic__c, ctrl1.selectedLog.Topic__c);
       ctrl1.upsertTALog();
       //            TA_Log__c test1 = [SELECT Original_TA_Log__c FROM TA_Log__c WHERE Is_Follow_Up__c = true];
       //            TA_Log__c test2 = [SELECT Follow_Up_TA_Log__c, Flagged_for_Follow_Up__c FROM TA_Log__c WHERE Id = :ta1.Id];

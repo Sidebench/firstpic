@@ -38,7 +38,7 @@ public without sharing class SessionReportsCtrl {
 
     yearOptions = spf.getPicklistOptions('Session_Report__c', 'Year__c', null);
     if (year == null)
-      year = String.valueOf(date.today().year());
+      year = spf.defaultOption;
 
     statusOptions = new List<SelectOption>();
     statusOptions.add(new SelectOption('All Reports', 'View All'));

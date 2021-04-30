@@ -95,6 +95,7 @@ public without sharing class ProgressReportClass {
       soql += soqlAND;
     if (sortBy != '' && sortBy != null)
       soql += ' ORDER BY ' + sortBy;
+    soql += ' LIMIT 1000';
     system.debug('Progress Report Class soql = ' + soql);
 
     List<Progress_Report__c> report_list = Database.query(soql);

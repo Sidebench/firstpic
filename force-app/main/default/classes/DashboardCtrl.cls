@@ -257,7 +257,7 @@ public with sharing class DashboardCtrl {
           userAcct.Id,
           null,
           null,
-          'AND (Status__c = \'Requested\' OR Status__c = \'In Progress\')'
+          'AND (Status__c != \'Submitted\' AND Status__c != \'Approved\')'
         )
       ) {
         if (vsr_incomplete.size() < listLimit) {

@@ -42,7 +42,7 @@ public without sharing class AccountClass {
     String soqlAND
   ) {
     soql = 'SELECT Id, Name, RecordType.Name, Is_Active__c, Active_Status__c, Local_Organization__r.Name, Local_Organization_Id__c, Hold_Status__c, Hold_Reason__c, Hold_Date__c, Hold_History__c, DUNS_Current_Status__c ';
-    soql += ', Primary_Approver__c, Primary_Approver_Name__c, Secondary_Approver__c, Secondary_Approver_Name__c, Primary_Approver_On_Leave__c, BBBS_Id__c, Active_Grant_Status__c FROM Account';
+    soql += ', Primary_Approver__c, Primary_Approver_Name__c, Secondary_Approver__c, Secondary_Approver_Name__c, Primary_Approver_On_Leave__c, BBBS_Id__c, Active_Grant_Status__c, DUNS_Exp_Date__c FROM Account';
     if (userAcctType == 'National Organization') {
       soql +=
         ' WHERE (National_Organization__c = \'' +

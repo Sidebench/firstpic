@@ -1,0 +1,363 @@
+<apex:page
+  controller="SubGrantDetailsController"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Sub-Grant Details</title>
+  </head>
+  <c:MDGOHeader
+    ActivePage="dashboard"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total Awarded: &nbsp;
+              <apex:outputField value="{!grant.Amount__c}" />
+            </h2>
+          </div>
+        </div>
+
+        <table class="table">
+          <tr>
+            <td>
+              <span style="font-weight: bold"> Date Range: &nbsp;&nbsp; </span>
+              <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                <apex:param value="{!grant.National_Grant__r.Start_Date__c}" />
+              </apex:outputText>
+              -
+              <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                <apex:param value="{!grant.National_Grant__r.End_Date__c}" />
+              </apex:outputText>
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Children Served: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!grant.Youth_Served__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Total Budgeted: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!grant.Total_Item_Budget__c}" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span style="font-weight: bold">
+                Requested Amount: &nbsp;&nbsp;
+              </span>
+              <apex:outputField
+                value="{!grant.Reimbursement_Requested_Amount__c }"
+              />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                Approved Amount: &nbsp;&nbsp;
+              </span>
+              <apex:outputField
+                value="{!grant.Reimbursement_Approved_Amount__c }"
+              />
+            </td>
+            <td>
+              <span style="font-weight: bold"> Balance: &nbsp;&nbsp; </span>
+              <apex:outputField value="{!grant.Total_Item_Balance__c}" />
+            </td>
+          </tr>
+        </table>
+
+        <apex:outputPanel rendered="{!hasLabor}">
+          <div class="panel panel-default">
+            <apex:repeat value="{!labor_map}" var="cat">
+              <div class="panel-heading">
+                <apex:outputText value="{!cat}" />
+              </div>
+              <div class="panel-body">
+                <table style="width: 100%">
+                  <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th class="text-center">Active?</th>
+                    <th class="text-center">Hourly?</th>
+                    <th>Rate</th>
+                    <th class="text-center">% Time on Grant</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Salary</th>
+                    <th>
+                      <apex:outputText value="Requested Salary" />
+                    </th>
+                    <th>
+                      <apex:outputText value="Approved Salary" />
+                    </th>
+                    <th>
+                      Item Balance
+                      <span
+                        class="badge"
+                        title="Item Balance includes Fringe Benefits"
+                        >?</span
+                      >
+                    </th>
+                  </tr>
+                  <apex:repeat value="{!labor_map[cat]}" var="i">
+                    <tr>
+                      <td>{!i.Name}</td>
+                      <td>{!i.Title__c}</td>
+                      <td class="text-center">
+                        <apex:outputfield value="{!i.Is_Active__c}" />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputfield value="{!i.Is_Hourly__c}" />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Hourly_Rate__c }"
+                          rendered="{!i.Is_Hourly__c}"
+                        />
+                        <apex:outputfield
+                          value="{!i.Salary__c }"
+                          rendered="{!NOT(i.Is_Hourly__c)}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:outputfield
+                          value="{!i.Projected_Percent_Time_on_Grant__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                          <apex:param value="{!i.Start_Date__c}" />
+                        </apex:outputText>
+                      </td>
+                      <td>
+                        <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                          <apex:param value="{!i.End_Date__c}" />
+                        </apex:outputText>
+                      </td>
+                      <td>
+                        <apex:outputfield value="{!i.Wages__c}" />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Total_Requested_Salary__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Total_Approved_Salary__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield value="{!i.Item_Balance__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+
+              <!--<div class="panel-heading sub-panel-heading">
+                                Fringe Benefits
+                            </div>
+                            <div class="panel-body">   
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            FICA (7.65%)
+                                        </th>
+                                        <th class="text-center">
+                                            Medical
+                                        </th>
+                                        <th class="text-center">
+                                            Dental
+                                        </th>
+                                        <th class="text-center">
+                                            Short Term Disability
+                                        </th>
+                                        <th class="text-center">
+                                            Long Term Disability
+                                        </th>
+                                        <th class="text-center">
+                                            Life
+                                        </th>
+                                        <th class="text-center">
+                                            Other
+                                        </th>
+                                        <th class="text-center">Total Fringe Benefits
+                                        </th>
+                                        <th class="text-center">
+                                            <apex:outputText value="New Fringe Benefits" rendered="{!editMode}" />
+                                        </th>
+                                        <th class="text-center">
+                                            <apex:outputText value="Requested Benefits" rendered="{!NOT(editMode)}" />
+                                        </th>
+                                        <th class="text-center">
+                                            <apex:outputText value="Approved Benefits" rendered="{!NOT(editMode)}" />
+                                        </th>
+                                    </tr>
+                                    <apex:repeat value="{!labor_map[cat]}" var="i">
+                                        <tr>
+                                            <td>
+                                                {!i.Name}
+                                            </td>
+                                            <td>
+                                                <apex:outputField value="{!i.FICA__c}" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.Medical__c}" styleClass="input-sm" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.Dental__c}" styleClass="input-sm" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.Short_Term_Disability__c}" styleClass="input-sm" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.Long_Term_Disability__c}" styleClass="input-sm" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.Life__c}" styleClass="input-sm" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.Other_Benefits__c}" styleClass="input-sm" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.Fringe_Benefits__c}" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputField value="{!i.New_Fringe_Benefits__c}" rendered="{!editMode}" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputfield value="{!i.Total_Requested_Benefits__c}" rendered="{!NOT(editMode)}" />
+                                            </td>
+                                            <td class="text-center">
+                                                <apex:outputfield value="{!i.Total_Approved_Benefits__c}" rendered="{!NOT(editMode)}" />
+                                            </td>
+                                        </tr>
+                                    </apex:repeat>
+                                </table>
+                            </div>-->
+            </apex:repeat>
+          </div>
+        </apex:outputPanel>
+
+        <apex:outputPanel rendered="{!hasExpenses}">
+          <div class="panel panel-default">
+            <div class="panel-heading">Expenses</div>
+            <apex:repeat value="{!expense_map}" var="cat">
+              <div class="panel-heading sub-panel-heading">
+                <apex:outputText value="{!cat}" />
+              </div>
+              <div class="panel-body">
+                <table class="fixedFirstCol">
+                  <tr>
+                    <th>Name</th>
+                    <th>Item Budget</th>
+                    <th>
+                      <apex:outputText value="Requested Amount" />
+                    </th>
+                    <th>
+                      <apex:outputText value="Approved Amount" />
+                    </th>
+                    <th>Item Balance</th>
+                  </tr>
+                  <apex:repeat value="{!expense_map[cat]}" var="i">
+                    <tr>
+                      <td>{!i.Name}</td>
+                      <td>
+                        <apex:outputfield value="{!i.Item_Budget__c}" />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Total_Requested_Amount__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield
+                          value="{!i.Total_Approved_Amount__c}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputfield value="{!i.Item_Balance__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </apex:repeat>
+          </div>
+        </apex:outputPanel>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Notes</div>
+          <div class="panel-body">
+            <apex:outputField value="{!grant.Notes_for_National__c}" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-8">
+            <apex:outputPanel rendered="{!grant.Grant_Status__c == 'Closed'}">
+              <apex:commandButton
+                value="View Reimbursements"
+                action="{!URLFOR($Site.Prefix+'/Reimbursements?grantId='+ grant.Id +'&grantStatus=Closed')}"
+              />
+              <apex:commandButton
+                value="Reopen Grant"
+                action="{!reopenGrant}"
+                rendered="{!canReopenGrant}"
+              />
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!grant.Grant_Status__c != 'Closed'}">
+              <a
+                class="btn"
+                href="{!URLFOR($Site.Prefix+'/Reimbursements?grantId='+grantId)}"
+              >
+                View Reimbursements
+              </a>
+              <a
+                class="btn"
+                href="{!URLFOR($Site.Prefix+'/MDGOBudgetPersonnel?grantId='+grantId)}"
+              >
+                Update Budget
+              </a>
+              <apex:commandButton
+                value="Close Grant"
+                action="{!showCloseGrantPopup}"
+                rendered="{!canCloseGrant}"
+              />
+            </apex:outputPanel>
+          </div>
+        </div>
+
+        <c:ConfirmationPopup
+          header="Close Grant"
+          body="Closing this grants will also close all related reimbursement requests."
+          displayConfirmPopup="{!displayCloseGrantPopup}"
+        >
+          <apex:commandButton value="Cancel" action="{!hideCloseGrantPopup}" />
+          <apex:commandButton
+            value="Close Grant"
+            styleClass="primary"
+            action="{!closeGrant}"
+          />
+        </c:ConfirmationPopup>
+
+        <br />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

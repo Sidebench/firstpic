@@ -14,7 +14,7 @@
       }
     </style>
   </head>
-  <c:TRAILHeader
+  <c:NCAIHeader
     ActivePage="{!IF(userAcctType == 'Site', 'reports', 'program')}"
     acct="{!userAcct}"
     profile="{!currentUser.Profile.Name}"

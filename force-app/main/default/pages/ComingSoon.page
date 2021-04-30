@@ -7,30 +7,10 @@
   <head>
     <title>Coming Soon</title>
   </head>
-  <c:TRAILHeader
+  <c:HeaderSwitch
     acct="{!userAcct}"
     profile="{!currentUser.Profile.Name}"
-    rendered="{!portalName == 'TRAIL'}"
-  />
-  <c:STEMHeader
-    acct="{!userAcct}"
-    profile="{!currentUser.Profile.Name}"
-    rendered="{!portalName == 'STEM'}"
-  />
-  <c:RipkenHeader
-    acct="{!userAcct}"
-    profile="{!currentUser.Profile.Name}"
-    rendered="{!portalName == 'Ripken'}"
-  />
-  <c:NPALHeader
-    acct="{!userAcct}"
-    profile="{!currentUser.Profile.Name}"
-    rendered="{!portalName == 'NPAL'}"
-  />
-  <c:Header
-    acct="{!userAcct}"
-    profile="{!currentUser.Profile.Name}"
-    rendered="{!portalName == 'BBBS'}"
+    portalName="{!portalName}"
   />
 
   <apex:form id="form">
