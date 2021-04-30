@@ -160,4 +160,8 @@
         <name>standard__AllTabSet</name>
         <type>CustomApplication</type>
     </appMenuItems>
+    <appMenuItems>
+        <name>MDGO</name>
+        <type>Network</type>
+    </appMenuItems>
 </AppMenu>

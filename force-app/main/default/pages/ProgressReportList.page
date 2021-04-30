@@ -6,7 +6,7 @@
   <head>
     <title>Progress Reports</title>
   </head>
-  <c:NCAIHeader
+  <c:TRAILHeader
     ActivePage="progress"
     acct="{!userAcct}"
     profile="{!currentUser.Profile.Name}"

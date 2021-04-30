@@ -70,9 +70,9 @@ public without sharing class BJAGProgramReportCtrl {
     readOnly = true;
 
     if (
-      report.Status__c == 'Not Started' ||
+      (report.Status__c == 'Not Started' ||
       report.Status__c == 'In Progress' ||
-      report.Status__c == 'Revisions Needed' &&
+      report.Status__c == 'Revisions Needed') &&
       userAcctType == 'Local Organization'
     ) {
       readOnly = false;
