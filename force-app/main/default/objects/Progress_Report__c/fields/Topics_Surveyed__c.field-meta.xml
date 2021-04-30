@@ -12,38 +12,38 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Public Satisfaction with Police Services  </fullName>
+                <fullName>Public Satisfaction with Police Services</fullName>
                 <default>false</default>
-                <label>Public Satisfaction with Police Services  </label>
+                <label>Public Satisfaction with Police Services</label>
             </value>
             <value>
                 <fullName
-        >Public Satisfaction with Prosecution Services  </fullName>
+        >Public Satisfaction with Prosecution Services</fullName>
                 <default>false</default>
-                <label>Public Satisfaction with Prosecution Services  </label>
+                <label>Public Satisfaction with Prosecution Services</label>
             </value>
             <value>
                 <fullName
-        >Public Satisfaction with Public Defender/Indigent Defense Services  </fullName>
+        >Public Satisfaction with Public Defender/Indigent Defense Services</fullName>
                 <default>false</default>
                 <label
-        >Public Satisfaction with Public Defender/Indigent Defense Services  </label>
+        >Public Satisfaction with Public Defender/Indigent Defense Services</label>
             </value>
             <value>
-                <fullName>Public Satisfaction with Courts  </fullName>
+                <fullName>Public Satisfaction with Courts</fullName>
                 <default>false</default>
-                <label>Public Satisfaction with Courts  </label>
+                <label>Public Satisfaction with Courts</label>
             </value>
             <value>
                 <fullName
-        >Public Perceptions of Crime/Disorder Problems   </fullName>
+        >Public Perceptions of Crime/Disorder Problems</fullName>
                 <default>false</default>
-                <label>Public Perceptions of Crime/Disorder Problems   </label>
+                <label>Public Perceptions of Crime/Disorder Problems</label>
             </value>
             <value>
-                <fullName>Personal Crime Experiences of Citizens  </fullName>
+                <fullName>Personal Crime Experiences of Citizens</fullName>
                 <default>false</default>
-                <label>Personal Crime Experiences of Citizens  </label>
+                <label>Personal Crime Experiences of Citizens</label>
             </value>
             <value>
                 <fullName

@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>B10_Interpreter_Services__c</fullName>
     <externalId>false</externalId>
-    <label>B10. Interpreter Services </label>
+    <label>B10. Interpreter Services</label>
     <precision>18</precision>
     <required>false</required>
     <scale>0</scale>
