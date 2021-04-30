@@ -10,16 +10,6 @@
     portalName="{!portalName}"
   />
 
-  <!--
-    <apex:outputPanel rendered="{!CONTAINS(portalName, 'NCAI') && CONTAINS(userAcct.National_Grants__c, 'OVC')}">
-        <div class="pain-panel">
-            <div class="content">
-                <center><h3>Reimbursement Requests are under maintenance and will be available on Wed Nov 25th.</h3></center>
-            </div>
-        </div>
-    </apex:outputPanel>
--->
-  <!--    <apex:form id="form" rendered="{!NOT(CONTAINS(userAcct.National_Grants__c, 'OVC'))}"> -->
   <apex:form id="form">
     <div class="main-panel">
       <div class="content">
@@ -157,6 +147,11 @@
                           rendered="{!portalName == 'DMV'}"
                         />
                         <apex:commandLink
+                          action="{!URLFOR($Site.Prefix+'/MDGOReimbursementDetails?RequestID='+i.Id)}"
+                          value="{!i.Name}"
+                          rendered="{!portalName == 'MDGO'}"
+                        />
+                        <apex:commandLink
                           action="{!URLFOR($Site.Prefix+'/NPALReimbursementDetails?RequestID='+i.Id)}"
                           value="{!i.Name}"
                           rendered="{!portalName == 'NPAL'}"
@@ -171,7 +166,7 @@
                           action="{!URLFOR($Site.Prefix+'/Reimbursement?requestID='+i.Id)}"
                           target="_blank"
                           value="{!i.Name}"
-                          rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != 'DMV' && portalName != ''}"
+                          rendered="{!portalName != 'NPAL' && portalName != 'BBBS' && portalName != 'DMV' && portalName != '' && portalName != 'MDGO'}"
                         />
                       </td>
                       <td>
@@ -265,7 +260,7 @@
         >
           <a
             class="btn"
-            href="{!IF(portalName == 'DMV', URLFOR($Site.Prefix+'/DMVRequestForm'), URLFOR($Site.Prefix+'/ReimbursementForm'))}"
+            href="{!IF(portalName == 'DMV', URLFOR($Site.Prefix+'/DMVRequestForm'), IF(portalName =='MDGO', URLFOR($Site.Prefix+'/MDGORequestForm'), URLFOR($Site.Prefix+'/ReimbursementForm')))}"
           >
             Create Reimbursement
           </a>

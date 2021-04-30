@@ -6,6 +6,7 @@ public with sharing class ReimbursementDetailsController {
   public String approverLevel { get; set; }
   public Boolean displayApprovalButtons { get; set; }
   public String portalName { get; set; }
+  public AccountClass ac = new AccountClass();
 
   public GrantClass grantClass = new GrantClass();
   public ReimbursementClass requestClass = new ReimbursementClass();
@@ -105,17 +106,7 @@ public with sharing class ReimbursementDetailsController {
     request = requestClass.getRequest(RequestId);
 
     grant = grantClass.getGrant(request.Grant__c);
-    acct = [
-      SELECT
-        ID,
-        Name,
-        RecordType.Name,
-        Primary_Approver__c,
-        Secondary_Approver__c,
-        Primary_Approver_On_Leave__c
-      FROM Account
-      WHERE ID = :grant.Account__r.Id
-    ];
+    acct = ac.getAccount(grant.Account__r.Id); //[SELECT ID, Name, RecordType.Name, Primary_Approver__c, Secondary_Approver__c, Primary_Approver_On_Leave__c FROM Account WHERE ID = :grant.Account__r.Id];
 
     request.Previous_Status__c = request.Status__c;
     if (request.Status__c == 'Incomplete') {
@@ -127,6 +118,7 @@ public with sharing class ReimbursementDetailsController {
     if (request.Status__c == 'Approved' || request.Status__c == 'Paid') {
       statusColor = 'text-success';
     }
+    init();
   }
   // END Constructor
 
@@ -139,7 +131,7 @@ public with sharing class ReimbursementDetailsController {
       ) {
         isNationalRequest = true;
       }
-
+      System.debug('Request: ' + request);
       if (request.Status__c == 'Pending First Approval') {
         if (
           acct.Primary_Approver__c == currentUser.ContactId &&
@@ -154,6 +146,11 @@ public with sharing class ReimbursementDetailsController {
         } else if (approverLevel == 'Finance Admin') {
           displayApprovalButtons = true;
         } else if (portalName == 'NPAL' || portalName == 'DMV') {
+          displayApprovalButtons = true;
+        } else if (
+          portalName == 'MDGO' &&
+          userAcctType == 'National Organization'
+        ) {
           displayApprovalButtons = true;
         }
       }
@@ -329,8 +326,7 @@ public with sharing class ReimbursementDetailsController {
   public void getTotals() {
     amountError = false;
 
-    Decimal balance = [SELECT Balance__c FROM Grant__c WHERE Id = :grant.Id]
-    .Balance__c;
+    Decimal balance = grant.Balance__c; //[SELECT Balance__c FROM Grant__c WHERE Id = :grant.Id].Balance__c;
     if (grant.Use_Indirect_Rate__c == 'Yes') {
       grant.Indirect_Rate_Amount__c = ((laborRequestedAmount +
         expenseRequestedAmount) *
@@ -558,22 +554,29 @@ public with sharing class ReimbursementDetailsController {
   public PageReference approveRequest() {
     errorMessage = '';
 
-    if (approverLevel == 'Level One') {
-      request.Status__c = 'Pending Second Approval';
+    if (portalName == 'MDGO') {
+      request.Status__c = 'Approved';
       request.Level_One_Approver__c = userClass.currentUser.ContactId;
       request.Level_One_Approved_Date__c = Date.today();
-    }
-    if (approverLevel.contains('Level Two')) {
-      request.Status__c = 'Pending Final Approval';
-      request.Level_Two_Approver__c = userClass.currentUser.ContactId;
-      request.Level_Two_Approved_Date__c = Date.today();
-    }
-    if (
-      approverLevel.contains('Level Three') || approverLevel == 'Finance Admin'
-    ) {
-      request.Status__c = 'Approved';
-      request.Level_Three_Approver__c = userClass.currentUser.ContactId;
-      request.Level_Three_Approved_Date__c = Date.today();
+    } else {
+      if (approverLevel == 'Level One') {
+        request.Status__c = 'Pending Second Approval';
+        request.Level_One_Approver__c = userClass.currentUser.ContactId;
+        request.Level_One_Approved_Date__c = Date.today();
+      }
+      if (approverLevel.contains('Level Two')) {
+        request.Status__c = 'Pending Final Approval';
+        request.Level_Two_Approver__c = userClass.currentUser.ContactId;
+        request.Level_Two_Approved_Date__c = Date.today();
+      }
+      if (
+        approverLevel.contains('Level Three') ||
+        approverLevel == 'Finance Admin'
+      ) {
+        request.Status__c = 'Approved';
+        request.Level_Three_Approver__c = userClass.currentUser.ContactId;
+        request.Level_Three_Approved_Date__c = Date.today();
+      }
     }
 
     displayRequestNotesPopup = false;
@@ -592,7 +595,10 @@ public with sharing class ReimbursementDetailsController {
     }
     request.Modification_History__c += ' \r\n' + mh;
     requestClass.upsertRequest(request);
-    updateItems();
+
+    if (portalName != 'MDGO') {
+      updateItems();
+    }
 
     PageReference pr = new PageReference('/Reimbursements');
     pr.setRedirect(true);

@@ -1,0 +1,275 @@
+<apex:page
+  controller="BudgetExpensesCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Budget Expenses Form</title>
+  </head>
+  <c:MDGOHeader
+    ActivePage="subgrants"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="budgetForm">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-xs-6">
+            <h2>{!grant.Name}</h2>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <h2>
+              Total: &nbsp;
+              <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                <apex:param value="{!grant.Amount__c}" />
+              </apex:outputText>
+            </h2>
+          </div>
+          <div class="col-auto">
+            <span style="font-weight: bold"> Sub-Grant Date Range: </span>
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!grant.National_Grant__r.Start_Date__c}" />
+            </apex:outputText>
+            -
+            <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+              <apex:param value="{!grant.National_Grant__r.End_Date__c}" />
+            </apex:outputText>
+          </div>
+        </div>
+        <br />
+
+        <!-- BEGIN Expense Items -->
+        <apex:outputPanel rendered="{!hasExpenses}">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Update Expense Items
+              <div class="pull-right">
+                <apex:commandButton
+                  action="{!updateSelected}"
+                  value="Mark Inactive"
+                  status="pageStatus"
+                  styleClass="btn-small btn-white"
+                >
+                  <apex:param
+                    assignTo="{!bulkAction}"
+                    id="bulkAction"
+                    value="disable"
+                  />
+                </apex:commandButton>
+              </div>
+            </div>
+            <apex:repeat value="{!expense_map}" var="cat">
+              <div class="panel-heading sub-panel-heading">
+                <apex:outputText value="{!cat}" />
+              </div>
+              <div class="panel-body">
+                <table class="fixedTbl">
+                  <tr>
+                    <th style="width: 20px"></th>
+                    <th>Name</th>
+                    <th class="text-center">
+                      Monthly Rate
+                      <span
+                        class="badge"
+                        title="The Monthly Rate (if applicable) will be used for Reimbursement Requests"
+                        >?</span
+                      >
+                    </th>
+                    <th class="text-center">
+                      Total Expense
+                      <span
+                        class="badge"
+                        title="The Total Expense should equal Monthly Rate multiplied by the number of months in the grant."
+                        >?</span
+                      >
+                    </th>
+                    <th>Amount Allocated to Grant</th>
+                  </tr>
+                  <apex:repeat value="{!expense_map[cat]}" var="i">
+                    <tr>
+                      <td style="width: 20px">
+                        <apex:inputCheckbox
+                          value="{!i.Selected__c}"
+                          rendered="{!i.Is_Active__c}"
+                        />
+                      </td>
+                      <td>{!i.Name}</td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.Monthly_Rate__c}"
+                          styleClass="input-md"
+                          rendered="{!i.Is_Active__c}"
+                        />
+                        <apex:outputText
+                          value="{!i.Monthly_Rate__c}"
+                          rendered="{!NOT(i.Is_Active__c)}"
+                        />
+                      </td>
+                      <td class="text-center">
+                        <apex:inputText
+                          value="{!i.New_Rate__c}"
+                          styleClass="input-md"
+                          rendered="{!i.Is_Active__c}"
+                        />
+                        <apex:outputText
+                          value="{!i.New_Rate__c}"
+                          rendered="{!NOT(i.Is_Active__c)}"
+                        />
+                      </td>
+                      <td>
+                        <apex:outputText
+                          value="${0, number, ###,###,###,##0.00}"
+                        >
+                          <apex:param value="{!i.New_Item_Budget__c}" />
+                        </apex:outputText>
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </div>
+            </apex:repeat>
+          </div>
+        </apex:outputPanel>
+        <!-- END Expense Items -->
+
+        <!-- BEGIN New Expense Items -->
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Add Expense Items
+            <apex:commandButton
+              action="{!deleteItems}"
+              value="Delete"
+              status="pageStatus"
+              styleClass="btn-small btn-white pull-right"
+            />
+          </div>
+          <div class="panel-body grid-pd-sm">
+            <apex:outputPanel id="newExpenseItems">
+              <table style="width: 100%">
+                <tr>
+                  <th style="width: 30px"></th>
+                  <th>Item Name</th>
+                  <th>Category</th>
+                  <th class="text-center">
+                    Monthly Rate
+                    <span
+                      class="badge"
+                      title="The Monthly Rate (if applicable) will be used for Reimbursement Requests"
+                      >?</span
+                    >
+                  </th>
+                  <th class="text-center">
+                    Total Expense
+                    <span
+                      class="badge"
+                      title="The Total Expense should equal Monthly Rate multiplied by the number of months in the grant."
+                      >?</span
+                    >
+                  </th>
+                  <th>Amount Allocated to Grant</th>
+                </tr>
+                <apex:repeat value="{!newExpense_list}" var="i">
+                  <tr>
+                    <td style="width: 30px">
+                      <apex:inputCheckbox value="{!i.Selected__c}" />
+                    </td>
+                    <td>
+                      <apex:inputfield value="{!i.Name}" />
+                    </td>
+                    <td>
+                      <apex:selectList value="{!i.Category__c}" size="1">
+                        <apex:selectOptions value="{!categories}" />
+                      </apex:selectList>
+                    </td>
+                    <td class="text-center">
+                      <apex:inputText
+                        value="{!i.Monthly_Rate__c}"
+                        styleClass="input-md"
+                      />
+                    </td>
+                    <td class="text-center">
+                      <apex:inputText
+                        value="{!i.New_Rate__c}"
+                        styleClass="input-md"
+                      />
+                    </td>
+                    <td>
+                      <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!i.New_Item_Budget__c}" />
+                      </apex:outputText>
+                    </td>
+                  </tr>
+                </apex:repeat>
+              </table>
+            </apex:outputPanel>
+          </div>
+          <div class="panel-footer">
+            <apex:actionRegion renderRegionOnly="false">
+              <apex:commandbutton
+                value="Add"
+                action="{!addItem}"
+                status="pageStatus"
+              >
+                <apex:param assignTo="{!recordType}" value="expense" />
+              </apex:commandbutton>
+            </apex:actionRegion>
+          </div>
+        </div>
+        <!-- END New Expense Items -->
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Notes</div>
+          <div class="panel-body">
+            <apex:inputField value="{!grant.Notes_for_National__c}" />
+          </div>
+        </div>
+
+        <!-- BEGIN Actions -->
+        <div class="row">
+          <div class="col-xs-6">
+            <apex:actionRegion renderRegionOnly="false">
+              <apex:commandButton action="{!previous}" value="Previous" />
+              <apex:commandButton
+                action="{!updateAmounts}"
+                value="Update Amounts"
+                status="pageStatus"
+              />
+              <apex:commandButton
+                action="{!saveAndExit}"
+                value="Save and Exit"
+                status="pageStatus"
+              />
+            </apex:actionRegion>
+          </div>
+          <div class="col-xs-6 pull-right text-right">
+            <apex:outputPanel id="totals">
+              <apex:outputPanel rendered="{!amountError}">
+                <h4 style="padding-right: 10px; color: #b94a48">
+                  Total Requested Amount: &nbsp;
+                  <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!totalRequestedAmount}" />
+                  </apex:outputText>
+                </h4>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!NOT(amountError)}">
+                <h4 style="padding-right: 10px">
+                  Total Requested Amount: &nbsp;
+                  <apex:outputText value="${0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!totalRequestedAmount}" />
+                  </apex:outputText>
+                </h4>
+              </apex:outputPanel>
+            </apex:outputPanel>
+          </div>
+        </div>
+        <!-- END Actions -->
+
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

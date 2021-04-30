@@ -1,0 +1,118 @@
+<apex:page
+  controller="ProgressReportsCtrl"
+  action="{!getLists}"
+  showHeader="false"
+  sidebar="false"
+>
+  <head>
+    <title>Program Reports</title>
+  </head>
+  <c:MDGOHeader
+    ActivePage="program"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+  <c:Spinner />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>Program Reports</h2>
+          </div>
+          <div class="col-auto pull-right">
+            <!--<apex:outputPanel rendered="{!userAcctType != 'Site'}">
+                            <apex:outputText value="{!IF(userAcctType == 'Local Organization', 'Site', 'Organization or Site')}" />
+                            &nbsp;<apex:inputText value="{!orgName}" style="width: 240px;" />
+                            <div style="margin: 5px;"></div>
+                        </apex:outputPanel>-->
+            Year: &nbsp;
+            <apex:selectList value="{!year}" size="1" id="years">
+              <apex:selectOptions value="{!yearOptions}" />
+            </apex:selectList>
+            &nbsp;&nbsp; Status: &nbsp;
+            <apex:selectList value="{!status}" size="1" id="statusOptions">
+              <apex:selectOptions value="{!statusOptions}" />
+            </apex:selectList>
+            &nbsp;
+            <apex:commandButton
+              action="{!getLists}"
+              value="Update"
+              status="pageStatus"
+              styleClass="btn-small primary"
+              reRender="form"
+            />
+          </div>
+        </div>
+        <br />
+
+        <apex:outputPanel id="paginatedList">
+          <div class="panel panel-default">
+            <div class="panel-heading">{!status}</div>
+            <div class="panel-body">
+              <apex:outputPanel rendered="{!reports.size > 0}">
+                <table width="100%">
+                  <tr>
+                    <th>Report ID</th>
+                    <apex:outputPanel
+                      rendered="{!userAcctType == 'National Organization'}"
+                    >
+                      <th>
+                        <apex:outputText
+                          value="Organization"
+                          rendered="{!userAcctType == 'National Organization'}"
+                        />
+                      </th>
+                    </apex:outputPanel>
+                    <th>Quarter</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                  </tr>
+                  <apex:repeat value="{!reports}" var="r">
+                    <tr>
+                      <td>
+                        <apex:commandLink
+                          value="{!r.Name}"
+                          action="{!URLFOR($Site.Prefix+'/MDGOProgramReport?report='+r.Id)}"
+                        />
+                      </td>
+                      <apex:outputPanel
+                        rendered="{!userAcctType == 'National Organization'}"
+                      >
+                        <td>
+                          <apex:outputField value="{!r.Organization_Name__c}" />
+                        </td>
+                      </apex:outputPanel>
+                      <td>
+                        <apex:outputField value="{!r.Quarter__c}" />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!r.Year__c}" />
+                      </td>
+                      <td>
+                        <apex:outputField value="{!r.Status__c}" />
+                      </td>
+                    </tr>
+                  </apex:repeat>
+                </table>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!reports.size == 0}">
+                No Reports Found
+              </apex:outputPanel>
+            </div>
+            <c:Pagination
+              disablePrevious="{!disablePrevious}"
+              disableNext="{!disableNext}"
+              recordCount="{!recordCount}"
+              first="{!first}"
+              previous="{!previous}"
+              next="{!next}"
+              last="{!last}"
+            />
+          </div>
+        </apex:outputPanel>
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

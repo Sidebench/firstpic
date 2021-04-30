@@ -238,6 +238,8 @@ public with sharing class SiteDetailsCtrl {
       app.Primary_Approver__c = currentUser.ContactId;
       app.Primary_Approver_Email__c = currentUser.Contact.Email;
     }
+    if (userAcct.Current_Grant_Year__c != null && app.Grant_Year__c == null)
+      app.Grant_Year__c = userAcct.Current_Grant_Year__c;
     app.Status__c = 'Sent to Applicant';
     appClass.upsertApplication(app);
     if (!ApexPages.hasMessages())

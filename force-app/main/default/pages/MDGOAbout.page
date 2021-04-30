@@ -1,0 +1,320 @@
+<apex:page
+  controller="AboutCtrl"
+  action="{!init}"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>About</title>
+  </head>
+  <c:MDGOHeader
+    ActivePage="about"
+    acct="{!userAcct}"
+    profile="{!profileName}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <div class="row">
+          <div class="col-auto">
+            <h2>{!acct.Name}</h2>
+          </div>
+        </div>
+
+        <table class="table">
+          <tr>
+            <td>
+              <span style="font-weight: bold"> DUNS Number: &nbsp;&nbsp; </span>
+              <apex:outputText value="{!acct.DUNS__c}" />
+            </td>
+            <td>
+              <span style="font-weight: bold">
+                SAM.gov Expiration Date: &nbsp;&nbsp;
+              </span>
+              <apex:outputField value="{!acct.DUNS_Exp_Date__c}" />
+            </td>
+            <!--<td>
+                            <apex:commandLink value="Update SAM.gov Date" action="{!editOrgPopup}" styleClass="pull-right" rendered="{!NOT(CONTAINS(profileName, 'Read Only'))}" />
+                        </td>-->
+          </tr>
+        </table>
+
+        <!-- BEGIN Contact List -->
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">Users</div>
+              <div class="panel-body">
+                <apex:outputPanel rendered="{!contact_list.size > 0}">
+                  <table style="width: 100%">
+                    <tr>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th class="text-center">
+                        <apex:outputText
+                          value="Edit"
+                          rendered="{!NOT(CONTAINS(profileName, 'Read Only'))}"
+                        />
+                      </th>
+                    </tr>
+                    <apex:repeat value="{!contact_list}" var="i">
+                      <tr>
+                        <td>{!i.FirstName}</td>
+                        <td>{!i.LastName}</td>
+                        <td>
+                          <apex:outputField value="{!i.Email}" />
+                        </td>
+                        <td>
+                          <apex:outputField value="{!i.Phone}" />
+                        </td>
+                        <td class="text-center">
+                          <apex:commandLink
+                            action="{!editContactPopup}"
+                            rendered="{!NOT(CONTAINS(profileName, 'Read Only'))}"
+                            status="pageStatus"
+                            reRender="editContactPopup"
+                          >
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <apex:param
+                              name="selectedContactId"
+                              value="{!i.Id}"
+                              assignTo="{!selectedContactId}"
+                            />
+                          </apex:commandLink>
+                        </td>
+                      </tr>
+                    </apex:repeat>
+                  </table>
+                </apex:outputPanel>
+              </div>
+              <div class="panel-footer">
+                <apex:commandButton
+                  value="Add User"
+                  action="{!addContactPopup}"
+                  rendered="{!NOT(CONTAINS(profileName, 'Read Only'))}"
+                  reRender="form"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END Contact List -->
+
+        <!-- BEGIN Edit Org Details -->
+        <apex:outputPanel id="editOrgPopup">
+          <apex:outputPanel
+            styleClass="popupBackground"
+            layout="block"
+            rendered="{!displayEditOrgPopup}"
+          />
+          <apex:outputPanel
+            styleClass="custPopup"
+            layout="block"
+            rendered="{!displayEditOrgPopup}"
+          >
+            <div class="modal-dialog text-left">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Edit SAM.gov Expiration Date</h4>
+                </div>
+                <div class="modal-body grid-pd-md">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      SAM.gov Expiration Date &nbsp;&nbsp;
+                      <apex:input type="date" value="{!dunsExpDate}" />
+                    </div>
+                    <div class="col-xs-12">
+                      <br />
+                      Enter an updated expiration date for your SAM.gov
+                      registration. Once this is verified it will be updated in
+                      the system.
+                    </div>
+                  </div>
+                  <c:ErrorMessage errorMessage="{!errorMessage}" />
+                </div>
+                <div class="modal-footer">
+                  <apex:commandButton
+                    action="{!editOrgPopup}"
+                    value="Cancel"
+                    status="pageStatus"
+                  />
+                  <apex:commandButton
+                    action="{!updateOrg}"
+                    value="Save and Close"
+                    status="pageStatus"
+                    styleClass="primary"
+                  />
+                </div>
+              </div>
+            </div>
+          </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- END Edit Org Details -->
+
+        <!-- BEGIN Add Contact -->
+        <apex:outputPanel
+          styleClass="popupBackground"
+          layout="block"
+          rendered="{!displayAddContactPopup}"
+        />
+        <apex:outputPanel
+          styleClass="custPopup"
+          layout="block"
+          rendered="{!displayAddContactPopup}"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Add New User</h4>
+              </div>
+              <div class="modal-body grid-pd-md">
+                <div class="row">
+                  <div class="col-xs-6">
+                    First Name
+                    <apex:inputField value="{!newContact.FirstName}" />
+                  </div>
+                  <div class="col-xs-6">
+                    Last Name
+                    <apex:inputField
+                      value="{!newContact.LastName}"
+                      required="false"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-6">
+                    Email
+                    <apex:inputField value="{!newContact.Email}" />
+                  </div>
+                  <div class="col-xs-6">
+                    Phone
+                    <apex:inputField value="{!newContact.Phone}" />
+                  </div>
+                </div>
+                <apex:outputPanel
+                  rendered="{!currentUser.Contact.Role__c == 'CEO'}"
+                >
+                  <div class="row">
+                    <div class="col-xs-8">
+                      User Profile
+                      <apex:selectList
+                        value="{!newContact.User_Profile__c}"
+                        size="1"
+                        style="display: block"
+                      >
+                        <apex:selectOptions value="{!profiles}" />
+                      </apex:selectList>
+                    </div>
+                  </div>
+                </apex:outputPanel>
+                <c:ErrorMessage errorMessage="{!errorMessage}" />
+              </div>
+              <div class="modal-footer">
+                <apex:commandButton
+                  action="{!cancelAddContactPopup}"
+                  value="Cancel"
+                  immediate="true"
+                />
+                <apex:commandButton
+                  value="Submit"
+                  action="{!addContact}"
+                  styleClass="primary"
+                />
+              </div>
+            </div>
+          </div>
+        </apex:outputPanel>
+        <!-- END Add Contact -->
+
+        <!-- BEGIN Edit Contact -->
+        <apex:outputPanel id="editContactPopup">
+          <apex:repeat value="{!contact_list}" var="i">
+            <apex:outputPanel rendered="{!i.Id == selectedContactId}">
+              <apex:outputPanel
+                styleClass="popupBackground"
+                layout="block"
+                rendered="{!displayEditContactPopup}"
+              />
+              <apex:outputPanel
+                styleClass="custPopup"
+                layout="block"
+                rendered="{!displayEditContactPopup}"
+              >
+                <div class="modal-dialog text-left">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">
+                        Edit &nbsp;<apex:outputText value="{!i.Name}" />
+                      </h4>
+                    </div>
+                    <div class="modal-body grid-pd-md">
+                      <div class="row">
+                        <div class="col-xs-6">
+                          First Name
+                          <apex:inputField value="{!i.FirstName}" />
+                        </div>
+                        <div class="col-xs-6">
+                          Last Name
+                          <apex:inputField
+                            value="{!i.LastName}"
+                            required="false"
+                          />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-xs-6">
+                          Phone
+                          <apex:inputField value="{!i.Phone}" />
+                        </div>
+                        <div class="col-xs-6">
+                          Email
+                          <apex:inputField value="{!i.Email}" />
+                        </div>
+                      </div>
+                      <apex:outputPanel
+                        rendered="{!currentUser.Contact.Role__c == 'CEO'}"
+                      >
+                        <div class="row">
+                          <div class="col-xs-8">
+                            User Profile
+                            <apex:selectList
+                              value="{!newContact.User_Profile__c}"
+                              size="1"
+                              style="display: block"
+                            >
+                              <apex:selectOptions value="{!profiles}" />
+                            </apex:selectList>
+                          </div>
+                        </div>
+                      </apex:outputPanel>
+                      <c:ErrorMessage errorMessage="{!errorMessage}" />
+                      <apex:pageMessages></apex:pageMessages>
+                    </div>
+                    <div class="modal-footer">
+                      <apex:commandButton
+                        action="{!cancelEditContactPopup}"
+                        value="Cancel"
+                        status="pageStatus"
+                      />
+                      <apex:commandButton
+                        action="{!updateContacts}"
+                        value="Save and Close"
+                        status="pageStatus"
+                        styleClass="primary"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </apex:outputPanel>
+            </apex:outputPanel>
+          </apex:repeat>
+        </apex:outputPanel>
+        <!-- END Edit Contact -->
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

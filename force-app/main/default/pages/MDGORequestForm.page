@@ -1,0 +1,94 @@
+<apex:page
+  controller="RequestFormController"
+  showHeader="false"
+  sidebar="false"
+  docType="html-5.0"
+>
+  <head>
+    <title>Reimbursement Request</title>
+  </head>
+  <c:MDGOHeader
+    ActivePage="reimbursements"
+    acct="{!userAcct}"
+    profile="{!currentUser.Profile.Name}"
+  />
+
+  <apex:form id="form">
+    <div class="main-panel">
+      <div class="content">
+        <apex:selectList
+          value="{!grantId}"
+          size="1"
+          rendered="{!grantId == null}"
+        >
+          <apex:selectOptions value="{!grant_list}" /> </apex:selectList
+        >&nbsp;&nbsp;
+        <apex:commandButton
+          action="{!getGrant}"
+          value="Next"
+          status="pageStatus"
+          styleClass="btn-small primary"
+          rendered="{!grantId == null}"
+        />
+
+        <apex:outputPanel rendered="{!grantId != null}">
+          <div class="row">
+            <div class="col-xs-6">
+              <h2>{!grant.Name}</h2>
+            </div>
+            <div class="col-xs-6 pull-right text-right">
+              <h2>
+                Balance: &nbsp;
+                <apex:outputField value="{!grant.Balance__c}" />
+              </h2>
+            </div>
+          </div>
+
+          <apex:outputPanel rendered="{!request.Request_Notes__c != null}">
+            <div class="panel panel-warning">
+              <div class="panel-heading">Notes</div>
+              <div class="panel-body">
+                <apex:outputField value="{!request.Request_Notes__c}" />
+              </div>
+            </div>
+          </apex:outputPanel>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Request Details</div>
+            <div class="panel-body grid-pd-md">
+              <div class="row">
+                <div class="col-auto" style="font-weight: bold">
+                  Reimbursement Date Range:
+                </div>
+                <div class="col-auto">
+                  From: &nbsp;
+                  <apex:input type="date" value="{!startDate}" />
+                </div>
+                <div class="col-auto">
+                  To: &nbsp;
+                  <apex:input type="date" value="{!endDate}" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <apex:commandButton
+            action="{!cancel}"
+            value="Cancel"
+            status="pageStatus"
+            styleClass="btn"
+          />
+          <apex:commandButton
+            action="{!next}"
+            value="Next"
+            status="pageStatus"
+            styleClass="btn primary"
+            reRender="errorMessage"
+          />
+        </apex:outputPanel>
+        <br /><br />
+        <c:ErrorMessage errorMessage="{!errorMessage}" />
+      </div>
+    </div>
+  </apex:form>
+</apex:page>

@@ -7,6 +7,7 @@ public with sharing class BudgetPersonnelCtrl {
 
   public GrantClass grantClass = new GrantClass();
   public BudgetItemClass bic = new BudgetItemClass();
+  public AccountClass ac = new AccountClass();
 
   public Account acct { get; set; }
   public ID GrantId { get; set; }
@@ -82,11 +83,7 @@ public with sharing class BudgetPersonnelCtrl {
 
     if (GrantID != null) {
       grant = grantClass.getGrant(GrantId);
-      acct = [
-        SELECT ID, Name, RecordType.Name
-        FROM Account
-        WHERE ID = :grant.Account__r.Id
-      ];
+      acct = ac.getAccount(grant.Account__r.Id); //[SELECT ID, Name, RecordType.Name FROM Account WHERE ID = :grant.Account__r.Id];
       duration = grant.Grant_Duration__c;
       if (duration != null) {
         durationWks = (grant.Grant_Duration__c / 7).setScale(2);
@@ -274,7 +271,7 @@ public with sharing class BudgetPersonnelCtrl {
         if (bi.Total_Approved_Amount__c != null) {
           laborRequestedAmount += bi.Total_Approved_Amount__c;
         }
-      } else if (portalName == 'DMV') {
+      } else if (portalName == 'DMV' || portalName == 'MDGO') {
         if (bi.Total_Approved_Salary__c != null) {
           bi.Wages__c = bi.Total_Approved_Salary__c;
           bi.Fringe_Benefits__c = bi.Total_Approved_Benefits__c;
@@ -325,7 +322,11 @@ public with sharing class BudgetPersonnelCtrl {
 
         Decimal fb = 0;
         bi.New_Fringe_Benefits__c = 0;
-        if ((portalName == 'NPAL' || portalName == 'DMV') && bi.FICA__c != null)
+        if (
+          (portalName == 'NPAL' ||
+          portalName == 'DMV' ||
+          portalName == 'MDGO') && bi.FICA__c != null
+        )
           fb += bi.FICA__c;
         if (bi.Medical__c != null)
           fb += bi.Medical__c;
@@ -341,7 +342,11 @@ public with sharing class BudgetPersonnelCtrl {
           fb += bi.Other_Benefits__c;
 
         if (bi.Hourly_Rate__c != null) {
-          if (portalName == 'NPAL' || portalName == 'DMV') {
+          if (
+            portalName == 'NPAL' ||
+            portalName == 'DMV' ||
+            portalName == 'MDGO'
+          ) {
             bi.New_Wages__c = (bi.Hourly_Rate__c *
               bi.Projected_Grant_Hours_Per_Week__c *
               bi.Number_of_Weeks_on_Grant_Long__c)
@@ -368,16 +373,26 @@ public with sharing class BudgetPersonnelCtrl {
           }
           if (portalName != 'NPAL' && bi.New_Item_Budget__c != null) {
             bi.FICA__c = (bi.New_Item_Budget__c * .0765).setScale(2);
+            if (portalName == 'MDGO') {
+              bi.FICA__c = 0;
+            }
             bi.New_Fringe_Benefits__c += bi.FICA__c;
+            if (portalName == 'MDGO') {
+              bi.New_Fringe_Benefits__c = 0;
+            }
           }
           bi.New_Fringe_Benefits__c = bi.New_Fringe_Benefits__c.setScale(2);
 
           if (portalName == 'NPAL') {
             laborRequestedAmount += bi.New_Wages__c;
-          } else if (portalName == 'DMV') {
+          } else if (portalName == 'DMV' || portalName == 'MDGO') {
             bi.Wages__c = bi.New_Wages__c;
             bi.Item_Budget__c = bi.New_Wages__c;
-            bi.Fringe_Benefits__c = bi.New_Fringe_Benefits__c;
+            if (portalName == 'MDGO') {
+              bi.Fringe_Benefits__c = 0;
+            } else {
+              bi.Fringe_Benefits__c = bi.New_Fringe_Benefits__c;
+            }
             laborRequestedAmount += bi.New_Wages__c;
           } else {
             laborRequestedAmount += bi.New_Item_Budget__c;
@@ -471,7 +486,9 @@ public with sharing class BudgetPersonnelCtrl {
           bi.New_Fringe_Benefits__c = null;
         }
       }
-      if (portalName == 'DMV' && bi.New_Wages__c != null) {
+      if (
+        (portalName == 'DMV' || portalName == 'MDGO') && bi.New_Wages__c != null
+      ) {
         bi.Wages__c = bi.New_Wages__c;
       }
     }
@@ -495,7 +512,7 @@ public with sharing class BudgetPersonnelCtrl {
     ) {
       errorMessage = 'Projected # of children served during the Grant performance period must be greater than zero.';
     }
-    if (portalName != 'NPAL' && portalName != 'DMV') {
+    if (portalName != 'NPAL' && portalName != 'DMV' && portalName != 'MDGO') {
       if (
         !isNationalSubGrant &&
         (grant.Youth_Served_with_Grant_Funding__c == null ||
