@@ -19,7 +19,7 @@ public with sharing class ReimbursementDashboardCtrl {
 
     ApproverId = ApexPages.currentPage().getParameters().get('ApproverId');
     String qryWhere = ' WHERE Request_Date__c != null';
-    if (userAcct != null && !Test.isRunningTest()) {
+    if (userAcct != null) {
       qryWhere +=
         ' AND Grant__r.Account__r.National_Organization__c = \'' +
         userAcct.Id +
@@ -82,10 +82,7 @@ public with sharing class ReimbursementDashboardCtrl {
     d2Qry += ' ORDER BY Status__c';
     for (Reimbursement_Request__c r : Database.query(d2Qry)) {
       if (userAcct != null) {
-        if (
-          r.Grant__r.Account__r.National_Organization__c == userAcct.Id ||
-          Test.isRunningTest()
-        ) {
+        if (r.Grant__r.Account__r.National_Organization__c == userAcct.Id) {
           if (r_map.containsKey(r.Grant__r.Account__r.Primary_Approver__r.Id)) {
             List<Reimbursement_Request__c> r_list = r_map.get(
               r.Grant__r.Account__r.Primary_Approver__r.Id

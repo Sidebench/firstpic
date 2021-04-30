@@ -23,7 +23,7 @@
     "mdapi:check": "sfdx force:mdapi:deploy -c -f ${PKG:-temp.zip} -u ${ENV:-firstpic_production} -l RunLocalTests",
     "mdapi:deploy": "sfdx force:mdapi:deploy -f ${PKG:-temp.zip} -u ${ENV:-firstpic_production} -l RunLocalTests",
     "mdapi:deployId": "sfdx force:mdapi:deploy -u ${ENV:-firstpic_production} --validateddeployrequestid $JOBID",
-    "report": "sfdx -u ${ENV:-firstpic_production} force:mdapi:deploy:report",
+    "report": "sfdx force:mdapi:deploy:report -u ${ENV:-firstpic_production}",
     "zip": "zip -r temp.zip temp -x '*.DS_Store' -x '__MACOSX'"
   },
   "devDependencies": {
